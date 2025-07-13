@@ -1,0 +1,42 @@
+<header class="login-header">
+  <div class="login-header-content">
+    <img src="/assets/images/imagenes/full-logo.png" alt="SIDCOP Logo" class="login-logo" />
+  </div>
+  <svg class="login-header-curve" width="1262" height="193" viewBox="0 0 1262 193" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M-14 -53.8398H1254.03C1254.03 -53.8398 1363.5 207.702 1244.99 181.748C563.5 32.5 -9.47848 193 -9.47848 193L-14 -53.8398Z" fill="#D6B68A"/>
+    <path d="M-14 -58H1254.03C1254.03 -58 1352.86 156.604 1244.99 140.529C661 53.5 -9.47848 150.011 -9.47848 150.011L-14 -58Z" fill="#141A2F"/>
+  </svg>
+</header>
+<section class="auth-page-wrapper d-flex align-items-center justify-content-center min-vh-100">
+  <div class="login-overlay"></div>
+  <div class="login-card">
+    <h2 class="login-title">Inicio de sesión</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="login-input-group">
+        <label for="username" class="login-label">Usuario</label>
+        <div class="login-input-icon">
+          <i class="ri-user-line"></i>
+          <input type="text" formControlName="email" id="username" placeholder="Usuario" />
+        </div>
+      </div>
+      <div class="login-input-group">
+        <label for="password-input" class="login-label">Contraseña</label>
+        <div class="login-input-icon">
+          <i class="ri-lock-2-line"></i>
+          <input [type]="fieldTextType ? 'text' : 'password'" formControlName="password" id="password-input" placeholder="Contraseña" />
+          <button type="button" class="login-eye" (click)="toggleFieldTextType()">
+            <i class="ri-eye-line" *ngIf="!fieldTextType"></i>
+            <i class="ri-eye-off-line" *ngIf="fieldTextType"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-login">
+        <span class="btn-text">INGRESAR</span>
+        <i class="ri-login-box-line"></i>
+      </button>
+      <div class="login-forgot">
+        <a routerLink="/auth/pass-reset">¿Olvidaste tu contraseña?</a>
+      </div>
+    </form>
+  </div>
+</section>

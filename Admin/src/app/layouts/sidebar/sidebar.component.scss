@@ -1,0 +1,164 @@
+.app-menu {
+  background-color: rgb(20, 26, 47) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  transition: width 0.3s;
+
+  .nav-link.menu-link {
+    color: rgb(20, 26, 47) !important;
+  }
+}
+.logo-sm img,
+.logo-lg img {
+  height: 60px; 
+  width: auto;
+}
+.navbar-brand-box {
+  background-color: rgb(20, 26, 47) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.108);
+}
+
+.navbar-nav {
+  .menu-title {
+    color: rgb(210, 182, 148) !important;
+
+  }
+
+  .nav-item {
+    .nav-link {
+      color: #d5b58a !important;
+
+
+      &:hover {
+        background-color: rgb(185, 139, 12) !important;
+        color: rgb(255, 255, 255) !important;
+
+        i {
+          color: rgb(255, 255, 255) !important;
+        }
+      }
+
+      &.active {
+        background-color: #262b40
+      }
+      &.show {
+        background-color: #262b40;
+        color: #ffffff !important;
+
+        i {
+          color: #ffffff !important;
+        }
+
+        &:hover {
+          color: #ffffff !important;
+
+          i {
+            color: #ffffff !important;
+          }
+        }
+      }
+
+      i {
+        color: #d5b58a !important;
+      }
+    }
+  }
+}
+
+.menu-dropdown {
+  background-color: rgb(20, 26, 47) !important;
+
+  .nav-link {
+    color: rgba(153, 119, 78, 0.441) !important;
+    padding: 8px 40px !important;
+
+    &:hover {
+      background-color: rgb(185, 139, 12) !important;
+      color: rgb(255, 255, 255) !important;
+
+      i {
+        color: rgb(255, 255, 255) !important;
+      }
+    }
+
+    &.active {
+      background-color: #262b40;
+      color: #ffffff !important;
+
+      i {
+        color: #ffffff !important;
+      }
+
+      &:hover {
+        background-color: transparent !important;
+        color: #ffffff !important;
+
+        i {
+          color: #ffffff !important;
+        }
+      }
+    }
+
+    i {
+      color: rgb(153, 119, 78) !important;
+      transition: color 0.3s ease;
+    }
+  }
+}
+
+.sub-menu {
+  background-color: #262b40 !important;
+  color: rgb(20, 26, 47);
+
+  .nav-link {
+    color: rgb(153, 119, 78) !important;
+    padding: 8px 60px !important;
+
+    &:hover {
+      background-color: rgb(185, 139, 12) !important;
+      color: rgb(255, 255, 255) !important;
+
+      i {
+        color: rgb(255, 255, 255) !important;
+      }
+    }
+
+    &.active {
+      background-color: transparent !important;
+      color: #ffffff !important;
+
+      i {
+        color: #ffffff !important;
+      }
+
+      &:hover {
+        background-color: transparent !important;
+        color: #ffffff !important;
+
+        i {
+          color: #ffffff !important;
+        }
+      }
+    }
+
+    i {
+      color: rgb(153, 119, 78) !important;
+      transition: color 0.3s ease;
+    }
+  }
+}
+
+.simplebar-scrollbar::before {
+  background-color:rgb(20, 26, 47) !important;
+}
+
+.btn-vertical-sm-hover {
+  color: rgb(153, 119, 78) !important;
+
+  &:hover {
+    color: rgb(255, 255, 255) !important;
+  }
+}
+
+.sidebar-background {
+  background: linear-gradient(180deg, rgb(20, 26, 47) 0%, rgb(20, 26, 47) 100%);
+  }

@@ -1,0 +1,31 @@
+td .dropdown-menu.show {
+  z-index: 1050 !important;
+}
+
+td.position-relative {
+  position: relative;
+
+  .dropdown-menu.show {
+    z-index: 1050 !important;
+    position: absolute !important;
+    left: var(--menu-left, 0) !important;
+    top: var(--menu-top, 100%) !important;
+    min-width: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .dropdown-menu.show.dropup {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-bottom: 0.5rem !important;
+    margin-top: 0 !important;
+  }
+}
+
+.table-responsive,
+.card-body,
+.card,
+.row {
+  overflow: visible !important;
+}
