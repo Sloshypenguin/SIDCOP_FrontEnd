@@ -33,18 +33,24 @@
     <div class="col-md-6">
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!municipio.depa_Codigo.trim() && mostrarErrores"
-              id="municipioDescripcion"
-              [(ngModel)]="municipio.depa_Codigo"
-              placeholder="Ingrese la descripción del municipio"
-              required>
+            <select 
+                id="departamentoCodigo" 
+                name="departamentoCodigo" 
+                class="form-select"
+                [class.is-invalid]="!municipio.depa_Codigo.trim() && mostrarErrores"
+                [(ngModel)]="municipio.depa_Codigo" 
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option 
+                        *ngFor="let Depa of Departamentos" 
+                        [value]="Depa.depa_Codigo">
+                            {{ Depa.depa_Descripcion }}
+                    </option>
+            </select>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
           <div class="text-danger mt-1" *ngIf="!municipio.depa_Codigo.trim() && mostrarErrores">
-            <small>El campo Descripción del municipio es requerido</small>
+            <small>El campo departamento es requerido</small>
           </div>
         </div>
       </div>

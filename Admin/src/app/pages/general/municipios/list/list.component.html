@@ -36,11 +36,11 @@
 <div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-edit 
+      <app-edit 
         [municipioData]="municipioEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarmunicipio($event)">
-      </app-edit> -->
+        (onSave)="actualizarMunicipio($event)">
+      </app-edit>
     </div>
   </div>
 </div>

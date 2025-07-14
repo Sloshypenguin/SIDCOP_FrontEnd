@@ -23,8 +23,11 @@ export class CreateComponent {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
+  Departamentos: any[] = []; // Lista de departamentos, se puede llenar con un servicio si es necesario
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.cargarDepartamentos();
+  }
 
   municipio: Municipio = {
     muni_Codigo: '',
@@ -39,6 +42,12 @@ export class CreateComponent {
     usuarioCreacion: '',
     usuarioModificacion: ''
   };
+
+  cargarDepartamentos() {
+      this.http.get<any>('https://localhost:7071/Departamentos/Listar', {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.Departamentos = data);
+    };
 
   cancelar(): void {
     this.mostrarErrores = false;
