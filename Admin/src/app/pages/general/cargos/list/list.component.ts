@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Cargo } from 'src/app/Modelos/general/Cargo.Model';
-import { CreateComponent } from '../create/create.component';
+// import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { DetailsComponent } from '../details/details.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    CreateComponent,
+    // CreateComponent,
     EditComponent,
     DetailsComponent
   ],
