@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CrudComponent } from '../Personas/crudcomponent.component';
 
 const routes: Routes = [
   {
@@ -45,7 +44,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./extrapages/extrapages.module').then((m) => m.ExtrapagesModule),
   },
-  { path: 'General/Personas', component: CrudComponent },
   {
     path: 'general',
     loadChildren: () =>

@@ -118,6 +118,7 @@
 /* === MODAL DE CONFIRMACIÓN GLOBAL === */
 .custom-modal {
   z-index: 2000;
+  min-width: 80vh;
 }
 .custom-modal-header {
   font-size: 1rem;
