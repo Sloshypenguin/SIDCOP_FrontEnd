@@ -4,7 +4,7 @@ export const EstadosCivilesRoutes: Routes = [
     {
         path: '',
         data: {
-            title: 'Estados Civiles',
+            title: 'Sucursales',
         },
         children: [
             { 
@@ -16,10 +16,9 @@ export const EstadosCivilesRoutes: Routes = [
                 path: 'list',
                 loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
                 data: {
-                    title: 'Listado de Estados Civiles',
+                    title: 'Listado de Sucursales',
                 }
             },
-
         ]
     }
 ];
