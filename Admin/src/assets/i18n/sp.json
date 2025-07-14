@@ -3,6 +3,13 @@
     "MENU": {
       "TEXT": "MENÚ"
     },
+    "GENERAL": {
+      "TEXT": "General",
+      "LIST": {
+        "ESTADOSCIVILES": "Estados Civiles",
+        "SUCURSALES": "Sucursales"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Tableros",
       "LIST": {
