@@ -31,6 +31,13 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+            {
+                id: 32,
+                label: 'MENUITEMS.GENERAL.LIST.SUCURSALES',
+                link: '/general/sucursales',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }
