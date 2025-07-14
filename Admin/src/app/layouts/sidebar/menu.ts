@@ -17,7 +17,6 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2
             },
-
         ]
     },
     {
