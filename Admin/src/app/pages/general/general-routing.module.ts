@@ -7,6 +7,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
   },
+  {
+    path: 'empleados',
+    loadChildren: () =>
+      import('./empleados/empleados.module').then(m => m.EmpleadosModule)
+  },
 ];
 
 @NgModule({

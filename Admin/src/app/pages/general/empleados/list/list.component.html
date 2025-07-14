@@ -1,0 +1,115 @@
+<app-breadcrumbs
+  [title]="'Empleados'"
+  [breadcrumbItems]="[
+    { label: 'General' },
+    { label: 'Empleados', active: true }
+  ]"
+>
+  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
+</app-breadcrumbs>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row align-items-center g-2">
+            <div class="col-lg-3 me-auto">
+                <h6 class="card-title mb-0">Instructors List <span class="badge bg-primary ms-1 align-baseline">1452</span></h6>
+            </div><!--end col-->
+            <div class="col-lg-2">
+                <div class="search-box">
+                    <input type="text" class="form-control search" placeholder="Search for instructors, email or something..." [(ngModel)]="term" (keyup)="filterdata()">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div><!--end col-->
+            <div class="col-lg-auto">
+                <div class="hstack gap-2">
+                    <a href="javascript:void(0);"  class="btn btn-secondary"><i class="bi bi-plus-circle align-baseline me-1"></i> Add Instructor</a>
+                    <a routerLink="/learning/instructors-grid" class="btn btn-subtle-primary active btn-icon ms-auto"><i class="bi bi-grid"></i></a>
+                    <a routerLink="/learning/instructors-list" class="btn btn-subtle-primary btn-icon"><i class="bi bi-list-task"></i></a>
+                </div>
+            </div><!--end col-->
+        </div>
+    </div>
+</div><!--end card-->
+
+<div class="row row-cols-xxl-5 g-4">
+    @for (empleado of instructors; track empleado.empl_Id) {
+    <div class="col">
+        <div class="card border-0 h-100 shadow-sm" style="background:#fff; color:#141A2F; border-radius:18px;">
+            <div class="card-body p-0">
+                <div class="d-flex flex-column align-items-center py-4">
+                    <div class="position-relative mb-3">
+                        <img src="assets/images/machete.jpg" alt="Avatar por defecto" class="avatar-lg rounded-circle border border-3" style="border-color:#D6B68A; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                    </div>
+                    <h5 class="fw-semibold mb-1 text-center" style="color:#141A2F;">{{empleado.empl_Nombres}} {{empleado.empl_Apellidos}}</h5>
+                    <span class="badge mb-2" style="background:#D6B68A; color:#141A2F; font-weight:500;">Código: {{empleado.empl_Codigo}}</span>
+                    <div class="d-flex flex-column align-items-center gap-1 mb-2">
+                        <a href="mailto:{{empleado.empl_Correo}}" class="text-reset text-decoration-none" style="color:#141A2F;"><i class="bi bi-envelope me-1" style="color:#D6B68A;"></i> {{empleado.empl_Correo}}</a>
+                        <a href="tel:{{empleado.empl_Telefono}}" class="text-reset text-decoration-none" style="color:#141A2F;"><i class="bi bi-telephone me-1" style="color:#D6B68A;"></i> {{empleado.empl_Telefono}}</a>
+                    </div>
+                    <div class="small text-center mb-2" style="color:#D6B68A;">
+                        <i class="bi bi-geo-alt me-1"></i> {{empleado.empl_DireccionExacta}}
+                    </div>
+                    <div class="d-flex justify-content-center gap-2 mt-2">
+                        <button class="btn btn-sm px-3" style="background:#D6B68A; color:#141A2F; border-radius:8px; border:none; font-weight:500;" (click)="editList($index)"><i class="bi bi-pencil-square me-1"></i> Editar</button>
+                        <button class="btn btn-sm px-3" style="background:transparent; color:#D6B68A; border:1px solid #D6B68A; border-radius:8px; font-weight:500;" (click)="removeItem(empleado.empl_Id)"><i class="bi bi-trash3 me-1"></i> Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div><!--end card-->
+    </div><!--end col-->
+    }
+</div><!--end row-->
+<div class="noresult"  style="display: none;">
+    <div class="text-center py-4">
+        <i class="ph-magnifying-glass fs-1 text-primary"></i>
+        <h5 class="mt-2">Sorry! No Result Found</h5>
+        <p class="text-muted mb-0">We've searched more than 150+ Courses We did not find any Courses
+            for you search.</p>
+    </div>
+</div>
+
+<div id="elmLoader">
+    <div class="spinner-border text-primary avatar-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<div class="row align-items-center mb-3" id="pagination-element">
+    <div class="col-sm">
+        <div class="text-muted text-center text-sm-start">
+            Showing <span class="fw-semibold">{{instructors?.length}}</span> of <span class="fw-semibold">{{instructorGrid?.length}}</span> Results
+        </div>
+    </div><!--end col-->
+    <div class="col-sm-auto mt-3 mt-sm-0">
+        <pagination class="pagination-wrap hstack justify-content-center gap-2" [totalItems]="instructorGrid?.legnth" [itemsPerPage]="10" (pagrChanged)="pageChanged($event)"></pagination>
+    </div><!--end col-->
+</div>
+
+
+
+<!-- deleteRecordModal -->
+<div bsModal #deleteRecordModal="bs-modal" id="deleteRecordModal" class="modal fade zoomIn">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" id="deleteRecord-close" (click)="deleteRecordModal.hide()"></button>
+            </div>
+            <div class="modal-body p-md-5">
+                <div class="text-center">
+                    <div class="text-danger">
+                        <i class="bi bi-trash display-5"></i>
+                    </div>
+                    <div class="mt-4">
+                        <h4 class="mb-2">Are you sure ?</h4>
+                        <p class="text-muted mx-3 mb-0">Are you sure you want to remove this record ?</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-center mt-4 pt-2 mb-2">
+                    <button type="button" class="btn w-sm btn-light btn-hover" (click)="deleteRecordModal.hide()">Close</button>
+                    <button type="button" class="btn w-sm btn-danger btn-hover" id="delete-record" (click)="confirmDelete()">Yes, Delete
+                        It!</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /deleteRecordModal -->

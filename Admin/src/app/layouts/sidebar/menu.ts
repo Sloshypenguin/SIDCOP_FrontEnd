@@ -17,6 +17,12 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2
             },
+            {
+                id: 6,
+                label: 'MENUITEMS.DASHBOARD.LIST.EMPLEADOS',
+                link: '/general/empleados/',
+                parentId: 2
+            },
 
         ]
     },
