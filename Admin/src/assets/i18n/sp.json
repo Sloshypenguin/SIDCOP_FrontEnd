@@ -6,7 +6,8 @@
     "GENERAL": {
       "TEXT": "General",
       "LIST": {
-        "ESTADOSCIVILES": "Estados Civiles"
+        "ESTADOSCIVILES": "Estados Civiles",
+        "SUCURSALES": "Sucursales"
       }
     },
     "DASHBOARD": {
