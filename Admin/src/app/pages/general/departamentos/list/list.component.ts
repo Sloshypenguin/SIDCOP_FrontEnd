@@ -39,8 +39,8 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  estadoCivilEditando: EstadoCivil | null = null;
-  estadoCivilDetalle: EstadoCivil | null = null;
+  departamentoEditando: Departamento | null = null;
+  departamentoDetalle: Departamento | null = null;
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -74,16 +74,16 @@ export class ListComponent {
       descripcion: departamento.depa_Descripcion,
       completo: departamento
     });
-    this.estadoCivilEditando = { ...departamento }; // Hacer copia profunda
+    this.departamentoEditando = { ...departamento }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-   detalles(estadoCivil: EstadoCivil): void {
-    console.log('Abriendo detalles para:', estadoCivil);
-    this.estadoCivilDetalle = { ...estadoCivil }; // Hacer copia profunda
+   detalles(departamento: Departamento): void {
+    console.log('Abriendo detalles para:', departamento);
+    this.departamentoDetalle = { ...departamento }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -100,10 +100,10 @@ export class ListComponent {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  estadoCivilAEliminar: EstadoCivil | null = null;
+  departamentoAEliminar: Departamento | null = null;
 
   private cargardatos(): void {
-    this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
+    this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
@@ -111,7 +111,7 @@ export class ListComponent {
     });
   }
 
-  constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Departamento>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
   }
 
@@ -129,46 +129,46 @@ export class ListComponent {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.estadoCivilEditando = null;
+    this.departamentoEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.estadoCivilDetalle = null;
+    this.departamentoDetalle = null;
   }
 
-  guardarEstadoCivil(estadoCivil: EstadoCivil): void {
-    console.log('Estado civil guardado exitosamente desde create component:', estadoCivil);
+  guardarDepartamento(departamento: Departamento): void {
+    console.log('Departamento guardado exitosamente desde create component:', departamento);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarEstadoCivil(estadoCivil: EstadoCivil): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', estadoCivil);
+  actualizarDepartamento(departamento: Departamento): void {
+    console.log('Departamento actualizado exitosamente desde edit component:', departamento);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(estadoCivil: EstadoCivil): void {
-    console.log('Solicitando confirmación para eliminar:', estadoCivil);
-    this.estadoCivilAEliminar = estadoCivil;
+  confirmarEliminar(departamento: Departamento): void {
+    console.log('Solicitando confirmación para eliminar:', departamento);
+    this.departamentoAEliminar = departamento;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.estadoCivilAEliminar = null;
+    this.departamentoAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.estadoCivilAEliminar) return;
+    if (!this.departamentoAEliminar) return;
     
-    console.log('Eliminando estado civil:', this.estadoCivilAEliminar);
+    console.log('Eliminando estado civil:', this.departamentoAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.esCv_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Departamentos/Eliminar/${this.departamentoAEliminar.depa_Codigo}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -181,8 +181,8 @@ export class ListComponent {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Estado civil eliminado exitosamente');
-            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.esCv_Descripcion}" eliminado exitosamente`;
+            console.log('Departamento eliminado exitosamente');
+            this.mensajeExito = `Departamento "${this.departamentoAEliminar!.depa_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -196,9 +196,9 @@ export class ListComponent {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Departamento está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el departamento está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -211,7 +211,7 @@ export class ListComponent {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el departamento.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -225,7 +225,7 @@ export class ListComponent {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el departamento.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
