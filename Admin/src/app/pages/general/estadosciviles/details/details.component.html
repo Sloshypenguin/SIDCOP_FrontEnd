@@ -58,17 +58,17 @@
           <span class="audit-user">{{ estadoCivilDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(estadoCivilDetalle.esCv_FechaModificacion) }}</span>
+          <span class="audit-date">{{ formatearFecha(estadoCivilDetalle.esCv_FechaModificacion ?? null) }}</span>
         </div>
       </div>
     </div>
     </div>
     
     <!-- Información adicional -->
-    <div class="additional-info" *ngIf="estadoCivilDetalle.numero">
+    <div class="additional-info" *ngIf="estadoCivilDetalle.secuencia">
       <div class="info-item">
         <label class="info-label">Número:</label>
-        <span class="info-value">{{ estadoCivilDetalle.numero }}</span>
+        <span class="info-value">{{ estadoCivilDetalle.secuencia }}</span>
       </div>
     </div>
 

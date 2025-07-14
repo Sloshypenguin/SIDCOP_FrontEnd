@@ -1,68 +1,46 @@
-import { Component, Output, EventEmitter, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
-export class DetailsComponent implements OnInit, OnChanges {
-  @Input() estadoCivilId: number = 0;
+export class DetailsComponent implements OnChanges {
   @Input() estadoCivilData: EstadoCivil | null = null;
   @Output() onClose = new EventEmitter<void>();
-  
-  mostrarAlertaError = false;
-  mensajeError = '';
+
+  estadoCivilDetalle: EstadoCivil | null = null;
   cargando = false;
 
-  constructor(private http: HttpClient) {}
-
-  estadoCivilDetalle: any = null;
-
-  ngOnInit(): void {
-    if (this.estadoCivilData) {
-      this.cargarDetalles();
-    } else if (this.estadoCivilId > 0) {
-      this.cargarDetalles();
-    }
-  }
+  mostrarAlertaError = false;
+  mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['estadoCivilData'] && changes['estadoCivilData'].currentValue) {
-      this.cargarDetalles();
+      this.cargarDetallesSimulado(changes['estadoCivilData'].currentValue);
     }
   }
 
-  cargarDetalles(): void {
-    const id = this.estadoCivilData?.esCv_Id || this.estadoCivilId;
-    if (!id) return;
-
+  // Simulación de carga
+  cargarDetallesSimulado(data: EstadoCivil): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
-    
-    this.http.get<any>(`${environment.apiBaseUrl}/EstadosCiviles/Buscar/${id}`, {
-      headers: { 
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response) => {
-        console.log('Detalles del estado civil:', response);
-        this.estadoCivilDetalle = response;
+
+    setTimeout(() => {
+      try {
+        this.estadoCivilDetalle = { ...data };
         this.cargando = false;
-      },
-      error: (error) => {
+      } catch (error) {
         console.error('Error al cargar detalles del estado civil:', error);
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al cargar los detalles del estado civil.';
         this.cargando = false;
       }
-    });
+    }, 500); // Simula tiempo de carga
   }
 
   cerrar(): void {
@@ -74,7 +52,7 @@ export class DetailsComponent implements OnInit, OnChanges {
     this.mensajeError = '';
   }
 
-  formatearFecha(fecha: string | null): string {
+  formatearFecha(fecha: string | Date | null): string {
     if (!fecha) return 'N/A';
     try {
       const date = new Date(fecha);
@@ -84,7 +62,7 @@ export class DetailsComponent implements OnInit, OnChanges {
         year: 'numeric'
       });
     } catch {
-      return fecha;
+      return String(fecha);
     }
   }
 }
