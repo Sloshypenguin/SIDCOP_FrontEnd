@@ -6,7 +6,7 @@ const routes: Routes = [
     path: 'estadosciviles',
     loadChildren: () =>
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
-  },
+  }
 ];
 
 @NgModule({
