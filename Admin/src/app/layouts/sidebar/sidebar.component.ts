@@ -14,7 +14,6 @@ export class SidebarComponent {
   menu: any;
   toggle: any = true;
   menuItems: MenuItem[] = [];
-  generalOpen: boolean = false;
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
   lastroute: any;
@@ -198,9 +197,18 @@ export class SidebarComponent {
       let activeItems = items.filter((x: any) => x.classList.contains("active"));
       this.removeActivation(activeItems);
 
+      // Primero intentamos encontrar una coincidencia exacta
       let matchingMenuItem = items.find((x: any) => {
         return x.pathname === pathName;
       });
+
+      // Si no hay coincidencia exacta, buscamos una coincidencia parcial
+      // donde la ruta actual comienza con la ruta del elemento del menú
+      if (!matchingMenuItem) {
+        matchingMenuItem = items.find((x: any) => {
+          return x.pathname !== '/' && pathName.startsWith(x.pathname);
+        });
+      }
 
       if (matchingMenuItem) {
         this.activateParentDropdown(matchingMenuItem);
