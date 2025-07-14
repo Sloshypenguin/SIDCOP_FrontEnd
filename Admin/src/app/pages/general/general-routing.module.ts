@@ -7,6 +7,16 @@ const routes: Routes = [
     loadChildren: () =>
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
   },
+  {
+    path: 'marcas',
+    loadChildren: () =>
+      import('./Marcas/marcas.module').then(m => m.Marcasmodule)
+  },
+  {
+    path: 'marcasvehiculos',
+    loadChildren: () =>
+      import('./MarcasVehiculos/marcasvehiculos.module').then(m => m.MarcasVehiculosmodule)
+  },
 ];
 
 @NgModule({
