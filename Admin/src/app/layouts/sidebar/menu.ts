@@ -38,6 +38,20 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+            {
+                id: 33,
+                label: 'MENUITEMS.GENERAL.LIST.MARCAS',
+                link: '/general/marcas',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 34,
+                label: 'MENUITEMS.GENERAL.LIST.MARCASVEHICULOS',
+                link: '/general/marcasvehiculos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }
