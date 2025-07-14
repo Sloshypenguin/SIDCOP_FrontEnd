@@ -17,21 +17,10 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2
             },
+
         ]
     },
-    {
-        id: 3,
-        label: 'MENUITEMS.GENERAL.TEXT',
-        icon: 'ri-apps-2-line',
-        subItems: [
-            {
-                id: 31,
-                label: 'MENUITEMS.GENERAL.LIST.ESTADOSCIVILES',
-                link: '/general/estadosciviles',
-                parentId: 3,
-                icon: 'ri-group-line'
-            },
-            // Puedes añadir más subitems aquí según sea necesario
-        ]
-    }
+   
+
+
 ]

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,20 +30,7 @@ import { DetailsComponent } from '../details/details.component';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit {
-  // bread crumb items
-  breadCrumbItems!: Array<{}>;
-
-  ngOnInit(): void {
-    /**
-     * BreadCrumb
-     */
-    this.breadCrumbItems = [
-      { label: 'General' },
-      { label: 'Estados Civiles', active: true }
-    ];
-  }
-
+export class ListComponent {
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
