@@ -81,6 +81,16 @@
       right: 0;
     }
   }
+  &.btn-minw-5 {
+  min-width: 5rem !important;
+  pointer-events: auto;
+    &:hover {
+       .btn-icon {
+        color: rgb(255, 255, 255) !important;
+        transform: translateX(-50%) scale(1.2) rotate(-360deg) !important;
+      }
+    }
+  }
   &.gold {
     background-color: #edeadb !important;
     color:  rgb(255, 255, 255) !important;
