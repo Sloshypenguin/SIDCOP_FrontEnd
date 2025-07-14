@@ -13,7 +13,7 @@
     <div class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <button type="button" class="btn btn-primary me-2 mb-2" (click)="navigateToCreate()">
+          <button type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>
           </button>
@@ -69,24 +69,25 @@
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
                 <td class="position-relative">
-                  <div class="dropdown">
-                    <button type="button" class="btn btn-secondary-actions dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span><i class="ri-settings-3-line"></i>
+                  <div class="dropdown-action-list">
+                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
+                      <span>Acciones</span>
+                      <i class="ri-settings-3-line"></i>
                     </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show mt-2 shadow">
+                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
                       <li *ngIf="showEdit">
-                        <button type="button" class="btn btn-secondary " (click)="navigateToEdit(data)">
+                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
                           Editar <i class="ri-edit-line"></i>
                         </button>
                       </li>
-                      <li *ngIf="showDetails">
-                        <button type="button" class="btn btn-secondary" (click)="navigateToDetails(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
+                      <li *ngIf="showDelete">
+                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
+                          Eliminar <i class="ri-delete-bin-line"></i>
                         </button>
                       </li>
-                      <li *ngIf="showDelete">
-                        <button type="button" class="btn btn-secondary w-100 text-start rounded-0" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
+                      <li *ngIf="showDetails">
+                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
+                          Detalles <i class="ri-error-warning-fill"></i>
                         </button>
                       </li>
                     </ul>
@@ -144,23 +145,23 @@
 </div>
 
 <!-- Modal de confirmación para eliminar -->
-<div class="modal fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1" role="dialog">
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-        <div class="modal-header d-flex justify-content-between align-items-center" style="font-size: 1rem; font-weight: bold; padding: 0.5rem 0.75rem; margin-bottom: 0; padding-bottom: 0;">
-          <span>Confirmación</span>
-          <i class="ri-close-line" style="font-size: 0.9rem; color: #000000; cursor: pointer;" (click)="cancelarEliminar()"></i>
-        </div>
-          <hr style="margin: 0.25rem; border-top: 1px solid #a2a3a4;">
-        <div class="modal-body" style="padding: 0.5rem 0.75rem;">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Confirmación</span>
+        <i class="ri-close-line custom-modal-close" (click)="cancelarEliminar()"></i>
+      </div>
+      <hr class="custom-modal-divider">
+      <div class="modal-body custom-modal-body">
         <div class="text-center"> 
-          <p class="mt-2" style="font-size: 0.95rem; margin-bottom: 0.5rem;">
-            <i class="ri-alert-line me-2" style="font-size: 1.2rem; color: #000000; cursor: pointer; vertical-align: middle;" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el estado civil <strong >{{ estadoCivilAEliminar?.esCv_Descripcion }}</strong>?
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el estado civil <strong>{{ estadoCivilAEliminar?.esCv_Descripcion }}</strong>?
           </p>
         </div>
       </div>
-      <div class="modal-footer" style="padding: 0.5rem 0.75rem;">
-         <button type="button" class="btn btn-primary gray btn-sm" (click)="cancelarEliminar()"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
+      <div class="modal-footer custom-modal-footer">
+        <button type="button" class="btn btn-primary gray btn-sm" (click)="cancelarEliminar()"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
         <button type="button" class="btn btn-primary red btn-sm" (click)="eliminar()">
           <span class="btn-text">Si</span>
           <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>

@@ -31,6 +31,52 @@ import { DetailsComponent } from '../details/details.component';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent {
+  // Cierra el dropdown si se hace click fuera
+  onDocumentClick(event: MouseEvent, rowIndex: number) {
+    const target = event.target as HTMLElement;
+    // Busca el dropdown abierto
+    const dropdowns = document.querySelectorAll('.dropdown-action-list');
+    let clickedInside = false;
+    dropdowns.forEach((dropdown, idx) => {
+      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
+        clickedInside = true;
+      }
+    });
+    if (!clickedInside && this.activeActionRow === rowIndex) {
+      this.activeActionRow = null;
+    }
+  }
+  // Métodos para los botones de acción principales (crear, editar, detalles)
+  crear(): void {
+    console.log('Toggleando formulario de creación...');
+    this.showCreateForm = !this.showCreateForm;
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  editar(estadoCivil: EstadoCivil): void {
+    console.log('Abriendo formulario de edición para:', estadoCivil);
+    console.log('Datos específicos:', {
+      id: estadoCivil.esCv_Id,
+      descripcion: estadoCivil.esCv_Descripcion,
+      completo: estadoCivil
+    });
+    this.estadoCivilEditando = { ...estadoCivil }; // Hacer copia profunda
+    this.showEditForm = true;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  detalles(estadoCivil: EstadoCivil): void {
+    console.log('Abriendo detalles para:', estadoCivil);
+    this.estadoCivilDetalle = { ...estadoCivil }; // Hacer copia profunda
+    this.showDetailsForm = true;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -54,43 +100,16 @@ export class ListComponent {
   estadoCivilAEliminar: EstadoCivil | null = null;
 
   constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.loadData();
+    this.cargardatos();
   }
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  navigateToCreate(): void {
-    console.log('Toggleando formulario de creación...');
-    this.showCreateForm = !this.showCreateForm;
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
+  // (navigateToCreate eliminado, lógica movida a crear)
 
-  navigateToEdit(estadoCivil: EstadoCivil): void {
-    console.log('Abriendo formulario de edición para:', estadoCivil);
-    console.log('Datos específicos:', {
-      id: estadoCivil.esCv_Id,
-      descripcion: estadoCivil.esCv_Descripcion,
-      completo: estadoCivil
-    });
-    this.estadoCivilEditando = { ...estadoCivil }; // Hacer copia profunda
-    this.showEditForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-
-  navigateToDetails(estadoCivil: EstadoCivil): void {
-    console.log('Abriendo detalles para:', estadoCivil);
-    this.estadoCivilDetalle = { ...estadoCivil }; // Hacer copia profunda
-    this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
+  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -109,14 +128,14 @@ export class ListComponent {
   guardarEstadoCivil(estadoCivil: EstadoCivil): void {
     console.log('Estado civil guardado exitosamente desde create component:', estadoCivil);
     // Recargar los datos de la tabla
-    this.loadData();
+    this.cargardatos();
     this.cerrarFormulario();
   }
 
   actualizarEstadoCivil(estadoCivil: EstadoCivil): void {
     console.log('Estado civil actualizado exitosamente desde edit component:', estadoCivil);
     // Recargar los datos de la tabla
-    this.loadData();
+    this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
@@ -161,7 +180,7 @@ export class ListComponent {
             }, 3000);
             
 
-            this.loadData();
+            this.cargardatos();
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -217,7 +236,7 @@ export class ListComponent {
     this.mensajeWarning = '';
   }
 
-  private loadData(): void {
+  private cargardatos(): void {
     this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
