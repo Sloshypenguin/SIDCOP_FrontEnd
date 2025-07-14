@@ -20,7 +20,7 @@ export class EditComponent implements OnInit, OnChanges {
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
-  mensajeExito = '';
+  mensajeExito = '';  
   mostrarAlertaError = false;
   mensajeError = '';
   mostrarAlertaWarning = false;
