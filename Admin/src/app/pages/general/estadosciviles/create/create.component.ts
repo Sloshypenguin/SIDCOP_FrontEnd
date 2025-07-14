@@ -31,11 +31,13 @@ export class CreateComponent {
     esCv_Descripcion: '',
     usua_Creacion: 0,
     usua_Modificacion: 0,
-    numero: '',
+    secuencia: 0,
     esCv_FechaCreacion: new Date(),
     esCv_FechaModificacion: new Date(),
     code_Status: 0,
-    message_Status: ''
+    message_Status: '',
+    usuarioCreacion: '',
+    usuarioModificacion: ''
   };
 
   cancelar(): void {
@@ -51,11 +53,13 @@ export class CreateComponent {
       esCv_Descripcion: '',
       usua_Creacion: 0,
       usua_Modificacion: 0,
-      numero: '',
+      secuencia: 0,
       esCv_FechaCreacion: new Date(),
       esCv_FechaModificacion: new Date(),
       code_Status: 0,
-      message_Status: ''
+      message_Status: '',
+      usuarioCreacion: '',
+      usuarioModificacion: ''
     };
     this.onCancel.emit();
   }

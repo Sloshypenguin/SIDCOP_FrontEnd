@@ -8,6 +8,7 @@
     font-size:0.9rem;
     padding: 0 0.5rem;
     height: 2.375rem;
+    min-width: 2.375rem;
     border-width: 0.1875rem !important;
     border-radius: 0.75rem;
 }
@@ -20,7 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 7.5rem;
+  min-width: 7.5rem;
   height: 2.5rem;
   border-radius: 0.4375rem;
   overflow: hidden;
@@ -102,6 +103,7 @@
       
       .btn-icon {
         background-color: rgb(153, 119, 78) !important;
+        transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
@@ -135,6 +137,7 @@
       
       .btn-icon {
         color: rgb(255, 255, 255) !important;
+        transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
@@ -168,6 +171,7 @@
       
       .btn-icon {
         color: rgb(255, 255, 255) !important;
+        transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
@@ -217,7 +221,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 8.4375rem;
+  width: 7.5rem;
+  min-width: 7.5rem;
   height: 2.5rem;
   border-radius: 0.375rem;
   overflow: hidden;
@@ -254,7 +259,7 @@
     
     i {
       color: rgb(187, 190, 202);
-      transform: translateX(-2.8125rem) scale(1.2) rotate(-360deg);
+      transform: translateX(-150%) scale(1.2) rotate(-360deg);
     }
     
     &::before {
@@ -264,6 +269,7 @@
   
   &.icon-only {
     width:8.4375rem;
+    min-width: 8.4375rem;
     padding: 0;
     justify-content: center;
     background-color: rgb(20, 26, 47) !important; 
@@ -342,7 +348,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 14.25rem;
+  min-width: 14.25rem;
   height: 2.9375rem;
   border-radius: 0.625rem;
   overflow: hidden;
@@ -392,7 +398,7 @@
     
     i {
       color: rgb(214, 182, 138);
-      transform: translateX(3.4375rem) scale(1.2);
+      transform: translateX(160%) scale(1.2);
     }
     
     &::before {
@@ -402,6 +408,7 @@
   
   &.icon-only {
     width: 14.25rem;
+    min-width: 14.25rem;
     justify-content: center;
     background-color: rgb(20, 26, 47) !important;
     
@@ -422,7 +429,7 @@
   background-color:rgb(187, 190, 202) !important;
   border-color:rgb(20, 26, 47) !important;
   gap: 0.3125rem;
-  width: 8.4375rem;
+  min-width: 8.4375rem;
   height: 2.5rem;
   border-radius: 0.375rem;
   color:rgb(20, 26, 47) !important; 

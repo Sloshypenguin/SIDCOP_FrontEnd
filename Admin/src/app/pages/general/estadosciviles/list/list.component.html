@@ -75,12 +75,12 @@
                     </button>
                     <ul *ngIf="activeActionRow === i" class="dropdown-menu show mt-2 shadow">
                       <li *ngIf="showEdit">
-                        <button type="button" class="btn btn-secondary w-100 text-start rounded-0" (click)="navigateToEdit(data)">
+                        <button type="button" class="btn btn-secondary " (click)="navigateToEdit(data)">
                           Editar <i class="ri-edit-line"></i>
                         </button>
                       </li>
                       <li *ngIf="showDetails">
-                        <button type="button" class="btn btn-secondary w-100 text-start rounded-0" (click)="navigateToDetails(data)">
+                        <button type="button" class="btn btn-secondary" (click)="navigateToDetails(data)">
                           Detalles <i class="ri-error-warning-fill"></i>
                         </button>
                       </li>
@@ -92,7 +92,7 @@
                     </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.numero}}</span></td>
+                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                 <td>{{data.esCv_Descripcion}}</td>
               </tr>
             </tbody>
