@@ -1,3 +1,16 @@
+/* Utilidad para botones pequeños horizontalmente */
+.btn-minw-5 {
+  min-width: 5rem !important;
+    &:hover {
+    color: rgb(187, 190, 202) !important;ss
+
+    
+    i {
+      color: rgb(187, 190, 202);
+      
+    }
+  }
+}
 /* Botón especial para acciones en el dropdown de acciones */
 .dropdown-action-btn {
   background-color: rgb(187, 190, 202) !important;
@@ -118,6 +131,7 @@
 /* === MODAL DE CONFIRMACIÓN GLOBAL === */
 .custom-modal {
   z-index: 2000;
+  min-width: 80vh;
 }
 .custom-modal-header {
   font-size: 1rem;
