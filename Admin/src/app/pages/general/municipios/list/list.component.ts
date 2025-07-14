@@ -11,7 +11,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
-import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
+import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
 
 @Component({
   selector: 'app-list',
@@ -39,8 +39,8 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  departamentoEditando: Departamento | null = null;
-  departamentoDetalle: Departamento | null = null;
+  municipioEditando: Municipio | null = null;
+  municipioDetalle: Municipio | null = null;
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -67,23 +67,23 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(departamento: Departamento): void {
-    console.log('Abriendo formulario de edición para:', departamento);
+  editar(municipio: Municipio): void {
+    console.log('Abriendo formulario de edición para:', municipio);
     console.log('Datos específicos:', {
-      codigo: departamento.depa_Codigo,
-      descripcion: departamento.depa_Descripcion,
-      completo: departamento
+      codigo: municipio.muni_Codigo,
+      descripcion: municipio.muni_Descripcion,
+      completo: municipio
     });
-    this.departamentoEditando = { ...departamento }; // Hacer copia profunda
+    this.municipioEditando = { ...municipio }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-   detalles(departamento: Departamento): void {
-    console.log('Abriendo detalles para:', departamento);
-    this.departamentoDetalle = { ...departamento }; // Hacer copia profunda
+   detalles(municipio: Municipio): void {
+    console.log('Abriendo detalles para:', municipio);
+    this.municipioDetalle = { ...municipio }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -100,10 +100,10 @@ export class ListComponent {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  departamentoAEliminar: Departamento | null = null;
+  municipioAEliminar: Municipio | null = null;
 
   private cargardatos(): void {
-    this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+    this.http.get<Municipio[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
@@ -111,7 +111,7 @@ export class ListComponent {
     });
   }
 
-  constructor(public table: ReactiveTableService<Departamento>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Municipio>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
   }
 
@@ -129,46 +129,46 @@ export class ListComponent {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.departamentoEditando = null;
+    this.municipioEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.departamentoDetalle = null;
+    this.municipioDetalle = null;
   }
 
-  guardarDepartamento(departamento: Departamento): void {
-    console.log('Departamento guardado exitosamente desde create component:', departamento);
+  guardarMunicipio(municipio: Municipio): void {
+    console.log('municipio guardado exitosamente desde create component:', municipio);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarDepartamento(departamento: Departamento): void {
-    console.log('Departamento actualizado exitosamente desde edit component:', departamento);
+  actualizarMunicipio(municipio: Municipio): void {
+    console.log('municipio actualizado exitosamente desde edit component:', municipio);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(departamento: Departamento): void {
-    console.log('Solicitando confirmación para eliminar:', departamento);
-    this.departamentoAEliminar = departamento;
+  confirmarEliminar(municipio: Municipio): void {
+    console.log('Solicitando confirmación para eliminar:', municipio);
+    this.municipioAEliminar = municipio;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.departamentoAEliminar = null;
+    this.municipioAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.departamentoAEliminar) return;
+    if (!this.municipioAEliminar) return;
     
-    console.log('Eliminando departamento:', this.departamentoAEliminar);
+    console.log('Eliminando municipio:', this.municipioAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Departamentos/Eliminar/${this.departamentoAEliminar.depa_Codigo}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Municipios/Eliminar/${this.municipioAEliminar.muni_Codigo}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -181,8 +181,8 @@ export class ListComponent {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Departamento eliminado exitosamente');
-            this.mensajeExito = `Departamento "${this.departamentoAEliminar!.depa_Descripcion}" eliminado exitosamente`;
+            console.log('Municipio eliminado exitosamente');
+            this.mensajeExito = `Municipio "${this.municipioAEliminar!.muni_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -196,9 +196,9 @@ export class ListComponent {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Departamento está siendo utilizado');
+            console.log('Municipio está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el departamento está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el municipio está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -211,7 +211,7 @@ export class ListComponent {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el departamento.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el municipio.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -225,7 +225,7 @@ export class ListComponent {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el departamento.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el municipio.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;

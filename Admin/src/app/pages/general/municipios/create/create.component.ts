@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
+import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CreateComponent {
    @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<Departamento>();
+  @Output() onSave = new EventEmitter<Municipio>();
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -26,14 +26,14 @@ export class CreateComponent {
 
   constructor(private http: HttpClient) {}
 
-  departamento: Departamento = {
+  municipio: Municipio = {
+    muni_Codigo: '',
+    muni_Descripcion: '',
     depa_Codigo: '',
-    depa_Descripcion: '',
     usua_Creacion: 0,
     usua_Modificacion: 0,
-    secuencia: 0,
-    depa_FechaCreacion: new Date(),
-    depa_FechaModificacion: new Date(),
+    muni_FechaCreacion: new Date(),
+    muni_FechaModificacion: new Date(),
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
@@ -48,14 +48,14 @@ export class CreateComponent {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
-    this.departamento = {
-      depa_Codigo: '',
-      depa_Descripcion: '',
+    this.municipio = {
+      muni_Codigo: '',
+      muni_Descripcion: '',
       usua_Creacion: 0,
       usua_Modificacion: 0,
-      secuencia: 0,
-      depa_FechaCreacion: new Date(),
-      depa_FechaModificacion: new Date(),
+      depa_Codigo: '',
+      muni_FechaCreacion: new Date(),
+      muni_FechaModificacion: new Date(),
       code_Status: 0,
       message_Status: '',
       usuarioCreacion: '',
@@ -76,26 +76,27 @@ export class CreateComponent {
   guardar(): void {
     this.mostrarErrores = true;
     
-    if (this.departamento.depa_Descripcion.trim() && this.departamento.depa_Codigo.trim()) {
+    if (this.municipio.muni_Descripcion.trim() && this.municipio.muni_Codigo.trim()) {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       
-      const departamentoGuardar = {
-        depa_Codigo: this.departamento.depa_Codigo.trim(),
-        depa_Descripcion: this.departamento.depa_Descripcion.trim(),
+      const municipioGuardar = {
+        muni_Codigo: this.municipio.muni_Codigo.trim(),
+        muni_Descripcion: this.municipio.muni_Descripcion.trim(),
+        depa_Codigo: this.municipio.depa_Codigo.trim(),
         usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
-        depa_FechaCreacion: new Date().toISOString(),
+        muni_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 
-        depa_FechaModificacion: new Date().toISOString(),
+        muni_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: "", 
         usuarioModificacion: "" 
       };
 
-      console.log('Guardando departamento:', departamentoGuardar);
+      console.log('Guardando municipio:', municipioGuardar);
       
-      this.http.post<any>(`${environment.apiBaseUrl}/Departamentos/Insertar`, departamentoGuardar, {
+      this.http.post<any>(`${environment.apiBaseUrl}/Municipios/Insertar`, municipioGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -105,23 +106,23 @@ export class CreateComponent {
         next: (response) => {
           if (response.data.code_Status === 1) 
           {
-            console.log('Departamento guardado exitosamente:', response);
-            this.mensajeExito = `Departamento "${this.departamento.depa_Descripcion}" guardado exitosamente`;
+            console.log('Municipio guardado exitosamente:', response);
+            this.mensajeExito = `Municipio "${this.municipio.muni_Descripcion}" guardado exitosamente`;
             this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
             
             // Ocultar la alerta después de 3 segundos
             setTimeout(() => {
               this.mostrarAlertaExito = false;
-              this.onSave.emit(this.departamento);
+              this.onSave.emit(this.municipio);
               this.cancelar();
             }, 3000);
           }
           else 
           {
-            console.error('Error al guardar departamento:' + response.data.message_Status);
+            console.error('Error al guardar municipio:' + response.data.message_Status);
             this.mostrarAlertaError = true;
-            this.mensajeError = 'Error al guardar el departamento, ' + response.data.message_Status;
+            this.mensajeError = 'Error al guardar el municipio, ' + response.data.message_Status;
             this.mostrarAlertaExito = false;
             
             // Ocultar la alerta de error después de 5 segundos
@@ -133,9 +134,9 @@ export class CreateComponent {
           
         },
         error: (error) => {
-          console.error('Error al guardar departamento:', error);
+          console.error('Error al guardar municipio:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el departamento. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al guardar el municipio. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;
           
           // Ocultar la alerta de error después de 5 segundos
