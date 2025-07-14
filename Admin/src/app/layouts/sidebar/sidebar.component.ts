@@ -15,6 +15,7 @@ export class SidebarComponent {
   toggle: any = true;
   menuItems: MenuItem[] = [];
   generalOpen: boolean = false;
+  inventarioOpen: boolean = false;
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
   lastroute: any;
