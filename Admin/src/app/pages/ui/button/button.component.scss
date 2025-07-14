@@ -5,24 +5,25 @@
 .btn{
     display: inline-flex;
     align-items: center;
-    font-size:14.5px;
-    padding: 0 8px;
-    height: 38px;
-    border-width: 3px !important;
-    border-radius: 12px;
+    font-size:0.9rem;
+    padding: 0 0.5rem;
+    height: 2.375rem;
+    min-width: 2.375rem;
+    border-width: 0.1875rem !important;
+    border-radius: 0.75rem;
 }
 
 .btn-primary {
 
   background-color: rgb(187, 190, 202) !important;
-  border: rgb(20, 26, 47) 5px !important;
+  border: rgb(20, 26, 47) 0.3125rem !important;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 40px;
-  border-radius: 7px;
+  min-width: 7.5rem;
+  height: 2.5rem;
+  border-radius: 0.4375rem;
   overflow: hidden;
   color:rgb(20, 26, 47);
   padding: 0;
@@ -32,7 +33,7 @@
   .btn-text {
     z-index: 2;
     flex: 1;
-    padding: 0 4px;
+    padding: 0 0.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
+    width: 2.5rem;
     color:rgb(187, 190, 202);
     transition: transform 0.4s ease;
     border-radius: 0;
@@ -56,7 +57,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 40px;
+    width: 2.5rem;
     height: 100%;
     background-color: rgb(20, 26, 47); 
     z-index: 1;
@@ -102,6 +103,7 @@
       
       .btn-icon {
         background-color: rgb(153, 119, 78) !important;
+        transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
@@ -135,6 +137,7 @@
       
       .btn-icon {
         color: rgb(255, 255, 255) !important;
+        transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
@@ -168,6 +171,7 @@
       
       .btn-icon {
         color: rgb(255, 255, 255) !important;
+        transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
@@ -217,12 +221,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 135px;
-  height: 40px;
-  border-radius: 6px;
+  width: 7.5rem;
+  min-width: 7.5rem;
+  height: 2.5rem;
+  border-radius: 0.375rem;
   overflow: hidden;
   color: rgb(20, 26, 47) !important;
-  padding: 0 12px 0 15px;
+  padding: 0 0.75rem 0 0.9375rem;
   transition: all 0.3s ease;
   cursor: pointer;
   font-weight: 500;
@@ -254,7 +259,7 @@
     
     i {
       color: rgb(187, 190, 202);
-      transform: translateX(-45px) scale(1.2) rotate(-360deg);
+      transform: translateX(-150%) scale(1.2) rotate(-360deg);
     }
     
     &::before {
@@ -263,7 +268,8 @@
   }
   
   &.icon-only {
-    width:135px;
+    width:8.4375rem;
+    min-width: 8.4375rem;
     padding: 0;
     justify-content: center;
     background-color: rgb(20, 26, 47) !important; 
@@ -342,12 +348,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 228px;
-  height: 47px;
-  border-radius: 10px;
+  min-width: 14.25rem;
+  height: 2.9375rem;
+  border-radius: 0.625rem;
   overflow: hidden;
   color: rgb(20, 26, 47) !important;
-  padding: 0 20px; 
+  padding: 0 1.25rem; 
   transition: all 0.3s ease;
   cursor: pointer;
   font-weight: 500;
@@ -356,7 +362,7 @@
   .btn-text {
     z-index: 2;
     transition: opacity 0.3s ease, transform 0.4s ease;
-    margin-left: 15px;
+    margin-left: 0.9375rem;
   }
 
   i {
@@ -368,7 +374,7 @@
     transition: transform 0.4s ease, color 0.4s ease;
     z-index: 2;
     position: absolute;
-    left: 45px;
+    left: 2.8125rem;
   }
   
   &::before {
@@ -392,7 +398,7 @@
     
     i {
       color: rgb(214, 182, 138);
-      transform: translateX(55px) scale(1.2);
+      transform: translateX(160%) scale(1.2);
     }
     
     &::before {
@@ -401,7 +407,8 @@
   }
   
   &.icon-only {
-    width: 228px;
+    width: 14.25rem;
+    min-width: 14.25rem;
     justify-content: center;
     background-color: rgb(20, 26, 47) !important;
     
@@ -421,10 +428,10 @@
 .btn-actions {
   background-color:rgb(187, 190, 202) !important;
   border-color:rgb(20, 26, 47) !important;
-  gap: 5px;
-  width: 135px;
-  height: 40px;
-  border-radius: 6px;
+  gap: 0.3125rem;
+  min-width: 8.4375rem;
+  height: 2.5rem;
+  border-radius: 0.375rem;
   color:rgb(20, 26, 47) !important; 
   overflow: hidden;
   position: relative;
@@ -435,7 +442,7 @@
   i {
     transition: transform 0.7s ease;
     position: absolute;
-    right: 10px;
+    right: 0.625rem;
   }
   
   &:hover i {
@@ -454,7 +461,7 @@
   background-color: rgb(20, 26, 47) !important;
   border-color: rgb(20, 26, 47) !important;
   color: rgb(187, 190, 202) !important;
-  gap: 5px;
+  gap: 0.3125rem;
   overflow: hidden;
   position: relative;
   display: flex;
@@ -463,7 +470,7 @@
   
   i {
     position: absolute;
-    right: 10px;
+    right: 0.625rem;
   }
   
   &:hover i {
@@ -473,11 +480,11 @@
 }
 .btn-secondary-actions {
   background-color:rgb(212, 215, 225) !important;
-  gap: 5px;
-  border-radius: 6px;
+  gap: 0.3125rem;
+  border-radius: 0.375rem;
   color:rgb(20, 26, 47) !important; 
   overflow: hidden;
-  font-size: 13px;
+  font-size: 0.8125rem;
   
  
   i {
