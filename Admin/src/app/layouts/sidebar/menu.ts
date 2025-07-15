@@ -40,14 +40,14 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 33,
-                label: 'MENUITEMS.GENERAL.LIST.MARCAS',
+                label: 'Marcas',
                 link: '/general/marcas',
                 parentId: 3,
                 icon: 'ri-group-line'
             },
             {
                 id: 34,
-                label: 'MENUITEMS.GENERAL.LIST.MARCASVEHICULOS',
+                label: 'Marcas De Vehiculos',
                 link: '/general/marcasvehiculos',
                 parentId: 3,
                 icon: 'ri-group-line'
