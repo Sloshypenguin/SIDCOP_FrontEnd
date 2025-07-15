@@ -7,8 +7,7 @@
       "TEXT": "General",
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
-        "SUCURSALES": "Sucursales",
-        "IMPUESTOS": "Impuestos"
+        "SUCURSALES": "Sucursales"
       }
     },
       "VENTAS": {

@@ -38,10 +38,19 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
-                        {
+            // Puedes añadir más subitems aquí según sea necesario
+        ]
+    },
+    {
+        id: 3,
+        label: 'MENUITEMS.VENTAS.TEXT',
+        icon: 'ri-shopping-cart-2-line',
+        subItems: [
+
+            {
                 id: 33,
                 label: 'MENUITEMS.GENERAL.LIST.IMPUESTOS',
-                link: '/general/impuestos',
+                link: '/ventas/impuestos',
                 parentId: 3,
                 icon: 'ri-group-line'
             },
