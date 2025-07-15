@@ -45,8 +45,29 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+             {
+                id: 33,
+                label: 'MENUITEMS.GENERAL.LIST.DEPARTAMENTOS',
+                link: '/general/departamentos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             {
                 id: 34,
+                label: 'MENUITEMS.GENERAL.LIST.MUNICIPIOS',
+                link: '/general/municipios',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 35,
+                label: 'MENUITEMS.GENERAL.LIST.COLONIAS',
+                link: '/general/colonias', 
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },    
+            {
+                id: 36,
                 label: 'MENUITEMS.GENERAL.LIST.CANALES',
                 link: '/general/canales',
                 parentId: 3,
@@ -63,7 +84,7 @@ export const MENU: MenuItem[] = [
         ]
     },
     {
-        id: 3,
+        id: 4,
         label: 'MENUITEMS.VENTAS.TEXT',
         icon: 'ri-shopping-cart-2-line',
         subItems: [
@@ -72,7 +93,7 @@ export const MENU: MenuItem[] = [
                 id: 33,
                 label: 'MENUITEMS.VENTAS.LIST.IMPUESTOS',
                 link: '/ventas/impuestos',
-                parentId: 3,
+                parentId: 4,
                 icon: 'ri-group-line'
             },
             
@@ -80,7 +101,7 @@ export const MENU: MenuItem[] = [
                 id: 34,
                 label: 'MENUITEMS.VENTAS.LIST.CONFIGURACIONFACTURA',
                 link: '/ventas/configuracion-factura',
-                parentId: 3,
+                parentId: 4,
                 icon: 'ri-group-line'
             },
 
@@ -88,7 +109,7 @@ export const MENU: MenuItem[] = [
                 id: 35,
                 label: 'MENUITEMS.VENTAS.LIST.CAIS',
                 link: '/ventas/CAIs',
-                parentId: 3,
+                parentId: 4,
                 icon: 'ri-group-line'
             },
             // Puedes añadir más subitems aquí según sea necesario
