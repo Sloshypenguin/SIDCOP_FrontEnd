@@ -31,8 +31,15 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
-            {
+             {
                 id: 32,
+                label: 'MENUITEMS.GENERAL.LIST.MODELOS',
+                link: '/general/modelos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 33,
                 label: 'MENUITEMS.GENERAL.LIST.SUCURSALES',
                 link: '/general/sucursales',
                 parentId: 3,
@@ -66,6 +73,14 @@ export const MENU: MenuItem[] = [
                 id: 34,
                 label: 'MENUITEMS.VENTAS.LIST.CONFIGURACIONFACTURA',
                 link: '/ventas/configuracion-factura',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+
+            {
+                id: 35,
+                label: 'MENUITEMS.VENTAS.LIST.CAIS',
+                link: '/ventas/CAIs',
                 parentId: 3,
                 icon: 'ri-group-line'
             },

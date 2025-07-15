@@ -5,12 +5,17 @@ const routes: Routes = [
   {
     path: 'impuestos',
     loadChildren: () =>
-      import('../impuestos/impuestos.module').then(m => m.ImpuestosModule)
+      import('./impuestos/impuestos.module').then(m => m.ImpuestosModule)
   },
   {
     path: 'configuracion-factura',
     loadChildren: () =>
-      import('./configuracionFactura.module').then(m => m.ConfiguracionFacturaModule)
+      import('./configuracionFactura/configuracionFactura.module').then(m => m.ConfiguracionFacturaModule)
+  },
+   {
+    path: 'CAIs',
+    loadChildren: () =>
+      import('./CAIs/CAIs.module').then(m => m.CAIsModule)
   },
 ];
 

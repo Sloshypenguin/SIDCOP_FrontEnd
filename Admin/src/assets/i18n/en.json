@@ -8,6 +8,7 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "MODELOS": "Modelos",
         "CANALES": "Canales"
       }
     },
@@ -15,7 +16,8 @@
       "TEXT": "Ventas",
       "LIST": {
         "IMPUESTOS": "Impuestos",
-        "CONFIGURACIONFACTURA": "Configuracion Factura"
+        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CAIS": "CAIs"
       }
     },
     "DASHBOARD": {
