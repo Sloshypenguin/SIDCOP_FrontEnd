@@ -1,8 +1,8 @@
 <app-breadcrumbs
-  [title]="'Subcategorias'"
+  [title]="'Cargos'"
   [breadcrumbItems]="[
-    { label: 'Inventario' },
-    { label: 'Subcategorias', active: true }
+    { label: 'General' },
+    { label: 'Cargos', active: true }
   ]"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
@@ -27,7 +27,7 @@
 <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarEstadoCivil($event)"></app-create> -->
+      <!-- <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarCargo($event)"></app-create> -->
     </div>
   </div>
 </div>
@@ -36,11 +36,11 @@
 <div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-edit 
-        [estadoCivilData]="estadoCivilEditando" 
+      <app-edit 
+        [cargoData]="cargoEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarEstadoCivil($event)">
-      </app-edit> -->
+        (onSave)="actualizarCargo($event)">
+      </app-edit>
     </div>
   </div>
 </div>
@@ -49,10 +49,10 @@
 <div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-details 
-        [estadoCivilData]="estadoCivilDetalle" 
+      <app-details 
+        [cargoData]="cargoDetalle" 
         (onClose)="cerrarFormularioDetalles()">
-      </app-details> -->
+      </app-details>
     </div>
   </div>
 </div>
@@ -64,12 +64,11 @@
                 <th class="gridjs-th">Acciones</th>
                 <th class="gridjs-th">No.</th>
                 <th class="gridjs-th">Descripción</th>
-                <th class="gridjs-th">Categoría</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" >
+                <td class="position-relative">
                   <div class="dropdown-action-list">
                     <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
                       <span>Acciones</span>
@@ -94,9 +93,8 @@
                     </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.subc_Id}}</span></td>
-                <td>{{data.subc_Descripcion}}</td>
-                <td>{{data.cate}}</td>
+                <td><span class="fw-semibold">{{data.carg_Id}}</span></td>
+                <td>{{data.carg_Descripcion}}</td>
               </tr>
             </tbody>
           </table>
@@ -158,7 +156,7 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la categoria <strong>{{ subcategoriaAEliminar?.subc_Descripcion }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el estado civil <strong>{{ cargoEliminar?.carg_Descripcion }}</strong>?
           </p>
         </div>
       </div>
