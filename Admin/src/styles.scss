@@ -1028,12 +1028,12 @@ bs-dropdown-container {
 }
 
 td.position-relative, .gridjs-td {
-  position: relative;
+  position: absolute !important;
 }
 td.position-relative .dropdown-menu.show,
 .gridjs-td .dropdown-menu.show {
   z-index: 1050 !important;
-  position: absolute !important;
+  position: relative !important;
   left: var(--menu-left, 0) !important;
   top: var(--menu-top, 100%) !important;
   min-width: 150px;
