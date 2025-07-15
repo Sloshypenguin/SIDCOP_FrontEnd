@@ -11,6 +11,12 @@
         "IMPUESTOS": "Impuestos"
       }
     },
+      "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Tableros",
       "LIST": {
