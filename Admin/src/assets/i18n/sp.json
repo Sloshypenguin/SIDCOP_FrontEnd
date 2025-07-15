@@ -20,7 +20,15 @@
         "MUNICIPIOS": "Municipios",
         "COLONIAS": "Colonias",    
         "MODELOS": "Modelos",
-        "CANALES": "Canales"
+        "CANALES": "Canales",
+        "CARGOS": "Cargos"
+      }
+    },
+    "INVENTARIO": {
+      "TEXT": "INVENTARIO",
+      "LIST": {
+        "CATEGORIAS": "Categorias",
+        "SUBCATEGORIAS": "Subcategorias"
       }
     },
       "VENTAS": {
@@ -29,7 +37,9 @@
         "IMPUESTOS": "Impuestos",
         "CONFIGURACIONFACTURA": "Configuración de Factura",
         "CAIS": "CAIS",
-        "VENDEDORES": "Vendedores"
+        "VENDEDORES": "Vendedores",
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
       }
     },
     "LOGISTICA": {

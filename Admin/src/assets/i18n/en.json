@@ -14,6 +14,7 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "PROVEEDORES": "Proveedores",
         "MARCAS": "Marcas",
         "MARCASVEHICULOS": "Marcas Vehiculos",
         "DEPARTAMENTOS": "Departamentos",
@@ -21,7 +22,15 @@
         "COLONIAS": "Colonias",      
         "MODELOS": "Modelos",
         "CANALES": "Canales",
-        "EMPLEADOS": "Empleados"
+        "EMPLEADOS": "Empleados",
+        "CARGOS": "Cargos"
+      }
+    },
+    "INVENTARIO": {
+      "TEXT": "INVENTARIO",
+      "LIST": {
+        "CATEGORIAS": "Categorias",
+        "SUBCATEGORIAS": "Subcategorias"
       }
     },
     "VENTAS": {
@@ -37,6 +46,13 @@
       "TEXT": "Logistica",
       "LIST": {
         "BODEGAS": "Bodegas"
+      }
+    },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
       }
     },
     "DASHBOARD": {

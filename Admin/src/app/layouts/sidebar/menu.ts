@@ -100,10 +100,26 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-building-2-line'
             },
+
+            {
+                id: 38,
+                label: 'MENUITEMS.GENERAL.LIST.PROVEEDORES',
+                link: '/general/proveedores',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+ 
             {
                 id: 35,
                 label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
                 link: '/general/empleados',
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },
+            {
+                id: 37,
+                label: 'MENUITEMS.GENERAL.LIST.CARGOS',
+                link: '/general/cargos',
                 parentId: 3,
                 icon: 'ri-building-2-line'
             },
@@ -162,6 +178,52 @@ export const MENU: MenuItem[] = [
                 parentId: 5,
                 icon: 'ri-truck-line'
             }
+            // Puedes añadir más subitems aquí según sea necesario
+        ]
+    },
+    {
+        id: 6,
+        label: 'MENUITEMS.INVENTARIO.TEXT',
+        icon: 'ri-layout-grid-fill',
+        subItems: [
+            {
+                id: 40,
+                label: 'MENUITEMS.INVENTARIO.LIST.CATEGORIAS',
+                link: '/inventario/categorias',
+                parentId: 6,
+                icon: 'ri-truck-line'
+            },
+            {
+                id: 41,
+                label: 'MENUITEMS.INVENTARIO.LIST.SUBCATEGORIAS',
+                link: '/inventario/subcategorias',
+                parentId: 6,
+                icon: 'ri-truck-line'
+            }
+            // Puedes añadir más subitems aquí según sea necesario
+        ]
+    },
+    {
+        id: 4,
+        label: 'MENUITEMS.VENTAS.TEXT',
+        icon: 'ri-shopping-cart-2-line',
+        subItems: [
+
+            {
+                id: 33,
+                label: 'MENUITEMS.VENTAS.LIST.REGISTROCAIS',
+                link: '/ventas/registroscais',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
+
+              {
+                id: 34,
+                label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
+                link: '/ventas/puntosemision',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }
