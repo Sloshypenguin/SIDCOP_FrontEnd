@@ -17,16 +17,24 @@
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
   </div>
-  
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && estadoCivilDetalle" class="details-content">
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <h4 class="details-title">{{ estadoCivilDetalle.esCv_Descripcion }}</h4>
-      <span>Descripción </span>
+      <div class="details-title">Detalles de Estados Civiles</div>
+      <div class="details-id-row" style="display: flex; gap: 2rem; justify-content: flex-start;">
+        <div class="details-id">
+          <div class="details-id-label">Código</div>
+          <div class="details-id-value">{{ estadoCivilDetalle.esCv_Id || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Descripción</div>
+          <div class="details-id-value">{{ estadoCivilDetalle.esCv_Descripcion || 'N/A' }}</div>
+        </div>
+      </div>
     </div>
-    
+      <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
       <div class="audit-table">
@@ -42,7 +50,7 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ estadoCivilDetalle.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ estadoCivilDetalle.usuarioCreacion}}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date">{{ formatearFecha(estadoCivilDetalle.esCv_FechaCreacion) }}</span>
