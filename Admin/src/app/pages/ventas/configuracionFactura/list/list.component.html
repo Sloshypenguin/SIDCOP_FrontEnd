@@ -1,5 +1,5 @@
 <app-breadcrumbs
-  [title]="'Impuestos'"
+  [title]="'Configuración de Factura'"
   [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
@@ -10,7 +10,7 @@
     <div class="card">
       <div class="card-body">
 
-        <!-- Botones y buscador -->
+        <!-- Botones de acción y buscador -->
         <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <button type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
             <span class="btn-text">Nuevo</span>
@@ -26,35 +26,35 @@
         <div class="collapse" [ngClass]="{ 'show': showCreateForm }">
           <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
             <div class="container-fluid">
-              <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarImpuesto($event)"></app-create>
+              <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarConfiguracionFactura($event)"></app-create>
             </div>
           </div>
-        </div>-->
+        </div> -->
 
         <!-- Formulario de edición
         <div class="collapse" [ngClass]="{ 'show': showEditForm }">
           <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
             <div class="container-fluid">
               <app-edit 
-                [impuestoData]="impuestoEditando" 
+                [configData]="configEditando" 
                 (onCancel)="cerrarFormularioEdicion()" 
-                (onSave)="actualizarImpuesto($event)">
+                (onSave)="actualizarConfiguracionFactura($event)">
               </app-edit>
             </div>
           </div>
         </div> -->
 
-        <!-- Formulario de detalles
+        <!-- Formulario de detalles 
         <div class="collapse" [ngClass]="{ 'show': showDetailsForm }">
           <div class="card card-body mb-3" style="min-height: 400px; padding: 0.5rem;">
             <div class="container-fluid">
               <app-details 
-                [impuestoData]="impuestoDetalle" 
+                [configData]="configDetalle" 
                 (onClose)="cerrarFormularioDetalles()">
               </app-details>
             </div>
           </div>
-        </div> -->
+        </div>-->
 
         <!-- Tabla -->
         <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
@@ -63,8 +63,13 @@
               <tr>
                 <th>Acciones</th>
                 <th>No.</th>
-                <th>Descripción</th>
-                <th>Valor</th>
+                <th>Empresa</th>
+                <th>Dirección</th>
+                <th>RTN</th>
+                <th>Correo</th>
+                <th>Teléfono 1</th>
+                  <th>Teléfono 2</th>
+                   <th>Logo</th>
               </tr>
             </thead>
             <tbody>
@@ -88,9 +93,14 @@
                     </ul>
                   </div>
                 </td>
-              <!--  <td><span class="fw-semibold">{{data.secuencia}}</span></td>-->
-                <td>{{data.Impu_Descripcion}}</td>
-                <td>{{data.Impu_Valor | percent: '1.2-2'}}</td>
+                <td>{{ data.coFa_Id }}</td>
+                <td>{{ data.coFa_NombreEmpresa }}</td>
+                <td>{{ data.coFa_DireccionEmpresa }}</td>
+                <td>{{ data.coFa_RTN }}</td>
+                <td>{{ data.coFa_Correo }}</td>
+                <td>{{ data.coFa_Telefono1 }}</td>
+                <td>{{ data.coFa_Telefono2 }}</td>
+                  <td>{{ data.coFa_Logo }}</td>
               </tr>
             </tbody>
           </table>
@@ -143,7 +153,7 @@
   </div>
 </div>
 
-<!-- Modal de confirmación -->
+<!-- Modal confirmación -->
 <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -154,7 +164,7 @@
       <hr class="custom-modal-divider">
       <div class="modal-body custom-modal-body text-center">
         <p class="mt-2 custom-modal-text">
-          <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar el impuesto <strong>{{ impuestoAEliminar?.Impu_Descripcion }}</strong>?
+          <!-- <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar la configuración de factura <strong>{{ configAEliminar?.CoFa_NombreEmpresa }}</strong>? -->
         </p>
       </div>
       <div class="modal-footer custom-modal-footer">

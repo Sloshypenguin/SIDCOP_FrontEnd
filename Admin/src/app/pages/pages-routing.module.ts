@@ -52,6 +52,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./ventas/ventas.module').then((m) => m.VentasModule),
   },
+  
 ];
 
 @NgModule({ 

@@ -13,7 +13,8 @@
     "VENTAS": {
       "TEXT": "Ventas",
       "LIST": {
-        "IMPUESTOS": "Impuestos"
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuracion Factura"
       }
     },
     "DASHBOARD": {

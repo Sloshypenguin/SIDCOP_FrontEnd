@@ -54,6 +54,14 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+            
+            {
+                id: 34,
+                label: 'MENUITEMS.VENTAS.LIST.CONFIGURACIONFACTURA',
+                link: '/ventas/configuracion-factura',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }
