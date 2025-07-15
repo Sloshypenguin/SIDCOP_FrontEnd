@@ -38,6 +38,7 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+
               {
                 id: 33,
                 label: 'MENUITEMS.GENERAL.LIST.CARGOS',
@@ -50,6 +51,63 @@ export const MENU: MenuItem[] = [
                 label: 'MENUITEMS.GENERAL.LIST.CANALES',
                 link: '/general/canales',
                 parentId: 3,
+                   },
+            {
+                id: 34,
+                label: 'MENUITEMS.GENERAL.LIST.MARCAS',
+                link: '/general/marcas',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 35,
+                label: 'MENUITEMS.GENERAL.LIST.DEPARTAMENTOS',
+                link: '/general/departamentos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 36,
+                label: 'MENUITEMS.GENERAL.LIST.MARCASVEHICULOS',
+                link: '/general/marcasvehiculos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 37,
+                label: 'MENUITEMS.GENERAL.LIST.MUNICIPIOS',
+                link: '/general/municipios',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 38,
+                label: 'MENUITEMS.GENERAL.LIST.COLONIAS',
+                link: '/general/colonias', 
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },    
+            {
+                id: 35,
+                label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
+                link: '/general/empleados',
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },
+
+        ]
+    },
+    {
+        id: 4,
+        label: 'MENUITEMS.VENTAS.TEXT',
+        icon: 'ri-shopping-cart-2-line',
+        subItems: [
+
+            {
+                id: 33,
+                label: 'MENUITEMS.VENTAS.LIST.IMPUESTOS',
+                link: '/ventas/impuestos',
+                parentId: 4,
                 icon: 'ri-group-line'
             },
             // Puedes añadir más subitems aquí según sea necesario

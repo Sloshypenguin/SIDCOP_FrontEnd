@@ -9,7 +9,14 @@
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
         "CARGOS": "Cargos",
-        "CANALES": "Canales"
+        "MARCAS": "Marcas",
+        "MARCASVEHICULOS": "Marcas Vehiculos",
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias",      
+        "MODELOS": "Modelos",
+        "CANALES": "Canales",
+        "EMPLEADOS": "Empleados"
       }
     },
     "DASHBOARD": {
