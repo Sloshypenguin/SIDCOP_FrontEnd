@@ -2,20 +2,20 @@ import { MenuItem } from "./menu.model";
 
 export const MENU: MenuItem[] = [
     {
-        id: 0,
+        id: 1,
         label: 'MENUITEMS.MENU.TEXT',
         isTitle: true
     },
     {
-        id: 0,
+        id: 2,
         label: 'MENUITEMS.DASHBOARD.TEXT',
         icon: 'ph-gauge',
         subItems: [
             {
-                id: 0,
+                id: 5,
                 label: 'MENUITEMS.DASHBOARD.LIST.ECOMMERCE',
                 link: '/',
-                parentId: 0
+                parentId: 2
             },
         ]
     },
@@ -150,6 +150,21 @@ export const MENU: MenuItem[] = [
                 parentId: 4,
                 icon: 'ri-group-line'
             },
+            {
+                id: 37,
+                label: 'MENUITEMS.VENTAS.LIST.REGISTROCAIS',
+                link: '/ventas/registroscais',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
+
+              {
+                id: 38,
+                label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
+                link: '/ventas/puntosemision',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },
@@ -168,6 +183,7 @@ export const MENU: MenuItem[] = [
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },
+    
     {
         id: 6,
         label: 'MENUITEMS.INVENTARIO.TEXT',
@@ -189,5 +205,7 @@ export const MENU: MenuItem[] = [
             }
             // Puedes añadir más subitems aquí según sea necesario
         ]
-    }
+    },
+   
+    
 ]
