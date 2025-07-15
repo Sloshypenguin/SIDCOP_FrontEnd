@@ -5,6 +5,7 @@ import { from, of } from 'rxjs';
 import { AuthenticationService } from '../../core/services/auth.service';
 import { login, loginSuccess, loginFailure, logout, logoutSuccess, Register } from './authentication.actions';
 import { Router } from '@angular/router';
+import { User } from './auth.models';
 
 @Injectable()
 export class AuthenticationEffects {
@@ -29,15 +30,33 @@ export class AuthenticationEffects {
       ofType(login),
       exhaustMap(({ email, password }) =>
         this.AuthenticationService.login(email, password).pipe(
-          map((user) => {
-            if (user.status == 'success') {
-              localStorage.setItem('currentUser', JSON.stringify(user.data));
-              localStorage.setItem('token', user.token);
-              this.router.navigate(['/']);
+          map((response) => {
+            // Si el código de estado es 1 (éxito), crear un objeto User para el store
+            if (response.code_Status === 1) {
+              // Recuperar los datos del usuario del localStorage que ya fueron guardados por el servicio
+              const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+              
+              // Crear un objeto User compatible con el modelo esperado
+              const user: User = {
+                id: userData.usua_Id,
+                username: userData.usua_Usuario,
+                firstName: userData.usua_Nombres,
+                lastName: userData.usua_Apellidos,
+                email: userData.usua_Email,
+                token: localStorage.getItem('token') || ''
+              };
+              
+              // No es necesario navegar aquí ya que lo hacemos en el componente login
+              return loginSuccess({ user });
+            } else {
+              // Si hay un error, lanzar un error para que sea capturado por el catchError
+              throw new Error(response.message_Status || 'Error de autenticación');
             }
-            return loginSuccess({ user });
           }),
-          catchError((error) => of(loginFailure({ error })))
+          catchError((error) => {
+            const errorMsg = error.message || 'Error desconocido';
+            return of(loginFailure({ error: errorMsg }));
+          })
         )
       )
     )
