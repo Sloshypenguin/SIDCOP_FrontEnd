@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Cargo } from 'src/app/Modelos/general/Cargo.Model';
+import { Cargos } from 'src/app/Modelos/general/Cargo.Model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,11 +14,11 @@ import { environment } from 'src/environments/environment';
 })
 
 export class EditComponent implements OnChanges {
-  @Input() cargoData: Cargo | null = null;
+  @Input() cargoData: Cargos | null = null;
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<Cargo>();
+  @Output() onSave = new EventEmitter<Cargos>();
 
- cargo: Cargo = {
+ cargo: Cargos = {
     Carg_Id: 0,
     Carg_Descripcion: '',
     Usua_Creacion: 0,

@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Cargo } from 'src/app/Modelos/general/Cargo.Model';
+import { Cargos } from 'src/app/Modelos/general/Cargo.Model';
 
 @Component({
   selector: 'app-details',
@@ -10,10 +10,10 @@ import { Cargo } from 'src/app/Modelos/general/Cargo.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() cargoData: Cargo | null = null;
+  @Input() cargoData: Cargos | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  cargoDetalle: Cargo | null = null;
+  cargoDetalle: Cargos | null = null;
   cargando = false;
 
   mostrarAlertaError = false;
@@ -26,7 +26,7 @@ export class DetailsComponent implements OnChanges {
   }
 
   // Simulación de carga
-  cargarDetallesSimulado(data: Cargo): void {
+  cargarDetallesSimulado(data: Cargos): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 

@@ -1,4 +1,4 @@
-export class Cargo{
+export class Cargos{
   Carg_Id: number = 0;
   Carg_Descripcion: string = '';
   Usua_Creacion: number = 0;
@@ -11,7 +11,7 @@ export class Cargo{
   code_Status: number = 0;
   message_Status: string ='';
 
-  constructor(init?: Partial<Cargo>) {
+  constructor(init?: Partial<Cargos>) {
     Object.assign(this, init);
   }
 }

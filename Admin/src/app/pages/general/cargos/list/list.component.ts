@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Cargo } from 'src/app/Modelos/general/Cargo.Model';
+import { Cargos } from 'src/app/Modelos/general/Cargo.Model';
 // import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
@@ -30,9 +30,25 @@ import { DetailsComponent } from '../details/details.component';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
+
 export class ListComponent {
+
+    // bread crumb items
+  breadCrumbItems!: Array<{}>;
+
+  ngOnInit(): void {
+    /**
+     * BreadCrumb
+     */
+    this.breadCrumbItems = [
+      { label: 'General' },
+      { label: 'Cargos', active: true }
+    ];
+  }
+
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
+    
     const target = event.target as HTMLElement;
     // Busca el dropdown abierto
     const dropdowns = document.querySelectorAll('.dropdown-action-list');
@@ -55,7 +71,7 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(cargo: Cargo): void {
+  editar(cargo: Cargos): void {
     console.log('Abriendo formulario de edición para:', cargo);
     console.log('Datos específicos:', {
       id: cargo.Carg_Id,
@@ -69,7 +85,7 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(cargo: Cargo): void {
+  detalles(cargo: Cargos): void {
     console.log('Abriendo detalles para:', cargo);
     this.cargoDetalle = { ...cargo }; // Hacer copia profunda
     this.showDetailsForm = true;
@@ -84,8 +100,8 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  cargoEditando: Cargo | null = null;
-  cargoDetalle: Cargo | null = null;
+  cargoEditando: Cargos | null = null;
+  cargoDetalle: Cargos | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -97,11 +113,13 @@ export class ListComponent {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  cargoEliminar: Cargo | null = null;
+  cargoEliminar: Cargos | null = null;
 
-  constructor(public table: ReactiveTableService<Cargo>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Cargos>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
   }
+
+  
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
@@ -125,21 +143,21 @@ export class ListComponent {
     this.cargoDetalle = null;
   }
 
-  guardarCargo(cargo: Cargo): void {
+  guardarCargo(cargo: Cargos): void {
     console.log('Cargo guardado exitosamente desde create component:', cargo);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarCargo(cargo: Cargo): void {
+  actualizarCargo(cargo: Cargos): void {
     console.log('Cargo actualizado exitosamente desde edit component:', cargo);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(cargo: Cargo): void {
+  confirmarEliminar(cargo: Cargos): void {
     console.log('Solicitando confirmación para eliminar:', cargo);
     this.cargoEliminar = cargo;
     this.mostrarConfirmacionEliminar = true;
@@ -237,11 +255,11 @@ export class ListComponent {
   }
 
   private cargardatos(): void {
-    this.http.get<Cargo[]>(`${environment.apiBaseUrl}/cargos/Listar`, {
+    this.http.get<Cargos[]>(`${environment.apiBaseUrl}/Cargo/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
       this.table.setData(data);
     });
   }
-}
+} 
