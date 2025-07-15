@@ -273,7 +273,8 @@ export class ListComponent implements OnInit {
         // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
         let modulo = null;
         if (Array.isArray(permisos)) {
-          modulo = permisos.find((m: any) => m.Pantalla && m.Pantalla.toLowerCase().includes('estados civiles'));
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
           modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
