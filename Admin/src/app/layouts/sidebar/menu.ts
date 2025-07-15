@@ -52,6 +52,13 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-building-2-line'
             },
+            {
+                id: 35,
+                label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
+                link: '/general/empleados',
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },
 
         ]
     },
