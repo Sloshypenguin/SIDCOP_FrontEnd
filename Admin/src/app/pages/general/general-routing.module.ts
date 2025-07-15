@@ -8,6 +8,11 @@ const routes: Routes = [
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
   },
   {
+    path: 'empleados',
+    loadChildren: () =>
+      import('./empleados/empleados.module').then(m => m.EmpleadosModule)
+  },
+  {
     path: 'marcas',
     loadChildren: () =>
       import('./Marcas/marcas.module').then(m => m.Marcasmodule)
