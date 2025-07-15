@@ -7,7 +7,14 @@
       "TEXT": "General",
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
-        "SUCURSALES": "Sucursales"
+        "SUCURSALES": "Sucursales",
+        "IMPUESTOS": "Impuestos"
+      }
+    },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos"
       }
     },
     "DASHBOARD": {

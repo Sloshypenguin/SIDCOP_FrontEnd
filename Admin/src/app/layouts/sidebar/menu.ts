@@ -38,6 +38,13 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+                        {
+                id: 33,
+                label: 'MENUITEMS.GENERAL.LIST.IMPUESTOS',
+                link: '/ventas/impuestos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }
