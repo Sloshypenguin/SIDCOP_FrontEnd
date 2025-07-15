@@ -23,7 +23,7 @@ import { CreateComponent } from '../create/create.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    CreateComponent,
+    //CreateComponent,
   //  EditComponent,
    // DetailsComponent
   ],
