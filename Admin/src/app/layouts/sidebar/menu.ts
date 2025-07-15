@@ -49,7 +49,7 @@ export const MENU: MenuItem[] = [
 
             {
                 id: 33,
-                label: 'MENUITEMS.GENERAL.LIST.IMPUESTOS',
+                label: 'MENUITEMS.VENTAS.LIST.IMPUESTOS',
                 link: '/ventas/impuestos',
                 parentId: 3,
                 icon: 'ri-group-line'
