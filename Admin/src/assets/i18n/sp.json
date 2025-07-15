@@ -22,7 +22,14 @@
       "LIST": {
         "IMPUESTOS": "Impuestos",
         "CONFIGURACIONFACTURA": "Configuración de Factura",
-        "CAIS": "CAIS"
+        "CAIS": "CAIS",
+        "VENDEDORES": "Vendedores"
+      }
+    },
+    "LOGISTICA": {
+      "TEXT": "Logistica",
+      "LIST": {
+        "BODEGAS": "Bodegas"
       }
     },
     "DASHBOARD": {

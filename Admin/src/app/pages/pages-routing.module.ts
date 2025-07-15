@@ -47,6 +47,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./general/general.module').then((m) => m.GeneralModule),
   },
+  {
+    path: 'logistica',
+    loadChildren: () =>
+      import('./logistica/logistica.module').then((m) => m.LogisticaModule),
+  },
     {
     path: 'ventas',
     loadChildren: () =>
