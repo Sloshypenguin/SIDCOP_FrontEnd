@@ -1,0 +1,24 @@
+export class Subcategoria{
+  subc_Id: number = 0;
+  subc_Descripcion: string = '';
+  cate_Id: number = 0;
+  usua_Creacion: number = 0;
+  subc_FechaCreacion: Date = new Date();
+  usua_Modificacion?: number;
+  subc_FechaModificacion?: Date;
+  subc_Estado: boolean = false;
+  
+  cate: String = '';
+  usuarioCreacion: string = '';
+  usuarioModificacion: string = '';
+  code_Status: number = 0;
+  message_Status: string ='';  
+    
+
+  constructor(init?: Partial<Subcategoria>) {
+    Object.assign(this, init);
+  }
+}
+
+
+    

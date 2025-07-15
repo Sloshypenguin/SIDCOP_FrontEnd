@@ -6,7 +6,24 @@ const routes: Routes = [
     path: 'estadosciviles',
     loadChildren: () =>
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
+  
   },
+  {
+    path: 'empleados',
+    loadChildren: () =>
+      import('./empleados/empleados.module').then(m => m.EmpleadosModule)
+  },
+  {
+    path: 'marcas',
+    loadChildren: () =>
+      import('./Marcas/marcas.module').then(m => m.Marcasmodule)
+  },
+  {
+    path: 'marcasvehiculos',
+    loadChildren: () =>
+      import('./MarcasVehiculos/marcasvehiculos.module').then(m => m.MarcasVehiculosmodule)
+  },
+  
     {
     path: 'departamentos',
     loadChildren: () =>
@@ -25,7 +42,12 @@ const routes: Routes = [
     {
     path: 'sucursales',
     loadChildren: () =>
-      import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
+    import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
+  },
+   {
+    path: 'proveedores',
+    loadChildren: () =>
+      import('./proveedores/proveedores.module').then(m => m.ProveedoresModule)
   },
     {
     path: 'modelos',
@@ -37,7 +59,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./canales/canales.module').then(m => m.CanalesModule)
   },
-  
+  {
+    path: 'cargos',
+    loadChildren: () =>
+      import('./cargos/cargos.module').then(m => m.CargosModule)
+  },  
 
 ];
 

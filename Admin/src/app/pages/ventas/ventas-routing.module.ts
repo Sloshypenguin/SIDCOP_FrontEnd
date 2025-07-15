@@ -3,6 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: 'registroscais',
+    loadChildren: () =>
+      import('./registroscais/registroscais.module').then(m => m.RegistroCAIModule)
+  },
+    {
+    path: 'puntosemision',
+    loadChildren: () =>
+      import('./puntosemision/puntosemision.module').then(m => m.PuntoEmisionModule)
+  },
+
+  {
     path: 'impuestos',
     loadChildren: () =>
       import('./impuestos/impuestos.module').then(m => m.ImpuestosModule)

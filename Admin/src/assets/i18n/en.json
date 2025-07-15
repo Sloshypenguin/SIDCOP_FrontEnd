@@ -8,11 +8,23 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "PROVEEDORES": "Proveedores",
+        "MARCAS": "Marcas",
+        "MARCASVEHICULOS": "Marcas Vehiculos",
         "DEPARTAMENTOS": "Departamentos",
         "MUNICIPIOS": "Municipios",
         "COLONIAS": "Colonias",      
         "MODELOS": "Modelos",
-        "CANALES": "Canales"
+        "CANALES": "Canales",
+        "EMPLEADOS": "Empleados",
+        "CARGOS": "Cargos"
+      }
+    },
+    "INVENTARIO": {
+      "TEXT": "INVENTARIO",
+      "LIST": {
+        "CATEGORIAS": "Categorias",
+        "SUBCATEGORIAS": "Subcategorias"
       }
     },
     "VENTAS": {
