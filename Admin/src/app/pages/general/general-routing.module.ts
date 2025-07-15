@@ -17,6 +17,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modelos/modelos.module').then(m => m.ModelosModule)
   },
+  {
+    path: 'canales',
+    loadChildren: () =>
+      import('./canales/canales.module').then(m => m.CanalesModule)
+  },
+  
+
 ];
 
 @NgModule({

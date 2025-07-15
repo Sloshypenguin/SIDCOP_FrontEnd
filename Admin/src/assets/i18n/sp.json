@@ -8,7 +8,8 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
-        "MODELOS": "Modelos"
+        "MODELOS": "Modelos",
+        "CANALES": "Canales"
       }
     },
       "VENTAS": {

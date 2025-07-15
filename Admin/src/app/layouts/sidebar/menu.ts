@@ -45,7 +45,14 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
-            // Puedes añadir más subitems aquí según sea necesario
+            {
+                id: 34,
+                label: 'MENUITEMS.GENERAL.LIST.CANALES',
+                link: '/general/canales',
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },
+
         ]
     },
     {
