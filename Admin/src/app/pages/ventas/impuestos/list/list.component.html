@@ -62,8 +62,7 @@
             <thead>
               <tr>
                 <th>Acciones</th>
-                <th>No.</th>
-                <th>Descripción</th>
+             <th>Descripción</th>
                 <th>Valor</th>
               </tr>
             </thead>
@@ -89,8 +88,8 @@
                   </div>
                 </td>
               <!--  <td><span class="fw-semibold">{{data.secuencia}}</span></td>-->
-                <td>{{data.Impu_Descripcion}}</td>
-                <td>{{data.Impu_Valor | percent: '1.2-2'}}</td>
+                <td>{{data.impu_Descripcion}}</td>
+                <td>{{data.impu_Valor | percent: '1.2-2'}}</td>
               </tr>
             </tbody>
           </table>
@@ -154,7 +153,7 @@
       <hr class="custom-modal-divider">
       <div class="modal-body custom-modal-body text-center">
         <p class="mt-2 custom-modal-text">
-          <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar el impuesto <strong>{{ impuestoAEliminar?.Impu_Descripcion }}</strong>?
+          <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar el impuesto <strong>{{ impuestoAEliminar?.impu_Descripcion }}</strong>?
         </p>
       </div>
       <div class="modal-footer custom-modal-footer">
@@ -170,4 +169,3 @@
 </div>
 
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
-s

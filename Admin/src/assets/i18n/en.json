@@ -8,13 +8,40 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
-        "CANALES": "Canales"
+        "PROVEEDORES": "Proveedores",
+        "MARCAS": "Marcas",
+        "MARCASVEHICULOS": "Marcas Vehiculos",
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias",      
+        "MODELOS": "Modelos",
+        "CANALES": "Canales",
+        "EMPLEADOS": "Empleados",
+        "CARGOS": "Cargos"
+      }
+    },
+    "INVENTARIO": {
+      "TEXT": "INVENTARIO",
+      "LIST": {
+        "CATEGORIAS": "Categorias",
+        "SUBCATEGORIAS": "Subcategorias"
       }
     },
     "VENTAS": {
       "TEXT": "Ventas",
       "LIST": {
-        "IMPUESTOS": "Impuestos"
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CAIS": "CAIs",
+        "VENDEDORES": "Vendedores",
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
+      }
+    },
+    "LOGISTICA": {
+      "TEXT": "Logistica",
+      "LIST": {
+        "BODEGAS": "Bodegas"
       }
     },
     "DASHBOARD": {
