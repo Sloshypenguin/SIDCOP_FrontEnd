@@ -1,12 +1,12 @@
 export class Impuestos {
-  Impu_Id: number = 0;
-  Impu_Descripcion: string = '';
-  Impu_Valor: number = 0;
-  Usua_Creacion: number = 0;
-  Impu_FechaCreacion: Date = new Date();
-  Usua_Modificacion?: number;
-  Impu_FechaModificacion?: Date;
-  Impu_Estado: boolean = true;
+  impu_Id: number = 0;
+  impu_Descripcion: string = '';
+  impu_Valor: number = 0;
+  usua_Creacion: number = 0;
+  impu_FechaCreacion: Date = new Date();
+  usua_Modificacion?: number;
+  impu_FechaModificacion?: Date;
+  impu_Estado: boolean = true;
 
   constructor(init?: Partial<Impuestos>) {
     Object.assign(this, init);

@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    component: undefined, // Replace 'undefined' with the correct parent component if needed
+    component: undefined, 
     data: {
       title: 'Impuestos',
     },
