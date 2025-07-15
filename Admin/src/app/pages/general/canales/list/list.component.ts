@@ -164,10 +164,11 @@ export class ListComponent implements OnInit {
   // =============================
   private cargarDatos(): void {
     this.http.get<any[]>(
-      `${environment.apiBaseUrl}/Canales/Listar`,
+      `${environment.apiBaseUrl}/Canal/Listar`,
       {
         headers: { 'x-api-key': environment.apiKey }
       }
+
     ).subscribe(data => {
       // Mapeo si es necesario, dependiendo de cómo venga la respuesta
       this.table.setData(data);

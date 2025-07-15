@@ -62,7 +62,6 @@
                 <th class="gridjs-th">ID</th>
                 <th class="gridjs-th">Descripción</th>
                 <th class="gridjs-th">Observaciones</th>
-                <th class="gridjs-th">Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -95,11 +94,6 @@
                 <td><span class="fw-semibold">{{ data.cana_Id }}</span></td>
                 <td>{{ data.cana_Descripcion }}</td>
                 <td>{{ data.cana_Observaciones }}</td>
-                <td>
-                  <span [ngClass]="{'text-success': data.cana_Estado, 'text-danger': !data.cana_Estado}">
-                    {{ data.cana_Estado ? 'Activo' : 'Inactivo' }}
-                  </span>
-                </td>
               </tr>
             </tbody>
           </table>

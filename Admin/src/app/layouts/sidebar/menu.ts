@@ -39,9 +39,9 @@ export const MENU: MenuItem[] = [
                 icon: 'ri-group-line'
             },
             {
-                id: 33,
+                id: 34,
                 label: 'MENUITEMS.GENERAL.LIST.CANALES',
-                link: '/general/Canales',
+                link: '/general/canales',
                 parentId: 3,
                 icon: 'ri-building-2-line'
             },
