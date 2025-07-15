@@ -10,6 +10,12 @@
         "SUCURSALES": "Sucursales"
       }
     },
+    "LOGISTICA": {
+      "TEXT": "Logistica",
+      "LIST": {
+        "BODEGAS": "Bodegas"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {

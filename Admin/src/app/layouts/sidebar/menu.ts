@@ -47,7 +47,7 @@ export const MENU: MenuItem[] = [
         icon: 'ri-apps-2-line',
         subItems: [
             {
-                id: 33,
+                id: 34,
                 label: 'MENUITEMS.LOGISTICA.LIST.BODEGAS',
                 link: '/logistica/bodegas',
                 parentId: 4,
