@@ -12,7 +12,10 @@
     <div class="card-body">
         <div class="row align-items-center g-2">
             <div class="col-lg-3 me-auto">
-                <h6 class="card-title mb-0">Instructors List <span class="badge bg-primary ms-1 align-baseline">1452</span></h6>
+                <button type="button" class="btn btn-primary me-2 mb-2">
+                    <span class="btn-text">Nuevo</span>
+                    <span class="btn-icon"><i class="ri-add-line"></i></span>
+                </button>
             </div><!--end col-->
             <div class="col-lg-2">
                 <div class="search-box">
@@ -20,13 +23,7 @@
                     <i class="ri-search-line search-icon"></i>
                 </div>
             </div><!--end col-->
-            <div class="col-lg-auto">
-                <div class="hstack gap-2">
-                    <a href="javascript:void(0);"  class="btn btn-secondary"><i class="bi bi-plus-circle align-baseline me-1"></i> Add Instructor</a>
-                    <a routerLink="/learning/instructors-grid" class="btn btn-subtle-primary active btn-icon ms-auto"><i class="bi bi-grid"></i></a>
-                    <a routerLink="/learning/instructors-list" class="btn btn-subtle-primary btn-icon"><i class="bi bi-list-task"></i></a>
-                </div>
-            </div><!--end col-->
+            
         </div>
     </div>
 </div><!--end card-->
@@ -34,29 +31,98 @@
 <div class="row row-cols-xxl-5 g-4">
     @for (empleado of instructors; track empleado.empl_Id) {
     <div class="col">
-        <div class="card border-0 h-100 shadow-sm" style="background:#fff; color:#141A2F; border-radius:18px;">
-            <div class="card-body p-0">
-                <div class="d-flex flex-column align-items-center py-4">
-                    <div class="position-relative mb-3">
-                        <img src="assets/images/machete.jpg" alt="Avatar por defecto" class="avatar-lg rounded-circle border border-3" style="border-color:#D6B68A; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
-                    </div>
-                    <h5 class="fw-semibold mb-1 text-center" style="color:#141A2F;">{{empleado.empl_Nombres}} {{empleado.empl_Apellidos}}</h5>
-                    <span class="badge mb-2" style="background:#D6B68A; color:#141A2F; font-weight:500;">Código: {{empleado.empl_Codigo}}</span>
-                    <div class="d-flex flex-column align-items-center gap-1 mb-2">
-                        <a href="mailto:{{empleado.empl_Correo}}" class="text-reset text-decoration-none" style="color:#141A2F;"><i class="bi bi-envelope me-1" style="color:#D6B68A;"></i> {{empleado.empl_Correo}}</a>
-                        <a href="tel:{{empleado.empl_Telefono}}" class="text-reset text-decoration-none" style="color:#141A2F;"><i class="bi bi-telephone me-1" style="color:#D6B68A;"></i> {{empleado.empl_Telefono}}</a>
-                    </div>
-                    <div class="small text-center mb-2" style="color:#D6B68A;">
-                        <i class="bi bi-geo-alt me-1"></i> {{empleado.empl_DireccionExacta}}
-                    </div>
-                    <div class="d-flex justify-content-center gap-2 mt-2">
-                        <button class="btn btn-sm px-3" style="background:#D6B68A; color:#141A2F; border-radius:8px; border:none; font-weight:500;" (click)="editList($index)"><i class="bi bi-pencil-square me-1"></i> Editar</button>
-                        <button class="btn btn-sm px-3" style="background:transparent; color:#D6B68A; border:1px solid #D6B68A; border-radius:8px; font-weight:500;" (click)="removeItem(empleado.empl_Id)"><i class="bi bi-trash3 me-1"></i> Eliminar</button>
-                    </div>
+        <div class="card card-empleado position-relative h-100">
+
+            <!-- Header claro con detalles decorativos -->
+            <div class="card-header p-0 position-relative" style="height: 90px; background: #F8F9FA; border-top-left-radius: 1rem; border-top-right-radius: 1rem; display: flex; justify-content: center; align-items: flex-end;">
+                <!-- Línea dorada inferior -->
+                <div style="position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #D5B58A; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;"></div>
+                <!-- Patrón de puntos dorados en la esquina superior derecha -->
+                <div style="position: absolute; top: 10px; right: 18px; z-index:1;">
+                  <svg width="32" height="12" viewBox="0 0 32 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="4" cy="6" r="2" fill="#D5B58A" fill-opacity="0.5" />
+                    <circle cx="12" cy="6" r="2" fill="#D5B58A" fill-opacity="0.3" />
+                    <circle cx="20" cy="6" r="2" fill="#D5B58A" fill-opacity="0.2" />
+                    <circle cx="28" cy="6" r="2" fill="#D5B58A" fill-opacity="0.15" />
+                  </svg>
+                </div>
+                <div style="background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #D5B58A; margin-bottom: -35px; z-index:2;">
+                    <img
+                      src="assets/images/users/48/avatar-8.jpg"
+                      class="avatar-img rounded-circle"
+                      alt="Empleado"
+                      style="width: 64px; height: 64px; object-fit: cover; display: block;"
+                    />
                 </div>
             </div>
-        </div><!--end card-->
-    </div><!--end col-->
+
+            <!-- Body -->
+            <!-- Body -->
+            <div class="card-body pt-5 mt-2 px-3 text-center">
+                <span class="badge bg-light text-dark fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem;">
+                    Código: {{ empleado.empl_Codigo }}
+                </span>
+                
+                <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.125rem;">
+                    {{ empleado.nombreCompleto }}
+                </h5>
+
+                <div class="d-flex justify-content-center align-items-center gap-2 text-muted mb-2" style="font-size: 0.875rem;">
+                    <i class="bi bi-person-badge" style="color: #141A2F;"></i>
+                    <span>Empleado general</span>
+                </div>
+
+                <!-- Info -->
+                <ul class="list-unstyled mb-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
+                    <li class="d-flex justify-content-center align-items-center mb-2" style="gap: 8px;">
+                        <i class="bi bi-envelope" style="color: #141A2F;"></i>
+                        <span class="text-muted text-break">{{ empleado.empl_Correo }}</span>
+                    </li>
+                    <li class="d-flex justify-content-center align-items-center mb-2" style="gap: 8px;">
+                        <i class="bi bi-telephone" style="color: #141A2F;"></i>
+                        <span class="text-muted">{{ empleado.empl_Telefono }}</span>
+                    </li>
+                    <li class="d-flex justify-content-center align-items-center" style="gap: 8px;">
+                        <i class="bi bi-geo-alt" style="color: #141A2F;"></i>
+                        <span class="text-muted text-break" style="white-space: normal; word-break: break-word;">
+                            {{ empleado.empl_DireccionExacta }}
+                        </span>
+                    </li>
+                </ul>
+
+                <!-- Acciones -->
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                  <div class="dropdown-action-list" (document:click)="onDocumentClick($event, empleado.empl_Id)">
+                    <button type="button" class="dropdown-toggle" (click)="onActionMenuClick(empleado.empl_Id)">
+                      <span>Acciones</span>
+                      <i class="ri-settings-3-line"></i>
+                    </button>
+                    <ul class="dropdown-menu" [class.show]="activeActionRow === empleado.empl_Id">
+                      <li *ngIf="showEdit">
+                        <button type="button" class="dropdown-action-btn" (click)="editList(empleado.empl_Id); activeActionRow = null;">
+                          Editar <i class="ri-edit-line"></i>
+                        </button>
+                      </li>
+                      <li *ngIf="showDelete">
+                        <button type="button" class="dropdown-action-btn" (click)="removeItem(empleado.empl_Id); activeActionRow = null;">
+                          Eliminar <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </li>
+                      <li *ngIf="showDetails">
+                        <button type="button" class="dropdown-action-btn" >
+                          Detalles <i class="ri-error-warning-fill"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                </div>
+
+
+        </div>
+    </div>
+
+
     }
 </div><!--end row-->
 <div class="noresult"  style="display: none;">

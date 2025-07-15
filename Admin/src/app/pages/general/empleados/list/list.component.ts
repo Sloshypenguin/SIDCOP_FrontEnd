@@ -1,3 +1,4 @@
+  
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
@@ -42,6 +43,30 @@ import { environment } from 'src/environments/environment';
 // Grid Component
 
 export class ListComponent {
+  activeActionRow: number | null = null;
+  showEdit = true;
+  showDetails = true;
+  showDelete = true;
+  showCreateForm = false; // Control del collapse
+  showEditForm = false; // Control del collapse de edición
+  showDetailsForm = false; // Control del collapse de detalles
+
+  onDocumentClick(event: MouseEvent, rowIndex: number) {
+    const target = event.target as HTMLElement;
+    // Busca el dropdown abierto
+    const dropdowns = document.querySelectorAll('.dropdown-action-list');
+    let clickedInside = false;
+    dropdowns.forEach((dropdown, idx) => {
+      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
+        clickedInside = true;
+      }
+    });
+    if (!clickedInside && this.activeActionRow === rowIndex) {
+      this.activeActionRow = null;
+    }
+  }
+
+
   term: any;
   // bread crumb items
   breadCrumbItems!: Array<{}>;
@@ -178,5 +203,10 @@ export class ListComponent {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     this.instructors = this.instructorGrid.slice(startItem, endItem);
+  }
+
+  // Abre/cierra el menú de acciones para la fila seleccionada
+  onActionMenuClick(rowIndex: number) {
+    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 }
