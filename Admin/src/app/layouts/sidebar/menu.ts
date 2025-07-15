@@ -94,6 +94,13 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-building-2-line'
             },
+            {
+                id: 37,
+                label: 'MENUITEMS.GENERAL.LIST.CARGOS',
+                link: '/general/cargos',
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },
 
         ]
     },
