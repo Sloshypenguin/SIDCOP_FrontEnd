@@ -58,8 +58,12 @@ const routes: Routes = [
     path: 'canales',
     loadChildren: () =>
       import('./canales/canales.module').then(m => m.CanalesModule)
-  }
-  
+  },
+  {
+    path: 'cargos',
+    loadChildren: () =>
+      import('./cargos/cargos.module').then(m => m.CargosModule)
+  },  
 
 ];
 
