@@ -87,6 +87,15 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-building-2-line'
             },
+
+            {
+                id: 38,
+                label: 'MENUITEMS.GENERAL.LIST.PROVEEDORES',
+                link: '/general/proveedores',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+ 
             {
                 id: 35,
                 label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
