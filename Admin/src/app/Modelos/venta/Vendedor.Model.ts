@@ -19,6 +19,13 @@ export class Vendedor{
   vend_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
   secuencia?: number;
+  sucu_Descripcion?: string = '';
+  colo_Descripcion?: string = '';
+  sucu_DireccionExacta?: string = '';
+  muni_Codigo?: string = '';
+  muni_Descripcion?: string = '';
+  depa_Codigo?: string = '';
+  depa_Descripcion?: string = '';
   vend_FechaModificacion?: Date;
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';

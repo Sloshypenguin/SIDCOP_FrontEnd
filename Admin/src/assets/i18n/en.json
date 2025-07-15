@@ -33,20 +33,15 @@
         "IMPUESTOS": "Impuestos",
         "CONFIGURACIONFACTURA": "Configuracion Factura",
         "CAIS": "CAIs",
-        "VENDEDORES": "Vendedores"
+        "VENDEDORES": "Vendedores",
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
       }
     },
     "LOGISTICA": {
       "TEXT": "Logistica",
       "LIST": {
         "BODEGAS": "Bodegas"
-      }
-    },
-    "VENTAS": {
-      "TEXT": "Ventas",
-      "LIST": {
-        "REGISTROCAIS": "Registros CAI",
-        "PUNTOSEMISION": "Puntos Emision"
       }
     },
     "DASHBOARD": {
