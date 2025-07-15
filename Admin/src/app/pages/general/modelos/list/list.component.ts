@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
+import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
 
 @Component({
   selector: 'app-list',
@@ -28,7 +28,7 @@ export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
 
   constructor(
-    public table: ReactiveTableService<Sucursales>,
+    public table: ReactiveTableService<Modelo>,
     private http: HttpClient
   ) {
     this.cargarDatos();
@@ -37,7 +37,7 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'General' },
-      { label: 'Sucursales', active: true }
+      { label: 'Modelos', active: true }
     ];
   }
 
@@ -58,8 +58,8 @@ export class ListComponent implements OnInit {
   // =============================
   //  Datos de edición y detalle
   // =============================
-  SucursalesEditando: Sucursales | null = null;
-  SucursalesDetalle: Sucursales | null = null;
+  modeloEditando: Modelo | null = null;
+  modeloDetalle: Modelo | null = null;
 
   // =============================
   //  Row activo para menú
@@ -75,25 +75,25 @@ export class ListComponent implements OnInit {
   // =============================
 
   crear(): void {
-    console.log('Crear Sucursales');
+    console.log('Crear modelo');
     this.showCreateForm = true;
     this.showEditForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  editar(Sucursales: Sucursales): void {
-    console.log('Editar Sucursales:', Sucursales);
-    this.SucursalesEditando = { ...Sucursales };
+  editar(modelo: Modelo): void {
+    console.log('Editar modelo:', modelo);
+    this.modeloEditando = { ...modelo };
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  detalles(Sucursales: Sucursales): void {
-    console.log('Detalles del Sucursales:', Sucursales);
-    this.SucursalesDetalle = { ...Sucursales };
+  detalles(modelo: Modelo): void {
+    console.log('Detalles del modelo:', modelo);
+    this.modeloDetalle = { ...modelo };
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
@@ -106,40 +106,40 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.SucursalesEditando = null;
+    this.modeloEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.SucursalesDetalle = null;
+    this.modeloDetalle = null;
   }
 
-  guardarSucursales(Sucursales: Sucursales): void {
-    console.log('Sucursales guardado:', Sucursales);
+  guardarModelo(modelo: Modelo): void {
+    console.log('Modelo guardado:', modelo);
     this.cargarDatos();
     this.cerrarFormulario();
   }
 
-  actualizarSucursales(Sucursales: Sucursales): void {
-    console.log('Sucursales actualizado:', Sucursales);
+  actualizarModelo(modelo: Modelo): void {
+    console.log('Modelo actualizado:', modelo);
     this.cargarDatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(Sucursales: Sucursales): void {
-    console.log('Confirmar eliminación de Sucursales:', Sucursales);
-    this.SucursalesAEliminar = Sucursales;
+  confirmarEliminar(modelo: Modelo): void {
+    console.log('Confirmar eliminación de modelo:', modelo);
+    this.modeloAEliminar = modelo;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null;
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.SucursalesAEliminar = null;
+    this.modeloAEliminar = null;
   }
 
   eliminar(): void {
-    console.log('Eliminar Sucursales:', this.SucursalesAEliminar);
+    console.log('Eliminar modelo:', this.modeloAEliminar);
     // A futuro: lógica de eliminación
     this.cancelarEliminar();
   }
@@ -164,20 +164,17 @@ export class ListComponent implements OnInit {
   mensajeWarning = '';
 
   mostrarConfirmacionEliminar = false;
-  SucursalesAEliminar: Sucursales | null = null;
+  modeloAEliminar: Modelo | null = null;
 
   // =============================
   //  Carga inicial
   // =============================
-private cargarDatos(): void {
-  this.http.get<any[]>(
-    `${environment.apiBaseUrl}/Sucursales/Listar`,
-    {
+  private cargarDatos(): void {
+    this.http.get<Modelo[]>(`${environment.apiBaseUrl}/Modelo/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }
-  ).subscribe(data => {
-    console.log('Sucursaless recibidos:', data);
-    this.table.setData(data);
-  });
-}
+    }).subscribe(data => {
+      console.log('Modelos recibidos:', data);
+      this.table.setData(data);
+    });
+  }
 }

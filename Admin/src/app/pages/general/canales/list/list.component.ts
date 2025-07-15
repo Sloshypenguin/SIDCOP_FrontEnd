@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
+import { Canal } from 'src/app/Modelos/general/Canal.model';
 
 @Component({
   selector: 'app-list',
@@ -28,7 +28,7 @@ export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
 
   constructor(
-    public table: ReactiveTableService<Sucursales>,
+    public table: ReactiveTableService<Canal>,
     private http: HttpClient
   ) {
     this.cargarDatos();
@@ -37,7 +37,7 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'General' },
-      { label: 'Sucursales', active: true }
+      { label: 'Canales', active: true }
     ];
   }
 
@@ -58,8 +58,8 @@ export class ListComponent implements OnInit {
   // =============================
   //  Datos de edición y detalle
   // =============================
-  SucursalesEditando: Sucursales | null = null;
-  SucursalesDetalle: Sucursales | null = null;
+  CanalEditando: Canal | null = null;
+  CanalDetalle: Canal | null = null;
 
   // =============================
   //  Row activo para menú
@@ -75,25 +75,22 @@ export class ListComponent implements OnInit {
   // =============================
 
   crear(): void {
-    console.log('Crear Sucursales');
     this.showCreateForm = true;
     this.showEditForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  editar(Sucursales: Sucursales): void {
-    console.log('Editar Sucursales:', Sucursales);
-    this.SucursalesEditando = { ...Sucursales };
+  editar(canal: Canal): void {
+    this.CanalEditando = { ...canal };
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  detalles(Sucursales: Sucursales): void {
-    console.log('Detalles del Sucursales:', Sucursales);
-    this.SucursalesDetalle = { ...Sucursales };
+  detalles(canal: Canal): void {
+    this.CanalDetalle = { ...canal };
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
@@ -106,41 +103,37 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.SucursalesEditando = null;
+    this.CanalEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.SucursalesDetalle = null;
+    this.CanalDetalle = null;
   }
 
-  guardarSucursales(Sucursales: Sucursales): void {
-    console.log('Sucursales guardado:', Sucursales);
+  guardarCanal(canal: Canal): void {
     this.cargarDatos();
     this.cerrarFormulario();
   }
 
-  actualizarSucursales(Sucursales: Sucursales): void {
-    console.log('Sucursales actualizado:', Sucursales);
+  actualizarCanal(canal: Canal): void {
     this.cargarDatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(Sucursales: Sucursales): void {
-    console.log('Confirmar eliminación de Sucursales:', Sucursales);
-    this.SucursalesAEliminar = Sucursales;
+  confirmarEliminar(canal: Canal): void {
+    this.CanalAEliminar = canal;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null;
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.SucursalesAEliminar = null;
+    this.CanalAEliminar = null;
   }
 
   eliminar(): void {
-    console.log('Eliminar Sucursales:', this.SucursalesAEliminar);
-    // A futuro: lógica de eliminación
+    // Aquí va la lógica de eliminación real
     this.cancelarEliminar();
   }
 
@@ -164,20 +157,21 @@ export class ListComponent implements OnInit {
   mensajeWarning = '';
 
   mostrarConfirmacionEliminar = false;
-  SucursalesAEliminar: Sucursales | null = null;
+  CanalAEliminar: Canal | null = null;
 
   // =============================
   //  Carga inicial
   // =============================
-private cargarDatos(): void {
-  this.http.get<any[]>(
-    `${environment.apiBaseUrl}/Sucursales/Listar`,
-    {
-      headers: { 'x-api-key': environment.apiKey }
-    }
-  ).subscribe(data => {
-    console.log('Sucursaless recibidos:', data);
-    this.table.setData(data);
-  });
-}
+  private cargarDatos(): void {
+    this.http.get<any[]>(
+      `${environment.apiBaseUrl}/Canal/Listar`,
+      {
+        headers: { 'x-api-key': environment.apiKey }
+      }
+
+    ).subscribe(data => {
+      // Mapeo si es necesario, dependiendo de cómo venga la respuesta
+      this.table.setData(data);
+    });
+  }
 }
