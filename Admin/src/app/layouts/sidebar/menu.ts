@@ -45,8 +45,29 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+             {
+                id: 33,
+                label: 'MENUITEMS.GENERAL.LIST.DEPARTAMENTOS',
+                link: '/general/departamentos',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             {
                 id: 34,
+                label: 'MENUITEMS.GENERAL.LIST.MUNICIPIOS',
+                link: '/general/municipios',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
+            {
+                id: 35,
+                label: 'MENUITEMS.GENERAL.LIST.COLONIAS',
+                link: '/general/colonias', 
+                parentId: 3,
+                icon: 'ri-building-2-line'
+            },    
+            {
+                id: 36,
                 label: 'MENUITEMS.GENERAL.LIST.CANALES',
                 link: '/general/canales',
                 parentId: 3,
