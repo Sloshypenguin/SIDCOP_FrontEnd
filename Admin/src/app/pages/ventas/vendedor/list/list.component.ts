@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,7 +30,8 @@ import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
+  breadCrumbItems!: Array<{}>;
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -45,6 +46,13 @@ export class ListComponent {
     if (!clickedInside && this.activeActionRow === rowIndex) {
       this.activeActionRow = null;
     }
+  }
+
+   ngOnInit(): void {
+    this.breadCrumbItems = [
+      { label: 'Ventas' },
+      { label: 'Vendedores', active: true }
+    ];
   }
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
