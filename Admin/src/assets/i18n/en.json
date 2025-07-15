@@ -9,7 +9,8 @@
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
         "DEPARTAMENTOS": "Departamentos",
-        "MUNICIPIOS": "Municipios"  
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias"      
       }
     },
     "DASHBOARD": {

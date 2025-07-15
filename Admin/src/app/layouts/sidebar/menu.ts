@@ -52,6 +52,13 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+            {
+                id: 35,
+                label: 'MENUITEMS.GENERAL.LIST.COLONIAS',
+                link: '/general/colonias',  
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }
