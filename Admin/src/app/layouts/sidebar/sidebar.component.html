@@ -29,43 +29,7 @@
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
-              <!--tablas generales--> 
-              <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link menu-link" data-bs-toggle="collapse" data-menu-id="general-menu" [ngClass]="{'show': generalOpen}" aria-expanded="false" (click)="generalOpen = !generalOpen">
-                  <i class="ri-apps-2-line"></i>
-                  <span> General </span>
-                </a> 
-                <div class="collapse menu-dropdown" [ngClass]="{'show': generalOpen}" id="general-menu">
-                  <ul class="nav nav-sm flex-column">
-                    <li class="nav-item">
-                        <a [routerLink]="'General/Personas'" class="nav-link">
-                        <i class="ri-group-line"></i>
-                        <span> personas  </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                     <a routerLink="/general/estadosciviles" class="nav-link">
-                        <i class="ri-group-line"></i>
-                        <span> Estados Civiles </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a routerLink="/general/marcas" class="nav-link">
-                           <i class="ri-group-line"></i>
-                           <span> Marcas </span>
-                           </a>
-                    </li>
-                    <li class="nav-item">
-                        <a routerLink="/general/marcasvehiculos" class="nav-link">
-                           <i class="ri-group-line"></i>
-                           <span> Marcas Vehiculos </span>
-                           </a>
-                    </li>
-                    <!-- Agrega más ítems aquí -->
-                  </ul>
-                </div>
-              </li>
-              <!-- Fin Dropdown General -->
+         
                 @for(item of menuItems; track $index){
                 @if(item.isTitle){
                 <li class="menu-title"><span>{{ item.label | translate }}</span></li>
