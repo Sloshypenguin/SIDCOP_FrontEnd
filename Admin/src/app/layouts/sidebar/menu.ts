@@ -20,6 +20,19 @@ export const MENU: MenuItem[] = [
         ]
     },
     {
+        id: 6,
+        label: 'MENUITEMS.ACCESO.TEXT',
+        icon: 'ri-lock-line',
+        subItems: [
+            {
+                id: 61,
+                label: 'MENUITEMS.ACCESO.LIST.USUARIOS',
+                link: '/acceso/usuarios',
+                parentId: 6
+            },
+        ]
+    },
+    {
         id: 3,
         label: 'MENUITEMS.GENERAL.TEXT',
         icon: 'ri-apps-2-line',

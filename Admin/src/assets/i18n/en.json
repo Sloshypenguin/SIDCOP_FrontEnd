@@ -3,6 +3,12 @@
     "MENU": {
       "TEXT": "MENU"
     },
+    "ACCESO": {
+      "TEXT": "Acceso",
+      "LIST": {
+        "USUARIOS": "Usuarios"
+      }
+    },
     "GENERAL": {
       "TEXT": "General",
       "LIST": {
