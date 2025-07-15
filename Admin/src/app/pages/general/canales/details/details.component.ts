@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
+import { Canales } from 'src/app/Modelos/general/Canales.model';
 
 @Component({
   selector: 'app-details',
@@ -10,10 +10,10 @@ import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() cargoData: Cargos | null = null;
+  @Input() canalesData: Canales | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  cargoDetalle: Cargos | null = null;
+  canalesDetalle: Canales | null = null;
   cargando = false;
 
   mostrarAlertaError = false;
@@ -26,18 +26,18 @@ export class DetailsComponent implements OnChanges {
   }
 
   // Simulación de carga
-  cargarDetallesSimulado(data: Cargos): void {
+  cargarDetallesSimulado(data: Canales): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 
     setTimeout(() => {
       try {
-        this.cargoDetalle = { ...data };
+        this.canalesDetalle = { ...data };
         this.cargando = false;
       } catch (error) {
-        console.error('Error al cargar detalles del estado civil:', error);
+        console.error('Error al cargar detalles del canal:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles del estado civil.';
+        this.mensajeError = 'Error al cargar los detalles del canal.';
         this.cargando = false;
       }
     }, 500); // Simula tiempo de carga

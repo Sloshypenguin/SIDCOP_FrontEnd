@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
+import { Canales } from 'src/app/Modelos/general/Canales.model';
 // import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
@@ -42,7 +42,7 @@ export class ListComponent {
      */
     this.breadCrumbItems = [
       { label: 'General' },
-      { label: 'Cargos', active: true }
+      { label: 'Canales', active: true }
     ];
   }
 
@@ -71,23 +71,23 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(cargo: Cargos): void {
-    console.log('Abriendo formulario de edición para:', cargo);
+  editar(canales: Canales): void {
+    console.log('Abriendo formulario de edición para:', canales);
     console.log('Datos específicos:', {
-      id: cargo.carg_Id,
-      descripcion: cargo.carg_Descripcion,
-      completo: cargo
+      id: canales.cana_Id,
+      descripcion: canales.cana_Descripcion,
+      completo: canales
     });
-    this.cargoEditando = { ...cargo }; // Hacer copia profunda
+    this.canalesEditando = { ...canales }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(cargo: Cargos): void {
-    console.log('Abriendo detalles para:', cargo);
-    this.cargoDetalle = { ...cargo }; // Hacer copia profunda
+  detalles(canales: Canales): void {
+    console.log('Abriendo detalles para:', canales);
+    this.canalesDetalle = { ...canales }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -100,8 +100,8 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  cargoEditando: Cargos | null = null;
-  cargoDetalle: Cargos | null = null;
+  canalesEditando: Canales | null = null;
+  canalesDetalle: Canales | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -113,11 +113,11 @@ export class ListComponent {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  cargoEliminar: Cargos | null = null;
+  CanalesEliminar: Canales | null = null;
 
-  constructor(public table: ReactiveTableService<Cargos>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Canales>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
-    this.table.setConfig(['carg_Id', 'carg_Descripcion']);
+    this.table.setConfig(['cana_Id', 'cana_Descripcion']);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -134,46 +134,46 @@ export class ListComponent {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.cargoEditando = null;
+    this.canalesEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.cargoDetalle = null;
+    this.canalesDetalle = null;
   }
 
-  guardarCargo(cargo: Cargos): void {
-    console.log('Cargo guardado exitosamente desde create component:', cargo);
+  guardarCargo(canales: Canales): void {
+    console.log('Cargo guardado exitosamente desde create component:', canales);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarCargo(cargo: Cargos): void {
-    console.log('Cargo actualizado exitosamente desde edit component:', cargo);
+  actualizarCargo(canales: Canales): void {
+    console.log('Cargo actualizado exitosamente desde edit component:', canales);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(cargo: Cargos): void {
-    console.log('Solicitando confirmación para eliminar:', cargo);
-    this.cargoEliminar = cargo;
+  confirmarEliminar(canales: Canales): void {
+    console.log('Solicitando confirmación para eliminar:', canales);
+    this.CanalesEliminar = canales;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.cargoEliminar = null;
+    this.CanalesEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.cargoEliminar) return;
+    if (!this.CanalesEliminar) return;
     
-    console.log('Eliminando cargo:', this.cargoEliminar);
+    console.log('Eliminando canal:', this.CanalesEliminar);
 
-    this.http.post(`${environment.apiBaseUrl}/Cargos/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Canal/Eliminar/${this.CanalesEliminar.cana_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -186,8 +186,8 @@ export class ListComponent {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Cargo eliminado exitosamente');
-            this.mensajeExito = `Cargo "${this.cargoEliminar!.carg_Descripcion}" eliminado exitosamente`;
+            console.log('Canal eliminado exitosamente');
+            this.mensajeExito = `Canal "${this.CanalesEliminar!.cana_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -201,9 +201,9 @@ export class ListComponent {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Este canal está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el canal está siendo utilizado.';
             
             setTimeout(() => {  
               this.mostrarAlertaError = false;
@@ -216,7 +216,7 @@ export class ListComponent {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar canal.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -230,7 +230,7 @@ export class ListComponent {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el canal.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -254,7 +254,7 @@ export class ListComponent {
   }
 
   private cargardatos(): void {
-    this.http.get<Cargos[]>(`${environment.apiBaseUrl}/Cargo/Listar`, {
+    this.http.get<Canales[]>(`${environment.apiBaseUrl}/Canal/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);

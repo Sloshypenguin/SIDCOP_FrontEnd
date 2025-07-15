@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
+import { Canales } from 'src/app/Modelos/general/Canales.model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,25 +14,26 @@ import { environment } from 'src/environments/environment';
 })
 
 export class EditComponent implements OnChanges {
-  @Input() cargoData: Cargos | null = null;
+  @Input() canalesData: Canales | null = null;
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<Cargos>();
+  @Output() onSave = new EventEmitter<Canales>();
 
- cargo: Cargos = {
-    carg_Id: 0,
-    carg_Descripcion: '',
-    usua_Creacion: 0,
-    carg_FechaCreacion: new Date(),
-    usua_Modificacion: 0,
-    carg_FechaModificacion: new Date(),
-    usuaM_Nombre : '',
-    usuaC_Nombre : '', 
-    carg_Estado: true,
+ canales: Canales = {
+     cana_Id : 0,
+    cana_Descripcion :  '',
+    cana_Observaciones : '',
+    usua_Creacion : 0,
+    cana_FechaCreacion : new Date(),
+    usua_Modificacion : 0,
+    cana_FechaModificacion : new Date(),
+    cana_Estado : true,
+    usuaC_Nombre:  0,
+    usuaM_Nombre:  0,
     code_Status: 0,
     message_Status: ''
   };
 
-  cargoOriginal = '';
+  canalesOriginal = '';
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -45,9 +46,9 @@ export class EditComponent implements OnChanges {
   constructor(private http: HttpClient) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['cargoData'] && changes['cargoData'].currentValue) {
-      this.cargo = { ...changes['cargoData'].currentValue };
-      this.cargoOriginal = this.cargo.carg_Descripcion || '';
+    if (changes['canalesData'] && changes['canalesData'].currentValue) {
+      this.canales = { ...changes['canalesData'].currentValue };
+      this.canalesOriginal = this.canales.cana_Descripcion || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
     }
@@ -70,8 +71,8 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.cargo.carg_Descripcion.trim()) {
-      if (this.cargo.carg_Descripcion.trim() !== this.cargoOriginal) {
+    if (this.canales.cana_Descripcion.trim()) {
+      if (this.canales.cana_Descripcion.trim() !== this.canalesOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -97,20 +98,20 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (this.cargo.carg_Descripcion.trim()) {
-      const cargoActualizar = {
-        Carg_Id: this.cargo.carg_Id,
-        Carg_Descripcion: this.cargo.carg_Descripcion.trim(),
-        Usua_Creacion: this.cargo.usua_Creacion,
-        Carg_FechaCreacion: this.cargo.carg_FechaCreacion,
-        Usua_Modificacion: environment.usua_Id,
+    if (this.canales.cana_Descripcion.trim()) {
+      const canalesActualizar = {
+        cana_id: this.canales.cana_Id,
+        cana_Descripcion: this.canales.cana_Descripcion.trim(),
+        usua_Creacion: this.canales.usua_Creacion,
+        cana_FechaCreacion: this.canales.cana_FechaCreacion,
+        usua_Modificacion: environment.usua_Id,
         // numero: this.cargo..secuencia || '',
-        Carg_FechaModificacion: new Date().toISOString(),
-        Carg_Estado: '',
+        cana_FechaModificacion: new Date().toISOString(),
+        cana_Estado: '',
         // usuarioModificacion: ''
       };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/cargo/Actualizar`, cargoActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Canal/Actualizar`, canalesActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -118,18 +119,18 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Cargo "${this.cargo.carg_Descripcion}" actualizado exitosamente`;
+          this.mensajeExito = `Canal "${this.canales.cana_Descripcion}" actualizado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
 
           setTimeout(() => {
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.cargo);
+            this.onSave.emit(this.canales);
             this.cancelar();
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar cargo:', error);
+          console.error('Error al actualizar el canal:', error);
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al actualizar el cargo. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);

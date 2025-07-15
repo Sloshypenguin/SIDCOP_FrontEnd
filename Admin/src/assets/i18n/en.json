@@ -8,7 +8,8 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
-        "CARGOS": "Cargos"
+        "CARGOS": "Cargos",
+        "CANALES": "Canales"
       }
     },
     "DASHBOARD": {

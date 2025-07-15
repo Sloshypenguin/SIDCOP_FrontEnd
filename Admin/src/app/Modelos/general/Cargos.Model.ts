@@ -5,7 +5,7 @@ export class Cargos{
   carg_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
   carg_FechaModificacion?: Date;
-  carg_Estado: string = '';
+  carg_Estado: boolean = true;
   usuaC_Nombre: string = '';
   usuaM_Nombre: string = '';
   code_Status: number = 0;

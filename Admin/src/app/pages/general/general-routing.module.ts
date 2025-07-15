@@ -15,9 +15,13 @@ const routes: Routes = [
   {
     path: 'sucursales',
     loadChildren: () =>
-      import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
+    import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
   },
-
+    {
+    path: 'canales',
+    loadChildren: () =>
+      import('./canales/canales.module').then(m => m.CanalesModule)
+  },
 ];
 
 @NgModule({
