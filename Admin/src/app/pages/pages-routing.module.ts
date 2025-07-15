@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CrudComponent } from '../Personas/crudcomponent.component';
 
 const routes: Routes = [
   {
@@ -38,14 +37,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./table/table.module').then((m) => m.TableModule),
   },
-
-
   {
     path: 'pages',
     loadChildren: () =>
       import('./extrapages/extrapages.module').then((m) => m.ExtrapagesModule),
   },
-  { path: 'General/Personas', component: CrudComponent },
   {
     path: 'general',
     loadChildren: () =>
@@ -56,9 +52,20 @@ const routes: Routes = [
     loadChildren: () =>
       import('./inventario/inventario.module').then((m) => m.InventarioModule),
   },
+  {
+    path: 'logistica',
+    loadChildren: () =>
+      import('./logistica/logistica.module').then((m) => m.LogisticaModule),
+  },
+  {
+    path: 'ventas',
+    loadChildren: () =>
+      import('./ventas/ventas.module').then((m) => m.VentasModule),
+  },
+  
 ];
 
-@NgModule({
+@NgModule({ 
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })

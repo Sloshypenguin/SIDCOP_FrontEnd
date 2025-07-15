@@ -3,6 +3,33 @@
     "MENU": {
       "TEXT": "MENU"
     },
+    "GENERAL": {
+      "TEXT": "General",
+      "LIST": {
+        "ESTADOSCIVILES": "Estados Civiles",
+        "SUCURSALES": "Sucursales",
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias",      
+        "MODELOS": "Modelos",
+        "CANALES": "Canales"
+      }
+    },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CAIS": "CAIs",
+        "VENDEDORES": "Vendedores"
+      }
+    },
+    "LOGISTICA": {
+      "TEXT": "Logistica",
+      "LIST": {
+        "BODEGAS": "Bodegas"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {

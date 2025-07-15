@@ -1,10 +1,10 @@
 import { Routes } from "@angular/router";
 
-export const EstadosCivilesRoutes: Routes = [
+export const DepartamentosRoutes: Routes = [
     {
         path: '',
         data: {
-            title: 'Estados Civiles',
+            title: 'Departamentos',
         },
         children: [
             { 
@@ -16,14 +16,14 @@ export const EstadosCivilesRoutes: Routes = [
                 path: 'list',
                 loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
                 data: {
-                    title: 'Listado de Estados Civiles',
+                    title: 'Listado de Departamentos',
                 }
             },
             {
                 path: 'create',
                 loadComponent: () => import('./create/create.component').then(m => m.CreateComponent),
                 data: {
-                    title: 'Crear Estado Civil',
+                    title: 'Crear Departamento',
                 }
             }
             // TODO: Implementar rutas edit y delete cuando sea necesario
