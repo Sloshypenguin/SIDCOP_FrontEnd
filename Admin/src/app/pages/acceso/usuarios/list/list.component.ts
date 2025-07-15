@@ -96,7 +96,7 @@ export class ListComponent {
   mensajeWarning = '';
 
   mostrarConfirmacionEliminar = false;
-  estadoCivilAEliminar: Usuario | null = null;
+  usuarioEliminar: Usuario | null = null;
 
 
   constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private router: ActivatedRoute){
@@ -131,5 +131,31 @@ export class ListComponent {
     this.cerrarFormularioEdicion();
   }
 
-  
+  confirmarEliminar(usuario: Usuario): void {
+    this.usuarioEliminar = usuario;
+    this.mostrarConfirmacionEliminar = true;
+    this.activeActionRow = null;
+  }
+
+  cancelarEliminar(): void {
+    this.mostrarConfirmacionEliminar = false;
+    this.usuarioEliminar = null;
+  }
+
+  eliminar(): void {
+    if(!this.usuarioEliminar) return;
+
+    this.http.post(`${environment.apiBaseUrl}/Usuarios/Eliminar/${this.usuarioEliminar.usua_Id}`, {},{
+      headers:{
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+
+    })
+  }
+
+  private cargarDatos(): void {
+    this.http.get
+  }
 }
