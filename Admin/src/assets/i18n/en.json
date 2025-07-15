@@ -19,6 +19,13 @@
         "EMPLEADOS": "Empleados"
       }
     },
+    "INVENTARIO": {
+      "TEXT": "INVENTARIO",
+      "LIST": {
+        "CATEGORIAS": "Categorias",
+        "SUBCATEGORIAS": "Subcategorias"
+      }
+    },
     "VENTAS": {
       "TEXT": "Ventas",
       "LIST": {

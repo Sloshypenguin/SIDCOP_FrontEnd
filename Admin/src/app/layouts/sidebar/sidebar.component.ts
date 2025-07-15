@@ -14,10 +14,12 @@ export class SidebarComponent {
   menu: any;
   toggle: any = true;
   menuItems: MenuItem[] = [];
+  generalOpen: boolean = false;
+  inventarioOpen: boolean = false;
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
   lastroute: any;
-  generalOpen: boolean = false;
+  
 
   constructor(private router: Router, public translate: TranslateService) {
     translate.setDefaultLang('en');
