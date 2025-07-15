@@ -21,7 +21,9 @@
         "IMPUESTOS": "Impuestos",
         "CONFIGURACIONFACTURA": "Configuracion Factura",
         "CAIS": "CAIs",
-        "VENDEDORES": "Vendedores"
+        "VENDEDORES": "Vendedores",
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
       }
     },
     "LOGISTICA": {
