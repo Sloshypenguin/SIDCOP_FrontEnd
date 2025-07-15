@@ -1,16 +1,16 @@
 export class Sucursales {
-  Sucu_Id: number = 0;
-  Sucu_Descripcion: string = '';
-  Colo_Id: number = 0;
-  Sucu_DireccionExacta: string = '';
-  Sucu_Telefono1: string = '';
-  Sucu_Telefono2: string = '';
-  Sucu_Correo: string = '';
-  Usua_Creacion: number = 0;
-  Sucu_FechaCreacion: Date = new Date();
-  Usua_Modificacion?: number;
-  Sucu_FechaModificacion?: Date;
-  Sucu_Estado: boolean = true;
+  sucu_Id: number = 0;
+  sucu_Descripcion: string = '';
+  colo_Id: number = 0;
+  sucu_DireccionExacta: string = '';
+  sucu_Telefono1: string = '';
+  sucu_Telefono2: string = '';
+  sucu_Correo: string = '';
+  usua_Creacion: number = 0;
+  sucu_FechaCreacion: Date = new Date();
+  usua_Modificacion?: number;
+  sucu_FechaModificacion?: Date;
+  sucu_Estado: boolean = true;
 
   constructor(init?: Partial<Sucursales>) {
     Object.assign(this, init);
