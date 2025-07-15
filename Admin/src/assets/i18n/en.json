@@ -11,6 +11,13 @@
         "MODELOS": "Modelos"
       }
     },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuracion Factura"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {
