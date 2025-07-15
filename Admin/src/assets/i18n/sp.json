@@ -9,7 +9,20 @@
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
         "Marcas": "Marcas",
-        "MarcasVehiculos": "Marcas Vehiculos"
+        "MarcasVehiculos": "Marcas Vehiculos",
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias",    
+        "MODELOS": "Modelos",
+        "CANALES": "Canales"
+      }
+    },
+      "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuración de Factura",
+        "CAIS": "CAIS"
       }
     },
     "DASHBOARD": {
