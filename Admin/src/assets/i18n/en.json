@@ -42,6 +42,13 @@
         "BODEGAS": "Bodegas"
       }
     },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {

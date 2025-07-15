@@ -27,7 +27,7 @@
 <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarEstadoCivil($event)"></app-create>
+      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarCategoria($event)"></app-create>
     </div>
   </div>
 </div>
@@ -37,9 +37,9 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
-        [estadoCivilData]="estadoCivilEditando" 
+        [estadoCivilData]="categoriaEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarEstadoCivil($event)">
+        (onSave)="actualizarCategoria($event)">
       </app-edit>
     </div>
   </div>
@@ -50,7 +50,7 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
-        [estadoCivilData]="estadoCivilDetalle" 
+        [estadoCivilData]="categoriaDetalle" 
         (onClose)="cerrarFormularioDetalles()">
       </app-details>
     </div>
@@ -156,7 +156,7 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la categoria <strong>{{ estadoCivilAEliminar?.cate_Descripcion }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la categoria <strong>{{ categoriaAEliminar?.cate_Descripcion }}</strong>?
           </p>
         </div>
       </div>

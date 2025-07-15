@@ -91,7 +91,7 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.impuestoAEliminar) return;
 
-    this.http.post(`${environment.apiBaseUrl}/Impuestos/Eliminar/${this.impuestoAEliminar.Impu_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Impuestos/Eliminar/${this.impuestoAEliminar.impu_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -102,7 +102,7 @@ export class ListComponent implements OnInit {
           const status = response.data.code_Status;
           const message = response.data.message_Status || '';
           if (status === 1) {
-            this.mensajeExito = `Impuesto "${this.impuestoAEliminar!.Impu_Descripcion}" eliminado exitosamente`;
+            this.mensajeExito = `Impuesto "${this.impuestoAEliminar!.impu_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             setTimeout(() => this.cerrarAlerta(), 3000);
             this.cargardatos();

@@ -4,12 +4,11 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    component: undefined, 
     data: {
-      title: 'Impuestos',
+      title: 'Puntos de Emision',
     },
     children: [
-      {
+      { 
         path: '',
         redirectTo: 'list',
         pathMatch: 'full'
@@ -18,7 +17,7 @@ const routes: Routes = [
         path: 'list',
         loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
         data: {
-          title: 'Listado de Impuestos',
+          title: 'Listado de Puntos de Emision',
         }
       },
     ]
@@ -29,4 +28,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ImpuestosRoutingModule {}
+export class PuntoEmisionRoutingModule {}

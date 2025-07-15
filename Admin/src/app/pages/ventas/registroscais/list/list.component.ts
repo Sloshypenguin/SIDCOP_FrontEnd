@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -8,10 +8,10 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { CreateComponent } from '../create/create.component';
-import { EditComponent } from '../edit/edit.component';
-import { DetailsComponent } from '../details/details.component';
-import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
+import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
+// import { CreateComponent } from '../create/create.component';
+// import { EditComponent } from '../edit/edit.component';
+// import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -23,16 +23,27 @@ import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    CreateComponent,
-    EditComponent,
-    DetailsComponent],
+    // CreateComponent,
+    // EditComponent,
+    // DetailsComponent
+  ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrls: ['./list.component.scss']
 })
+export class ListComponent implements OnInit {
+  // bread crumb items
+  breadCrumbItems!: Array<{}>;
 
+  ngOnInit(): void {
+    /**
+     * BreadCrumb
+     */
+    this.breadCrumbItems = [
+      { label: 'Ventas' },
+      { label: 'Registro CAI', active: true }
+    ];
+  }
 
-export class ListComponent {
-  
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -57,29 +68,28 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(categoria: Categoria): void {
-    console.log('Abriendo formulario de edición para:', categoria);
+  editar(registroCai: RegistroCAI): void {
+    console.log('Abriendo formulario de edición para:', registroCai);
     console.log('Datos específicos:', {
-      id: categoria.cate_Id,
-      descripcion: categoria.cate_Descripcion,
-      completo: categoria
+      id: registroCai.regC_Id,
+      descripcion: registroCai.regC_Descripcion,
+      completo: registroCai
     });
-    this.categoriaEditando = { ...categoria }; // Hacer copia profunda
+    this.estadoCivilEditando = { ...registroCai }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(categoria: Categoria): void {
-    console.log('Abriendo detalles para:', categoria);
-    this.categoriaDetalle = { ...categoria }; // Hacer copia profunda
+  detalles(registroCai: RegistroCAI): void {
+    console.log('Abriendo detalles para:', registroCai);
+    this.estadoCivilDetalle = { ...registroCai }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
-
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -87,8 +97,8 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  categoriaEditando: Categoria | null = null;
-  categoriaDetalle: Categoria | null = null;
+  estadoCivilEditando: RegistroCAI | null = null;
+  estadoCivilDetalle: RegistroCAI | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -100,9 +110,9 @@ export class ListComponent {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  categoriaAEliminar: Categoria | null = null;
+  estadoCivilAEliminar: RegistroCAI | null = null;
 
-  constructor(public table: ReactiveTableService<Categoria>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<RegistroCAI>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
   }
 
@@ -120,46 +130,46 @@ export class ListComponent {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.categoriaEditando = null;
+    this.estadoCivilEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.categoriaDetalle = null;
+    this.estadoCivilDetalle = null;
   }
 
-  guardarCategoria(categoria: Categoria): void {
-    console.log('Categoria guardado exitosamente desde create component:', categoria);
+  guardarEstadoCivil(registroCai: RegistroCAI): void {
+    console.log('Estado civil guardado exitosamente desde create component:', registroCai);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarCategoria(categoria: Categoria): void {
-    console.log('Categoria actualizado exitosamente desde edit component:', categoria);
+  actualizarEstadoCivil(registroCai: RegistroCAI): void {
+    console.log('Estado civil actualizado exitosamente desde edit component:', registroCai);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(categoria: Categoria): void {
-    console.log('Solicitando confirmación para eliminar:', categoria);
-    this.categoriaAEliminar = categoria;
+  confirmarEliminar(registroCai: RegistroCAI): void {
+    console.log('Solicitando confirmación para eliminar:', registroCai);
+    this.estadoCivilAEliminar = registroCai;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.categoriaAEliminar = null;
+    this.estadoCivilAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.categoriaAEliminar) return;
+    if (!this.estadoCivilAEliminar) return;
     
-    console.log('Eliminando Categoria:', this.categoriaAEliminar);
+    console.log('Eliminando estado civil:', this.estadoCivilAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Categorias/Eliminar/${this.categoriaAEliminar.cate_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.regC_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -172,8 +182,8 @@ export class ListComponent {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Categoria eliminado exitosamente');
-            this.mensajeExito = `Categoria "${this.categoriaAEliminar!.cate_Descripcion}" eliminado exitosamente`;
+            console.log('Estado civil eliminado exitosamente');
+            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.regC_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -187,9 +197,9 @@ export class ListComponent {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Categoria está siendo utilizado');
+            console.log('Estado civil está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el Categoria está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -202,7 +212,7 @@ export class ListComponent {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el Categoria.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -216,7 +226,7 @@ export class ListComponent {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el Categoria.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -240,7 +250,7 @@ export class ListComponent {
   }
 
   private cargardatos(): void {
-    this.http.get<Categoria[]>(`${environment.apiBaseUrl}/Categorias/Listar`, {
+    this.http.get<RegistroCAI[]>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
