@@ -1,1 +1,113 @@
-<p>list works!</p>
+<app-breadcrumbs
+  [title]="'Proveedores'"
+  [breadcrumbItems]="breadCrumbItems"
+>
+  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
+</app-breadcrumbs>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-3 flex-wrap">
+          <button type="button" class="btn btn-primary me-2 mb-2">
+            <span class="btn-text">Nuevo</span>
+            <span class="btn-icon"><i class="ri-add-line"></i></span>
+          </button>
+          <div class="search-box mb-2">
+            <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-gridjs table-style">
+            <thead>
+              <tr>
+                <th class="gridjs-th">Acciones</th>
+                <th class="gridjs-th">Código</th>
+                <th class="gridjs-th">Empresa</th>
+                <th class="gridjs-th">Teléfono</th>
+                <th class="gridjs-th">Correo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of table.paginated$ | async; let i = index">
+                <td class="position-relative">
+                  <div class="dropdown-action-list">
+                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
+                      <span>Acciones</span>
+                      <i class="ri-settings-3-line"></i>
+                    </button>
+                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
+                      <li *ngIf="showEdit">
+                        <button type="button" class="dropdown-action-btn">
+                          Editar <i class="ri-edit-line"></i>
+                        </button>
+                      </li>
+                      <li *ngIf="showDelete">
+                        <button type="button" class="dropdown-action-btn">
+                          Eliminar <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </li>
+                      <li *ngIf="showDetails">
+                        <button type="button" class="dropdown-action-btn">
+                          Detalles <i class="ri-error-warning-fill"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+                <td><span class="fw-semibold">{{data.prov_Codigo}}</span></td>
+                <td>{{data.prov_NombreEmpresa}}</td>
+                <td>{{data.prov_Telefono}}</td>
+                <td>{{data.prov_Correo}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row justify-content-md-between align-items-md-center">
+          <ng-container *ngIf="(table.paginated$ | async) as paginados">
+            <div class="col-sm-12 col-md-5">
+              <div class="dataTables_info mb-2" role="status" aria-live="polite">
+                Mostrando
+                {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.total$ | async }}
+                registros
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-5">
+              <div class="text-md-right float-md-end gridjs-pagination">
+                <pagination [totalItems]="(table.total$ | async) || 0" [(ngModel)]="table.page" [itemsPerPage]="table.pageSizeValue" (pageChanged)="table.setPage($event.page)"></pagination>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor de alertas flotantes -->
+<div class="alert-container">
+  <!-- Alerta de éxito -->
+  <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+    <strong>¡Éxito!</strong> {{ mensajeExito }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+  
+  <!-- Alerta de advertencia -->
+  <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+    <strong>¡Atención!</strong> {{ mensajeWarning }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+  
+  <!-- Alerta de error -->
+  <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+    <strong>¡Error!</strong> {{ mensajeError }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+</div>

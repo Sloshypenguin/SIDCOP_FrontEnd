@@ -1,0 +1,25 @@
+export class Proveedor{
+  prov_Id: number = 0;
+  prov_Codigo: string = '';
+  prov_NombreEmpresa: string = '';
+  colo_Id: number = 0;
+  prov_DireccionExacta: string = '';
+  prov_Telefono: string = '';
+  prov_Correo: string = '';
+  prov_Observaciones: string = '';
+
+  usua_Creacion: number = 0;
+  prov_FechaCreacion: Date = new Date();
+  usua_Modificacion?: number;
+
+  prov_FechaModificacion?: Date;
+  usuarioCreacion: string = '';
+  usuarioModificacion: string = '';
+
+  code_Status: number = 0;
+  message_Status: string ='';
+
+  constructor(init?: Partial<Proveedor>) {
+    Object.assign(this, init);
+  }
+}
