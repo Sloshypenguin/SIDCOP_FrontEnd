@@ -8,6 +8,9 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias",      
         "MODELOS": "Modelos",
         "CANALES": "Canales"
       }
