@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,7 +30,8 @@ import { DetailsComponent } from '../details/details.component';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
+  breadCrumbItems!: Array<{}>;
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -103,6 +104,13 @@ export class ListComponent {
     this.cargardatos();
   }
 
+  ngOnInit(): void {
+    this.breadCrumbItems = [
+      { label: 'Logística' },
+      { label: 'Bodegas', active: true }
+    ];
+  }
+
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
@@ -126,14 +134,14 @@ export class ListComponent {
   }
 
   guardarBodega(bodega: Bodega): void {
-    console.log('Estado civil guardado exitosamente desde create component:', bodega);
+    console.log('Bodega guardada exitosamente desde create component:', bodega);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
   actualizarBodega(bodega: Bodega): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', bodega);
+    console.log('Bodega actualizada exitosamente desde edit component:', bodega);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
@@ -154,9 +162,9 @@ export class ListComponent {
   eliminar(): void {
     if (!this.bodegaAEliminar) return;
     
-    console.log('Eliminando estado civil:', this.bodegaAEliminar);
+    console.log('Eliminando bodega:', this.bodegaAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.bodegaAEliminar.bode_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Bodega/Eliminar/${this.bodegaAEliminar.bode_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BodegasRoutingModule } from './bodega-routing.module';
+import { BodegaRoutingModule } from './bodega-routing.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    BodegasRoutingModule
+    BodegaRoutingModule
   ]
 })
-export class BodegasModule {}
+export class BodegaModule {}

@@ -1,9 +1,6 @@
 <app-breadcrumbs
-  [title]="'Estados Civiles'"
-  [breadcrumbItems]="[
-    { label: 'General' },
-    { label: 'Estados Civiles', active: true }
-  ]"
+  [title]="'Bodegas'"
+  [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
 </app-breadcrumbs>
@@ -37,7 +34,7 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
-        []="bodegaEditando" 
+        [bodegaData]="bodegaEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
         (onSave)="actualizarBodega($event)">
       </app-edit>
@@ -165,7 +162,7 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el estado civil <strong>{{ bodegaAEliminar?.bode_Descripcion }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la bodega <strong>{{ bodegaAEliminar?.bode_Descripcion }}</strong>?
           </p>
         </div>
       </div>

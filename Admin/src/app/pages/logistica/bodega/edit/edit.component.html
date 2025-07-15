@@ -1,6 +1,6 @@
 <div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
   <!-- Título del componente -->
-  <h5 class="card-title mb-4">Editar Estado Civil</h5>
+  <h5 class="card-title mb-4">Editar Bodega</h5>
   
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
@@ -34,15 +34,15 @@
             <input  
               type="text" 
               class="form-control" 
-              [class.is-invalid]="!estadoCivil.esCv_Descripcion.trim() && mostrarErrores"
-              id="estadoCivilDescripcion"
-              [(ngModel)]="estadoCivil.esCv_Descripcion"
-              placeholder="Ingrese la descripción del estado civil"
+              [class.is-invalid]="!bodega.bode_Descripcion.trim() && mostrarErrores"
+              id="bodegaDescripcion"
+              [(ngModel)]="bodega.bode_Descripcion"
+              placeholder="Ingrese la descripción de la bodega"
               required>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" *ngIf="!estadoCivil.esCv_Descripcion.trim() && mostrarErrores">
-            <small>El campo Descripción del Estado Civil es requerido</small>
+          <div class="text-danger mt-1" *ngIf="!bodega.bode_Descripcion.trim() && mostrarErrores">
+            <small>El campo Descripción de la Bodega es requerido</small>
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@
         <div class="text-center">
           <p class="mt-2 custom-modal-text">
             <i class="ri-edit-line me-2 custom-modal-alert-icon" (click)="cancelarEdicion()"></i>
-            ¿Estás seguro que deseas editar el estado civil <strong>"{{ estadoCivilOriginal }}"</strong> por <strong>"{{ estadoCivil.esCv_Descripcion }}"</strong>?
+            ¿Estás seguro que deseas editar la bodega <strong>"{{ bodegaOriginal }}"</strong> por <strong>"{{ bodega.bode_Descripcion }}"</strong>?
           </p>
         </div>
       </div>

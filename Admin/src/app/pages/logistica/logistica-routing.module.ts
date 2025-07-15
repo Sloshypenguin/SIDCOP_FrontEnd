@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: 'bodegas',
     loadChildren: () =>
-      import('./bodega/bodega.module').then(m => m.BodegasModule)
+      import('./bodega/bodega.module').then(m => m.BodegaModule)
   },
 ];
 
