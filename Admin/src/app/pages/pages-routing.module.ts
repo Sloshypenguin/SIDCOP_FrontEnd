@@ -49,6 +49,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./general/general.module').then((m) => m.GeneralModule),
   },
+  {
+    path: 'ventas',
+    loadChildren: () =>
+      import('./ventas/ventas.module').then((m) => m.VentasModule),
+  },
 ];
 
 @NgModule({

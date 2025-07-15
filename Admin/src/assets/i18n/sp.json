@@ -8,6 +8,14 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales"
+
+      }
+    },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "REGISTROCAIS": "Registros CAI"
+        
       }
     },
     "DASHBOARD": {
