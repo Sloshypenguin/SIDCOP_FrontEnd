@@ -12,6 +12,8 @@ const routes: Routes = [
     loadChildren: () =>
       import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
   },
+  
+
 ];
 
 @NgModule({

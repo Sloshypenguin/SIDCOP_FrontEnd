@@ -10,6 +10,12 @@
         "SUCURSALES": "Sucursales"
       }
     },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {
