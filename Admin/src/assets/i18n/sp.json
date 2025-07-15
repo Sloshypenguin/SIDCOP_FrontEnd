@@ -3,6 +3,29 @@
     "MENU": {
       "TEXT": "MENÚ"
     },
+    "GENERAL": {
+      "TEXT": "General",
+      "LIST": {
+        "ESTADOSCIVILES": "Estados Civiles",
+        "SUCURSALES": "Sucursales",
+        "MODELOS": "Modelos",
+        "CANALES": "Canales"
+      }
+    },
+      "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuración de Factura",
+        "CAIS": "CAIS"
+      }
+    },
+    "LOGISTICA": {
+      "TEXT": "Logistica",
+      "LIST": {
+        "BODEGAS": "Bodegas"
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Tableros",
       "LIST": {
