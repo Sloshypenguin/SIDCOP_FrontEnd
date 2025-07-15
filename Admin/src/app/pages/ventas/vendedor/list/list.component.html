@@ -60,11 +60,13 @@
               <tr>
                 <th class="gridjs-th">Acciones</th>
                 <th class="gridjs-th">No.</th>
-                <th class="gridjs-th">Descripción</th>
-                <th class="gridjs-th">Capacidad</th>
-                <th class="gridjs-th">Placa</th>
-                <th class="gridjs-th">Tipo de Camion</th>
-                <th class="gridjs-th">VN</th>
+                <th class="gridjs-th">Codigo</th>
+                <th class="gridjs-th">DNI</th>
+                <th class="gridjs-th">Nombre</th>
+                <th class="gridjs-th">Telefono</th>
+                <th class="gridjs-th">Correo</th>
+                <th class="gridjs-th">Sexo</th>
+                <th class="gridjs-th">Direccion Exacta</th>
               </tr>
             </thead>
             <tbody>
@@ -95,11 +97,13 @@
                   </div>
                 </td>
                 <td><span class="fw-semibold">{{data.secuencia}}</span></td>
-                <td>{{data.vend_DNI}}</td>
-                <td>{{data.vend_Nombres}}</td>
-                <td>{{data.vend_Apellidos}}</td>
-                <td>{{data.vend_Sexo}}</td>
                 <td>{{data.vend_Codigo}}</td>
+                <td>{{data.vend_DNI}}</td>
+                <td>{{data.vend_Nombres && data.vend_Apellidos }}</td>
+                <td>{{data.vend_Telefono}}</td>
+                <td>{{data.vend_Correo}}</td>
+                <td>{{data.vend_Sexo}}</td>
+                <td>{{data.vend_DireccionExacta}}</td>
               
               </tr>
             </tbody>
