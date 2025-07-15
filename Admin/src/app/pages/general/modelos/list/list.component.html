@@ -1,5 +1,5 @@
 <app-breadcrumbs
-  [title]="'Sucursales'"
+  [title]="'Modelos'"
   [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
@@ -61,9 +61,6 @@
                 <th class="gridjs-th">Acciones</th>
                 <th class="gridjs-th">ID</th>
                 <th class="gridjs-th">Descripción</th>
-                <th class="gridjs-th">Dirección</th>
-                <th class="gridjs-th">Teléfono 1</th>
-                <th class="gridjs-th">Correo</th>
               </tr>
             </thead>
             <tbody>
@@ -93,11 +90,8 @@
                     </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{ data.sucu_Id }}</span></td>
-                <td>{{ data.sucu_Descripcion }}</td>
-                <td>{{ data.sucu_DireccionExacta }}</td>
-                <td>{{ data.sucu_Telefono1 }}</td>
-                <td>{{ data.sucu_Correo }}</td>
+                <td><span class="fw-semibold">{{ data.mode_Id }}</span></td>
+                <td>{{ data.mode_Descripcion }}</td>
               </tr>
             </tbody>
           </table>
@@ -145,5 +139,36 @@
   </div>
 </div>
 
+<!-- Modal de confirmación para eliminar -->
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Confirmación</span>
+        <i class="ri-close-line custom-modal-close" (click)="cancelarEliminar()"></i>
+      </div>
+      <hr class="custom-modal-divider">
+      <div class="modal-body custom-modal-body">
+        <div class="text-center">
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>
+            ¿Está seguro(a) que desea eliminar el Modelo <strong>{{ modeloAEliminar?.mode_Descripcion }}</strong>?
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button type="button" class="btn btn-primary gray btn-sm btn-minw-5" (click)="cancelarEliminar()">
+          <span class="btn-text">No</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        </button>
+        <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
+          <span class="btn-text">Sí</span>
+          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Overlay para el modal -->
-<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div> 
+<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>

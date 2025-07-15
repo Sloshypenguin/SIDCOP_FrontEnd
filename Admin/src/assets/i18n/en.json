@@ -10,7 +10,17 @@
         "SUCURSALES": "Sucursales",
         "DEPARTAMENTOS": "Departamentos",
         "MUNICIPIOS": "Municipios",
-        "COLONIAS": "Colonias"      
+        "COLONIAS": "Colonias",      
+        "MODELOS": "Modelos",
+        "CANALES": "Canales"
+      }
+    },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CAIS": "CAIs"
       }
     },
     "DASHBOARD": {
