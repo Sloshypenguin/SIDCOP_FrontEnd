@@ -1,6 +1,6 @@
 .table-style {
   border-radius: 12px !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   border: 2px solid #cfd8dc !important;
   box-shadow: 0 2px 8px rgba(189, 189, 189, 0.15);
   background-clip: border-box !important;
@@ -146,15 +146,11 @@
 }
 
 .gridjs-td {
-  position: relative;
+  /* Limpio de posiciones forzadas */
   .dropdown-menu.show {
-    z-index: 1050 !important;
-    position: absolute !important;
-    left: var(--menu-left, 0) !important;
-    top: var(--menu-top, 100%) !important;
     min-width: 150px;
     max-height: 300px;
-    overflow-y: auto;
+    overflow-y: visible;
   }
 }
 

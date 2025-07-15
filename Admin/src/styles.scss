@@ -91,7 +91,7 @@
   padding: 0;
   font-size: 0.97rem;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 .dropdown-action-list .dropdown-menu .btn {
   width: 100%;
@@ -118,15 +118,29 @@
 /* === MODAL DE CONFIRMACIÓN GLOBAL === */
 .custom-modal {
   z-index: 2000;
-  min-width: 80vh;
-}
+  min-width: 60px;
+  max-width: 110px;
+  padding: 0.25rem 0.6rem 0.25rem 0.6rem;
+  font-size: 0.95rem;
 .custom-modal-header {
   font-size: 1rem;
   font-weight: bold;
   padding: 0.5rem 0.75rem;
   margin-bottom: 0;
-  padding-bottom: 0;
+  width: 100%;
+  max-width: 120px;
+}
   background: transparent;
+/* Limita el ancho de la columna de acciones en la tabla */
+.table-style th:first-child,
+.table-style td:first-child {
+  width: 1%;
+  min-width: 80px;
+  max-width: 120px;
+  text-align: center;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+}
   border-bottom: none;
 }
 .custom-modal-close {
@@ -945,6 +959,7 @@ bs-dropdown-container {
 }
 
 // Estilos globales para paginación gridjs y ngx-bootstrap
+
 .gridjs-pagination .pagination {
   margin-bottom: 0;
   gap: 0;
@@ -968,13 +983,13 @@ bs-dropdown-container {
   background-color: rgb(20, 26, 47);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(185, 139, 12, 0.3);
+  box-shadow: 0 4px 8px rgba(185, 139, 12, 0.3); */
 }
 
 .gridjs-pagination .pagination .page-item.active .page-link {
   background-color: rgb(187, 190, 202) !important;
   color: #ffffff !important;
-  box-shadow: 0 3px 6px rgba(75, 75, 75, 0.4);
+  /* box-shadow: 0 3px 6px rgba(75, 75, 75, 0.4); */
 }
 
 .gridjs-pagination .pagination .page-item.disabled .page-link {
@@ -987,8 +1002,8 @@ bs-dropdown-container {
 
 .gridjs-pagination .pagination .page-item.disabled .page-link:hover {
   background-color: #f8f9fa;
-  transform: none;
-  box-shadow: none;
+  /* transform: none; */
+  /* box-shadow: none; */
 }
 
 .gridjs-pagination .pagination .page-item:first-child .page-link,
@@ -996,9 +1011,9 @@ bs-dropdown-container {
   font-size: 0 !important;
   width: 40px;
   height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
   padding: 0;
   background-color: rgb(20, 26, 47) !important;
   border-color: rgb(20, 26, 47) !important;
@@ -1020,33 +1035,27 @@ bs-dropdown-container {
 }
 
 .gridjs-pagination .pagination .page-item:first-child .page-link {
-  border-radius: 20px 0 0 20px !important;
+  /* border-radius: 20px 0 0 20px !important; */
 }
 
 .gridjs-pagination .pagination .page-item:last-child .page-link {
-  border-radius: 0 20px 20px 0 !important;
+  /* border-radius: 0 20px 20px 0 !important; */
 }
 
 td.position-relative, .gridjs-td {
-  position: absolute !important;
+  /* position: absolute !important; */
 }
 td.position-relative .dropdown-menu.show,
 .gridjs-td .dropdown-menu.show {
-  z-index: 1050 !important;
-  position: relative !important;
-  left: var(--menu-left, 0) !important;
-  top: var(--menu-top, 100%) !important;
+  /* z-index: 1050 !important; */
+  /* position: relative !important; */
+  /* left: var(--menu-left, 0) !important; */
+  /* top: var(--menu-top, 100%) !important; */
   min-width: 150px;
   max-height: 300px;
   overflow-y: auto;
 }
 
-.table-responsive,
-.card-body,
-.card,
-.row {
-  overflow: visible !important;
-}
 
 // estilos de alertas flotantes
 .alert-container {
