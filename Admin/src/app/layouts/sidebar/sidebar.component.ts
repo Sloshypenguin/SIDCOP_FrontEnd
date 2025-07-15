@@ -19,6 +19,7 @@ export class SidebarComponent {
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
   lastroute: any;
+  generalOpen: boolean = false;
 
   constructor(private router: Router, public translate: TranslateService) {
     translate.setDefaultLang('en');

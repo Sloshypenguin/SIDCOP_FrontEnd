@@ -54,36 +54,7 @@
                 </div>
               </li>
               <!-- Fin Dropdown General -->
-
-               <!--tablas Inventario--> 
-              <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link menu-link" data-bs-toggle="collapse" data-menu-id="inventario-menu" [ngClass]="{'show': inventarioOpen}" aria-expanded="false" (click)="inventarioOpen = !inventarioOpen">
-                  <i class="ri-apps-2-line"></i>
-                  <span> Inventario </span>
-                </a> 
-                <div class="collapse menu-dropdown" [ngClass]="{'show': inventarioOpen}" id="inventario-menu">
-                  <ul class="nav nav-sm flex-column">
-                    <!-- cate -->
-                    <li class="nav-item">
-                     <a routerLink="inventario/categorias" class="nav-link">
-                        <i class="ri-group-line"></i>
-                        <span> Categorias </span>
-                        </a>
-                    </li>
-
-                    <!-- subcate -->
-                    <li class="nav-item">
-                     <a routerLink="inventario/subcategorias" class="nav-link">
-                        <i class="ri-group-line"></i>
-                        <span> Subcategorias </span>
-                        </a>
-                    </li>
-
-                    <!-- Agrega más ítems aquí :)-->
-                  </ul>
-                </div>
-              </li>
-              <!-- Fin Dropdown Inventario -->
+         
                 @for(item of menuItems; track $index){
                 @if(item.isTitle){
                 <li class="menu-title"><span>{{ item.label | translate }}</span></li>

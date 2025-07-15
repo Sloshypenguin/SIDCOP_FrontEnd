@@ -8,6 +8,22 @@ const routes: Routes = [
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
   
   },
+  {
+    path: 'empleados',
+    loadChildren: () =>
+      import('./empleados/empleados.module').then(m => m.EmpleadosModule)
+  },
+  {
+    path: 'marcas',
+    loadChildren: () =>
+      import('./Marcas/marcas.module').then(m => m.Marcasmodule)
+  },
+  {
+    path: 'marcasvehiculos',
+    loadChildren: () =>
+      import('./MarcasVehiculos/marcasvehiculos.module').then(m => m.MarcasVehiculosmodule)
+  },
+  
     {
     path: 'departamentos',
     loadChildren: () =>
@@ -26,7 +42,7 @@ const routes: Routes = [
     {
     path: 'sucursales',
     loadChildren: () =>
-      import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
+    import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
   },
     {
     path: 'modelos',
