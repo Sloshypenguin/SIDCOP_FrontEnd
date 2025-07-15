@@ -246,7 +246,7 @@ export class ListComponent {
   }
 
   private cargardatos(): void {
-    this.http.get<Subcategoria[]>(`${environment.apiBaseUrl}/Subcategorias/Listar`, {
+    this.http.get<Subcategoria[]>(`${environment.apiBaseUrl}/Subcategoria/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
