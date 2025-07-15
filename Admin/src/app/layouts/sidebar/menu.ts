@@ -47,7 +47,7 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 34,
-                label: 'Marcas',
+                label: 'MENUITEMS.GENERAL.LIST.MARCAS',
                 link: '/general/marcas',
                 parentId: 3,
                 icon: 'ri-group-line'
@@ -61,7 +61,7 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 36,
-                label: 'Marcas De Vehiculos',
+                label: 'MENUITEMS.GENERAL.LIST.MARCASVEHICULOS',
                 link: '/general/marcasvehiculos',
                 parentId: 3,
                 icon: 'ri-group-line'
