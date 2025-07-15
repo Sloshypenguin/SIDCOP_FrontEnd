@@ -112,11 +112,19 @@ export const MENU: MenuItem[] = [
                 parentId: 4,
                 icon: 'ri-group-line'
             },
+
+            {
+                id: 36,
+                label: 'MENUITEMS.VENTAS.LIST.VENDEDORES',
+                link: '/ventas/Vendedores',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },
     {
-        id: 4,
+        id: 5,
         label: 'MENUITEMS.LOGISTICA.TEXT',
         icon: 'ri-apps-2-line',
         subItems: [
@@ -124,7 +132,7 @@ export const MENU: MenuItem[] = [
                 id: 34,
                 label: 'MENUITEMS.LOGISTICA.LIST.BODEGAS',
                 link: '/logistica/bodegas',
-                parentId: 4,
+                parentId: 5,
                 icon: 'ri-truck-line'
             }
             // Puedes añadir más subitems aquí según sea necesario

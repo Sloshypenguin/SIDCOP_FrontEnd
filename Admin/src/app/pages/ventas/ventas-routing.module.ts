@@ -17,6 +17,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./CAIs/CAIs.module').then(m => m.CAIsModule)
   },
+  {
+    path: 'Vendedores',
+    loadChildren: () =>
+      import('./vendedor/vendedor.module').then(m => m.VendedoresModule)
+  },
 ];
 
 
