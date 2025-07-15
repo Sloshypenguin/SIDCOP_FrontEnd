@@ -3,21 +3,20 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'estadosciviles',
+    path: 'impuestos',
     loadChildren: () =>
-      import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
+      import('../impuestos/impuestos.module').then(m => m.ImpuestosModule)
   },
-    {
-    path: 'sucursales',
+  {
+    path: 'configuracion-factura',
     loadChildren: () =>
-      import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
+      import('./configuracionFactura.module').then(m => m.ConfiguracionFacturaModule)
   },
-  
-
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class GeneralRoutingModule {}
+export class VentasRoutingModule {}
