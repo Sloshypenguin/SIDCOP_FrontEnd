@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
+import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
 // import { CreateComponent } from '../create/create.component';
 // import { EditComponent } from '../edit/edit.component';
 // import { DetailsComponent } from '../details/details.component';
@@ -40,7 +40,7 @@ export class ListComponent implements OnInit {
      */
     this.breadCrumbItems = [
       { label: 'Ventas' },
-      { label: 'Registro CAI', active: true }
+      { label: 'Puntos de Emision', active: true }
     ];
   }
 
@@ -68,23 +68,23 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(registroCai: RegistroCAI): void {
-    console.log('Abriendo formulario de edición para:', registroCai);
+  editar(puntodeemision: PuntoEmision): void {
+    console.log('Abriendo formulario de edición para:', puntodeemision);
     console.log('Datos específicos:', {
-      id: registroCai.regC_Id,
-      descripcion: registroCai.regC_Descripcion,
-      completo: registroCai
+      id: puntodeemision.puEm_Id,
+      descripcion: puntodeemision.puEm_Descripcion,
+      completo: puntodeemision
     });
-    this.estadoCivilEditando = { ...registroCai }; // Hacer copia profunda
+    this.estadoCivilEditando = { ...puntodeemision }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(registroCai: RegistroCAI): void {
-    console.log('Abriendo detalles para:', registroCai);
-    this.estadoCivilDetalle = { ...registroCai }; // Hacer copia profunda
+  detalles(puntodeemision: PuntoEmision): void {
+    console.log('Abriendo detalles para:', puntodeemision);
+    this.estadoCivilDetalle = { ...puntodeemision }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -97,8 +97,8 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  estadoCivilEditando: RegistroCAI | null = null;
-  estadoCivilDetalle: RegistroCAI | null = null;
+  estadoCivilEditando: PuntoEmision | null = null;
+  estadoCivilDetalle: PuntoEmision | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -110,9 +110,9 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  estadoCivilAEliminar: RegistroCAI | null = null;
+  estadoCivilAEliminar: PuntoEmision | null = null;
 
-  constructor(public table: ReactiveTableService<RegistroCAI>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<PuntoEmision>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
   }
 
@@ -138,23 +138,23 @@ export class ListComponent implements OnInit {
     this.estadoCivilDetalle = null;
   }
 
-  guardarEstadoCivil(registroCai: RegistroCAI): void {
-    console.log('Estado civil guardado exitosamente desde create component:', registroCai);
+  guardarEstadoCivil(puntodeemision: PuntoEmision): void {
+    console.log('Estado civil guardado exitosamente desde create component:', puntodeemision);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarEstadoCivil(registroCai: RegistroCAI): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', registroCai);
+  actualizarEstadoCivil(puntodeemision: PuntoEmision): void {
+    console.log('Estado civil actualizado exitosamente desde edit component:', puntodeemision);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(registroCai: RegistroCAI): void {
-    console.log('Solicitando confirmación para eliminar:', registroCai);
-    this.estadoCivilAEliminar = registroCai;
+  confirmarEliminar(puntodeemision: PuntoEmision): void {
+    console.log('Solicitando confirmación para eliminar:', puntodeemision);
+    this.estadoCivilAEliminar = puntodeemision;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
@@ -169,7 +169,7 @@ export class ListComponent implements OnInit {
     
     console.log('Eliminando estado civil:', this.estadoCivilAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.regC_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.puEm_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -183,7 +183,7 @@ export class ListComponent implements OnInit {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             console.log('Estado civil eliminado exitosamente');
-            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.regC_Descripcion}" eliminado exitosamente`;
+            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.puEm_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -250,7 +250,7 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
-    this.http.get<RegistroCAI[]>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
+    this.http.get<PuntoEmision[]>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);

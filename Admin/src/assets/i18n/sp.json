@@ -14,7 +14,8 @@
     "VENTAS": {
       "TEXT": "Ventas",
       "LIST": {
-        "REGISTROCAIS": "Registros CAI"
+        "REGISTROCAIS": "Registros CAI",
+        "PUNTOSEMISION": "Puntos Emision"
         
       }
     },
