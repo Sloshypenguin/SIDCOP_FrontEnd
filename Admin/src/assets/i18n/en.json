@@ -8,7 +8,20 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
-        "PROVEEDORES": "Proveedores"
+        "PROVEEDORES": "Proveedores",
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios",
+        "COLONIAS": "Colonias",      
+        "MODELOS": "Modelos",
+        "CANALES": "Canales"
+      }
+    },
+    "VENTAS": {
+      "TEXT": "Ventas",
+      "LIST": {
+        "IMPUESTOS": "Impuestos",
+        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CAIS": "CAIs"
       }
     },
     "DASHBOARD": {

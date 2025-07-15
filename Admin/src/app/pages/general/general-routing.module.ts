@@ -8,6 +8,21 @@ const routes: Routes = [
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
   },
     {
+    path: 'departamentos',
+    loadChildren: () =>
+      import('./departamentos/departamentos.module').then(m => m.DepartamentosModule)
+  },
+    {
+    path: 'municipios',
+    loadChildren: () =>
+      import('./municipios/municipios.module').then(m => m.MunicipiosModule)
+  },
+    {
+    path: 'colonias',
+    loadChildren: () =>
+      import('./colonias/colonias.module').then(m => m.ColoniasModule)
+  },  
+    {
     path: 'sucursales',
     loadChildren: () =>
       import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
@@ -17,6 +32,18 @@ const routes: Routes = [
     loadChildren: () =>
       import('./proveedores/proveedores.module').then(m => m.ProveedoresModule)
   },
+    {
+    path: 'modelos',
+    loadChildren: () =>
+      import('./modelos/modelos.module').then(m => m.ModelosModule)
+  },
+  {
+    path: 'canales',
+    loadChildren: () =>
+      import('./canales/canales.module').then(m => m.CanalesModule)
+  },
+  
+
 ];
 
 @NgModule({
