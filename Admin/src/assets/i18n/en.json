@@ -9,11 +9,14 @@
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
         "PROVEEDORES": "Proveedores",
+        "MARCAS": "Marcas",
+        "MARCASVEHICULOS": "Marcas Vehiculos",
         "DEPARTAMENTOS": "Departamentos",
         "MUNICIPIOS": "Municipios",
         "COLONIAS": "Colonias",      
         "MODELOS": "Modelos",
-        "CANALES": "Canales"
+        "CANALES": "Canales",
+        "EMPLEADOS": "Empleados"
       }
     },
     "VENTAS": {
