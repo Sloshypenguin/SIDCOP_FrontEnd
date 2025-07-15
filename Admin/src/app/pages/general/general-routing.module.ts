@@ -44,6 +44,11 @@ const routes: Routes = [
     loadChildren: () =>
     import('./sucursales/sucursales.module').then(m => m.SucursalesModule)
   },
+   {
+    path: 'proveedores',
+    loadChildren: () =>
+      import('./proveedores/proveedores.module').then(m => m.ProveedoresModule)
+  },
     {
     path: 'modelos',
     loadChildren: () =>
@@ -53,8 +58,12 @@ const routes: Routes = [
     path: 'canales',
     loadChildren: () =>
       import('./canales/canales.module').then(m => m.CanalesModule)
-  }
-  
+  },
+  {
+    path: 'cargos',
+    loadChildren: () =>
+      import('./cargos/cargos.module').then(m => m.CargosModule)
+  },  
 
 ];
 

@@ -8,6 +8,7 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "PROVEEDORES": "Proveedores",
         "MARCAS": "Marcas",
         "MARCASVEHICULOS": "Marcas Vehiculos",
         "DEPARTAMENTOS": "Departamentos",
@@ -15,7 +16,8 @@
         "COLONIAS": "Colonias",      
         "MODELOS": "Modelos",
         "CANALES": "Canales",
-        "EMPLEADOS": "Empleados"
+        "EMPLEADOS": "Empleados",
+        "CARGOS": "Cargos"
       }
     },
     "INVENTARIO": {
