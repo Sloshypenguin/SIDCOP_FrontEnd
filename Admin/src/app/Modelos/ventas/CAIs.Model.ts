@@ -1,11 +1,11 @@
 export class CAIs{
   nCai_Id: number = 0;
   nCai_Codigo: string = '';
-  NCai_Descripcion: string = '';
+  nCai_Descripcion: string = '';
   usua_Creacion: number = 0;
-  NCai_FechaCreacion: Date = new Date();
+  nCai_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
-  NCai_FechaModificacion?: Date;
+  nCai_FechaModificacion?: Date;
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
   

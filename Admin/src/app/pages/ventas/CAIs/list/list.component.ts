@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { CAIs } from 'src/app/Modelos/general/CAIs.Model';
+import { CAIs } from 'src/app/Modelos/ventas/CAIs.Model';
 
 @Component({
   selector: 'app-list',

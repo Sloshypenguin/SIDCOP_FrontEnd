@@ -69,6 +69,14 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+
+            {
+                id: 35,
+                label: 'MENUITEMS.VENTAS.LIST.CAIS',
+                link: '/ventas/CAIs',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }

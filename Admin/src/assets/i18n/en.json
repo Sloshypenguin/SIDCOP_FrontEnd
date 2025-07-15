@@ -15,7 +15,8 @@
       "TEXT": "Ventas",
       "LIST": {
         "IMPUESTOS": "Impuestos",
-        "CONFIGURACIONFACTURA": "Configuracion Factura"
+        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CAIS": "CAIs"
       }
     },
     "DASHBOARD": {
