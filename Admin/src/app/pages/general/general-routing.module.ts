@@ -6,6 +6,7 @@ const routes: Routes = [
     path: 'estadosciviles',
     loadChildren: () =>
       import('./estadosciviles/estadosciviles.module').then(m => m.EstadosCivilesModule)
+  
   },
   {
     path: 'empleados',
@@ -57,8 +58,7 @@ const routes: Routes = [
     path: 'cargos',
     loadChildren: () =>
       import('./cargos/cargos.module').then(m => m.CargosModule)
-  },
-  
+  },  
 
 ];
 

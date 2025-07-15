@@ -158,5 +158,27 @@ export const MENU: MenuItem[] = [
             }
             // Puedes añadir más subitems aquí según sea necesario
         ]
+    },
+    {
+        id: 6,
+        label: 'MENUITEMS.INVENTARIO.TEXT',
+        icon: 'ri-layout-grid-fill',
+        subItems: [
+            {
+                id: 40,
+                label: 'MENUITEMS.INVENTARIO.LIST.CATEGORIAS',
+                link: '/inventario/categorias',
+                parentId: 6,
+                icon: 'ri-truck-line'
+            },
+            {
+                id: 41,
+                label: 'MENUITEMS.INVENTARIO.LIST.SUBCATEGORIAS',
+                link: '/inventario/subcategorias',
+                parentId: 6,
+                icon: 'ri-truck-line'
+            }
+            // Puedes añadir más subitems aquí según sea necesario
+        ]
     }
 ]
