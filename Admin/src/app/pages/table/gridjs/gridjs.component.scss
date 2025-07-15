@@ -1,11 +1,19 @@
-.table-style {
-  border-radius: 12px !important;
-  overflow: visible !important;
-  border: 2px solid #cfd8dc !important;
+// Usar un contenedor externo para el border-radius y overflow
+.table-radius-container {
+  border-radius: 12px;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(189, 189, 189, 0.15);
-  background-clip: border-box !important;
-  background-color: #f8fafb !important;
+  border: 2px solid #cfd8dc;
+  background: #f8fafb;
 }
+.table-style {
+  border-radius: 0 !important;
+  overflow: visible !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
 
 .table-style th,
 .table-style td,
