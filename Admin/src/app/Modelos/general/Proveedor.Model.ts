@@ -2,6 +2,7 @@ export class Proveedor{
   prov_Id: number = 0;
   prov_Codigo: string = '';
   prov_NombreEmpresa: string = '';
+    prov_NombreContacto: string = '';
   colo_Id: number = 0;
   prov_DireccionExacta: string = '';
   prov_Telefono: string = '';
