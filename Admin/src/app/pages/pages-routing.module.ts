@@ -37,8 +37,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./table/table.module').then((m) => m.TableModule),
   },
-
-
   {
     path: 'pages',
     loadChildren: () =>
