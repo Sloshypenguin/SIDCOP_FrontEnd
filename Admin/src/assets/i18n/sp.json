@@ -8,6 +8,8 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "MARCAS": "Marcas",
+        "MARCASVEHICULOS": "Marcas Vehiculos",
         "DEPARTAMENTOS": "Departamentos",
         "MUNICIPIOS": "Municipios",
         "COLONIAS": "Colonias",    
