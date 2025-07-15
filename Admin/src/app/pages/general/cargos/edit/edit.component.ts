@@ -19,15 +19,15 @@ export class EditComponent implements OnChanges {
   @Output() onSave = new EventEmitter<Cargos>();
 
  cargo: Cargos = {
-    Carg_Id: 0,
-    Carg_Descripcion: '',
-    Usua_Creacion: 0,
-    Carg_FechaCreacion: new Date(),
-    Usua_Modificacion: 0,
-    Carg_FechaModificacion: new Date(),
-    UsuaM_Nombre : '',
-    UsuaC_Nombre : '', 
-    Carg_Estado: '',
+    carg_Id: 0,
+    carg_Descripcion: '',
+    usua_Creacion: 0,
+    carg_FechaCreacion: new Date(),
+    usua_Modificacion: 0,
+    carg_FechaModificacion: new Date(),
+    usuaM_Nombre : '',
+    usuaC_Nombre : '', 
+    carg_Estado: '',
     code_Status: 0,
     message_Status: ''
   };
@@ -47,7 +47,7 @@ export class EditComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['cargoData'] && changes['cargoData'].currentValue) {
       this.cargo = { ...changes['cargoData'].currentValue };
-      this.cargoOriginal = this.cargo.Carg_Descripcion || '';
+      this.cargoOriginal = this.cargo.carg_Descripcion || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
     }
@@ -70,8 +70,8 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.cargo.Carg_Descripcion.trim()) {
-      if (this.cargo.Carg_Descripcion.trim() !== this.cargoOriginal) {
+    if (this.cargo.carg_Descripcion.trim()) {
+      if (this.cargo.carg_Descripcion.trim() !== this.cargoOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -97,12 +97,12 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (this.cargo.Carg_Descripcion.trim()) {
+    if (this.cargo.carg_Descripcion.trim()) {
       const cargoActualizar = {
-        Carg_Id: this.cargo.Carg_Id,
-        Carg_Descripcion: this.cargo.Carg_Descripcion.trim(),
-        Usua_Creacion: this.cargo.Usua_Creacion,
-        Carg_FechaCreacion: this.cargo.Carg_FechaCreacion,
+        Carg_Id: this.cargo.carg_Id,
+        Carg_Descripcion: this.cargo.carg_Descripcion.trim(),
+        Usua_Creacion: this.cargo.usua_Creacion,
+        Carg_FechaCreacion: this.cargo.carg_FechaCreacion,
         Usua_Modificacion: environment.usua_Id,
         // numero: this.cargo..secuencia || '',
         Carg_FechaModificacion: new Date().toISOString(),
@@ -118,7 +118,7 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Cargo "${this.cargo.Carg_Descripcion}" actualizado exitosamente`;
+          this.mensajeExito = `Cargo "${this.cargo.carg_Descripcion}" actualizado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
 

@@ -69,6 +69,9 @@ export class ReactiveTableService<T> {
   get page(): number {
     return this.page$.value;
   }
+  set page(value: number) {
+    this.setPage(value);
+  }
   get pageSizeValue(): number {
     return this.pageSize;
   }

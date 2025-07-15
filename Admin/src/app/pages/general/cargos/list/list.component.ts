@@ -74,8 +74,8 @@ export class ListComponent {
   editar(cargo: Cargos): void {
     console.log('Abriendo formulario de edición para:', cargo);
     console.log('Datos específicos:', {
-      id: cargo.Carg_Id,
-      descripcion: cargo.Carg_Descripcion,
+      id: cargo.carg_Id,
+      descripcion: cargo.carg_Descripcion,
       completo: cargo
     });
     this.cargoEditando = { ...cargo }; // Hacer copia profunda
@@ -117,9 +117,8 @@ export class ListComponent {
 
   constructor(public table: ReactiveTableService<Cargos>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
+    this.table.setConfig(['carg_Id', 'carg_Descripcion']);
   }
-
-  
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
@@ -173,9 +172,9 @@ export class ListComponent {
     if (!this.cargoEliminar) return;
     
     console.log('Eliminando cargo:', this.cargoEliminar);
-    
-    this.http.post(`${environment.apiBaseUrl}/Cargo/Eliminar/${this.cargoEliminar.Carg_Id}`, {}, {
-      headers: { 
+
+    this.http.post(`${environment.apiBaseUrl}/Cargos/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
+      headers: {
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
@@ -188,7 +187,7 @@ export class ListComponent {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             console.log('Cargo eliminado exitosamente');
-            this.mensajeExito = `Cargo "${this.cargoEliminar!.Carg_Descripcion}" eliminado exitosamente`;
+            this.mensajeExito = `Cargo "${this.cargoEliminar!.carg_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -206,7 +205,7 @@ export class ListComponent {
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
             
-            setTimeout(() => {
+            setTimeout(() => {  
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);

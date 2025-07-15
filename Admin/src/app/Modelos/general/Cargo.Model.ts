@@ -1,13 +1,13 @@
 export class Cargos{
-  Carg_Id: number = 0;
-  Carg_Descripcion: string = '';
-  Usua_Creacion: number = 0;
-  Carg_FechaCreacion: Date = new Date();
-  Usua_Modificacion?: number;
-  Carg_FechaModificacion?: Date;
-  Carg_Estado: string = '';
-  UsuaC_Nombre: string = '';
-  UsuaM_Nombre: string = '';
+  carg_Id: number = 0;
+  carg_Descripcion: string = '';
+  usua_Creacion: number = 0;
+  carg_FechaCreacion: Date = new Date();
+  usua_Modificacion?: number;
+  carg_FechaModificacion?: Date;
+  carg_Estado: string = '';
+  usuaC_Nombre: string = '';
+  usuaM_Nombre: string = '';
   code_Status: number = 0;
   message_Status: string ='';
 
