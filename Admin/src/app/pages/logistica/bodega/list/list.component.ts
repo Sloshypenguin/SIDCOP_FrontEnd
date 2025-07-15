@@ -125,14 +125,14 @@ export class ListComponent {
     this.bodegaDetalle = null;
   }
 
-  guardarbodega(bodega: Bodega): void {
+  guardarBodega(bodega: Bodega): void {
     console.log('Estado civil guardado exitosamente desde create component:', bodega);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarbodega(bodega: Bodega): void {
+  actualizarBodega(bodega: Bodega): void {
     console.log('Estado civil actualizado exitosamente desde edit component:', bodega);
     // Recargar los datos de la tabla
     this.cargardatos();

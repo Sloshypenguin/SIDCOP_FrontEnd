@@ -19,11 +19,11 @@
   </div>
   
   <!-- Contenido de detalles -->
-  <div *ngIf="!cargando && estadoCivilDetalle" class="details-content">
+  <div *ngIf="!cargando && bodegaDetalle" class="details-content">
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <h4 class="details-title">{{ estadoCivilDetalle.esCv_Descripcion }}</h4>
+      <h4 class="details-title">{{ bodegaDetalle.bode_Descripcion }}</h4>
       <span>Descripción </span>
     </div>
     
@@ -42,10 +42,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ estadoCivilDetalle.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ bodegaDetalle.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(estadoCivilDetalle.esCv_FechaCreacion) }}</span>
+          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaCreacion) }}</span>
         </div>
       </div>
       
@@ -55,10 +55,10 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ estadoCivilDetalle.usuarioModificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ bodegaDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(estadoCivilDetalle.esCv_FechaModificacion ?? null) }}</span>
+          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaModificacion?? null ) }}</span>
         </div>
       </div>
     </div>

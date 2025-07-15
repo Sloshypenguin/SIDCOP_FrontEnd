@@ -40,5 +40,20 @@ export const MENU: MenuItem[] = [
             },
             // Puedes añadir más subitems aquí según sea necesario
         ]
+    },
+    {
+        id: 4,
+        label: 'MENUITEMS.LOGISTICA.TEXT',
+        icon: 'ri-apps-2-line',
+        subItems: [
+            {
+                id: 33,
+                label: 'MENUITEMS.LOGISTICA.LIST.BODEGAS',
+                link: '/logistica/bodegas',
+                parentId: 4,
+                icon: 'ri-group-line'
+            }
+            // Puedes añadir más subitems aquí según sea necesario
+        ]
     }
 ]

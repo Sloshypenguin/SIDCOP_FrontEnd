@@ -27,7 +27,7 @@
 <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarEstadoCivil($event)"></app-create>
+      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarBodega($event)"></app-create>
     </div>
   </div>
 </div>
@@ -37,9 +37,9 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
-        [estadoCivilData]="estadoCivilEditando" 
+        []="bodegaEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarEstadoCivil($event)">
+        (onSave)="actualizarBodega($event)">
       </app-edit>
     </div>
   </div>
@@ -50,7 +50,7 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
-        [estadoCivilData]="estadoCivilDetalle" 
+        [bodegaData]="bodegaDetalle" 
         (onClose)="cerrarFormularioDetalles()">
       </app-details>
     </div>
@@ -64,6 +64,10 @@
                 <th class="gridjs-th">Acciones</th>
                 <th class="gridjs-th">No.</th>
                 <th class="gridjs-th">Descripción</th>
+                <th class="gridjs-th">Capacidad</th>
+                <th class="gridjs-th">Placa</th>
+                <th class="gridjs-th">Tipo de Camion</th>
+                <th class="gridjs-th">VN</th>
               </tr>
             </thead>
             <tbody>
@@ -94,7 +98,12 @@
                   </div>
                 </td>
                 <td><span class="fw-semibold">{{data.secuencia}}</span></td>
-                <td>{{data.esCv_Descripcion}}</td>
+                <td>{{data.bode_Descripcion}}</td>
+                <td>{{data.bode_Capacidad}}</td>
+                <td>{{data.bode_Placa}}</td>
+                <td>{{data.bode_TipoCamion}}</td>
+                <td>{{data.bode_VIN}}</td>
+              
               </tr>
             </tbody>
           </table>
@@ -156,7 +165,7 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el estado civil <strong>{{ estadoCivilAEliminar?.esCv_Descripcion }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el estado civil <strong>{{ bodegaAEliminar?.bode_Descripcion }}</strong>?
           </p>
         </div>
       </div>

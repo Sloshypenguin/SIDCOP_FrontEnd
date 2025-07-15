@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
+import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<EstadoCivil>();
+  @Output() onSave = new EventEmitter<Bodega>();
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -26,14 +26,22 @@ export class CreateComponent {
 
   constructor(private http: HttpClient) {}
 
-  estadoCivil: EstadoCivil = {
-    esCv_Id: 0,
-    esCv_Descripcion: '',
+  bodega: Bodega = {
+    bode_Id: 0,
+    bode_Descripcion: '',
+    bode_Capacidad: 0,
+    bode_Placa: '',
+    bode_TipoCamion: '',
+    bode_VIN: '',
+    mode_Id: 0,
+    regC_Id: 0,
+    sucu_Id: 0,
+    vend_Id: 0,
     usua_Creacion: 0,
     usua_Modificacion: 0,
     secuencia: 0,
-    esCv_FechaCreacion: new Date(),
-    esCv_FechaModificacion: new Date(),
+    bode_FechaCreacion: new Date(),
+    bode_FechaModificacion: new Date(),
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
@@ -48,18 +56,26 @@ export class CreateComponent {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
-    this.estadoCivil = {
-      esCv_Id: 0,
-      esCv_Descripcion: '',
-      usua_Creacion: 0,
-      usua_Modificacion: 0,
-      secuencia: 0,
-      esCv_FechaCreacion: new Date(),
-      esCv_FechaModificacion: new Date(),
-      code_Status: 0,
-      message_Status: '',
-      usuarioCreacion: '',
-      usuarioModificacion: ''
+    this.bodega = {
+      bode_Id: 0,
+    bode_Descripcion: '',
+    bode_Capacidad: 0,
+    bode_Placa: '',
+    bode_TipoCamion: '',
+    bode_VIN: '',
+    mode_Id: 0,
+    regC_Id: 0,
+    sucu_Id: 0,
+    vend_Id: 0,
+    usua_Creacion: 0,
+    usua_Modificacion: 0,
+    secuencia: 0,
+    bode_FechaCreacion: new Date(),
+    bode_FechaModificacion: new Date(),
+    code_Status: 0,
+    message_Status: '',
+    usuarioCreacion: '',
+    usuarioModificacion: ''
     };
     this.onCancel.emit();
   }
@@ -76,14 +92,14 @@ export class CreateComponent {
   guardar(): void {
     this.mostrarErrores = true;
     
-    if (this.estadoCivil.esCv_Descripcion.trim()) {
+    if (this.bodega.bode_Descripcion.trim()) {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       
-      const estadoCivilGuardar = {
-        esCv_Id: 0,
-        esCv_Descripcion: this.estadoCivil.esCv_Descripcion.trim(),
+      const bodegaGuardar = {
+        bode_Id: 0,
+        bode_Descripcion: this.bodega.bode_Descripcion.trim(),
         usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
         esCv_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
@@ -93,9 +109,9 @@ export class CreateComponent {
         usuarioModificacion: "" 
       };
 
-      console.log('Guardando estado civil:', estadoCivilGuardar);
+      console.log('Guardando estado civil:', bodegaGuardar);
       
-      this.http.post<any>(`${environment.apiBaseUrl}/EstadosCiviles/Insertar`, estadoCivilGuardar, {
+      this.http.post<any>(`${environment.apiBaseUrl}/EstadosCiviles/Insertar`, bodegaGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -104,14 +120,14 @@ export class CreateComponent {
       }).subscribe({
         next: (response) => {
           console.log('Estado civil guardado exitosamente:', response);
-          this.mensajeExito = `Estado civil "${this.estadoCivil.esCv_Descripcion}" guardado exitosamente`;
+          this.mensajeExito = `Estado civil "${this.bodega.bode_Descripcion}" guardado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
           
           // Ocultar la alerta después de 3 segundos
           setTimeout(() => {
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.estadoCivil);
+            this.onSave.emit(this.bodega);
             this.cancelar();
           }, 3000);
         },
