@@ -8,7 +8,8 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
-        "DEPARTAMENTOS": "Departamentos"
+        "DEPARTAMENTOS": "Departamentos",
+        "MUNICIPIOS": "Municipios"  
       }
     },
     "DASHBOARD": {

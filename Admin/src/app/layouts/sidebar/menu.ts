@@ -45,6 +45,13 @@ export const MENU: MenuItem[] = [
                 parentId: 3,
                 icon: 'ri-group-line'
             },
+            {
+                id: 34,
+                label: 'MENUITEMS.GENERAL.LIST.MUNICIPIOS',
+                link: '/general/municipios',
+                parentId: 3,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     }

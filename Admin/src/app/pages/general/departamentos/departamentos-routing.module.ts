@@ -1,8 +1,28 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DepartamentosRoutes } from './routes';
 
-const routes: Routes = DepartamentosRoutes;
+const routes: Routes = [
+  {
+    path: '',
+    data: {
+      title: 'Departamentos',
+    },
+    children: [
+      { 
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      },
+      {
+        path: 'list',
+        loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
+        data: {
+          title: 'Listado de Departamentos',
+        }
+      },
+    ]
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
