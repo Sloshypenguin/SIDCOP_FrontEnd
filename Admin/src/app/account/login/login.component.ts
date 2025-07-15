@@ -21,12 +21,6 @@ export class LoginComponent {
   fieldTextType!: boolean;
   error = '';
   returnUrl!: string;
-  
-  // Propiedades para alertas
-  showAlert = false;
-  alertType = '';
-  alertMessage = '';
-  
   a: any = 10;
   b: any = 20;
   toast!: false;
@@ -62,9 +56,6 @@ export class LoginComponent {
    */
   onSubmit() {
     this.submitted = true;
-    
-    // Ocultar alertas previas
-    this.showAlert = false;
 
     // Verificar si el formulario es válido
     if (this.loginForm.invalid) {
@@ -76,45 +67,11 @@ export class LoginComponent {
 
     // Llamar directamente al servicio de autenticación
     this.authService.login(email, password).subscribe({
-      next: (response: any) => {
-        // Verificar el código de estado de la respuesta
-        if (response && response.code_Status !== undefined) {
-          this.showAlert = true;
-          
-          switch (response.code_Status) {
-            case 1: // Éxito
-              this.alertType = 'success';
-              this.alertMessage = response.message_Status || 'Sesión iniciada correctamente.';
-              // Redirigir al usuario a la página principal después de un breve retraso
-              setTimeout(() => {
-                this.router.navigate(['/']);
-              }, 1000);
-              break;
-              
-            case 0: // Error general
-              this.alertType = 'warning';
-              this.alertMessage = response.message_Status || 'Error al iniciar sesión.';
-              break;
-              
-            case -1: // Usuario inexistente o inactivo
-              this.alertType = 'danger';
-              this.alertMessage = response.message_Status || 'Usuario inexistente o inactivo.';
-              break;
-              
-            default:
-              // Si hay un código de estado no reconocido, redirigir de todos modos
-              this.router.navigate(['/']);
-              break;
-          }
-        } else {
-          // Si no hay código de estado, asumir éxito y redirigir
-          this.router.navigate(['/']);
-        }
+      next: (response) => {
+        // Redirigir al usuario a la página principal
+        this.router.navigate(['/']);
       },
       error: (error) => {
-        this.showAlert = true;
-        this.alertType = 'danger';
-        this.alertMessage = error.message || 'Error al conectar con el servidor.';
         this.error = error.message || 'Error al iniciar sesión';
         console.error('Error de inicio de sesión:', error);
       }

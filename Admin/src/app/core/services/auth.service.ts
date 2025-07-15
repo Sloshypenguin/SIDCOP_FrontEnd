@@ -129,14 +129,7 @@ export class AuthenticationService {
       })
       .pipe(
         map((response: any) => {
-          // Guardar el código de estado y mensaje para devolverlos al componente
-          const responseStatus = {
-            code_Status: response.code_Status,
-            message_Status: response.message_Status
-          };
-          
-          // Si el código de estado es 1 (éxito) y hay datos, procesar la información del usuario
-          if (response.code_Status === 1 && response.data) {
+          if (response && response.data) {
             const userData = response.data;
 
             // Guardar información del usuario en localStorage
@@ -186,15 +179,10 @@ export class AuthenticationService {
 
             // Dispatch success action
             this.store.dispatch(loginSuccess({ user: userData }));
-          } else if (response.code_Status === -1 || response.code_Status === 0) {
-            // Si el código es -1 (usuario inexistente/inactivo) o 0 (error), no guardar datos
-            // pero devolver el código y mensaje para mostrar la alerta adecuada
-            console.warn('Error de inicio de sesión:', responseStatus.message_Status);
+            return userData;
+          } else {
+            throw new Error('Respuesta inválida del servidor');
           }
-          
-          // Devolver el objeto con el código y mensaje de estado para que el componente
-          // pueda mostrar la alerta correspondiente
-          return responseStatus;
         }),
         catchError((error: any) => {
           let errorMessage = 'Error al iniciar sesión';

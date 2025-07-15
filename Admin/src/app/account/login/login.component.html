@@ -12,10 +12,6 @@
   <div class="login-card">
     <h2 class="login-title">Inicio de sesión</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Alertas de estado de inicio de sesión -->
-      <div *ngIf="showAlert" class="alert alert-{{alertType}}" role="alert">
-        {{alertMessage}}
-      </div>
       <div class="login-input-group">
         <label for="username" class="login-label">Usuario</label>
         <div class="login-input-icon">
