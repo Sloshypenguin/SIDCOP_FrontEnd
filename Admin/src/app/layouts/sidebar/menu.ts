@@ -150,6 +150,21 @@ export const MENU: MenuItem[] = [
                 parentId: 4,
                 icon: 'ri-group-line'
             },
+            {
+                id: 37,
+                label: 'MENUITEMS.VENTAS.LIST.REGISTROCAIS',
+                link: '/ventas/registroscais',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
+
+              {
+                id: 38,
+                label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
+                link: '/ventas/puntosemision',
+                parentId: 4,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },
@@ -190,28 +205,6 @@ export const MENU: MenuItem[] = [
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },
-    {
-        id: 4,
-        label: 'MENUITEMS.VENTAS.TEXT',
-        icon: 'ri-shopping-cart-2-line',
-        subItems: [
-
-            {
-                id: 33,
-                label: 'MENUITEMS.VENTAS.LIST.REGISTROCAIS',
-                link: '/ventas/registroscais',
-                parentId: 4,
-                icon: 'ri-group-line'
-            },
-
-              {
-                id: 34,
-                label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
-                link: '/ventas/puntosemision',
-                parentId: 4,
-                icon: 'ri-group-line'
-            },
-            // Puedes añadir más subitems aquí según sea necesario
-        ]
-    }
+   
+    
 ]
