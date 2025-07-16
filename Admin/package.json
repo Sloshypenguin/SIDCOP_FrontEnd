@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "analyze": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build --configuration production --source-map && npx source-map-explorer dist/steex/**/*.js"
+    
   },
   "private": true,
   "dependencies": {
