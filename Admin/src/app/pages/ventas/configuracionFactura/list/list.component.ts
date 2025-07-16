@@ -10,8 +10,8 @@ import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ConfiguracionFactura } from 'src/app/Modelos/ventas/ConfiguracionFactura.Model';
 import { CreateComponent } from '../create/create.component';
-//import { EditComponent } from '../edit/edit.component';
-//import { DetailsComponent } from '../details/details.component';
+import { EditConfigFacturaComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -24,8 +24,8 @@ import { CreateComponent } from '../create/create.component';
     TableModule,
     PaginationModule,
     CreateComponent,
-  //  EditComponent,
-   // DetailsComponent
+    EditConfigFacturaComponent,
+DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
