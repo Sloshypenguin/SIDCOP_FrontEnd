@@ -70,7 +70,9 @@
   display: flex;
   align-items: center;
   gap: 0.4em;
-  box-shadow: 0 2px 8px rgba(44, 44, 44, 0.04);
+    // Evita que el dropdown se corte en tablas con scroll horizontal
+    z-index: 2000 !important;
+    /* Si se requiere, se puede usar position: fixed y calcular la posición con JS para casos extremos */
   transition: background 0.2s, color 0.2s;
 }
 // Dropdown list inválidos en rojo
@@ -1070,11 +1072,9 @@ td.position-relative .dropdown-menu.show,
   overflow-y: auto;
 }
 
-.table-responsive,
-.card-body,
-.card,
-.row {
-  overflow: visible !important;
+.table-responsive {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
 }
 
 // estilos de alertas flotantes

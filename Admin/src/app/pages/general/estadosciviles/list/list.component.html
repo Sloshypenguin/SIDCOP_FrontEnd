@@ -69,7 +69,7 @@
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
                 <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                  <div class="dropdown-action-list">
+                  <div class="dropdown-action-list dropup">
                     <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
                       <span>Acciones</span>
                       <i class="ri-settings-3-line"></i>
