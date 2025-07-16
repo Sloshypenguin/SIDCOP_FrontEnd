@@ -25,6 +25,7 @@ export class CreateComponent implements OnInit {
   mensajeWarning = '';
 
   municipios: any[] = [];
+  coloniasfiltro: any[] = [];
   colonias: any[] = [];
   municipioSeleccionado: string = '';
 
@@ -43,32 +44,31 @@ export class CreateComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    // Cargar municipios al iniciar
+ ngOnInit(): void {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.municipios = data;
     });
-  }
 
-
-onMunicipioChange(): void {
-  if (this.municipioSeleccionado) {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar?muni_Codigo=${this.municipioSeleccionado}`, {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.colonias = data;
-      this.sucursal.colo_Id = 0; 
+      this.coloniasfiltro = data;
     });
-  } else {
-    this.colonias = [];
-    this.sucursal.colo_Id = 0;
   }
-}
 
-// ...existing code...
-
+  onMunicipioChange(): void {
+    if (this.municipioSeleccionado) {
+      this.colonias = this.coloniasfiltro.filter(
+        c => c.muni_Codigo === this.municipioSeleccionado
+      );
+      this.sucursal.colo_Id = 0; 
+    } else {
+      this.colonias = [];
+      this.sucursal.colo_Id = 0;
+    }
+  }
   cancelar(): void {
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
