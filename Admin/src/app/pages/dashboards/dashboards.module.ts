@@ -35,6 +35,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AnalyticsComponent } from './analytics/analytics.component';
 
 import { IndexComponent } from './index/index.component';
+import { LocalstorageDebugComponent } from './index/localstorage-debug.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { IndexComponent } from './index/index.component';
     NgxEchartsModule.forRoot({ echarts }),
     ModalModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    FlatpickrModule.forRoot()
+    FlatpickrModule.forRoot(),
+    LocalstorageDebugComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

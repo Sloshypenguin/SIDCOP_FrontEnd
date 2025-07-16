@@ -64,7 +64,29 @@ export class TopbarComponent {
 
   ngOnInit(): void {
     this.element = document.documentElement;
+    // Obtener datos del usuario desde localStorage
     this.userData = this.TokenStorageService.getUser();
+    
+    // Formatear datos del usuario para mostrar en el topbar
+    if (!this.userData.first_name && !this.userData.last_name) {
+      // Si no hay first_name y last_name, intentar usar otros campos disponibles
+      if (this.userData.usua_Nombres) {
+        this.userData.first_name = this.userData.usua_Nombres;
+      } else if (this.userData.usua_Usuario) {
+        this.userData.first_name = this.userData.usua_Usuario;
+      } else {
+        this.userData.first_name = 'Usuario';
+      }
+      
+      if (this.userData.usua_Apellidos) {
+        this.userData.last_name = this.userData.usua_Apellidos;
+      } else {
+        this.userData.last_name = '';
+      }
+    }
+    
+    console.log('Datos de usuario en topbar:', this.userData);
+    
     this.cartData = cartList
     this.cartData.map((x: any) => {
       x['total'] = (x['qty'] * x['price']).toFixed(2)

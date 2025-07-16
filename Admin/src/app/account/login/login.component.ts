@@ -32,6 +32,7 @@ export class LoginComponent {
   constructor(private formBuilder: UntypedFormBuilder,
     private router: Router,
     private store: Store,
+    private authService: AuthenticationService
 ) { }
 
   ngOnInit(): void {
@@ -42,8 +43,8 @@ export class LoginComponent {
      * Form Validatyion
      */
     this.loginForm = this.formBuilder.group({
-      email: ['admin@themesbrand.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required]],
+      email: ['admin', [Validators.required]], // Cambiado a nombre de usuario
+      password: ['123', [Validators.required]],
     });
   }
 
@@ -56,11 +57,25 @@ export class LoginComponent {
   onSubmit() {
     this.submitted = true;
 
+    // Verificar si el formulario es válido
+    if (this.loginForm.invalid) {
+      return;
+    }
+
     const email = this.f['email'].value; // Get the username from the form
     const password = this.f['password'].value; // Get the password from the form
 
-    // Login Api
-    this.store.dispatch(login({ email: email, password: password }));
+    // Llamar directamente al servicio de autenticación
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        // Redirigir al usuario a la página principal
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        this.error = error.message || 'Error al iniciar sesión';
+        console.error('Error de inicio de sesión:', error);
+      }
+    });
   }
 
   /**
