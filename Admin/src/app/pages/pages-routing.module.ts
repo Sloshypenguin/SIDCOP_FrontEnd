@@ -7,30 +7,16 @@ const routes: Routes = [
     loadChildren: () =>
       import('./dashboards/dashboards.module').then((m) => m.DashboardsModule),
   },
-  {
-    path: 'apps',
-    loadChildren: () => import('./apps/apps.module').then((m) => m.AppsModule),
-  },
+
   {
     path: 'ui',
     loadChildren: () => import('./ui/ui.module').then((m) => m.UiModule),
   },
-  {
-    path: 'real-estate',
-    loadChildren: () =>
-      import('./real-estate/real-estate.module').then(
-        (m) => m.RealEstateModule
-      ),
-  },
+
   {
     path: 'icons',
     loadChildren: () =>
       import('./icons/icons.module').then((m) => m.IconsModule),
-  },
-  {
-    path: 'charts',
-    loadChildren: () =>
-      import('./charts/charts.module').then((m) => m.ChartsModule),
   },
   {
     path: 'tables',
