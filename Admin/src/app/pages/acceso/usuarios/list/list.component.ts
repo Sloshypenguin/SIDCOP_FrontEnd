@@ -191,12 +191,15 @@ export class ListComponent {
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLocaleLowerCase());
   }
 
+  usuarioGrid: any = [];
+  usuarios: any = [];
+
   private cargarDatos(): void {
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+      this.usuarioGrid = data || [];
+      this.usuarios = this.usuarioGrid.slice(0, 10);
     });
   }
 }
