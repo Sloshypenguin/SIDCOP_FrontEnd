@@ -26,10 +26,11 @@
         <div class="col-md-6">
           <!-- Departamento -->
           <div class="mb-3">
-            <label for="depa_Codigo" class="form-label">Departamento</label>
+            <label for="depa_Codigo" class="form-label">Departamento<span class="text-danger">*</span></label>
             <select
               id="depa_Codigo"
               class="form-select"
+              [class.is-invalid]="!departamentoSeleccionado && mostrarErrores"
               [(ngModel)]="departamentoSeleccionado"
               name="depa_Codigo"
               (change)="onDepartamentoChange()"
@@ -45,10 +46,11 @@
           </div>
           <!-- Municipio -->
           <div class="mb-3">
-            <label for="muni_Codigo" class="form-label">Municipio</label>
+            <label for="muni_Codigo" class="form-label">Municipio<span class="text-danger">*</span></label>
             <select
               id="muni_Codigo"
               class="form-select"
+              [class.is-invalid]="!municipioSeleccionado && mostrarErrores"
               [(ngModel)]="municipioSeleccionado"
               name="muni_Codigo"
               (change)="onMunicipioChange()"
@@ -65,10 +67,11 @@
           </div>
           <!-- Colonia -->
           <div class="mb-3">
-            <label for="colo_Id" class="form-label">Colonia</label>
+            <label for="colo_Id" class="form-label">Colonia<span class="text-danger">*</span></label>
             <select
               id="colo_Id"
               class="form-select"
+              [class.is-invalid]="!sucursal.colo_Id && mostrarErrores"
               [(ngModel)]="sucursal.colo_Id"
               name="colo_Id"
               [disabled]="!municipioSeleccionado"
@@ -84,7 +87,7 @@
           </div>
           <!-- Teléfono 1 -->
           <div class="mb-3">
-            <label for="sucu_Telefono1" class="form-label">Teléfono 1</label>
+            <label for="sucu_Telefono1" class="form-label">Teléfono 1<span class="text-danger">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -103,7 +106,7 @@
         <div class="col-md-6">
           <!-- Descripción -->
           <div class="mb-3">
-            <label for="sucu_Descripcion" class="form-label">Descripción</label>
+            <label for="sucu_Descripcion" class="form-label">Descripción<span class="text-danger">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -119,7 +122,7 @@
           </div>
           <!-- Dirección -->
           <div class="mb-3">
-            <label for="sucu_DireccionExacta" class="form-label">Dirección Exacta</label>
+            <label for="sucu_DireccionExacta" class="form-label">Dirección Exacta<span class="text-danger">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -135,7 +138,7 @@
           </div>
           <!-- Correo -->
           <div class="mb-3">
-            <label for="sucu_Correo" class="form-label">Correo</label>
+            <label for="sucu_Correo" class="form-label">Correo<span class="text-danger">*</span></label>
             <input
               type="email"
               class="form-control"
