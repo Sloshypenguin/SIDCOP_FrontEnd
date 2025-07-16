@@ -37,8 +37,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./table/table.module').then((m) => m.TableModule),
   },
-
-
   {
     path: 'pages',
     loadChildren: () =>
@@ -49,9 +47,25 @@ const routes: Routes = [
     loadChildren: () =>
       import('./general/general.module').then((m) => m.GeneralModule),
   },
+  {
+    path: 'inventario',
+    loadChildren: () =>
+      import('./inventario/inventario.module').then((m) => m.InventarioModule),
+  },
+  {
+    path: 'logistica',
+    loadChildren: () =>
+      import('./logistica/logistica.module').then((m) => m.LogisticaModule),
+  },
+  {
+    path: 'ventas',
+    loadChildren: () =>
+      import('./ventas/ventas.module').then((m) => m.VentasModule),
+  },
+  
 ];
 
-@NgModule({
+@NgModule({ 
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
