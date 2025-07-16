@@ -50,7 +50,7 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ cargoDetalle.usua_Creacion}}</span>
+          <span class="audit-user">{{ cargoDetalle.usuarioCreacion}}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date">{{ formatearFecha(cargoDetalle.carg_FechaCreacion) }}</span>
@@ -63,7 +63,7 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ cargoDetalle.usua_Modificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ cargoDetalle.usuarioModificacion }}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date">{{ formatearFecha(cargoDetalle.carg_FechaModificacion ?? null) }}</span>
