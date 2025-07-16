@@ -1087,6 +1087,7 @@ td.position-relative .dropdown-menu.show,
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   animation: slideInRight 0.3s ease-out;
+  opacity: 1 !important;       // Sin transparencia
 }
 
 @keyframes slideInRight {
@@ -1099,7 +1100,9 @@ td.position-relative .dropdown-menu.show,
     opacity: 1;
   }
 }
-
+.floating-alert.alert-success { background: #e1f7ea !important; }
+.floating-alert.alert-warning { background: #f0e0ac !important; }
+.floating-alert.alert-danger  { background: #f8d7da !important; }
 .floating-alert.fade:not(.show) {
   animation: slideOutRight 0.3s ease-in;
 }
