@@ -27,7 +27,7 @@
 <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarEstadoCivil($event)"></app-create> -->
+      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarSubcategoria($event)"></app-create>
     </div>
   </div>
 </div>
@@ -36,11 +36,11 @@
 <div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-edit 
-        [estadoCivilData]="estadoCivilEditando" 
+      <app-edit 
+        [subcategoriaData]="subcategoriaEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarEstadoCivil($event)">
-      </app-edit> -->
+        (onSave)="actualizarSubcategoria($event)">
+      </app-edit>
     </div>
   </div>
 </div>
@@ -96,7 +96,7 @@
                 </td>
                 <td><span class="fw-semibold">{{data.subc_Id}}</span></td>
                 <td>{{data.subc_Descripcion}}</td>
-                <td>{{data.cate}}</td>
+                <td>{{data.cate_Descripcion}}</td>
               </tr>
             </tbody>
           </table>

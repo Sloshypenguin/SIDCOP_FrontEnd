@@ -8,7 +8,7 @@ export class Subcategoria{
   subc_FechaModificacion?: Date;
   subc_Estado: boolean = false;
   
-  cate: String = '';
+  cate_Descripcion: string = '';
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
   code_Status: number = 0;
