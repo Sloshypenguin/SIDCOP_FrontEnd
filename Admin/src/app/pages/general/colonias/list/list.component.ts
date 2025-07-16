@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
+import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
 
 @Component({
   selector: 'app-list',
@@ -30,17 +31,25 @@ import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
 
   activeActionRow: number | null = null;
-  showEdit = true;
-  showDetails = true;
-  showDelete = true;
+  // Variables para control de alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  
+  // Acciones disponibles para el usuario
+  accionesDisponibles: string[] = [];
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
   coloniaEditando: Colonias | null = null;
   coloniaDetalle: Colonias | null = null;
+  municipios: Municipio[] = [];
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -70,7 +79,7 @@ export class ListComponent {
   editar(colonia: Colonias): void {
     console.log('Abriendo formulario de edición para:', colonia);
     console.log('Datos específicos:', {
-      codigo: colonia.colo_id,
+      codigo: colonia.colo_Id,
       descripcion: colonia.colo_Descripcion,
       completo: colonia
     });
@@ -81,22 +90,20 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-   detalles(  colonia: Colonias): void {
+   detalles(colonia: Colonias): void {
     console.log('Abriendo detalles para:', colonia);
-    this.coloniaDetalle = { ...colonia }; // Hacer copia profunda
+    const muni = this.municipios.find(m => m.muni_Codigo === colonia.muni_Codigo);
+    this.coloniaDetalle = { 
+      ...colonia, 
+      municipioDescripcion: muni ? muni.muni_Descripcion : 'N/A' 
+    };
     this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
+    this.showCreateForm = false;
+    this.showEditForm = false;
+    this.activeActionRow = null;
   }
 
-  // Propiedades para alertas
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
+  // Propiedades para alertas (ya definidas al inicio de la clase)
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
@@ -111,12 +118,69 @@ export class ListComponent {
     });
   }
 
-  constructor(public table: ReactiveTableService< Colonias>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
+  constructor(public table: ReactiveTableService<Colonias>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+
+  // Verificar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    const accionBuscada = accion.toLowerCase();
+    const accionesMapeadas: {[key: string]: string} = {
+      'detalles': 'detalle',
+      'nuevo': 'crear'
+    };
+    const accionReal = accionesMapeadas[accionBuscada] || accionBuscada;
+    return this.accionesDisponibles.some(a => a === accionReal);
   }
 
-   onActionMenuClick(rowIndex: number) {
+  // Cargar acciones disponibles del usuario
+  cargarAccionesUsuario() {
+    let accionesArray: string[] = [];
+    let modulo: any = null;
+    const permisosJson = localStorage.getItem('permisosJson');
+    if (permisosJson) {
+      try {
+        const permisos = JSON.parse(permisosJson);
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (17 para colonias)
+                    modulo = permisos.find((m: any) => m.Pant_Id === 11);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Colonias'] || permisos['colonias'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones
+            .map((a: any) => {
+              const accion = a.Accion || a.accion || a;
+              return typeof accion === 'string' ? accion.trim().toLowerCase() : '';
+            })
+            .filter((a: string) => a.length > 0);
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray;
+    console.log('Acciones disponibles para colonias:', this.accionesDisponibles);
+  }
+
+  // Inicializar componente
+    ngOnInit() {
+    this.cargarAccionesUsuario();
+    this.cargardatos();
+    this.cargarMunicipios();
+  }
+
+    onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  }
+
+  private cargarMunicipios(): void {
+    this.http.get<Municipio[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.municipios = data;
+    }, error => {
+      console.error('Error al cargar los municipios', error);
+    });
   }
 
   // (navigateToCreate eliminado, lógica movida a crear)
@@ -168,7 +232,7 @@ export class ListComponent {
     
     console.log('Eliminando colonia:', this.coloniaAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Colonias/Eliminar/${this.coloniaAEliminar.colo_id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Colonias/Eliminar/${this.coloniaAEliminar.colo_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'

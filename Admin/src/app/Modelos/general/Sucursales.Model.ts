@@ -12,6 +12,13 @@ export class Sucursales {
   sucu_FechaModificacion?: Date;
   sucu_Estado: boolean = true;
 
+  // Nuevos campos para detalles
+  colo_Descripcion?: string;
+  muni_Descripcion?: string;
+  depa_Descripcion?: string;
+  usuarioCreacion?: string;
+  usuarioModificacion?: string;
+
   constructor(init?: Partial<Sucursales>) {
     Object.assign(this, init);
   }

@@ -132,10 +132,6 @@ export class ListComponent implements OnInit {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  // (navigateToCreate eliminado, lógica movida a crear)
-
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
-
   cerrarFormulario(): void {
     this.showCreateForm = false;
   }
