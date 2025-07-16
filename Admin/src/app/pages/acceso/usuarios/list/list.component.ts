@@ -32,15 +32,19 @@ import { DetailsComponent } from '../details/details.component';
 })
 export class ListComponent {
   breadCrumbItems!: Array<{}>;
+  accionesDisponibles: string [] = [];
+
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
 
   ngOnInit(): void {
-    /**
-     * BreadCrumb
-     */
     this.breadCrumbItems = [
       { label: 'Acceso' },
       { label: 'U', active: true }
     ];
+
+    this.cargarAccionesUsuario();
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -99,7 +103,7 @@ export class ListComponent {
   usuarioEliminar: Usuario | null = null;
 
 
-  constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private router: ActivatedRoute){
+  constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private route: ActivatedRoute){
     this.cargarDatos();
   }
 
@@ -155,7 +159,43 @@ export class ListComponent {
     })
   }
 
+  cerrarAlerta(): void{
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+  }
+
+  private cargarAccionesUsuario(): void{
+    const permisosRaw = localStorage.getItem('permisosJson');
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try{
+        const permisos = JSON.parse(permisosRaw);
+        let modulo = null;
+        if(Array.isArray(permisos)){
+          modulo = permisos.find((m: any) => m.Pant_Id === 7);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          modulo = permisos['Usuarios'] || permisos['usuarios'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones.map((a: any) => a.accion).filter((a:any) => a && typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLocaleLowerCase());
+  }
+
   private cargarDatos(): void {
-    this.http.get
+    this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      console.log('Datos recargados:', data);
+      this.table.setData(data);
+    });
   }
 }
