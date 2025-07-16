@@ -62,7 +62,8 @@
     </div>
 </div><!--end card-->
 
-<div class="row g-4 justify-content-center">
+<!-- Mostrar listado solo si no se está creando, editando o viendo detalles -->
+<div class="row g-4 justify-content-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
 
     <div class="row g-4 justify-content-center" *ngIf="isLoading">
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 d-flex" *ngFor="let n of [1,2,3,4,5,6,7,8,9,10]">
@@ -78,8 +79,6 @@
         </div>
     </div>
     </div>
-
-
 
     @for (empleado of instructors; track empleado.empl_Id) {
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 d-flex">

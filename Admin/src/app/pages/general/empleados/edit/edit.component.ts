@@ -94,24 +94,58 @@ export class EditComponent implements OnChanges {
   }
 
   validarEdicion(): void {
-  this.mostrarErrores = true;
+    this.mostrarErrores = true;
 
-  if (this.empleado.empl_Apellidos.trim()) {
-    const haCambiado = this.empleado.empl_Apellidos.trim() !== (this.empleadoData?.empl_Apellidos?.trim() || '');
+    // Compara todos los campos relevantes
+    const original = this.empleadoData;
+    const actual = this.empleado;
+    const haCambiado =
+      (original?.empl_DNI?.trim() || '') !== (actual.empl_DNI?.trim() || '') ||
+      (original?.empl_Codigo?.trim() || '') !== (actual.empl_Codigo?.trim() || '') ||
+      (original?.empl_Nombres?.trim() || '') !== (actual.empl_Nombres?.trim() || '') ||
+      (original?.empl_Apellidos?.trim() || '') !== (actual.empl_Apellidos?.trim() || '') ||
+      (original?.empl_Sexo?.trim() || '') !== (actual.empl_Sexo?.trim() || '') ||
+      (original?.empl_FechaNacimiento || '') !== (actual.empl_FechaNacimiento || '') ||
+      (original?.empl_Correo?.trim() || '') !== (actual.empl_Correo?.trim() || '') ||
+      (original?.empl_Telefono?.trim() || '') !== (actual.empl_Telefono?.trim() || '') ||
+      (original?.sucu_Id || 0) !== (actual.sucu_Id || 0) ||
+      (original?.esCv_Id || 0) !== (actual.esCv_Id || 0) ||
+      (original?.carg_Id || 0) !== (actual.carg_Id || 0) ||
+      (original?.colo_Id || 0) !== (actual.colo_Id || 0) ||
+      (original?.empl_DireccionExacta?.trim() || '') !== (actual.empl_DireccionExacta?.trim() || '');
 
-    if (haCambiado) {
-      this.mostrarConfirmacionEditar = true;
+    // Valida campos requeridos
+    const camposRequeridos = [
+      actual.empl_DNI,
+      actual.empl_Codigo,
+      actual.empl_Nombres,
+      actual.empl_Apellidos,
+      actual.empl_Sexo,
+      actual.empl_FechaNacimiento,
+      actual.empl_Correo,
+      actual.empl_Telefono,
+      actual.sucu_Id,
+      actual.esCv_Id,
+      actual.carg_Id,
+      actual.colo_Id,
+      actual.empl_DireccionExacta
+    ];
+    const todosLlenos = camposRequeridos.every(c => c && c.toString().trim() !== '');
+
+    if (todosLlenos) {
+      if (haCambiado) {
+        this.mostrarConfirmacionEditar = true;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'No se han detectado cambios.';
+        setTimeout(() => this.cerrarAlerta(), 4000);
+      }
     } else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'No se han detectado cambios.';
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
       setTimeout(() => this.cerrarAlerta(), 4000);
     }
-  } else {
-    this.mostrarAlertaWarning = true;
-    this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-    setTimeout(() => this.cerrarAlerta(), 4000);
   }
-}
 
 
   cancelarEdicion(): void {
@@ -126,15 +160,17 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
+    const fechaInicial = new Date(this.empleado.empl_FechaNacimiento).toISOString().split('T')[0];
+
     if (this.empleado.empl_Nombres.trim()) {
       const empleadoActualizar = {
-        empl_Id: 0,
+        empl_Id: this.empleado.empl_Id,
           empl_DNI: this.empleado.empl_DNI,
           empl_Codigo: this.empleado.empl_Codigo,
           empl_Nombres: this.empleado.empl_Nombres,
           empl_Apellidos: this.empleado.empl_Apellidos,
           empl_Sexo: this.empleado.empl_Sexo,
-          empl_FechaNacimiento: new Date(this.empleado.empl_FechaNacimiento).toISOString(),
+          empl_FechaNacimiento: fechaInicial,
           empl_Correo: this.empleado.empl_Correo,
           empl_Telefono: this.empleado.empl_Telefono,
           sucu_Id: this.empleado.sucu_Id,
@@ -145,7 +181,7 @@ export class EditComponent implements OnChanges {
           empl_Estado: true,
           usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
           empl_FechaCreacion: new Date().toISOString(),
-          usua_Modificacion: 0,
+          usua_Modificacion: 1,
           empl_FechaModificacion: new Date().toISOString(),
       };
 
