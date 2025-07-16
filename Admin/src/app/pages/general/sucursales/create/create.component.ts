@@ -90,6 +90,7 @@ export class CreateComponent implements OnInit {
       sucu_Estado: true
     };
     this.onCancel.emit();
+    this.municipioSeleccionado = '';
   }
 
   cerrarAlerta(): void {
@@ -128,26 +129,42 @@ export class CreateComponent implements OnInit {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Sucursal "${this.sucursal.sucu_Descripcion}" guardada exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
+          if (response?.data?.code_Status === 1) {
+            this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" guardada exitosamente`;
+            this.mostrarAlertaExito = true;
+            this.mostrarErrores = false;
 
-          setTimeout(() => {
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.onSave.emit(this.sucursal);
+              this.cancelar();
+            }, 3000);
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response?.data?.message_Status || 'No se pudo guardar la sucursal.';
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.sucursal);
-            this.cancelar();
-          }, 3000);
+
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
-          this.mostrarAlertaError = true;
+        this.mostrarAlertaError = true;
+        if (error?.error?.data?.message_Status) {
+          this.mensajeError = error.error.data.message_Status;
+        } else {
           this.mensajeError = 'Error al guardar la sucursal. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
         }
+        this.mostrarAlertaExito = false;
+        console.log('Error al guardar la sucursal:', error);
+
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
       });
     } else {
       this.mostrarAlertaWarning = true;
