@@ -15,6 +15,7 @@ import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { HttpClient } from '@angular/common/http';
 import { cloneDeep } from 'lodash';
 import { environment } from 'src/environments/environment';
+import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
 
 @Component({
   standalone: true,
@@ -50,6 +51,7 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
+  isLoading = true;
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -118,6 +120,7 @@ export class ListComponent {
     }).subscribe(data => {
       this.instructorGrid = data || [];
       this.instructors = cloneDeep(this.instructorGrid.slice(0, 10));
+      this.isLoading = false;
     });
   }
 
