@@ -11,8 +11,9 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
-import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
-import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
+import {Colonias} from 'src/app/Modelos/general/Colonias.Model';
+import {Municipio} from 'src/app/Modelos/general/Municipios.Model';
+
 
 @Component({
   selector: 'app-list',

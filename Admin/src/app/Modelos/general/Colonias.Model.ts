@@ -12,8 +12,8 @@ export class Colonias {
   colo_FechaModificacion?: Date;
   usuarioCreacion?: string = '';
   usuarioModificacion?: string = '';
-  code_Status?: number = 0;
-  message_Status?: string = '';
+  code_Status: number = 0;
+  message_Status: string = '';
 
   constructor(init?: Partial<Colonias>) {
     Object.assign(this, init);

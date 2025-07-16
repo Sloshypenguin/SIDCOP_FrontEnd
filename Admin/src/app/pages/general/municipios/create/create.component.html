@@ -32,6 +32,8 @@
 
     <div class="col-md-6">
         <div class="mb-3">
+          <label for="departamentoCodigo" class="form-label">Departamento</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
             <select 
                 id="departamentoCodigo" 
@@ -57,6 +59,8 @@
 
       <div class="col-md-6">
         <div class="mb-3">
+          <label for="municipioCodigo" class="form-label">Código</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
             <input 
               type="text" 
@@ -77,6 +81,8 @@
       <!-- siguiente campo (dividido por col-md-6 para que salgan 2 campos por row) -->
       <div class="col-md-6">
         <div class="mb-3">
+          <label for="muni_Descripcion" class="form-label">Descripción</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
             <input 
               type="text" 

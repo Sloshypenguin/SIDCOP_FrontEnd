@@ -31,6 +31,8 @@
     <!-- Campos que se tienen que ingresar -->
       <div class="col-md-6">
         <div class="mb-3">
+          <label for="depa_Codigo" class="form-label">Código</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
             <input 
               type="text" 
@@ -51,6 +53,8 @@
       <!-- siguiente campo (dividido por col-md-6 para que salgan 2 campos por row) -->
       <div class="col-md-6">
         <div class="mb-3">
+          <label for="depa_Descripcion" class="form-label">Descripción</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
             <input 
               type="text" 
