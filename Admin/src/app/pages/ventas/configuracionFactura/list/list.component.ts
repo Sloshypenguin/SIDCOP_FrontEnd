@@ -34,7 +34,8 @@ export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
    // Acciones disponibles para el usuario en esta pantalla
   accionesDisponibles: string[] = [];
-
+  mostrarConfirmacionEliminar = false;
+  configuracionAEliminar: ConfiguracionFactura | null = null;
   // Método robusto para validar si una acción está permitida
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
@@ -92,51 +93,88 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null;
   }
 
+  
+
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
     this.impuestoAEliminar = null;
   }
 
+  
   eliminar(): void {
-    if (!this.impuestoAEliminar) return;
-
-    this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar/${this.impuestoAEliminar.coFa_Id}`, {}, {
+    if (!this.configuracionAEliminar) return;
+    console.log('Eliminando configuración:', this.configuracionAEliminar);
+    this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar/${this.configuracionAEliminar.coFa_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
       next: (response: any) => {
+        console.log('Respuesta del servidor:', response);
+              console.log('Eliminando configuración:', this.configuracionAEliminar);
+
+        // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
-          const status = response.data.code_Status;
-          const message = response.data.message_Status || '';
-          if (status === 1) {
-            this.mensajeExito = `Impuesto "${this.impuestoAEliminar!.coFa_NombreEmpresa}" eliminado exitosamente`;
+          if (response.data.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Configuración eliminada exitosamente');
+            this.mensajeExito = `Configuración "${this.configuracionAEliminar!.coFa_NombreEmpresa}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
-            setTimeout(() => this.cerrarAlerta(), 3000);
+            
+            // Ocultar la alerta después de 3 segundos
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            
+
             this.cargardatos();
             this.cancelarEliminar();
-          } else if (status === -1) {
-            this.mensajeError = message || 'No se puede eliminar: el impuesto está siendo utilizado.';
+          } else if (response.data.code_Status === -1) {
+            //result: está siendo utilizado
+            console.log('La configuración de factura está siendo utilizada');
             this.mostrarAlertaError = true;
-            setTimeout(() => this.cerrarAlerta(), 5000);
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la configuración de factura está siendo utilizada.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
             this.cancelarEliminar();
-          } else {
-            this.mensajeError = message || 'Error al eliminar el impuesto.';
+          } else if (response.data.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            setTimeout(() => this.cerrarAlerta(), 5000);
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
         } else {
-          this.mensajeError = response.message || 'Error inesperado al eliminar el impuesto.';
+          // Respuesta inesperada
+          console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          setTimeout(() => this.cerrarAlerta(), 5000);
+          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
-      }
+      },
     });
   }
-
   guardarImpuesto(impuesto: ConfiguracionFactura): void {
     console.log('Impuesto guardado exitosamente desde create component:', impuesto);
     this.cargardatos();
@@ -212,7 +250,6 @@ export class ListComponent implements OnInit {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  mostrarConfirmacionEliminar = false;
 
 
   // Método para cargar las acciones disponibles del usuario
