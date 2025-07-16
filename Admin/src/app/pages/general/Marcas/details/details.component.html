@@ -17,15 +17,26 @@
         <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
       </button>
     </div>
-    
+
     <!-- Contenido de detalles -->
     <div *ngIf="!cargando && marcaDetalle" class="details-content">
       
       <!-- Header con descripción -->
       <div class="details-header">
-        <h4 class="details-title">{{ marcaDetalle.marc_Descripcion }}</h4>
-        <span>Descripción </span>
+        <div class="details-title">Detalles de Marca</div>
+        <div class="details-id-row">
+          <div class="details-id">
+            <div class="details-id-label">Código</div>
+            <div class="details-id-value">{{ marcaDetalle.marc_Id || 'N/A' }}</div>
+          </div>
+          <div class="details-id">
+            <div class="details-id-label">Descripción</div>
+            <div class="details-id-value">{{ marcaDetalle.marc_Descripcion || 'N/A' }}</div>
+          </div>
+        </div>
       </div>
+      
+      <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
       
       <!-- Tabla de auditoría -->
       <div class="audit-table-container">
@@ -62,8 +73,6 @@
           </div>
         </div>
       </div>
-      </div>
-      
     </div>
   </div>
-  
+</div>

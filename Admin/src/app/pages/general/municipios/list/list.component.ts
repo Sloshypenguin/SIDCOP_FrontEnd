@@ -95,7 +95,7 @@ export class ListComponent implements OnInit {
     const depto = this.departamentos.find(d => d.depa_Codigo === municipio.depa_Codigo);
     this.municipioDetalle = { 
       ...municipio, 
-      departamentoDescripcion: depto ? depto.depa_Descripcion : 'N/A' 
+      depa_Descripcion: depto ? depto.depa_Descripcion : 'N/A' 
     };
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto

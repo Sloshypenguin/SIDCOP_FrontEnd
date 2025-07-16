@@ -26,14 +26,34 @@
       <div class="details-title">Detalles de Colonia</div>
       <div class="details-id-row">
         <div class="details-id">
-          <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ coloniaDetalle.colo_Id || 'N/A' }}</div>
+          <div class="details-id-label">Registro</div>
+          <div class="details-id-value">{{ coloniaDetalle.secuencia || 'N/A' }}</div>
         </div>
+        <div class="details-id">
+          <div class="details-id-label">Municipio Codigo</div>
+          <div class="details-id-value">{{ coloniaDetalle.muni_Codigo || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Departamento Codigo</div>
+          <div class="details-id-value">{{ coloniaDetalle.depa_Codigo || 'N/A' }}</div>
+        </div>
+      </div>
+      <!--  -->
+      <div class="details-id-row">
         <div class="details-id">
           <div class="details-id-label">Descripción</div>
           <div class="details-id-value">{{ coloniaDetalle.colo_Descripcion || 'N/A' }}</div>
         </div>
+        <div class="details-id">
+          <div class="details-id-label">Municipio</div>
+          <div class="details-id-value">{{ coloniaDetalle.muni_Descripcion || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Departamento</div>
+          <div class="details-id-value">{{ coloniaDetalle.depa_Descripcion || 'N/A' }}</div>
+        </div>
       </div>
+      <!--  -->
     </div>
     
     <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
