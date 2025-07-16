@@ -51,9 +51,9 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
-        [estadoCivilData]="estadoCivilEditando" 
+        [PEData]="PEEditando" 
         (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarEstadoCivil($event)">
+        (onSave)="actualizarPE($event)">
       </app-edit>
     </div>
   </div>
@@ -64,7 +64,7 @@
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
-        [estadoCivilData]="estadoCivilDetalle" 
+        [PEData]="PEDetalle" 
         (onClose)="cerrarFormularioDetalles()">
       </app-details>
     </div>
@@ -234,8 +234,8 @@
               class="ri-alert-line me-2 custom-modal-alert-icon"
               (click)="cancelarEliminar()"
             ></i
-            >¿Está seguro(a) que desea eliminar el estado civil
-            <strong>{{ estadoCivilAEliminar?.puEm_Descripcion }}</strong
+            >¿Está seguro(a) que desea eliminar el punto de emisión
+            <strong>{{ PEEliminar?.puEm_Descripcion }}</strong
             >?
           </p>
         </div>

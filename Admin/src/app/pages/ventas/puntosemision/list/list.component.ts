@@ -97,7 +97,7 @@ export class ListComponent implements OnInit {
 
   detalles(puntodeemision: PuntoEmision): void {
     console.log('Abriendo detalles para:', puntodeemision);
-    this.estadoCivilDetalle = { ...puntodeemision }; // Hacer copia profunda
+    this.PEDetalle = { ...puntodeemision }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -111,7 +111,7 @@ export class ListComponent implements OnInit {
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
   PEEditando: PuntoEmision | null = null;
-  estadoCivilDetalle: PuntoEmision | null = null;
+  PEDetalle: PuntoEmision | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -141,6 +141,7 @@ export class ListComponent implements OnInit {
     this.showCreateForm = false;
   }
 
+  
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
     this.PEEditando = null;
@@ -148,7 +149,7 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.estadoCivilDetalle = null;
+    this.PEDetalle = null;
   }
 
   guardarPE(puntodeemision: PuntoEmision): void {
