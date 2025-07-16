@@ -105,7 +105,7 @@
                   </div>
                 </td>
             
-    <td>{{ data.coFa_Id }}</td>
+    <td>{{ data.secuencia }}</td>
     <td>{{ data.coFa_NombreEmpresa }}</td>
     <td>{{ data.coFa_DireccionEmpresa }}</td>
     <td>{{ data.coFa_RTN }}</td>
@@ -177,15 +177,16 @@
       <hr class="custom-modal-divider">
       <div class="modal-body custom-modal-body text-center">
         <p class="mt-2 custom-modal-text">
-          <!-- <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar la configuración de factura <strong>{{ configAEliminar?.CoFa_NombreEmpresa }}</strong>? -->
+          <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar la configuración de factura <strong>{{ configuracionAEliminar?.coFa_NombreEmpresa }}</strong>?
         </p>
       </div>
       <div class="modal-footer custom-modal-footer">
         <button type="button" class="btn btn-primary gray btn-sm" (click)="cancelarEliminar()">
           <span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span>
         </button>
-        <button type="button" class="btn btn-primary red btn-sm" (click)="eliminar()">
-          <span class="btn-text">Sí</span><span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+        <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
+          <span class="btn-text">Si</span>
+          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
         </button>
       </div>
     </div>

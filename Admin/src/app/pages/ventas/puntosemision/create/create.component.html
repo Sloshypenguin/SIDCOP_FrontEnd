@@ -1,6 +1,7 @@
+
 <div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
   <!-- Título del componente -->
-  <h5 class="card-title mb-4">Crear Nuevo Cargo</h5>
+  <h5 class="card-title mb-4">Crear Nuevo Punto de Emision</h5>
   
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
@@ -30,22 +31,38 @@
     <div class="row">
       <div class="col-md-6">
         <div class="mb-3">
-            <label for="nombres-input"  class="form-label">Cargo<span class="text-danger" > *</span></label>
-
           <div class="d-flex align-items-center">
             <input 
               type="text" 
               class="form-control" 
-              [class.is-invalid]="!cargo.carg_Descripcion.trim() && mostrarErrores"
-              id="cargoDescripcion"
-              [(ngModel)]="cargo.carg_Descripcion"
-                (blur)="mostrarErrores = true"
-              placeholder="Ingrese la descripción del cargo"
+              [class.is-invalid]="!puntoEmision.puEm_Codigo.trim() && mostrarErrores"
+              id="PECod"
+              [(ngModel)]="puntoEmision.puEm_Codigo"
+              placeholder="Ingrese el Codigo del Punto de Emision"
               required>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" *ngIf="!cargo.carg_Descripcion.trim() && mostrarErrores">
-            <small>El campo Descripción del cargo es requerido</small>
+          <div class="text-danger mt-1" *ngIf="!puntoEmision.puEm_Codigo.trim() && mostrarErrores">
+            <small>El campo Codigo del Punto de Emision es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!puntoEmision.puEm_Descripcion.trim() && mostrarErrores"
+              id="PEDescripcion"
+              [(ngModel)]="puntoEmision.puEm_Descripcion"
+              placeholder="Ingrese la descripción del estado civil"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!puntoEmision.puEm_Descripcion.trim() && mostrarErrores">
+            <small>El campo Descripción del Punto de Emision  es requerido</small>
           </div>
         </div>
       </div>
