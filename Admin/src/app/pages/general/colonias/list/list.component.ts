@@ -93,10 +93,8 @@ export class ListComponent implements OnInit {
 
    detalles(colonia: Colonias): void {
     console.log('Abriendo detalles para:', colonia);
-    //const muni = this.municipios.find(m => m.muni_Codigo === colonia.muni_Codigo);
     this.coloniaDetalle = { 
       ...colonia, 
-      //muni_Descripcion: muni ? muni.muni_Descripcion : 'N/A' 
     };
     this.showDetailsForm = true;
     this.showCreateForm = false;
@@ -233,7 +231,7 @@ export class ListComponent implements OnInit {
     
     console.log('Eliminando colonia:', this.coloniaAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Colonias/Eliminar/${this.coloniaAEliminar.colo_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Colonia/Eliminar/${this.coloniaAEliminar.colo_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -246,8 +244,8 @@ export class ListComponent implements OnInit {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Municipio eliminado exitosamente');
-            this.mensajeExito = `Municipio "${this.coloniaAEliminar!.colo_Descripcion}" eliminado exitosamente`;
+            console.log('Colonia eliminada exitosamente');
+            this.mensajeExito = `Colonia "${this.coloniaAEliminar!.colo_Descripcion}" eliminada exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos

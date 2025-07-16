@@ -11,7 +11,7 @@
   </div>
 
   <!-- Formulario -->
-  <form (ngSubmit)="guardar()" *ngIf="coloniaEditada">
+  <form (ngSubmit)="validarEdicion()" *ngIf="coloniaEditada">
     <div class="row">
       <div class="col-md-6">
         <div class="mb-3">
@@ -27,20 +27,55 @@
       </div>
       <div class="col-md-6">
         <div class="mb-3">
-          <label for="edit_muni_Codigo" class="form-label">Municipio</label>
+          <label for="depa_Codigo" class="form-label">Departamento</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
           <select 
-            id="edit_muni_Codigo" 
-            name="edit_muni_Codigo" 
+            id="depa_Codigo" 
+            name="depa_Codigo" 
             class="form-select" 
-            [(ngModel)]="coloniaEditada.muni_Codigo" 
+            [(ngModel)]="selectedDepa" 
+            (change)="cargarMunicipios(selectedDepa)"
             required>
-            <option *ngFor="let muni of municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+            <option value="" disabled selected>Seleccione un Departamento</option>
+            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion }}</option>
           </select>
-          <div *ngIf="cargando" class="form-text text-muted">Cargando municipios...</div>
+          <div *ngIf="cargando" class="form-text text-muted">Cargando Departamentos...</div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
+            <small>El campo Departamento es requerido</small>
+          </div>
         </div>
       </div>
     </div>
+    <!--  -->
 
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="muni_Codigo" class="form-label">Municipio</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+          <select 
+            id="muni_Codigo" 
+            name="muni_Codigo" 
+            class="form-select" 
+            [(ngModel)]="coloniaEditada.muni_Codigo" 
+            required>
+            <option value="" disabled selected>Seleccione un Municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <div *ngIf="cargando" class="form-text text-muted">Cargando Municipios...</div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
+            <small>El campo Municipio es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Separador y Botones -->
     <hr class="my-4">
     <div class="d-flex justify-content-end">
@@ -48,7 +83,7 @@
         <span class="btn-text">Cancelar</span>
         <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
       </button>
-      <button type="button" class="btn btn-primary" (click)="guardar()">
+      <button type="button" class="btn btn-primary" (click)="validarEdicion()">
         <span class="btn-text">Guardar</span>
         <span class="btn-icon"><i class="ri-save-line"></i></span>
       </button>
