@@ -139,27 +139,25 @@ export class CreateComponent implements OnInit {
               this.onSave.emit(this.sucursal);
               this.cancelar();
             }, 3000);
-          } else {
+          }
+          if(response?.data?.code_Status === -1) {
             this.mostrarAlertaError = true;
-            this.mensajeError = response?.data?.message_Status || 'No se pudo guardar la sucursal.';
+            this.mensajeError = response?.data?.message_Status || 'ya existe una sucursal con estos datos.';
+            console.error('Error al guardar la sucursal:', this.mensajeError);
             this.mostrarAlertaExito = false;
 
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-          }
+            }
         },
         error: (error) => {
-        this.mostrarAlertaError = true;
-        if (error?.error?.data?.message_Status) {
-          this.mensajeError = error.error.data.message_Status;
-        } else {
-          this.mensajeError = 'Error al guardar la sucursal. Por favor, intente nuevamente.';
-        }
-        this.mostrarAlertaExito = false;
-        console.log('Error al guardar la sucursal:', error);
-
+        if (error?.error?.data?.code_Status === 0) {
+          this.mostrarAlertaError = true;
+          this.mensajeError = error?.error?.data?.message_Status || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
+          this.mostrarAlertaExito = false;
+        } 
         setTimeout(() => {
           this.mostrarAlertaError = false;
           this.mensajeError = '';

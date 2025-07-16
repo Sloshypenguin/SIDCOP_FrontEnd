@@ -119,60 +119,10 @@ export class ListComponent implements OnInit {
     this.sucursalDetalle = null;
   }
 
-  guardarSucursal(sucursal: Sucursales): void {
-    this.http.post<any>(`${environment.apiBaseUrl}/Sucursales/Insertar`, sucursal, {
-      headers: {
-        'X-Api-Key': environment.apiKey,
-        'Content-Type': 'application/json',
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response) => {
-        this.mensajeExito = `Sucursal "${sucursal.sucu_Descripcion}" guardada exitosamente`;
-        this.mostrarAlertaExito = true;
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-        }, 3000);
-        this.cargarDatos();
-        this.cerrarFormulario();
-      },
-      error: () => {
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al guardar la sucursal. Por favor, intente nuevamente.';
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-        }, 5000);
-      }
-    });
-  }
-
-  actualizarSucursal(sucursal: Sucursales): void {
-    this.http.put<any>(`${environment.apiBaseUrl}/Sucursales/Actualizar`, sucursal, {
-      headers: {
-        'X-Api-Key': environment.apiKey,
-        'Content-Type': 'application/json',
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response) => {
-        this.mensajeExito = `Sucursal "${sucursal.sucu_Descripcion}" actualizada exitosamente`;
-        this.mostrarAlertaExito = true;
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-        }, 3000);
-        this.cargarDatos();
-        this.cerrarFormularioEdicion();
-      },
-      error: () => {
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al actualizar la sucursal. Por favor, intente nuevamente.';
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-        }, 5000);
-      }
-    });
-  }
-
+guardarSucursal(sucursal: Sucursales): void {
+  this.cargarDatos();
+  this.cerrarFormulario();
+}
   confirmarEliminar(sucursal: Sucursales): void {
     this.sucursalAEliminar = sucursal;
     this.mostrarConfirmacionEliminar = true;
