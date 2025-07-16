@@ -92,10 +92,10 @@ export class ListComponent implements OnInit {
 
    detalles(colonia: Colonias): void {
     console.log('Abriendo detalles para:', colonia);
-    const muni = this.municipios.find(m => m.muni_Codigo === colonia.muni_Codigo);
+    //const muni = this.municipios.find(m => m.muni_Codigo === colonia.muni_Codigo);
     this.coloniaDetalle = { 
       ...colonia, 
-      municipioDescripcion: muni ? muni.muni_Descripcion : 'N/A' 
+      //muni_Descripcion: muni ? muni.muni_Descripcion : 'N/A' 
     };
     this.showDetailsForm = true;
     this.showCreateForm = false;

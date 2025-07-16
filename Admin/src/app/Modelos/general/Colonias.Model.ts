@@ -2,10 +2,13 @@ export class Colonias {
   colo_Id?: number = 0;
   colo_Descripcion?: string = '';
   muni_Codigo?: string = '';
-  municipioDescripcion?: string;
+  muni_Descripcion?: string;
   usua_Creacion?: number = 0;
   colo_FechaCreacion?: Date = new Date();
   usua_Modificacion?: number;
+  secuencia?: number; 
+  depa_Codigo?: string;
+  depa_Descripcion?: string;
   colo_FechaModificacion?: Date;
   usuarioCreacion?: string = '';
   usuarioModificacion?: string = '';
