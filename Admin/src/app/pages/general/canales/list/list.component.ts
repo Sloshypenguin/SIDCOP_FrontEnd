@@ -33,11 +33,19 @@ import { DetailsComponent } from '../details/details.component';
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
 
+
+  accionesDisponibles: string[] = [];
+
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'General' },
       { label: 'Canales', active: true }
     ];
+    this.cargarAccionesUsuario();
     this.cargardatos();
   }
 
@@ -201,6 +209,30 @@ export class ListComponent implements OnInit {
     }).subscribe(data => {
       this.table.setData(data);
     });
+  }
+
+  // Método para cargar las acciones disponibles del usuario
+  private cargarAccionesUsuario(): void {
+    const permisosRaw = localStorage.getItem('permisosJson');
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Ajusta el ID si cambia en el futuro
+          modulo = permisos.find((m: any) => m.Pant_Id === 19);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          modulo = permisos['Canales'] || permisos['canales'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
   }
 }
 
