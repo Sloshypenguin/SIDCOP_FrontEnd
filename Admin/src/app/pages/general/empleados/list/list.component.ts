@@ -1,4 +1,3 @@
-  
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
@@ -15,6 +14,12 @@ import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { HttpClient } from '@angular/common/http';
 import { cloneDeep } from 'lodash';
 import { environment } from 'src/environments/environment';
+import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
+import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
+
+import { CreateComponent } from '../create/create.component';
+import { DetailsComponent } from '../details/details.component';
+import { EditComponent } from '../edit/edit.component';
 
 @Component({
   standalone: true,
@@ -37,6 +42,10 @@ import { environment } from 'src/environments/environment';
     DropzoneModule,
     BreadcrumbsComponent,
 
+    CreateComponent,
+    DetailsComponent,
+    EditComponent
+
   ]
 })
 
@@ -50,6 +59,24 @@ export class ListComponent {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
+  isLoading = true;
+
+  // Propiedades para alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  
+
+
+  empleadoDetalle: Empleado | null = null;
+  empleadoEditando: Empleado | null = null;
+
+  // Propiedades para confirmación de eliminación
+    mostrarConfirmacionEliminar = false;
+    empleadoAEliminar: Empleado | null = null;
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -118,6 +145,7 @@ export class ListComponent {
     }).subscribe(data => {
       this.instructorGrid = data || [];
       this.instructors = cloneDeep(this.instructorGrid.slice(0, 10));
+      this.isLoading = false;
     });
   }
 
@@ -209,4 +237,178 @@ export class ListComponent {
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
+
+
+
+
+  // Métodos para los botones de acción principales (crear, editar, detalles)
+  crear(): void {
+    console.log('Toggleando formulario de creación...');
+    this.showCreateForm = !this.showCreateForm;
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  cerrarFormulario(): void {
+    this.showCreateForm = false;
+  }
+
+  cerrarFormularioDetalles(): void {
+    this.showDetailsForm = false;
+    this.empleadoDetalle = null;
+  }
+
+
+
+
+  guardarEmpleado(empleado: Empleado): void {
+    console.log('Estado civil guardado exitosamente desde create component:', empleado);
+    // Recargar los datos de la tabla
+    this.cargardatos();
+    this.cerrarFormulario();
+  }
+
+  confirmarEliminar(empleado: Empleado): void {
+    console.log('Solicitando confirmación para eliminar:', empleado);
+    this.empleadoAEliminar = empleado;
+    this.mostrarConfirmacionEliminar = true;
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  cancelarEliminar(): void {
+    this.mostrarConfirmacionEliminar = false;
+    this.empleadoAEliminar = null;
+  }
+
+  eliminar(): void {
+    if (!this.empleadoAEliminar) return;
+    
+    console.log('Eliminando estado civil:', this.empleadoAEliminar);
+    
+    this.http.post(`${environment.apiBaseUrl}/Empleado/Eliminar/${this.empleadoAEliminar.empl_Id}`, {}, {
+      headers: { 
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Respuesta del servidor:', response);
+        
+        // Verificar el código de estado en la respuesta
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Empleado eliminado exitosamente');
+            this.mensajeExito = `Empleado "${this.empleadoAEliminar!.empl_Nombres}" eliminado exitosamente`;
+            this.mostrarAlertaExito = true;
+            
+            // Ocultar la alerta después de 3 segundos
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            
+
+            this.cargardatos();
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            //result: está siendo utilizado
+            console.log('El empleado está siendo utilizado');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el empleado está siendo utilizado.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el empleado.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          }
+        } else {
+          // Respuesta inesperada
+          console.log('Respuesta inesperada del servidor');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar el empleado.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        }
+      },
+    });
+  }
+
+
+
+  //Detailss
+  detalles(empleado: Empleado): void {
+      console.log('Abriendo detalles para:', empleado);
+      this.empleadoDetalle = { ...empleado }; // Hacer copia profunda
+      this.showDetailsForm = true;
+      this.showCreateForm = false; // Cerrar create si está abierto
+      this.showEditForm = false; // Cerrar edit si está abierto
+      this.activeActionRow = null; // Cerrar menú de acciones
+    }
+
+
+
+
+    editar(empleado: Empleado): void {
+      console.log('Abriendo formulario de edición para:', empleado);
+      // Crear una copia profunda asegurando que todos los campos estén presentes y sin sobrescribir
+      this.empleadoEditando = {
+        empl_Id: empleado.empl_Id ?? undefined,
+        empl_DNI: empleado.empl_DNI || '',
+        empl_Codigo: empleado.empl_Codigo || '',
+        empl_Nombres: empleado.empl_Nombres || '',
+        empl_Apellidos: empleado.empl_Apellidos || '',
+        empl_Sexo: empleado.empl_Sexo || '',
+        empl_FechaNacimiento: empleado.empl_FechaNacimiento || '',
+        empl_Correo: empleado.empl_Correo || '',
+        empl_Telefono: empleado.empl_Telefono || '',
+        sucu_Id: empleado.sucu_Id ?? undefined,
+        esCv_Id: empleado.esCv_Id ?? undefined,
+        carg_Id: empleado.carg_Id ?? undefined,
+        colo_Id: empleado.colo_Id ?? undefined,
+        empl_DireccionExacta: empleado.empl_DireccionExacta || '',
+        empl_Estado: empleado.empl_Estado ?? 1,
+        usua_Creacion: empleado.usua_Creacion ?? 0,
+        empl_FechaCreacion: empleado.empl_FechaCreacion ?? '',
+      };
+      this.showEditForm = true;
+      this.showCreateForm = false; // Cerrar create si está abierto
+      this.showDetailsForm = false; // Cerrar details si está abierto
+      this.activeActionRow = null; // Cerrar menú de acciones
+    }
+
+    actualizarEmpleado(empleado: Empleado): void {
+      console.log('Empleado actualizado exitosamente desde edit component:', empleado);
+      // Recargar los datos de la tabla
+      this.cargardatos();
+      this.cerrarFormularioEdicion();
+    }
+
+    cerrarFormularioEdicion(): void {
+      this.showEditForm = false;
+      this.empleadoEditando = null;
+    }
 }
