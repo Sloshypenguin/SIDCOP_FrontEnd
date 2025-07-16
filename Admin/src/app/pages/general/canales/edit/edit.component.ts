@@ -93,7 +93,7 @@ export class EditComponent implements OnChanges {
     console.log('Datos del canal antes de PUT:', this.canal);
 
     // Construir el payload exactamente como lo espera el backend
-    const payload: any = {
+    const canal: any = {
       cana_Id: this.canal.cana_Id,
       cana_Descripcion: this.canal.cana_Descripcion.trim(),
       cana_Observaciones: this.canal.cana_Observaciones.trim(),
@@ -109,9 +109,9 @@ export class EditComponent implements OnChanges {
     };
 
 
-    if (payload.cana_Descripcion && payload.cana_Observaciones) {
+    if (canal.cana_Descripcion && canal.cana_Observaciones) {
 
-      this.http.put<any>(`${environment.apiBaseUrl}/Canal/Actualizar`, payload, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Canal/Actualizar`, canal, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
