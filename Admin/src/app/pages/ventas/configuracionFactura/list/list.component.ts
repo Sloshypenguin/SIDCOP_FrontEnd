@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ConfiguracionFactura } from 'src/app/Modelos/ventas/ConfiguracionFactura.Model';
-// import { CreateComponent } from '../create/create.component';
+import { CreateComponent } from '../create/create.component';
 //import { EditComponent } from '../edit/edit.component';
 //import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { ConfiguracionFactura } from 'src/app/Modelos/ventas/ConfiguracionFactur
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-   //  CreateComponent,
+    CreateComponent,
   //  EditComponent,
    // DetailsComponent
   ],

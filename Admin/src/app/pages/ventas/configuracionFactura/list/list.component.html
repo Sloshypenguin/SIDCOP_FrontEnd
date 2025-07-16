@@ -22,14 +22,18 @@
           </div>
         </div>
 
-        <!-- Formulario de creación 
-        <div class="collapse" [ngClass]="{ 'show': showCreateForm }">
-          <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
-            <div class="container-fluid">
-              <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarConfiguracionFactura($event)"></app-create>
-            </div>
-          </div>
-        </div> -->
+        <!-- Formulario de creación -->
+<div class="collapse" [ngClass]="{ 'show': showCreateForm }">
+  <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
+    <div class="container-fluid">
+      <!-- Llamas al componente de creación -->
+      <app-create></app-create>
+     
+ 
+    </div>
+  </div>
+</div>
+
 
         <!-- Formulario de edición
         <div class="collapse" [ngClass]="{ 'show': showEditForm }">

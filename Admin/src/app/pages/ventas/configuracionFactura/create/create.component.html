@@ -1,0 +1,184 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <h5 class="card-title mb-4">Crear Configuración de Factura</h5>
+
+  <!-- ALERTAS -->
+  <div class="alert-container">
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div class="flex-grow-1">
+    <div class="row">
+
+      <!-- NOMBRE DE LA EMPRESA -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control" placeholder="Nombre de la Empresa"
+            [(ngModel)]="configFactura.coFa_NombreEmpresa"
+            [class.is-invalid]="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores"
+            required />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores">
+          <small>El campo Nombre de la Empresa es requerido</small>
+        </div>
+      </div>
+
+      <!-- DIRECCIÓN DE LA EMPRESA -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control" placeholder="Dirección de la Empresa"
+            [(ngModel)]="configFactura.coFa_DireccionEmpresa"
+            [class.is-invalid]="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores"
+            required />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores">
+          <small>El campo Dirección de la Empresa es requerido</small>
+        </div>
+      </div>
+
+      <!-- RTN -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control" placeholder="RTN"
+            [(ngModel)]="configFactura.coFa_RTN"
+            [class.is-invalid]="!configFactura.coFa_RTN.trim() && mostrarErrores"
+            required />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_RTN.trim() && mostrarErrores">
+          <small>El campo RTN es requerido</small>
+        </div>
+      </div>
+
+      <!-- CORREO ELECTRÓNICO -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <input type="email" class="form-control" placeholder="Correo Electrónico"
+            [(ngModel)]="configFactura.coFa_Correo"
+            [class.is-invalid]="!configFactura.coFa_Correo.trim() && mostrarErrores"
+            required />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Correo.trim() && mostrarErrores">
+          <small>El campo Correo Electrónico es requerido</small>
+        </div>
+      </div>
+
+      <!-- TELÉFONO 1 -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control" placeholder="Teléfono 1"
+            [(ngModel)]="configFactura.coFa_Telefono1"
+            [class.is-invalid]="!configFactura.coFa_Telefono1.trim() && mostrarErrores"
+            required />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Telefono1.trim() && mostrarErrores">
+          <small>El campo Teléfono 1 es requerido</small>
+        </div>
+      </div>
+
+      <!-- TELÉFONO 2 (OPCIONAL) -->
+      <div class="col-md-6 mb-3">
+        <input type="text" class="form-control" placeholder="Teléfono 2 (opcional)"
+          [(ngModel)]="configFactura.coFa_Telefono2" />
+      </div>
+
+      <!-- DEPARTAMENTO -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <select class="form-select" [(ngModel)]="selectedDepa" (change)="cargarMunicipios(selectedDepa)"
+            [class.is-invalid]="!selectedDepa && mostrarErrores"
+            required>
+            <option value="" disabled selected>Seleccione Departamento</option>
+            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion }}</option>
+          </select>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!selectedDepa && mostrarErrores">
+          <small>El campo Departamento es requerido</small>
+        </div>
+      </div>
+
+      <!-- MUNICIPIO -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <select class="form-select" [(ngModel)]="selectedMuni" (change)="cargarColonias(selectedMuni)" 
+            [disabled]="!selectedDepa"
+            [class.is-invalid]="!selectedMuni && mostrarErrores && selectedDepa"
+            required>
+            <option value="" disabled selected>Seleccione Municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores && selectedDepa">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!selectedMuni && mostrarErrores && selectedDepa">
+          <small>El campo Municipio es requerido</small>
+        </div>
+      </div>
+
+      <!-- COLONIA -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <select class="form-select" [(ngModel)]="configFactura.colo_Id" 
+            [disabled]="!selectedMuni"
+            [class.is-invalid]="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni"
+            required>
+            <option value="0" disabled selected>Seleccione Colonia</option>
+            <option *ngFor="let col of Colonias" [value]="col.colo_Id">{{ col.colo_Nombre }}</option>
+          </select>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores && selectedMuni">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni">
+          <small>El campo Colonia es requerido</small>
+        </div>
+      </div>
+
+      <!-- LOGO -->
+      <div class="col-md-6 mb-3">
+        <div class="d-flex align-items-center">
+          <input type="file" class="form-control" accept="image/*" (change)="onImageSelected($event)"
+            [class.is-invalid]="!configFactura.coFa_Logo && mostrarErrores"
+            required />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Logo && mostrarErrores">
+          <small>El campo Logo es requerido</small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
