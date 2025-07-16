@@ -25,6 +25,8 @@
 
       <!-- NOMBRE DE LA EMPRESA -->
       <div class="col-md-6 mb-3">
+              <label for="impuestoValor" class="form-label me-2">Nombre de la Empresa</label>
+             <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <input type="text" class="form-control" placeholder="Nombre de la Empresa"
             [(ngModel)]="configFactura.coFa_NombreEmpresa"
@@ -39,6 +41,8 @@
 
       <!-- DIRECCIÓN DE LA EMPRESA -->
       <div class="col-md-6 mb-3">
+              <label for="impuestoValor" class="form-label me-2">Dirección de la Empresa</label>
+             <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <input type="text" class="form-control" placeholder="Dirección de la Empresa"
             [(ngModel)]="configFactura.coFa_DireccionEmpresa"
@@ -53,6 +57,8 @@
 
       <!-- RTN -->
       <div class="col-md-6 mb-3">
+        <label for="impuestoValor" class="form-label me-2">RTN</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <input type="text" class="form-control" placeholder="RTN"
             [(ngModel)]="configFactura.coFa_RTN"
@@ -67,6 +73,8 @@
 
       <!-- CORREO ELECTRÓNICO -->
       <div class="col-md-6 mb-3">
+        <label for="impuestoValor" class="form-label me-2">Correo Electrónico</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <input type="email" class="form-control" placeholder="Correo Electrónico"
             [(ngModel)]="configFactura.coFa_Correo"
@@ -81,6 +89,8 @@
 
       <!-- TELÉFONO 1 -->
       <div class="col-md-6 mb-3">
+        <label for="impuestoValor" class="form-label me-2">Teléfono 1</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <input type="text" class="form-control" placeholder="Teléfono 1"
             [(ngModel)]="configFactura.coFa_Telefono1"
@@ -95,12 +105,17 @@
 
       <!-- TELÉFONO 2 (OPCIONAL) -->
       <div class="col-md-6 mb-3">
-        <input type="text" class="form-control" placeholder="Teléfono 2 (opcional)"
-          [(ngModel)]="configFactura.coFa_Telefono2" />
+        <label for="impuestoValor" class="form-label me-2">Teléfono 2 (opcional)</label>
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control" placeholder="Teléfono 2 (opcional)"
+            [(ngModel)]="configFactura.coFa_Telefono2" />
+        </div>
       </div>
 
       <!-- DEPARTAMENTO -->
       <div class="col-md-6 mb-3">
+        <label for="departamento" class="form-label me-2">Departamento</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <select class="form-select" [(ngModel)]="selectedDepa" (change)="cargarMunicipios(selectedDepa)"
             [class.is-invalid]="!selectedDepa && mostrarErrores"
@@ -117,6 +132,8 @@
 
       <!-- MUNICIPIO -->
       <div class="col-md-6 mb-3">
+        <label for="municipio" class="form-label me-2">Municipio</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <select class="form-select" [(ngModel)]="selectedMuni" (change)="cargarColonias(selectedMuni)" 
             [disabled]="!selectedDepa"
@@ -134,6 +151,8 @@
 
       <!-- COLONIA -->
       <div class="col-md-6 mb-3">
+        <label for="colonia" class="form-label me-2">Colonia</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <select class="form-select" [(ngModel)]="configFactura.colo_Id" 
             [disabled]="!selectedMuni"
@@ -151,6 +170,8 @@
 
       <!-- LOGO -->
       <div class="col-md-6 mb-3">
+        <label for="logo" class="form-label me-2">Logo</label>
+        <span class="text-danger">*</span>
         <div class="d-flex align-items-center">
           <input type="file" class="form-control" accept="image/*" (change)="onImageSelected($event)"
             [class.is-invalid]="!configFactura.coFa_Logo && mostrarErrores"

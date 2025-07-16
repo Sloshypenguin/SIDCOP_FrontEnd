@@ -30,8 +30,12 @@
     <div class="row">
       <div class="col-md-6">
         <!-- Campo Descripción -->
-        <div class="mb-3">
+        <div class="mb-3"> 
+          <label for="impuestoDescripcion" class="form-label me-2">Descripción</label>
+          <span class="text-danger">*</span>
+            <br>
           <div class="d-flex align-items-center">
+           
             <input
               type="text"
               class="form-control"
@@ -52,6 +56,8 @@
       <div class="col-md-6">
         <!-- Campo Valor -->
         <div class="mb-3">
+           <label for="impuestoValor" class="form-label me-2">Valor</label>
+             <span class="text-danger">*</span>
           <div class="d-flex align-items-center">
             <input
               type="number"
@@ -65,6 +71,9 @@
             >
             <span class="text-danger ms-2" *ngIf="(impuestos.impu_Valor === null || impuestos.impu_Valor < 0) && mostrarErrores">*</span>
           </div>
+         
+
+
           <div class="text-danger mt-1" *ngIf="(impuestos.impu_Valor === null || impuestos.impu_Valor < 0) && mostrarErrores">
             <small>El campo Valor es requerido y debe ser mayor o igual a 0</small>
           </div>
