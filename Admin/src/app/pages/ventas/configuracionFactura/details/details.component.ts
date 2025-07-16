@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
+import { ConfiguracionFactura } from 'src/app/Modelos/ventas/ConfiguracionFactura.Model';
 
 @Component({
   selector: 'app-details',
@@ -10,52 +10,37 @@ import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() municipioData: Municipio | null = null;
+  @Input() configuracionFacturaData: ConfiguracionFactura | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  municipioDetalle: Municipio | null = null;
+  configuracionFacturaDetalle: ConfiguracionFactura | null = null;
   cargando = false;
 
   mostrarAlertaError = false;
   mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['municipioData'] && changes['municipioData'].currentValue) {
-      this.cargarDetallesSimulado(changes['municipioData'].currentValue);
+    if (changes['configuracionFacturaData'] && changes['configuracionFacturaData'].currentValue) {
+      this.cargarDetallesSimulado(changes['configuracionFacturaData'].currentValue);
     }
   }
 
-  cargarDetallesSimulado(data: Municipio): void {
+  // Simulación de carga
+  cargarDetallesSimulado(data: ConfiguracionFactura): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 
     setTimeout(() => {
       try {
-        this.municipioDetalle = { ...data };
+        this.configuracionFacturaDetalle = { ...data };
         this.cargando = false;
       } catch (error) {
-        console.error('Error al cargar detalles del municipio:', error);
+        console.error('Error al cargar detalles de la configuracion de factura:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles del municipio.';
+        this.mensajeError = 'Error al cargar los detalles de la configuracion de factura.';
         this.cargando = false;
       }
-    }, 500);
-  }
-
-  formatearFecha(fecha: string | Date | null): string {
-    if (!fecha) return 'N/A';
-    try {
-      const date = new Date(fecha);
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch {
-      return 'N/A';
-    }
+    }, 500); // Simula tiempo de carga
   }
 
   cerrar(): void {
@@ -65,5 +50,19 @@ export class DetailsComponent implements OnChanges {
   cerrarAlerta(): void {
     this.mostrarAlertaError = false;
     this.mensajeError = '';
+  }
+
+  formatearFecha(fecha: string | Date | null): string {
+    if (!fecha) return 'N/A';
+    try {
+      const date = new Date(fecha);
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return String(fecha);
+    }
   }
 }

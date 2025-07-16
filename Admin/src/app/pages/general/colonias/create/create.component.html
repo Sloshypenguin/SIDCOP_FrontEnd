@@ -1,1 +1,59 @@
-<p>create works!</p>
+<div>
+  <!-- Alerta de error -->
+  <div *ngIf="mostrarAlerta" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ mensajeAlerta }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+
+  <!-- Encabezado -->
+  <div class="mb-4">
+    <h5 class="card-title mb-4">Crear Nueva Colonia</h5>
+  </div>
+
+  <!-- Formulario -->
+  <form (ngSubmit)="guardar()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="colo_Descripcion" class="form-label">Descripción</label>
+          <input 
+            type="text" 
+            id="colo_Descripcion" 
+            name="colo_Descripcion" 
+            class="form-control" 
+            [(ngModel)]="nuevaColonia.colo_Descripcion" 
+            placeholder="Ingrese la descripción" 
+            required>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="muni_Codigo" class="form-label">Municipio</label>
+          <select 
+            id="muni_Codigo" 
+            name="muni_Codigo" 
+            class="form-select" 
+            [(ngModel)]="nuevaColonia.muni_Codigo" 
+            required>
+            <option value="" disabled selected>Seleccione un municipio</option>
+            <option *ngFor="let muni of municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <div *ngIf="cargando" class="form-text text-muted">Cargando municipios...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Separador y Botones -->
+    <hr class="my-4">
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+        <span class="btn-text">Cancelar</span>
+        <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+      </button>
+      <button type="button" class="btn btn-primary" (click)="guardar()">
+        <span class="btn-text">Guardar</span>
+        <span class="btn-icon"><i class="ri-save-line"></i></span>
+      </button>
+    </div>
+  </form>
+</div>

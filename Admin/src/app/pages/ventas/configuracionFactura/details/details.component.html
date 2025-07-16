@@ -1,0 +1,104 @@
+<div class="details-container">
+
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <!-- Botón de regresar -->
+  <div class="details-header-button">
+    <button type="button" class="btn btn-primary" (click)="cerrar()">
+      <span class="btn-text">Regresar</span>
+      <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+    </button>
+  </div>
+
+  <!-- Contenido de detalles -->
+  <div *ngIf="!cargando && configuracionFacturaDetalle" class="details-content">
+    <!-- Header con descripción -->
+    <div class="details-header">
+      <div class="details-title">Detalles de Configuración de Factura</div>
+      <div class="details-id-row">
+
+        <div class="details-id">
+          <div class="details-id-label">Código</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Id || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Nombre Empresa</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_NombreEmpresa || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Dirección</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_DireccionEmpresa || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">RTN</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_RTN || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Correo</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Correo || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Teléfono 1</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Telefono1 || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Teléfono 2</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Telefono2 || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Colonia</div>
+          <div class="details-id-value">{{ configuracionFacturaDetalle.colo_Descripcion || 'N/A' }}</div>
+        </div>
+
+        <div class="details-id">
+          <div class="details-id-label">Logo</div>
+          <div class="details-id-value">
+            <img *ngIf="configuracionFacturaDetalle.coFa_Logo" [src]="configuracionFacturaDetalle.coFa_Logo" alt="Logo" width="100" />
+            <span *ngIf="!configuracionFacturaDetalle.coFa_Logo">N/A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
+    <!-- Tabla de auditoría -->
+    <div class="audit-table-container">
+      <div class="audit-table">
+        <div class="audit-header">
+          <div class="audit-col">Acción</div>
+          <div class="audit-col">Usuario</div>
+          <div class="audit-col">Fecha</div>
+        </div>
+
+        <!-- Fila de creación -->
+        <div class="audit-row">
+          <div class="audit-col"><span class="audit-action">Creación</span></div>
+          <div class="audit-col"><span class="audit-user">{{ configuracionFacturaDetalle.usuarioCreacion || 'N/A' }}</span></div>
+          <div class="audit-col"><span class="audit-date">{{ formatearFecha(configuracionFacturaDetalle.coFa_FechaCreacion) }}</span></div>
+        </div>
+
+        <!-- Fila de modificación -->
+        <div class="audit-row">
+          <div class="audit-col"><span class="audit-action">Modificación</span></div>
+          <div class="audit-col"><span class="audit-user">{{ configuracionFacturaDetalle.usuarioModificacion || 'N/A' }}</span></div>
+          <div class="audit-col"><span class="audit-date">{{ formatearFecha(configuracionFacturaDetalle.coFa_FechaModificacion ?? null) }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,38 +1,42 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
+import { HttpClient } from '@angular/common/http';
+import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
 
-export class EditComponent implements OnChanges {
-  @Input() cargoData: Cargos | null = null;
-  @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<Cargos>();
 
- cargo: Cargos = {
-    carg_Id: 0,
-    carg_Descripcion: '',
+
+export class EditComponent implements OnChanges {
+@Input() impuestoData: Impuestos | null = null;
+  @Output() onCancel = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<Impuestos>();
+
+  impuestos: Impuestos = {
+    impu_Id: 0,
+    impu_Descripcion: '',
+    impu_Valor: 0,
     usua_Creacion: 0,
-    carg_FechaCreacion: new Date(),
     usua_Modificacion: 0,
-    carg_FechaModificacion: new Date(),
-    usuaM_Nombre : '',
-    usuaC_Nombre : '', 
-    carg_Estado: true,
+    impu_FechaCreacion: new Date(),
+    impu_FechaModificacion: new Date(),
     code_Status: 0,
-    message_Status: ''
+    message_Status: '',
+    impu_Estado: true
+
   };
 
-  cargoOriginal = '';
+  ImpuestoOriginal = '';
+  ImpuestoValorOriginal: number = 0;
+
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -44,14 +48,15 @@ export class EditComponent implements OnChanges {
 
   constructor(private http: HttpClient) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['cargoData'] && changes['cargoData'].currentValue) {
-      this.cargo = { ...changes['cargoData'].currentValue };
-      this.cargoOriginal = this.cargo.carg_Descripcion || '';
-      this.mostrarErrores = false;
-      this.cerrarAlerta();
-    }
+ngOnChanges(changes: SimpleChanges): void {
+  if (changes['impuestoData'] && changes['impuestoData'].currentValue) {
+    this.impuestos = { ...changes['impuestoData'].currentValue };
+    this.ImpuestoOriginal = this.impuestos.impu_Descripcion || '';
+    this.ImpuestoValorOriginal = this.impuestos.impu_Valor; // ← ESTO FALTABA
+    this.mostrarErrores = false;
+    this.cerrarAlerta();
   }
+}
 
   cancelar(): void {
     this.cerrarAlerta();
@@ -70,8 +75,9 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.cargo.carg_Descripcion.trim()) {
-      if (this.cargo.carg_Descripcion.trim() !== this.cargoOriginal) {
+    if (this.impuestos.impu_Descripcion.trim()) {
+      if (this.impuestos.impu_Descripcion.trim() !== this.ImpuestoOriginal ||
+       this.impuestos.impu_Valor !== this.ImpuestoValorOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -97,22 +103,21 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (this.cargo.carg_Descripcion.trim()) {
-      const cargoActualizar = {
-        carg_Id: this.cargo.carg_Id,
-        carg_Descripcion: this.cargo.carg_Descripcion.trim(),
-        usua_Creacion: this.cargo.usua_Creacion,
-        carg_FechaCreacion: this.cargo.carg_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
-        // numero: this.cargo..secuencia || '',
-        carg_FechaModificacion: new Date().toISOString(),
-        carg_Estado: true,
-        usuaC_Nombre : '',
-        usuaM_Nombre : ''
-        // usuarioModificacion: ''
-      };
+    if (this.impuestos.impu_Descripcion.trim()) {
+     const ImpuestosActualizar = {
+  impu_Id: this.impuestos.impu_Id,
+  impu_Descripcion: this.impuestos.impu_Descripcion.trim(),
+  impu_Valor: this.impuestos.impu_Valor, 
+  usua_Creacion: this.impuestos.usua_Creacion,
+  impu_FechaCreacion: this.impuestos.impu_FechaCreacion,
+  usua_Modificacion: environment.usua_Id,
+  impu_FechaModificacion: new Date().toISOString(),
+  usuarioCreacion: '',
+  usuarioModificacion: ''
+};
 
-      this.http.put<any>(`${environment.apiBaseUrl}/Cargo/Actualizar`, cargoActualizar, {
+
+      this.http.put<any>(`${environment.apiBaseUrl}/Impuestos/Actualizar`, ImpuestosActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -120,20 +125,20 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Cargo "${this.cargo.carg_Descripcion}" actualizado exitosamente`;
+          this.mensajeExito = `Impuesto "${this.impuestos.impu_Descripcion}" actualizado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
 
           setTimeout(() => {
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.cargo);
+            this.onSave.emit(this.impuestos);
             this.cancelar();
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar cargo:', error);
+          console.error('Error al actualizar impuesto:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al actualizar el cargo. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al actualizar el impuesto. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);
         }
       });
