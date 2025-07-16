@@ -31,10 +31,7 @@ import { DetailsComponent } from '../details/details.component';
   styleUrls: ['./list.component.scss']
 })
 
-export class ListComponent {
-
-    // bread crumb items
-  breadCrumbItems!: Array<{}>;
+export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     /**
@@ -44,7 +41,53 @@ export class ListComponent {
       { label: 'General' },
       { label: 'Cargos', active: true }
     ];
+
+    
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
+
+  private readonly PANTALLA_CARGOS_ID = 9;
+accionesDisponibles: string[] = [];
+
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+
+  private cargarAccionesUsuario(): void {
+  const permisosRaw = localStorage.getItem('permisosJson');
+  console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+
+  try {
+    if (!permisosRaw) return;
+
+    const permisos = JSON.parse(permisosRaw);
+    let modulo = null;
+
+    if (Array.isArray(permisos)) {
+      modulo = permisos.find((m: any) => m.Pant_Id === this.PANTALLA_CARGOS_ID);
+    } else if (typeof permisos === 'object' && permisos !== null) {
+      modulo = permisos['Cargos'] || permisos['cargos'] || null;
+    }
+
+    if (modulo && Array.isArray(modulo.Acciones)) {
+      this.accionesDisponibles = modulo.Acciones
+        .map((a: any) => a.Accion?.trim().toLowerCase())
+        .filter((a: string) => !!a);
+    }
+  } catch (error) {
+    console.error('Error al parsear permisosJson:', error);
+    this.accionesDisponibles = [];
+  }
+
+  console.log('Acciones disponibles final:', this.accionesDisponibles);
+}
+
+    // bread crumb items
+  breadCrumbItems!: Array<{}>;
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
