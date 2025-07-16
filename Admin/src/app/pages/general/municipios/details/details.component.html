@@ -1,1 +1,89 @@
-<p>details works!</p>
+<div class="details-container">
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <!-- Botón de regresar -->
+  <div class="details-header-button">
+    <button type="button" class="btn btn-primary" (click)="cerrar()">
+      <span class="btn-text">Regresar</span>
+      <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+    </button>
+  </div>
+  
+  <!-- Contenido de detalles -->
+  <div *ngIf="!cargando && municipioDetalle" class="details-content">
+    
+    <!-- Header con descripción -->
+    <div class="details-header">
+      <div class="details-title">Detalles de Municipio</div>
+      <div class="details-id-row">
+        <div class="details-id">
+          <div class="details-id-label">Código</div>
+          <div class="details-id-value">{{ municipioDetalle.muni_Codigo || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Descripción</div>
+          <div class="details-id-value">{{ municipioDetalle.muni_Descripcion || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Departamento</div>
+          <div class="details-id-value">{{ municipioDetalle.departamentoDescripcion || 'N/A' }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
+    
+    <!-- Tabla de auditoría -->
+    <div class="audit-table-container">
+      <div class="audit-table">
+        <div class="audit-header">
+          <div class="audit-col">Acción</div>
+          <div class="audit-col">Usuario</div>
+          <div class="audit-col">Fecha</div>
+        </div>
+      
+        <!-- Fila de creación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Creador</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user">{{ municipioDetalle.usuarioCreacion || 'N/A' }}</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date">{{ formatearFecha(municipioDetalle.muni_FechaCreacion) }}</span>
+          </div>
+        </div>
+
+        <!-- Fila de modificación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Modificador</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user">{{ municipioDetalle.usuarioModificacion || 'N/A' }}</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date">{{ formatearFecha(municipioDetalle.muni_FechaModificacion ?? null) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Spinner de carga -->
+  <div *ngIf="cargando" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+</div>

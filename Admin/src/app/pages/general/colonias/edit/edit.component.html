@@ -1,1 +1,41 @@
-<p>edit works!</p>
+<div class="form-container">
+  <!-- Alerta de error -->
+  <div *ngIf="mostrarAlerta" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ mensajeAlerta }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+
+  <div class="form-header">
+    <h4 class="form-title">Editar Colonia</h4>
+    <p class="form-subtitle">Modifique los campos necesarios y guarde los cambios.</p>
+  </div>
+
+  <form (ngSubmit)="guardar()" *ngIf="coloniaEditada">
+    <div class="row">
+      <!-- Campo de Descripción -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="edit_colo_Descripcion" class="form-label">Descripción</label>
+          <input type="text" id="edit_colo_Descripcion" name="edit_colo_Descripcion" class="form-control" [(ngModel)]="coloniaEditada.colo_Descripcion" required>
+        </div>
+      </div>
+
+      <!-- Selector de Municipio -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="edit_muni_Codigo" class="form-label">Municipio</label>
+          <select id="edit_muni_Codigo" name="edit_muni_Codigo" class="form-select" [(ngModel)]="coloniaEditada.muni_Codigo" required>
+            <option *ngFor="let muni of municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <div *ngIf="cargando" class="form-text">Cargando municipios...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+  </form>
+</div>

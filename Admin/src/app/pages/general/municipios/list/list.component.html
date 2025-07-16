@@ -13,7 +13,7 @@
     <div class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <button type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
+          <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>
           </button>
@@ -49,10 +49,10 @@
 <div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-details 
+      <app-details 
         [municipioData]="municipioDetalle" 
         (onClose)="cerrarFormularioDetalles()">
-      </app-details> -->
+      </app-details>
     </div>
   </div>
 </div>

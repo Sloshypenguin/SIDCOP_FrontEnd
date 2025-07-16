@@ -12,6 +12,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
+import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
 
 @Component({
   selector: 'app-list',
@@ -48,6 +49,7 @@ export class ListComponent implements OnInit {
   showDetailsForm = false; // Control del collapse de detalles
   municipioEditando: Municipio | null = null;
   municipioDetalle: Municipio | null = null;
+  departamentos: Departamento[] = [];
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -90,7 +92,11 @@ export class ListComponent implements OnInit {
 
    detalles(municipio: Municipio): void {
     console.log('Abriendo detalles para:', municipio);
-    this.municipioDetalle = { ...municipio }; // Hacer copia profunda
+    const depto = this.departamentos.find(d => d.depa_Codigo === municipio.depa_Codigo);
+    this.municipioDetalle = { 
+      ...municipio, 
+      departamentoDescripcion: depto ? depto.depa_Descripcion : 'N/A' 
+    };
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -116,32 +122,43 @@ export class ListComponent implements OnInit {
 
   // Verificar si una acción está permitida
   accionPermitida(accion: string): boolean {
-    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+    const accionBuscada = accion.toLowerCase();
+    const accionesMapeadas: {[key: string]: string} = {
+      'detalles': 'detalle',
+      'nuevo': 'crear'
+    };
+    const accionReal = accionesMapeadas[accionBuscada] || accionBuscada;
+    return this.accionesDisponibles.some(a => a === accionReal);
   }
 
   // Cargar acciones disponibles del usuario
   cargarAccionesUsuario() {
     let accionesArray: string[] = [];
     let modulo: any = null;
-    const permisosJson = localStorage.getItem('permisos');
+    const permisosJson = localStorage.getItem('permisosJson');
     if (permisosJson) {
       try {
         const permisos = JSON.parse(permisosJson);
         if (Array.isArray(permisos)) {
           // Buscar por ID de pantalla (16 para municipios)
-          modulo = permisos.find((m: any) => m.Pant_Id === 16);
+                    modulo = permisos.find((m: any) => m.Pant_Id === 18);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
           modulo = permisos['Municipios'] || permisos['municipios'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
-          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          accionesArray = modulo.Acciones
+            .map((a: any) => {
+              const accion = a.Accion || a.accion || a;
+              return typeof accion === 'string' ? accion.trim().toLowerCase() : '';
+            })
+            .filter((a: string) => a.length > 0);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
       }
     }
-    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    this.accionesDisponibles = accionesArray;
     console.log('Acciones disponibles para municipios:', this.accionesDisponibles);
   }
 
@@ -149,10 +166,21 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.cargarAccionesUsuario();
     this.cargardatos();
+    this.cargarDepartamentos();
   }
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  }
+
+  private cargarDepartamentos(): void {
+    this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.departamentos = data;
+    }, error => {
+      console.error('Error al cargar los departamentos', error);
+    });
   }
 
   // (navigateToCreate eliminado, lógica movida a crear)
