@@ -17,7 +17,14 @@ export class CreateComponent {
   @Output() onSave = new EventEmitter<Proveedor>();
 
   proveedor: Proveedor = new Proveedor();
-  Colonia:any[] = []; 
+  // Catálogos para DDL dependientes
+  Departamentos: any[] = [];
+  TodosMunicipios: any[] = [];
+  TodosColonias: any[] = [];
+  Municipios: any[] = [];
+  Colonias: any[] = [];
+  selectedDepa: string = '';
+  selectedMuni: string = '';
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -26,8 +33,44 @@ export class CreateComponent {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  constructor(private http: HttpClient) {this.cargarColonia();}
-  
+  constructor(private http: HttpClient) {
+    this.cargarListados();
+  }
+
+  cargarListados(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.Departamentos = data,
+      error: (error) => console.error('Error cargando departamentos:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodosMunicipios = data,
+      error: (error) => console.error('Error cargando municipios:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodosColonias = data,
+      error: (error) => console.error('Error cargando colonias:', error)
+    });
+  }
+
+  cargarMunicipios(codigoDepa: string): void {
+    this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+    this.Colonias = [];
+    this.selectedMuni = '';
+    this.proveedor.colo_Id = 0;
+  }
+
+  cargarColonias(codigoMuni: string): void {
+    this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === codigoMuni);
+    this.proveedor.colo_Id = 0;
+  }
 
   cancelar(): void {
     this.mostrarErrores = false;
@@ -38,6 +81,10 @@ export class CreateComponent {
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
     this.proveedor = new Proveedor();
+    this.selectedDepa = '';
+    this.selectedMuni = '';
+    this.Municipios = [];
+    this.Colonias = [];
     this.onCancel.emit();
   }
 
@@ -49,12 +96,6 @@ export class CreateComponent {
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
   }
-
- cargarColonia() {
-      this.http.get<any>('https://localhost:7071/Colonia/Listar', {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.Colonia = data);
-    };
 
   guardar(): void {
     this.mostrarErrores = true;

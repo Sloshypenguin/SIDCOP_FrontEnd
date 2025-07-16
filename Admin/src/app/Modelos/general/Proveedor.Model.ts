@@ -11,12 +11,16 @@ export class Proveedor{
   colo_Descripcion: string = '';
   depa_Descripcion: string = '';
   muni_Descripcion: string = '';
+depa_Codigo: string = '';
+  muni_Codigo: string = '';
+  
 
   usua_Creacion: number = 0;
-  prov_FechaCreacion: Date = new Date();
+  fechaCreacion: Date = new Date();
   usua_Modificacion?: number;
 
-  prov_FechaModificacion?: Date;
+
+  fechaModificacion?: Date;
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
 

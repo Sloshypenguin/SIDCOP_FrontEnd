@@ -62,7 +62,7 @@
             <span class="audit-user">{{ proveedorDetalle.usuarioCreacion }}</span>
           </div>
           <div class="audit-col">
-            <span class="audit-date">{{ formatearFecha(proveedorDetalle.prov_FechaCreacion) }}</span>
+            <span class="audit-date">{{ formatearFecha(proveedorDetalle.fechaCreacion) }}</span>
           </div>
         </div>
         <div class="audit-row">
@@ -73,7 +73,7 @@
             <span class="audit-user">{{ proveedorDetalle.usuarioModificacion || 'N/A' }}</span>
           </div>
           <div class="audit-col">
-            <span class="audit-date">{{ formatearFecha(proveedorDetalle.prov_FechaModificacion ?? null) }}</span>
+            <span class="audit-date">{{ formatearFecha(proveedorDetalle.fechaModificacion ?? null) }}</span>
           </div>
         </div>
       </div>

@@ -27,15 +27,81 @@ export class EditComponent implements OnChanges {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  Colonia: any[] = []; // Lista de colonias, se puede llenar con un servicio si es necesario
+  // Catálogos para DDL dependientes
+  Departamentos: any[] = [];
+  TodosMunicipios: any[] = [];
+  TodosColonias: any[] = [];
+  Municipios: any[] = [];
+  Colonias: any[] = [];
+  selectedDepa: string = '';
+  selectedMuni: string = '';
 
-  constructor(private http: HttpClient) {this.cargarColonia();}
+  constructor(private http: HttpClient) {
+    this.cargarListados();
+  }
+
+  cargarListados(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.Departamentos = data,
+      error: (error) => console.error('Error cargando departamentos:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodosMunicipios = data,
+      error: (error) => console.error('Error cargando municipios:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodosColonias = data,
+      error: (error) => console.error('Error cargando colonias:', error)
+    });
+  }
+
+  cargarMunicipios(codigoDepa: string): void {
+    this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+    this.Colonias = [];
+    this.selectedMuni = '';
+    this.proveedor.colo_Id = 0;
+  }
+
+  cargarColonias(codigoMuni: string): void {
+    this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === codigoMuni);
+    this.proveedor.colo_Id = 0;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['proveedorData'] && changes['proveedorData'].currentValue) {
       this.proveedor = { ...changes['proveedorData'].currentValue };
       this.mostrarErrores = false;
       this.cerrarAlerta();
+      // Sincronizar selects dependientes
+      if (this.TodosMunicipios.length && this.TodosColonias.length) {
+        this.setSelectsFromProveedor();
+      } else {
+        // Esperar a que los catálogos estén cargados
+        setTimeout(() => this.setSelectsFromProveedor(), 500);
+      }
+    }
+  }
+
+  setSelectsFromProveedor(): void {
+    if (!this.proveedor) return;
+    // Buscar municipio y departamento de la colonia seleccionada
+    const colonia = this.TodosColonias.find(c => c.colo_Id === this.proveedor.colo_Id);
+    if (colonia) {
+      this.selectedMuni = colonia.muni_Codigo;
+      const municipio = this.TodosMunicipios.find(m => m.muni_Codigo === colonia.muni_Codigo);
+      if (municipio) {
+        this.selectedDepa = municipio.depa_Codigo;
+        this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === this.selectedDepa);
+        this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === this.selectedMuni);
+      }
     }
   }
 
@@ -52,12 +118,6 @@ export class EditComponent implements OnChanges {
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
   }
-
-   cargarColonia() {
-      this.http.get<any>('https://localhost:7071/Colonia/Listar', {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.Colonia = data);
-    };
 
   guardar(): void {
     this.mostrarErrores = true;
