@@ -6,7 +6,7 @@ import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.com
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { TableModule } from 'src/app/pages/table/table.module';
+// Eliminamos la importación de TableModule ya que no es compatible con componentes standalone
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CAIs } from 'src/app/Modelos/ventas/CAIs.Model';
 
@@ -18,7 +18,6 @@ import { CAIs } from 'src/app/Modelos/ventas/CAIs.Model';
     FormsModule,
     RouterModule,
     BreadcrumbsComponent,
-    TableModule,
     PaginationModule
   ],
   templateUrl: './list.component.html',

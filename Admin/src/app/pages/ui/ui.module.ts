@@ -51,6 +51,7 @@ import { ListsComponent } from './lists/lists.component';
 import { LinksComponent } from './links/links.component';
 import { GeneralComponent } from './general/general.component';
 import { UtilitiesComponent } from './utilities/utilities.component';
+import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { UtilitiesComponent } from './utilities/utilities.component';
     UiRoutingModule,
     AlertModule,
     SharedModule,
+    BreadcrumbsComponent,
     NgxMasonryModule,
     CarouselModule.forRoot(),
     BsDropdownModule.forRoot(),
