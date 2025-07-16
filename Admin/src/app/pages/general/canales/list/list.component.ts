@@ -221,7 +221,7 @@ export class ListComponent implements OnInit {
         let modulo = null;
         if (Array.isArray(permisos)) {
           // Ajusta el ID si cambia en el futuro
-          modulo = permisos.find((m: any) => m.Pant_Id === 19);
+          modulo = permisos.find((m: any) => m.Pant_Id === 11);
         } else if (typeof permisos === 'object' && permisos !== null) {
           modulo = permisos['Canales'] || permisos['canales'] || null;
         }
