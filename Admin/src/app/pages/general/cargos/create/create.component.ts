@@ -35,8 +35,8 @@ export class CreateComponent {
     usua_Modificacion: 0,
     carg_FechaModificacion: new Date(),
     carg_Estado: true,
-    usuaC_Nombre : '',
-    usuaM_Nombre : '',
+    usuarioCreacion : '',
+    usuarioModificacion : '',
     code_Status: 0,
     message_Status: ''
   };
@@ -59,8 +59,8 @@ export class CreateComponent {
       carg_Estado : true,
       code_Status: 0,
       message_Status: '',
-      usuaC_Nombre: '',
-      usuaM_Nombre: '',
+      usuarioCreacion: '',
+      usuarioModificacion: '',
     };
     this.onCancel.emit();
   }

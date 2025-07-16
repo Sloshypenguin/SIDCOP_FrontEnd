@@ -1,1 +1,168 @@
-<p>create works!</p>
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <h5 class="card-title mb-4">Crear Nuevo Proveedor</h5>
+  <div class="alert-container">
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  <div class="flex-grow-1">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Código  <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Codigo.trim()">
+            <small>El campo Codigo es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Empresa  <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">
+            <small>El campo empresa es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Contacto  <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreContacto.trim()">
+            <small>El campo Contacto es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Teléfono  <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono">
+           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Telefono.trim()">
+            <small>El campo Telefono es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Correo  <span class="text-danger">*</span></label>
+          <input type="email" class="form-control" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico">
+         <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Correo.trim()">
+            <small>El campo Correo es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Dirección  <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_DireccionExacta.trim()">
+            <small>El campo Direccion es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+      
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label>Departamento <span class="text-danger">*</span></label>
+          
+          <select 
+            class="form-select"
+            [(ngModel)]="selectedDepa"
+            (change)="cargarMunicipios(selectedDepa)"
+            [class.is-invalid]="mostrarErrores && !selectedDepa"
+            required>
+            <option value="" disabled selected>Seleccione un departamento</option>
+            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{depa.depa_Descripcion}}</option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !selectedDepa">
+            <small>El campo departamento es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label>Municipio <span class="text-danger">*</span></label>
+          <select 
+            class="form-select"
+            [(ngModel)]="selectedMuni"
+            (change)="cargarColonias(selectedMuni)"
+            [class.is-invalid]="mostrarErrores && !selectedMuni"
+            required
+            [disabled]="!selectedDepa">
+            <option value="" disabled selected>Seleccione un municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !selectedMuni">
+            <small>El campo municipio es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label>Colonia <span class="text-danger">*</span></label>
+          <select 
+            class="form-select"
+            [(ngModel)]="proveedor.colo_Id"
+            [class.is-invalid]="mostrarErrores && !proveedor.colo_Id"
+            required
+            [disabled]="!selectedMuni">
+            <option value="" disabled selected>Seleccione una colonia</option>
+            <option *ngFor="let colo of Colonias" [value]="colo.colo_Id">{{colo.colo_Descripcion}}</option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.colo_Id">
+            <small>El campo colonia es requerido</small>
+          </div>
+        </div>
+      </div>
+
+ <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <label>Observaciones  <span class="text-danger">*</span> </label>
+          <textarea class="form-control" [(ngModel)]="proveedor.prov_Observaciones" placeholder="Observaciones"></textarea>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Observaciones.trim()">
+            <small>El campo Observaciones es requerido</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
