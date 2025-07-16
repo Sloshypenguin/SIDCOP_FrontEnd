@@ -106,8 +106,11 @@ eliminar(): void {
 
   console.log('Eliminando configuración:', this.configuracionAEliminar);
 
-  this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`, this.configuracionAEliminar.coFa_Id, {
+this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`, 
+  { id: this.configuracionAEliminar.coFa_Id }, 
+  {
     headers: {
+      'Content-Type': 'application/json',
       'X-Api-Key': environment.apiKey,
       'accept': '*/*'
     }
