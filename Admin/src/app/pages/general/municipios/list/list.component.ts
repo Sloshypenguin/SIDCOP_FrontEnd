@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
+import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
 
 @Component({
   selector: 'app-list',
@@ -30,17 +31,25 @@ import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
 
   activeActionRow: number | null = null;
-  showEdit = true;
-  showDetails = true;
-  showDelete = true;
+  // Variables para control de alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  
+  // Acciones disponibles para el usuario
+  accionesDisponibles: string[] = [];
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
   municipioEditando: Municipio | null = null;
   municipioDetalle: Municipio | null = null;
+  departamentos: Departamento[] = [];
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -83,20 +92,18 @@ export class ListComponent {
 
    detalles(municipio: Municipio): void {
     console.log('Abriendo detalles para:', municipio);
-    this.municipioDetalle = { ...municipio }; // Hacer copia profunda
+    const depto = this.departamentos.find(d => d.depa_Codigo === municipio.depa_Codigo);
+    this.municipioDetalle = { 
+      ...municipio, 
+      departamentoDescripcion: depto ? depto.depa_Descripcion : 'N/A' 
+    };
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  // Propiedades para alertas
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
+  // Propiedades para alertas (ya definidas al inicio de la clase)
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
@@ -111,12 +118,69 @@ export class ListComponent {
     });
   }
 
-  constructor(public table: ReactiveTableService<Municipio>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
+  constructor(public table: ReactiveTableService<Municipio>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+
+  // Verificar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    const accionBuscada = accion.toLowerCase();
+    const accionesMapeadas: {[key: string]: string} = {
+      'detalles': 'detalle',
+      'nuevo': 'crear'
+    };
+    const accionReal = accionesMapeadas[accionBuscada] || accionBuscada;
+    return this.accionesDisponibles.some(a => a === accionReal);
   }
 
-   onActionMenuClick(rowIndex: number) {
+  // Cargar acciones disponibles del usuario
+  cargarAccionesUsuario() {
+    let accionesArray: string[] = [];
+    let modulo: any = null;
+    const permisosJson = localStorage.getItem('permisosJson');
+    if (permisosJson) {
+      try {
+        const permisos = JSON.parse(permisosJson);
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (16 para municipios)
+                    modulo = permisos.find((m: any) => m.Pant_Id === 18);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Municipios'] || permisos['municipios'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones
+            .map((a: any) => {
+              const accion = a.Accion || a.accion || a;
+              return typeof accion === 'string' ? accion.trim().toLowerCase() : '';
+            })
+            .filter((a: string) => a.length > 0);
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray;
+    console.log('Acciones disponibles para municipios:', this.accionesDisponibles);
+  }
+
+  // Inicializar componente
+  ngOnInit() {
+    this.cargarAccionesUsuario();
+    this.cargardatos();
+    this.cargarDepartamentos();
+  }
+
+  onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  }
+
+  private cargarDepartamentos(): void {
+    this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.departamentos = data;
+    }, error => {
+      console.error('Error al cargar los departamentos', error);
+    });
   }
 
   // (navigateToCreate eliminado, lógica movida a crear)
