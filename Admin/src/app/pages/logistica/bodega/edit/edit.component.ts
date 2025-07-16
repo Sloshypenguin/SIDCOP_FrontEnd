@@ -49,7 +49,44 @@ export class EditComponent implements OnChanges {
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.listarSucursales();
+    this.listarRegistroCai();
+    this.listarVendedores();
+    this.listarModelos();
+  }
+
+
+   sucursales: any[] = [];
+    registroCais: any[] = [];
+    vendedores: any[] = [];
+    modelos: any[] = [];
+
+
+ listarSucursales(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.sucursales = data);
+    };
+
+  listarRegistroCai(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.registroCais = data);
+    };
+
+  listarVendedores(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.vendedores = data);
+    };
+
+  listarModelos(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Modelo/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.modelos = data);
+    };
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['bodegaData'] && changes['bodegaData'].currentValue) {
@@ -77,19 +114,42 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.bodega.bode_Descripcion.trim()) {
-      if (this.bodega.bode_Descripcion.trim() !== this.bodegaOriginal) {
-        this.mostrarConfirmacionEditar = true;
-      } else {
-        this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'No se han detectado cambios.';
-        setTimeout(() => this.cerrarAlerta(), 4000);
-      }
-    } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-      setTimeout(() => this.cerrarAlerta(), 4000);
-    }
+    if (
+    !this.bodega.bode_Descripcion.trim() ||
+    !this.bodega.bode_VIN.trim() ||
+    !this.bodega.bode_Placa.trim() ||
+    !this.bodega.bode_TipoCamion.trim() ||
+    !this.bodega.bode_Capacidad ||
+    !this.bodega.sucu_Id ||
+    !this.bodega.vend_Id ||
+    !this.bodega.mode_Id ||
+    !this.bodega.regC_Id
+  ) {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+    setTimeout(() => this.cerrarAlerta(), 4000);
+    return;
+  }
+
+  // Detectar cambios en los campos principales
+  const cambios =
+    this.bodega.bode_Descripcion.trim() !== (this.bodegaData?.bode_Descripcion?.trim() ?? '') ||
+    this.bodega.bode_VIN.trim() !== (this.bodegaData?.bode_VIN?.trim() ?? '') ||
+    this.bodega.bode_Placa.trim() !== (this.bodegaData?.bode_Placa?.trim() ?? '') ||
+    this.bodega.bode_TipoCamion.trim() !== (this.bodegaData?.bode_TipoCamion?.trim() ?? '') ||
+    this.bodega.bode_Capacidad !== (this.bodegaData?.bode_Capacidad ?? 0) ||
+    this.bodega.sucu_Id !== (this.bodegaData?.sucu_Id ?? 0) ||
+    this.bodega.vend_Id !== (this.bodegaData?.vend_Id ?? 0) ||
+    this.bodega.mode_Id !== (this.bodegaData?.mode_Id ?? 0) ||
+    this.bodega.regC_Id !== (this.bodegaData?.regC_Id ?? 0);
+
+  if (cambios) {
+    this.mostrarConfirmacionEditar = true;
+  } else {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = 'No se han detectado cambios.';
+    setTimeout(() => this.cerrarAlerta(), 4000);
+  }
   }
 
   cancelarEdicion(): void {
@@ -106,18 +166,26 @@ export class EditComponent implements OnChanges {
 
     if (this.bodega.bode_Descripcion.trim()) {
       const bodegaActualizar = {
-        esCv_Id: this.bodega.bode_Id,
+        bode_Id: this.bodega.bode_Id,
         bode_Descripcion: this.bodega.bode_Descripcion.trim(),
+        sucu_Id: this.bodega.sucu_Id,
+        regC_Id: this.bodega.regC_Id,
+        vend_Id: this.bodega.vend_Id,
+        mode_Id: this.bodega.mode_Id,
+        bode_VIN: this.bodega.bode_VIN.trim(),
+        bode_Placa: this.bodega.bode_Placa.trim(),
+        bode_TipoCamion: this.bodega.bode_TipoCamion.trim(),
+        bode_Capacidad: this.bodega.bode_Capacidad,
         usua_Creacion: this.bodega.usua_Creacion,
-        esCv_FechaCreacion: this.bodega.bode_FechaCreacion,
+        bode_FechaCreacion: this.bodega.bode_FechaCreacion,
         usua_Modificacion: environment.usua_Id,
         numero: this.bodega.secuencia || '',
-        esCv_FechaModificacion: new Date().toISOString(),
+        bode_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: ''
       };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/EstadosCiviles/Actualizar`, bodegaActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Bodega/Actualizar`, bodegaActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -125,7 +193,7 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Estado civil "${this.bodega.bode_Descripcion}" actualizado exitosamente`;
+          this.mensajeExito = `La bodega "${this.bodega.bode_Descripcion}" actualizado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
 
@@ -136,9 +204,9 @@ export class EditComponent implements OnChanges {
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar estado civil:', error);
+          console.error('Error al actualizar la bodega:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al actualizar el estado civil. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al actualizar la bodega. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);
         }
       });

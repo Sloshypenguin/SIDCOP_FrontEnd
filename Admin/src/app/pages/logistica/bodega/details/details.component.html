@@ -23,9 +23,66 @@
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <h4 class="details-title">{{ bodegaDetalle.bode_Descripcion }}</h4>
-      <span>Descripción </span>
+      <div class="details-title">Detalles de Estados Civiles</div>
+      <div class="details-id-row">
+  <div class="details-id">
+    <div class="details-id-label">Descripción</div>
+    <div class="details-id-value">{{ bodegaDetalle.bode_Descripcion }}</div>
+  </div>
+  <div class="details-id">
+    <div class="details-id-label">VIN</div>
+    <div class="details-id-value">{{ bodegaDetalle.bode_VIN }}</div>
+  </div>
+  <div class="details-id">
+    <div class="details-id-label">Placa</div>
+    <div class="details-id-value">{{ bodegaDetalle.bode_Placa }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Tipo de Camion</div>
+    <div class="details-id-value"> {{
+    bodegaDetalle.bode_TipoCamion === 'G' ? 'Grande' :
+    bodegaDetalle.bode_TipoCamion === 'M' ? 'Mediano' :
+    bodegaDetalle.bode_TipoCamion === 'P' ? 'Pequeño' :
+    'N/A'
+  }}</div>
+
+   
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Capacidad</div>
+    <div class="details-id-value">{{ bodegaDetalle.bode_Capacidad }} QQ</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Registro Cai</div>
+    <div class="details-id-value">{{ bodegaDetalle.regC_Descripcion }}</div>
+  </div>
+  
+
+  <div class="details-id">
+    <div class="details-id-label">Modelo</div>
+    <div class="details-id-value">{{ bodegaDetalle.mode_Descripcion }}</div>
+  </div>
+
+   <div class="details-id">
+    <div class="details-id-label">Vendedor</div>
+    <div class="details-id-value">{{ bodegaDetalle.vend_Nombres }} {{ bodegaDetalle.vend_Apellidos }}</div>
+  </div>
+
+
+
+   <div class="details-id">
+    <div class="details-id-label">Sucursal</div>
+    <div class="details-id-value">{{ bodegaDetalle.sucu_Descripcion }}</div>
+  </div>
+</div>
     </div>
+     <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+    
+
+    
     
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
