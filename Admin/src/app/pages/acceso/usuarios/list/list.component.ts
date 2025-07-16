@@ -41,10 +41,11 @@ export class ListComponent {
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'Acceso' },
-      { label: 'U', active: true }
+      { label: 'Usuarios', active: true }
     ];
 
     this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -170,6 +171,7 @@ export class ListComponent {
 
   private cargarAccionesUsuario(): void{
     const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try{
@@ -177,11 +179,13 @@ export class ListComponent {
         let modulo = null;
         if(Array.isArray(permisos)){
           modulo = permisos.find((m: any) => m.Pant_Id === 7);
+          console.log('Modulo encontrado:', modulo);
         } else if (typeof permisos === 'object' && permisos !== null) {
           modulo = permisos['Usuarios'] || permisos['usuarios'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           accionesArray = modulo.Acciones.map((a: any) => a.accion).filter((a:any) => a && typeof a === 'string');
+          console.log('Acciones encontradas:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
