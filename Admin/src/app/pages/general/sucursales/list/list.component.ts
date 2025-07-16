@@ -9,6 +9,9 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -19,19 +22,20 @@ import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
     RouterModule,
     BreadcrumbsComponent,
     TableModule,
-    PaginationModule
+    PaginationModule,
+    CreateComponent,
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
+  accionesDisponibles: string[] = [];
 
-  constructor(
-    public table: ReactiveTableService<Sucursales>,
-    private http: HttpClient
-  ) {
-    this.cargarDatos();
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 
   ngOnInit(): void {
@@ -39,61 +43,62 @@ export class ListComponent implements OnInit {
       { label: 'General' },
       { label: 'Sucursales', active: true }
     ];
+    this.cargarAccionesUsuario();
   }
 
-  // =============================
-  //  Controles de visibilidad
-  // =============================
+  // Dropdown y control de formularios
+  activeActionRow: number | null = null;
+  showEdit = true;
+  showDetails = true;
+  showDelete = true;
   showCreateForm = false;
   showEditForm = false;
   showDetailsForm = false;
+  sucursalEditando: Sucursales | null = null;
+  sucursalDetalle: Sucursales | null = null;
 
-  // =============================
-  //  Control de acciones visibles
-  // =============================
-  showEdit = true;
-  showDelete = true;
-  showDetails = true;
+  // Alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
 
-  // =============================
-  //  Datos de edición y detalle
-  // =============================
-  SucursalesEditando: Sucursales | null = null;
-  SucursalesDetalle: Sucursales | null = null;
+  // Confirmación de eliminación
+  mostrarConfirmacionEliminar = false;
+  sucursalAEliminar: Sucursales | null = null;
 
-  // =============================
-  //  Row activo para menú
-  // =============================
-  activeActionRow: number | null = null;
+  constructor(
+    public table: ReactiveTableService<Sucursales>,
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.cargarDatos();
+  }
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  // =============================
-  //  Funciones requeridas por el HTML
-  // =============================
-
   crear(): void {
-    console.log('Crear Sucursales');
-    this.showCreateForm = true;
+    this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  editar(Sucursales: Sucursales): void {
-    console.log('Editar Sucursales:', Sucursales);
-    this.SucursalesEditando = { ...Sucursales };
+  editar(sucursal: Sucursales): void {
+    this.sucursalEditando = { ...sucursal };
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  detalles(Sucursales: Sucursales): void {
-    console.log('Detalles del Sucursales:', Sucursales);
-    this.SucursalesDetalle = { ...Sucursales };
+  detalles(sucursal: Sucursales): void {
+    this.sucursalDetalle = { ...sucursal };
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
@@ -106,42 +111,105 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.SucursalesEditando = null;
+    this.sucursalEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.SucursalesDetalle = null;
+    this.sucursalDetalle = null;
   }
 
-  guardarSucursales(Sucursales: Sucursales): void {
-    console.log('Sucursales guardado:', Sucursales);
-    this.cargarDatos();
-    this.cerrarFormulario();
+  guardarSucursal(sucursal: Sucursales): void {
+    this.http.post<any>(`${environment.apiBaseUrl}/Sucursales/Insertar`, sucursal, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        this.mensajeExito = `Sucursal "${sucursal.sucu_Descripcion}" guardada exitosamente`;
+        this.mostrarAlertaExito = true;
+        setTimeout(() => {
+          this.mostrarAlertaExito = false;
+        }, 3000);
+        this.cargarDatos();
+        this.cerrarFormulario();
+      },
+      error: () => {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al guardar la sucursal. Por favor, intente nuevamente.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+        }, 5000);
+      }
+    });
   }
 
-  actualizarSucursales(Sucursales: Sucursales): void {
-    console.log('Sucursales actualizado:', Sucursales);
-    this.cargarDatos();
-    this.cerrarFormularioEdicion();
+  actualizarSucursal(sucursal: Sucursales): void {
+    this.http.put<any>(`${environment.apiBaseUrl}/Sucursales/Actualizar`, sucursal, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        this.mensajeExito = `Sucursal "${sucursal.sucu_Descripcion}" actualizada exitosamente`;
+        this.mostrarAlertaExito = true;
+        setTimeout(() => {
+          this.mostrarAlertaExito = false;
+        }, 3000);
+        this.cargarDatos();
+        this.cerrarFormularioEdicion();
+      },
+      error: () => {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al actualizar la sucursal. Por favor, intente nuevamente.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+        }, 5000);
+      }
+    });
   }
 
-  confirmarEliminar(Sucursales: Sucursales): void {
-    console.log('Confirmar eliminación de Sucursales:', Sucursales);
-    this.SucursalesAEliminar = Sucursales;
+  confirmarEliminar(sucursal: Sucursales): void {
+    this.sucursalAEliminar = sucursal;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null;
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.SucursalesAEliminar = null;
+    this.sucursalAEliminar = null;
   }
 
   eliminar(): void {
-    console.log('Eliminar Sucursales:', this.SucursalesAEliminar);
-    // A futuro: lógica de eliminación
-    this.cancelarEliminar();
+    if (!this.sucursalAEliminar) return;
+    this.http.post<any>(`${environment.apiBaseUrl}/Sucursales/Eliminar/${this.sucursalAEliminar.sucu_Id}`, {}, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        this.mensajeExito = `Sucursal "${this.sucursalAEliminar!.sucu_Descripcion}" eliminada exitosamente`;
+        this.mostrarAlertaExito = true;
+        setTimeout(() => {
+          this.mostrarAlertaExito = false;
+        }, 3000);
+        this.cargarDatos();
+        this.cancelarEliminar();
+      },
+      error: () => {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al eliminar la sucursal. Por favor, intente nuevamente.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+        }, 5000);
+        this.cancelarEliminar();
+      }
+    });
   }
 
   cerrarAlerta(): void {
@@ -153,31 +221,33 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  // =============================
-  //  Alertas y confirmación
-  // =============================
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
-
-  mostrarConfirmacionEliminar = false;
-  SucursalesAEliminar: Sucursales | null = null;
-
-  // =============================
-  //  Carga inicial
-  // =============================
-private cargarDatos(): void {
-  this.http.get<any[]>(
-    `${environment.apiBaseUrl}/Sucursales/Listar`,
-    {
-      headers: { 'x-api-key': environment.apiKey }
+  private cargarAccionesUsuario(): void {
+    const permisosRaw = localStorage.getItem('permisosJson');
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          modulo = permisos.find((m: any) => m.Pant_Id === 20); // Ajusta el ID si es diferente
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          modulo = permisos['Sucursales'] || permisos['sucursales'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
     }
-  ).subscribe(data => {
-    console.log('Sucursaless recibidos:', data);
-    this.table.setData(data);
-  });
-}
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+  }
+
+  private cargarDatos(): void {
+    this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.table.setData(data);
+    });
+  }
 }
