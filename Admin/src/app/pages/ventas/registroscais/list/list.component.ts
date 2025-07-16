@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
-// import { CreateComponent } from '../create/create.component';
+import { CreateComponent } from '../create/create.component';
 // import { EditComponent } from '../edit/edit.component';
 // import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
+    CreateComponent,
     // EditComponent,
     // DetailsComponent
   ],
@@ -138,7 +138,7 @@ export class ListComponent implements OnInit {
     this.estadoCivilDetalle = null;
   }
 
-  guardarEstadoCivil(registroCai: RegistroCAI): void {
+  guardarRegistroCAI(registroCai: RegistroCAI): void {
     console.log('Estado civil guardado exitosamente desde create component:', registroCai);
     // Recargar los datos de la tabla
     this.cargardatos();
