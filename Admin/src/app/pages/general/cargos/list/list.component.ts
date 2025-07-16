@@ -174,81 +174,55 @@ cambiarPagina(nuevaPagina: number): void {
     this.cargoEliminar = null;
   }
 
-  eliminar(): void {
-    if (!this.cargoEliminar) return;
-    
-    console.log('Eliminando cargo:', this.cargoEliminar);
 
-    this.http.post(`${environment.apiBaseUrl}/Cargos/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
-      headers: {
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
+  eliminar(): void {    
+  if (!this.cargoEliminar) return;
+  
+  console.log('Eliminando cargo:', this.cargoEliminar);
+
+  this.http.put(`${environment.apiBaseUrl}/Cargo/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
+    headers: {
+      'X-Api-Key': environment.apiKey,
+      'accept': '*/*'
+    }
+  }).subscribe({
+    next: (response: any) => {
+      console.log('Respuesta del servidor:', response);
+
+      // Evaluamos directamente el éxito según el esquema de su API
+      if (response.success && response.code === 200) {
+        console.log('Cargo eliminado exitosamente');
+
+        this.mensajeExito = response.message || `Cargo "${this.cargoEliminar!.carg_Descripcion}" eliminado exitosamente.`;
+        this.mostrarAlertaExito = true;
+
+        setTimeout(() => this.cerrarAlerta(), 3000);
+
+        this.cargardatos();
+        this.cancelarEliminar();
+
+      } else {
+        console.warn('Respuesta del servidor indica fallo lógico.');
+
+        this.mostrarAlertaError = true;
+        this.mensajeError = response.message || 'No se pudo eliminar el cargo.';
+
+        setTimeout(() => this.cerrarAlerta(), 5000);
+        this.cancelarEliminar();
       }
-    }).subscribe({
-      next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Cargo eliminado exitosamente');
-            this.mensajeExito = `Cargo "${this.cargoEliminar!.carg_Descripcion}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
+    },
+    error: err => {
+      console.error('Error en la solicitud HTTP:', err);
 
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
-            
-            setTimeout(() => {  
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el cargo.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el cargo.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
-      },
-    });
-  }
+      this.mostrarAlertaError = true;
+      this.mensajeError = err?.error?.message || 'Ocurrió un error inesperado al eliminar el cargo.';
+
+      setTimeout(() => this.cerrarAlerta(), 5000);
+      this.cancelarEliminar();
+    }
+  });
+}
+
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
