@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,7 +30,33 @@ import { DetailsComponent } from '../details/details.component';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
+  ngOnInit(): void {
+    /**
+     * BreadCrumb
+     */
+    this.breadCrumbItems = [
+      { label: 'General' },
+      { label: 'Marcas', active: true }
+    ];
+    // Obtener acciones disponibles del usuario
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
+  }
+  // bread crumb items
+  breadCrumbItems!: Array<{}>;
+
+  // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+  // Estado para controlar el dropdown activo
+  activeActionRow: number | null = null;
+
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -46,8 +72,41 @@ export class ListComponent {
       this.activeActionRow = null;
     }
   }
+
+    // Método para cargar las acciones disponibles del usuario
+    private cargarAccionesUsuario(): void {
+      // Obtener permisosJson del localStorage
+      const permisosRaw = localStorage.getItem('permisosJson');
+      console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+      let accionesArray: string[] = [];
+      if (permisosRaw) {
+        try {
+          const permisos = JSON.parse(permisosRaw);
+          // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+          let modulo = null;
+          if (Array.isArray(permisos)) {
+            // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+            modulo = permisos.find((m: any) => m.Pant_Id === 15);
+          } else if (typeof permisos === 'object' && permisos !== null) {
+            // Si es objeto, buscar por clave
+            modulo = permisos['Marcas'] || permisos['marcas'] || null;
+          }
+          if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+            // Extraer solo el nombre de la acción
+            accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          }
+        } catch (e) {
+          console.error('Error al parsear permisosJson:', e);
+        }
+      }
+      this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+      console.log('Acciones finales:', this.accionesDisponibles);
+    }
+
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
+    if (!this.accionPermitida('crear')) return;
+    
     console.log('Toggleando formulario de creación...');
     this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -56,12 +115,9 @@ export class ListComponent {
   }
 
   editar(marca: Marcas): void {
+    if (!this.accionPermitida('editar')) return;
+    
     console.log('Abriendo formulario de edición para:', marca);
-    console.log('Datos específicos:', {
-      id: marca.marc_Id,
-      descripcion: marca.marc_Descripcion,
-      completo: marca
-    });
     this.marcaEditando = { ...marca }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
@@ -70,6 +126,8 @@ export class ListComponent {
   }
 
   detalles(marca: Marcas): void {
+    if (!this.accionPermitida('detalle')) return;
+    
     console.log('Abriendo detalles para:', marca);
     this.marcaDetalle = { ...marca }; // Hacer copia profunda
     this.showDetailsForm = true;
@@ -77,7 +135,7 @@ export class ListComponent {
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
-  activeActionRow: number | null = null;
+
   showEdit = true;
   showDetails = true;
   showDelete = true;
@@ -86,7 +144,7 @@ export class ListComponent {
   showDetailsForm = false; // Control del collapse de detalles
   marcaEditando: Marcas | null = null;
   marcaDetalle: Marcas | null = null;
-  
+
   // Propiedades para alertas
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -94,7 +152,7 @@ export class ListComponent {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
-  
+
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   marcaAEliminar: Marcas | null = null;
