@@ -29,7 +29,10 @@ export class EditComponent implements OnInit, OnChanges {
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
-    usuarioModificacion: ''
+    usuarioModificacion: '',
+    depa_Codigo: '',
+    depa_Descripcion: '',
+    muni_Descripcion: ''
   }
 
   coloniaOriginal = '';
@@ -64,6 +67,7 @@ export class EditComponent implements OnInit, OnChanges {
       this.coloniaOriginal = this.coloniaEditada.colo_Descripcion || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
+      this.cargarListados();
     }
   }
 
@@ -174,17 +178,29 @@ export class EditComponent implements OnInit, OnChanges {
     this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
-      next: (data) => this.Departamentos = data,
-      error: (error) => console.error('Error cargando departamentos:', error)
-    });
+      next: (departamentos) => {
+        this.Departamentos = departamentos;
 
-    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => this.TodosMunicipios = data,
-      error: (error) => console.error('Error cargando municipios:', error)
+        this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+          headers: { 'x-api-key': environment.apiKey }
+        }).subscribe({
+          next: (municipios) => {
+            this.TodosMunicipios = municipios;
+            this.configurarUbicacionInicial();
+          }
+        });
+      }
     });
   }
+
+  configurarUbicacionInicial(): void {
+      const municipio = this.TodosMunicipios.find((m: any) => m.muni_Codigo === this.coloniaEditada.muni_Codigo);
+      if (municipio) {
+        this.selectedDepa = municipio.depa_Codigo;
+        this.selectedMuni = municipio.muni_Codigo;
+        this.Municipios = this.TodosMunicipios.filter((m: any) => m.depa_Codigo === this.selectedDepa);
+      }
+    }
 
   cargarMunicipios(codigoDepa: string): void {
     this.Municipios = this.TodosMunicipios.filter((m: any) => m.depa_Codigo === codigoDepa);

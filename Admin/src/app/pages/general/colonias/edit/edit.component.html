@@ -13,6 +13,8 @@
   <!-- Formulario -->
   <form (ngSubmit)="validarEdicion()" *ngIf="coloniaEditada">
     <div class="row">
+      
+      <!-- Descripcion -->
       <div class="col-md-6">
         <div class="mb-3">
           <label for="edit_colo_Descripcion" class="form-label">Descripción</label>
@@ -25,6 +27,8 @@
             required>
         </div>
       </div>
+
+      <!-- Departamento -->
       <div class="col-md-6">
         <div class="mb-3">
           <label for="depa_Codigo" class="form-label">Departamento</label>
@@ -49,9 +53,12 @@
         </div>
       </div>
     </div>
-    <!--  -->
+
+    <!--Nueva fila-->
 
     <div class="row">
+
+      <!-- Municipio -->
       <div class="col-md-6">
         <div class="mb-3">
           <label for="muni_Codigo" class="form-label">Municipio</label>
