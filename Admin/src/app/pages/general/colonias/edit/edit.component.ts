@@ -88,8 +88,8 @@ export class EditComponent implements OnInit, OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if ((this.coloniaEditada.colo_Descripcion ?? '').trim()) {
-      if ((this.coloniaEditada.colo_Descripcion ?? '').trim() !== this.coloniaOriginal) {
+    if ((this.coloniaEditada.colo_Descripcion ?? '').trim() && (this.coloniaEditada.muni_Codigo ?? '').trim()) {
+      if ((this.coloniaEditada.colo_Descripcion ?? '').trim() !== this.coloniaOriginal || (this.coloniaEditada.muni_Codigo ?? '').trim() !== this.coloniaOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -129,7 +129,7 @@ export class EditComponent implements OnInit, OnChanges {
         usuarioModificacion: ''
       };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/Colonia/Editar`, coloniaActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Colonia/Actualizar`, coloniaActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
