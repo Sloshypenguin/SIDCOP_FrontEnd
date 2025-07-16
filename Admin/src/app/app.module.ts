@@ -28,6 +28,7 @@ import { rootReducer } from './store';
 import { fakebackendInterceptor } from './core/helpers/fake-backend';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
+import { SslBypassInterceptor } from './core/helpers/ssl-bypass.interceptor';
 import { CRMEffects } from './store/CRM/crm.effects';
 import { ECoEffects } from './store/Ecommerce/ecommerce.effects';
 import { LearningEffects } from './store/Learning/learning.effects';
@@ -105,9 +106,11 @@ if (environment.defaultauth === 'firebase') {
         FormsModule,
         ReactiveFormsModule,
         AngularFireAuthModule], providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: SslBypassInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: fakebackendInterceptor, multi: true },
+        // Comentado para permitir solicitudes reales al backend
+        // { provide: HTTP_INTERCEPTORS, useClass: fakebackendInterceptor, multi: true },
         provideHttpClient(withInterceptorsFromDi()),
     ] })
 export class AppModule { }
