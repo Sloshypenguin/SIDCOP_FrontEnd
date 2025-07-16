@@ -208,4 +208,30 @@ export class ListComponent {
     const endItem = event.page * event.itemsPerPage;
     this.usuarios = this.usuarioGrid.slice(startItem, endItem);
   }
+
+  term: any;
+
+  filterdata() {
+    if (this.term) {
+      this.usuarios = this.usuarioGrid.filter((el: any) => el.name?.toLowerCase().includes(this.term.toLowerCase()));
+    } else {
+      this.usuarios = this.usuarioGrid.slice(0, 10);
+    }
+    // noResultElement
+    this.updateNoResultDisplay();
+  }
+
+  updateNoResultDisplay() {
+    const noResultElement = document.querySelector('.noresult') as HTMLElement;
+    const paginationElement = document.getElementById('pagination-element') as HTMLElement;
+    if (noResultElement && paginationElement) {
+      if (this.term && this.usuarios.length === 0) {
+        noResultElement.style.display = 'block';
+        paginationElement.classList.add('d-none');
+      } else {
+        noResultElement.style.display = 'none';
+        paginationElement.classList.remove('d-none');
+      }
+    }
+  }
 }

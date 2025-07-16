@@ -4,7 +4,7 @@
     ]">
     <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
 </app-breadcrumbs>
-
+    
 <div class="card">
     <div class="card-body">
         <div class="row align-items-center g-2">
@@ -13,12 +13,6 @@
                     <span class="btn-text">Nuevo</span>
                     <span class="btn-icon"><i class="ri-add-line"></i></span>
                 </button>           
-            </div>
-            <div class="col-lg-3">
-                <div class="search-box">
-                    <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
-                    <i class="ri-search-line search-icon"></i>
-                </div>
             </div>
         </div>
     </div>
@@ -31,10 +25,19 @@
                 <div class="card-header p-0 position-relative" style="height: 90px; background: #141a2f; border-top-left-radius: 1rem; border-top-right-radius: 1rem; display: flex; justify-content: center; align-items: flex-end;">
                     <div style="position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #d6b68a; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;"></div>
 
-                    <div style="background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #141a2f; margin-bottom: -35px; z-index:1;">
+                    <div style="position: absolute; top: 10px; left: 18px; z-index:1;">
+                        <svg width="32" height="12" viewBox="0 0 32 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="4" cy="6" r="2" fill="#D5B58A" fill-opacity="0.5" />
+                            <circle cx="12" cy="6" r="2" fill="#D5B58A" fill-opacity="0.3" />
+                            <circle cx="20" cy="6" r="2" fill="#D5B58A" fill-opacity="0.2" />
+                            <circle cx="28" cy="6" r="2" fill="#D5B58A" fill-opacity="0.15" />
+                        </svg>
+                    </div>
+
+                    <div style="background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #d6b68a; margin-bottom: -35px; z-index:1;">
                         <img 
                             src="{{ data.usua_Imagen || 'assets/images/users/48/avatar-8.jpg' }}" 
-                            alt="Empleado"
+                            alt="Usuarios"
                             class="avatar-img rounded-circle"
                             style="width: 64px; height: 64px; object-fit: cover; display: block;"
                         />
@@ -97,11 +100,11 @@
                             <span class="text-muted text-break">Usuario:</span><span>{{ data.usua_Usuario }}</span>
                         </li>
                         <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
-                            <span class="text-muted text-break">Rol</span><span>{{ data.role_Descripcion }}</span>
+                            <span class="text-muted text-break">Rol:</span><span>{{ data.role_Descripcion }}</span>
                         </li>
                     </ul>
                 </div>
-
+                <span class="text-center" style="color: #554439;">{{data.usua_EsAdmin ? 'Administrador' : ''}}</span>
             </div>
         </div>
     }
@@ -112,8 +115,8 @@
         <div class="text-muted text-center text-sm-start">
             Showing <span class="fw-semibold">{{usuarios?.length}}</span> of <span class="fw-semibold">{{usuarioGrid?.length}}</span> Results
         </div>
-    </div><!--end col-->
-    <div class="col-sm-auto mt-3 mt-sm-0">
-        <pagination class="pagination-wrap hstack justify-content-center gap-2" [totalItems]="usuarioGrid?.legnth" [itemsPerPage]="10" (pagrChanged)="pageChanged($event)"></pagination>
-    </div><!--end col-->
+    </div>
+    <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
+        <pagination [totalItems]="usuarioGrid?.legnth" [itemsPerPage]="10" (pagrChanged)="pageChanged($event)"></pagination>
+    </div>
 </div>
