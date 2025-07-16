@@ -46,6 +46,19 @@
   </div>
 </div>
 
+<div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
+  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+    <div class="container-fluid flex-grow-1">
+      <app-edit 
+        [RegistroCaiData]="RegistroCAIEditando" 
+        (onCancel)="cerrarFormularioEdicion()" 
+        (onSave)="actualizarRegistroCAI($event)">
+      </app-edit>
+    </div>
+  </div>
+</div>
+
+
         <div
           class="table-responsive"
           *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
@@ -63,6 +76,7 @@
                 <th class="gridjs-th">Rango Final</th>
                 <th class="gridjs-th">Fecha Inicial de Emision</th>
                 <th class="gridjs-th">Fecha Final de Emision</th>
+                <th class="gridjs-th">Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -123,6 +137,7 @@
                 <td>{{ data.regC_RangoFinal }}</td>
                 <td>{{ data.regC_FechaInicialEmision }}</td>
                 <td>{{ data.regC_FechaFinalEmision }}</td>
+                <td>{{ data.regC_Estado }}</td>
               </tr>
             </tbody>
           </table>
@@ -239,8 +254,8 @@
               class="ri-alert-line me-2 custom-modal-alert-icon"
               (click)="cancelarEliminar()"
             ></i
-            >¿Está seguro(a) que desea eliminar el estado civil
-            <strong>{{ estadoCivilAEliminar?.regC_Descripcion }}</strong
+            >¿Está seguro(a) que desea eliminar el Registro CAI
+            <strong>{{ RegistroCAIAEliminar?.regC_Descripcion }}</strong
             >?
           </p>
         </div>
