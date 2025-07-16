@@ -73,6 +73,13 @@
   box-shadow: 0 2px 8px rgba(44, 44, 44, 0.04);
   transition: background 0.2s, color 0.2s;
 }
+// Dropdown list inválidos en rojo
+.dropdown-action-list .dropdown-toggle.is-invalid,
+.dropdown-action-list .dropdown-menu.is-invalid {
+  border: 2px solid #dc3545 !important;
+  background-color: #fff6f6 !important;
+  color: #dc3545 !important;
+}
 .dropdown-action-list .dropdown-toggle:focus,
 .dropdown-action-list .dropdown-toggle:hover {
   background: #c2c5d1 !important;
