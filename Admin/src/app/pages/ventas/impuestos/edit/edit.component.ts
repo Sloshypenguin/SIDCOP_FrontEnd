@@ -35,6 +35,8 @@ export class EditComponent implements OnChanges {
   };
 
   ImpuestoOriginal = '';
+  ImpuestoValorOriginal: number = 0;
+
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -46,14 +48,15 @@ export class EditComponent implements OnChanges {
 
   constructor(private http: HttpClient) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['ImpuestosData'] && changes['ImpuestosData'].currentValue) {
-      this.impuestos = { ...changes['ImpuestosData'].currentValue };
-      this.ImpuestoOriginal = this.impuestos.impu_Descripcion || '';
-      this.mostrarErrores = false;
-      this.cerrarAlerta();
-    }
+ngOnChanges(changes: SimpleChanges): void {
+  if (changes['impuestoData'] && changes['impuestoData'].currentValue) {
+    this.impuestos = { ...changes['impuestoData'].currentValue };
+    this.ImpuestoOriginal = this.impuestos.impu_Descripcion || '';
+    this.ImpuestoValorOriginal = this.impuestos.impu_Valor; // ← ESTO FALTABA
+    this.mostrarErrores = false;
+    this.cerrarAlerta();
   }
+}
 
   cancelar(): void {
     this.cerrarAlerta();
@@ -73,7 +76,8 @@ export class EditComponent implements OnChanges {
     this.mostrarErrores = true;
 
     if (this.impuestos.impu_Descripcion.trim()) {
-      if (this.impuestos.impu_Descripcion.trim() !== this.ImpuestoOriginal) {
+      if (this.impuestos.impu_Descripcion.trim() !== this.ImpuestoOriginal ||
+       this.impuestos.impu_Valor !== this.ImpuestoValorOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -100,16 +104,18 @@ export class EditComponent implements OnChanges {
     this.mostrarErrores = true;
 
     if (this.impuestos.impu_Descripcion.trim()) {
-      const ImpuestosActualizar = {
-        impu_Id: this.impuestos.impu_Id,
-        impu_Descripcion: this.impuestos.impu_Descripcion.trim(),
-        usua_Creacion: this.impuestos.usua_Creacion,
-        impu_FechaCreacion: this.impuestos.impu_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
-        impu_FechaModificacion: new Date().toISOString(),
-        usuarioCreacion: '',
-        usuarioModificacion: ''
-      };
+     const ImpuestosActualizar = {
+  impu_Id: this.impuestos.impu_Id,
+  impu_Descripcion: this.impuestos.impu_Descripcion.trim(),
+  impu_Valor: this.impuestos.impu_Valor, 
+  usua_Creacion: this.impuestos.usua_Creacion,
+  impu_FechaCreacion: this.impuestos.impu_FechaCreacion,
+  usua_Modificacion: environment.usua_Id,
+  impu_FechaModificacion: new Date().toISOString(),
+  usuarioCreacion: '',
+  usuarioModificacion: ''
+};
+
 
       this.http.put<any>(`${environment.apiBaseUrl}/Impuestos/Actualizar`, ImpuestosActualizar, {
         headers: {
