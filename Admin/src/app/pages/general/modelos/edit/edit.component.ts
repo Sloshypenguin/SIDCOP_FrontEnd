@@ -1,9 +1,14 @@
-import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
 import { environment } from 'src/environments/environment';
+
+interface Marca {
+  maVe_Id: number;
+  maVe_Marca: string;
+}
 
 @Component({
   selector: 'app-edit',
@@ -12,9 +17,8 @@ import { environment } from 'src/environments/environment';
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
-export class EditComponent implements OnChanges {
+export class EditComponent implements OnInit, OnChanges {
   @Input() modeloData: Modelo | null = null;
-  @Input() marcasVehiculo: any[] = []; // Array de marcas de vehículo
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Modelo>();
 
@@ -43,8 +47,15 @@ export class EditComponent implements OnChanges {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
+  
+  // Cambiamos el nombre para que coincida con el HTML
+  marcasVehiculo: Marca[] = [];
 
   constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.cargarMarcas();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['modeloData'] && changes['modeloData'].currentValue) {
@@ -53,7 +64,41 @@ export class EditComponent implements OnChanges {
       this.marcaOriginal = this.modelo.maVe_Id || 0;
       this.mostrarErrores = false;
       this.cerrarAlerta();
+      
+      // Asegurarnos de que las marcas estén cargadas antes de establecer el valor
+      if (this.marcasVehiculo.length === 0) {
+        this.cargarMarcas();
+      }
     }
+  }
+
+  private cargarMarcas(): void {
+    this.http.get<Marca[]>(`${environment.apiBaseUrl}/MarcasVehiculos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        this.marcasVehiculo = data;
+        console.log('Marcas cargadas:', this.marcasVehiculo);
+        console.log('Marca actual del modelo:', this.modelo.maVe_Id);
+        
+        // Verificar si la marca actual existe en la lista
+        const marcaExiste = this.marcasVehiculo.find(marca => marca.maVe_Id === this.modelo.maVe_Id);
+        if (!marcaExiste && this.modelo.maVe_Id > 0) {
+          console.warn('La marca del modelo no existe en la lista de marcas disponibles');
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar marcas:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar las marcas disponibles';
+        
+        // Ocultar la alerta de error después de 5 segundos
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
   }
 
   cancelar(): void {
