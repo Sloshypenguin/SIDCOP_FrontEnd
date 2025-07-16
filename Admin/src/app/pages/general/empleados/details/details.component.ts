@@ -4,7 +4,7 @@ import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })

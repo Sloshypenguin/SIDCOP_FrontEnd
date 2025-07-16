@@ -17,48 +17,16 @@
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
   </div>
+  
   <!-- Contenido de detalles -->
-  <div *ngIf="!cargando && estadoCivilDetalle" class="details-content">
+  <div *ngIf="!cargando && empleadoDetalle" class="details-content">
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <div class="details-title">Detalles de empleados</div>
-      <div class="details-id-row" style="display: flex; gap: 2rem; justify-content: flex-start;">
-        <div class="details-id">
-          <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Codigo || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Nombres</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Nombres}}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Apellidos</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Apellidos}}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Nombres</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Nombres}}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Nombres</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Nombres}}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Nombres</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Nombres}}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Nombres</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Nombres}}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Nombres</div>
-          <div class="details-id-value">{{ empleadoDetalle?.empl_Nombres}}</div>
-        </div>
-      </div>
+      <h4 class="details-title">{{ empleadoDetalle?.empl_DNI }}</h4>
+      <span>Departamento </span>
     </div>
-      <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+    
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
       <div class="audit-table">
@@ -74,7 +42,7 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ empleadoDetalle?.usua_Creacion}}</span>
+          <span class="audit-user">{{ empleadoDetalle?.usua_Creacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date"></span>
@@ -87,14 +55,22 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ empleadoDetalle?.usua_Modificacion || 'N/A' }}</span>
+          <span class="audit-user"></span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(empleadoDetalle?.empl_FechaModificacion ?? null) }}</span>
+          <span class="audit-date"></span>
         </div>
       </div>
     </div>
     </div>
     
+    <!-- Información adicional -->
+    <div class="additional-info">
+      <div class="info-item">
+        <label class="info-label">Número:</label>
+        <span class="info-value"></span>
+      </div>
+    </div>
+
   </div>
 </div>
