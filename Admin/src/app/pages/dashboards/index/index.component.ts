@@ -3,6 +3,7 @@ import { circle, latLng, tileLayer } from 'leaflet';
 import { Observable } from 'rxjs';
 import { DecimalPipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { LocalstorageDebugComponent } from './localstorage-debug.component';
 
 // amCharts imports
 import * as am5 from '@amcharts/amcharts5';
