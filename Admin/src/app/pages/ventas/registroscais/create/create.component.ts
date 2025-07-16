@@ -150,8 +150,8 @@ export class CreateComponent {
 
         regC_RangoInicial: this.registroCai.regC_RangoInicial.trim(),
         regC_RangoFinal: this.registroCai.regC_RangoFinal.trim(),
-        regC_FechaInicialEmision: this.registroCai.regC_FechaInicialEmision.toISOString(),
-        regC_FechaFinalEmision: this.registroCai.regC_FechaFinalEmision.toISOString(),
+        regC_FechaInicialEmision: this.registroCai.regC_FechaInicialEmision,
+        regC_FechaFinalEmision: this.registroCai.regC_FechaFinalEmision,
 
         code_Status: 0,
         message_Status: '',
