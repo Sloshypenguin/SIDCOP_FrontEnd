@@ -11,8 +11,8 @@
 <div class="card">
     <div class="card-body">
         <div class="row align-items-center g-2">
-            <div class="col-lg-3 me-auto">
-                <button type="button" class="btn btn-primary me-2 mb-2">
+            <div class="col-lg-3 me-auto" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+                <button type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
                     <span class="btn-text">Nuevo</span>
                     <span class="btn-icon"><i class="ri-add-line"></i></span>
                 </button>
@@ -23,7 +23,15 @@
                     <i class="ri-search-line search-icon"></i>
                 </div>
             </div><!--end col-->
-            
+        </div>
+
+        <!-- Collapse para el formulario de creación -->
+        <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
+            <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+                <div class="container-fluid flex-grow-1">
+                <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarEmpleado($event)"></app-create>
+                </div>
+            </div>
         </div>
     </div>
 </div><!--end card-->
@@ -122,7 +130,7 @@
                         </button>
                       </li>
                       <li *ngIf="showDelete">
-                        <button type="button" class="dropdown-action-btn" (click)="removeItem(empleado.empl_Id); activeActionRow = null;">
+                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(empleado)">
                           Eliminar <i class="ri-delete-bin-line"></i>
                         </button>
                       </li>
@@ -171,29 +179,32 @@
 
 
 
-<!-- deleteRecordModal -->
-<div bsModal #deleteRecordModal="bs-modal" id="deleteRecordModal" class="modal fade zoomIn">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" id="deleteRecord-close" (click)="deleteRecordModal.hide()"></button>
-            </div>
-            <div class="modal-body p-md-5">
-                <div class="text-center">
-                    <div class="text-danger">
-                        <i class="bi bi-trash display-5"></i>
-                    </div>
-                    <div class="mt-4">
-                        <h4 class="mb-2">Are you sure ?</h4>
-                        <p class="text-muted mx-3 mb-0">Are you sure you want to remove this record ?</p>
-                    </div>
-                </div>
-                <div class="d-flex gap-2 justify-content-center mt-4 pt-2 mb-2">
-                    <button type="button" class="btn w-sm btn-light btn-hover" (click)="deleteRecordModal.hide()">Close</button>
-                    <button type="button" class="btn w-sm btn-danger btn-hover" id="delete-record" (click)="confirmDelete()">Yes, Delete
-                        It!</button>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /deleteRecordModal -->
+<!-- Modal de confirmación para eliminar -->
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Confirmación</span>
+        <i class="ri-close-line custom-modal-close" (click)="cancelarEliminar()"></i>
+      </div>
+      <hr class="custom-modal-divider">
+      <div class="modal-body custom-modal-body">
+        <div class="text-center"> 
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el empleado <strong>{{ empleadoAEliminar?.empl_Nombres }}</strong>?
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button type="button" class="btn btn-primary gray btn-sm btn-minw-5" (click)="cancelarEliminar()"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
+        <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
+          <span class="btn-text">Si</span>
+          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay para el modal -->
+<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
