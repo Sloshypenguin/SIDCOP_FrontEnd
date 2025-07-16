@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,12 +30,19 @@ import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
 
   activeActionRow: number | null = null;
-  showEdit = true;
-  showDetails = true;
-  showDelete = true;
+  // Variables para control de alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  
+  // Acciones disponibles para el usuario
+  accionesDisponibles: string[] = [];
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
@@ -90,13 +97,7 @@ export class ListComponent {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  // Propiedades para alertas
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
+  // Propiedades para alertas (ya definidas al inicio de la clase)
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
@@ -111,11 +112,46 @@ export class ListComponent {
     });
   }
 
-  constructor(public table: ReactiveTableService< Colonias>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Colonias>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+
+  // Verificar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+  // Cargar acciones disponibles del usuario
+  cargarAccionesUsuario() {
+    let accionesArray: string[] = [];
+    let modulo: any = null;
+    const permisosJson = localStorage.getItem('permisos');
+    if (permisosJson) {
+      try {
+        const permisos = JSON.parse(permisosJson);
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (17 para colonias)
+          modulo = permisos.find((m: any) => m.Pant_Id === 17);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Colonias'] || permisos['colonias'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones disponibles para colonias:', this.accionesDisponibles);
+  }
+
+  // Inicializar componente
+  ngOnInit() {
+    this.cargarAccionesUsuario();
     this.cargardatos();
   }
 
-   onActionMenuClick(rowIndex: number) {
+  onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 

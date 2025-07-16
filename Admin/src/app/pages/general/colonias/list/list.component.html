@@ -61,31 +61,31 @@
           <table class="table table-gridjs table-style">
             <thead>
               <tr>
-                <th class="gridjs-th">Acciones</th>
+                <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles')">Acciones</th>
                 <th class="gridjs-th">Codigo</th>
                 <th class="gridjs-th">Descripción</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative">
+                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles')">
                   <div class="dropdown-action-list">
                     <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
                       <span>Acciones</span>
                       <i class="ri-settings-3-line"></i>
                     </button>
                     <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="showEdit">
+                      <li *ngIf="accionPermitida('editar')">
                         <button type="button" class="dropdown-action-btn" (click)="editar(data)">
                           Editar <i class="ri-edit-line"></i>
                         </button>
                       </li>
-                      <li *ngIf="showDelete">
+                      <li *ngIf="accionPermitida('eliminar')">
                         <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
                           Eliminar <i class="ri-delete-bin-line"></i>
                         </button>
                       </li>
-                      <li *ngIf="showDetails">
+                      <li *ngIf="accionPermitida('detalles')">
                         <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
                           Detalles <i class="ri-error-warning-fill"></i>
                         </button>
