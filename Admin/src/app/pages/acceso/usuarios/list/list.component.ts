@@ -45,7 +45,6 @@ export class ListComponent {
     ];
 
     this.cargarAccionesUsuario();
-    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -179,13 +178,11 @@ export class ListComponent {
         let modulo = null;
         if(Array.isArray(permisos)){
           modulo = permisos.find((m: any) => m.Pant_Id === 7);
-          console.log('Modulo encontrado:', modulo);
         } else if (typeof permisos === 'object' && permisos !== null) {
           modulo = permisos['Usuarios'] || permisos['usuarios'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
-          accionesArray = modulo.Acciones.map((a: any) => a.accion).filter((a:any) => a && typeof a === 'string');
-          console.log('Acciones encontradas:', accionesArray);
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a:any) => typeof a === 'string');
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
