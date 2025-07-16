@@ -35,15 +35,15 @@
             <input
               type="text"
               class="form-control"
-              [class.is-invalid]="!impuesto.impu_Descripcion.trim() && mostrarErrores"
+              [class.is-invalid]="!impuestos.impu_Descripcion.trim() && mostrarErrores"
               id="impuestoDescripcion"
-              [(ngModel)]="impuesto.impu_Descripcion"
+              [(ngModel)]="impuestos.impu_Descripcion"
               placeholder="Ingrese la descripción del impuesto"
               required
             >
-            <span class="text-danger ms-2" *ngIf="!impuesto.impu_Descripcion.trim() && mostrarErrores">*</span>
+            <span class="text-danger ms-2" *ngIf="!impuestos.impu_Descripcion.trim() && mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" *ngIf="!impuesto.impu_Descripcion.trim() && mostrarErrores">
+          <div class="text-danger mt-1" *ngIf="!impuestos.impu_Descripcion.trim() && mostrarErrores">
             <small>El campo Descripción es requerido</small>
           </div>
         </div>
@@ -56,16 +56,16 @@
             <input
               type="number"
               class="form-control"
-              [class.is-invalid]="(impuesto.impu_Valor === null || impuesto.impu_Valor < 0) && mostrarErrores"
+              [class.is-invalid]="(impuestos.impu_Valor === null || impuestos.impu_Valor < 0) && mostrarErrores"
               id="impuestoValor"
-              [(ngModel)]="impuesto.impu_Valor"
+              [(ngModel)]="impuestos.impu_Valor"
               placeholder="Ingrese el valor del impuesto"
               min="0"
               required
             >
-            <span class="text-danger ms-2" *ngIf="(impuesto.impu_Valor === null || impuesto.impu_Valor < 0) && mostrarErrores">*</span>
+            <span class="text-danger ms-2" *ngIf="(impuestos.impu_Valor === null || impuestos.impu_Valor < 0) && mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" *ngIf="(impuesto.impu_Valor === null || impuesto.impu_Valor < 0) && mostrarErrores">
+          <div class="text-danger mt-1" *ngIf="(impuestos.impu_Valor === null || impuestos.impu_Valor < 0) && mostrarErrores">
             <small>El campo Valor es requerido y debe ser mayor o igual a 0</small>
           </div>
         </div>
@@ -106,8 +106,8 @@
           <p class="mt-2 custom-modal-text">
             <i class="ri-edit-line me-2 custom-modal-alert-icon" (click)="cancelarEdicion()"></i>
             ¿Estás seguro que deseas editar el impuesto
-            <strong>"{{ impuestoOriginal }}"</strong> por
-            <strong>"{{ impuesto.impu_Descripcion }}" ({{ impuesto.impu_Valor }}%)"</strong>?
+            <strong>"{{ ImpuestoOriginal }}"</strong> por
+            <strong>"{{ impuestos.impu_Descripcion }}" ({{ impuestos.impu_Valor }}%)"</strong>?
           </p>
         </div>
       </div>

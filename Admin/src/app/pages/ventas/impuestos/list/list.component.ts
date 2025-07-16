@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
-//import { EditComponent } from '../edit/edit.component';
+import { EditComponent } from '../edit/edit.component';
 
 
 @Component({
@@ -22,7 +22,7 @@ import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-   // EditComponent,
+    EditComponent,
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -150,7 +150,7 @@ export class ListComponent implements OnInit {
         const permisos = JSON.parse(permisosRaw);
         let modulo = null;
         if (Array.isArray(permisos)) {
-          modulo = permisos.find((m: any) => m.Pant_Id === 15); // Ajusta el ID
+          modulo = permisos.find((m: any) => m.Pant_Id === 37); // Ajusta el ID
         } else if (typeof permisos === 'object' && permisos !== null) {
           modulo = permisos['Impuestos'] || permisos['impuestos'] || null;
         }

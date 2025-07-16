@@ -7,6 +7,8 @@ export class Impuestos {
   usua_Modificacion?: number;
   impu_FechaModificacion?: Date;
   impu_Estado: boolean = true;
+    code_Status: number = 0;
+  message_Status: string ='';
 
   constructor(init?: Partial<Impuestos>) {
     Object.assign(this, init);

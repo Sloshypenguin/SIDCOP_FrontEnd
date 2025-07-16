@@ -1,37 +1,40 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
+import { HttpClient } from '@angular/common/http';
+import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
-export class EditComponent implements OnChanges {
-  @Input() estadoCivilData: EstadoCivil | null = null;
-  @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<EstadoCivil>();
 
- estadoCivil: EstadoCivil = {
-    esCv_Id: 0,
-    esCv_Descripcion: '',
+
+
+export class EditComponent implements OnChanges {
+@Input() impuestoData: Impuestos | null = null;
+  @Output() onCancel = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<Impuestos>();
+
+  impuestos: Impuestos = {
+    impu_Id: 0,
+    impu_Descripcion: '',
+    impu_Valor: 0,
     usua_Creacion: 0,
     usua_Modificacion: 0,
-    secuencia: 0,
-    esCv_FechaCreacion: new Date(),
-    esCv_FechaModificacion: new Date(),
+    impu_FechaCreacion: new Date(),
+    impu_FechaModificacion: new Date(),
     code_Status: 0,
     message_Status: '',
-    usuarioCreacion: '',
-    usuarioModificacion: ''
+    impu_Estado: true
+
   };
 
-  estadoCivilOriginal = '';
+  ImpuestoOriginal = '';
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -44,9 +47,9 @@ export class EditComponent implements OnChanges {
   constructor(private http: HttpClient) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['estadoCivilData'] && changes['estadoCivilData'].currentValue) {
-      this.estadoCivil = { ...changes['estadoCivilData'].currentValue };
-      this.estadoCivilOriginal = this.estadoCivil.esCv_Descripcion || '';
+    if (changes['ImpuestosData'] && changes['ImpuestosData'].currentValue) {
+      this.impuestos = { ...changes['ImpuestosData'].currentValue };
+      this.ImpuestoOriginal = this.impuestos.impu_Descripcion || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
     }
@@ -69,8 +72,8 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.estadoCivil.esCv_Descripcion.trim()) {
-      if (this.estadoCivil.esCv_Descripcion.trim() !== this.estadoCivilOriginal) {
+    if (this.impuestos.impu_Descripcion.trim()) {
+      if (this.impuestos.impu_Descripcion.trim() !== this.ImpuestoOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -96,20 +99,19 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (this.estadoCivil.esCv_Descripcion.trim()) {
-      const estadoCivilActualizar = {
-        esCv_Id: this.estadoCivil.esCv_Id,
-        esCv_Descripcion: this.estadoCivil.esCv_Descripcion.trim(),
-        usua_Creacion: this.estadoCivil.usua_Creacion,
-        esCv_FechaCreacion: this.estadoCivil.esCv_FechaCreacion,
+    if (this.impuestos.impu_Descripcion.trim()) {
+      const ImpuestosActualizar = {
+        impu_Id: this.impuestos.impu_Id,
+        impu_Descripcion: this.impuestos.impu_Descripcion.trim(),
+        usua_Creacion: this.impuestos.usua_Creacion,
+        impu_FechaCreacion: this.impuestos.impu_FechaCreacion,
         usua_Modificacion: environment.usua_Id,
-        numero: this.estadoCivil.secuencia || '',
-        esCv_FechaModificacion: new Date().toISOString(),
+        impu_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: ''
       };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/EstadosCiviles/Actualizar`, estadoCivilActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Impuestos/Actualizar`, ImpuestosActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -117,20 +119,20 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Estado civil "${this.estadoCivil.esCv_Descripcion}" actualizado exitosamente`;
+          this.mensajeExito = `Impuesto "${this.impuestos.impu_Descripcion}" actualizado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
 
           setTimeout(() => {
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.estadoCivil);
+            this.onSave.emit(this.impuestos);
             this.cancelar();
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar estado civil:', error);
+          console.error('Error al actualizar impuesto:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al actualizar el estado civil. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al actualizar el impuesto. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);
         }
       });

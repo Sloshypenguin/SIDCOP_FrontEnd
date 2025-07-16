@@ -1,6 +1,9 @@
 <app-breadcrumbs
   [title]="'Impuestos'"
-  [breadcrumbItems]="breadCrumbItems"
+  [breadcrumbItems]="[
+    { label: 'General' },
+    { label: 'Impuestos', active: true }
+  ]"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
 </app-breadcrumbs>
@@ -10,68 +13,61 @@
     <div class="card">
       <div class="card-body">
 
-        <!-- Botones y buscador -->
-        <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-         
+        <!-- Buscador -->
+        <div class="d-flex justify-content-end mb-3 flex-wrap" *ngIf="!showEditForm && !showDetailsForm">
           <div class="search-box mb-2">
             <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
             <i class="ri-search-line search-icon"></i>
           </div>
         </div>
 
-
-        <!-- Formulario de edición
+        <!-- Collapse formulario de edición -->
         <div class="collapse" [ngClass]="{ 'show': showEditForm }">
-          <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
-            <div class="container-fluid">
-              <app-edit 
-                [impuestoData]="impuestoEditando" 
-                (onCancel)="cerrarFormularioEdicion()" 
+          <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+            <div class="container-fluid flex-grow-1">
+              <app-edit
+                [impuestoData]="impuestoEditando"
+                (onCancel)="cerrarFormularioEdicion()"
                 (onSave)="actualizarImpuesto($event)">
               </app-edit>
             </div>
           </div>
-        </div> -->
-
-
+        </div>
 
         <!-- Tabla -->
-        <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+        <div class="table-responsive" *ngIf="!showEditForm && !showDetailsForm">
           <table class="table table-gridjs table-style">
             <thead>
               <tr>
-                <th>Acciones</th>
-             <th>Descripción</th>
+                <th *ngIf="accionPermitida('editar')">Acciones</th>
+                <th>Descripción</th>
                 <th>Valor</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative">
+                <td *ngIf="accionPermitida('editar')" class="position-relative">
                   <div class="dropdown-action-list">
                     <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
                       <span>Acciones</span>
                       <i class="ri-settings-3-line"></i>
                     </button>
                     <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="showEdit">
+                      <li>
                         <button type="button" class="dropdown-action-btn" (click)="editar(data)">Editar <i class="ri-edit-line"></i></button>
                       </li>
-                
-          
                     </ul>
                   </div>
                 </td>
-              <!--  <td><span class="fw-semibold">{{data.secuencia}}</span></td>-->
-                <td>{{data.impu_Descripcion}}</td>
-                <td>{{data.impu_Valor | percent: '1.2-2'}}</td>
+                <td>{{ data.impu_Descripcion }}</td>
+                <td>{{ data.impu_Valor | percent:'1.2-2' }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <!-- Paginación -->
-        <div class="row justify-content-md-between align-items-md-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+        <div class="row justify-content-md-between align-items-md-center" *ngIf="!showEditForm && !showDetailsForm">
           <ng-container *ngIf="(table.paginated$ | async) as paginados">
             <div class="col-sm-12 col-md-5">
               <div class="dataTables_info mb-2" role="status" aria-live="polite">
@@ -96,7 +92,7 @@
   </div>
 </div>
 
-<!-- Alertas -->
+<!-- Alertas flotantes -->
 <div class="alert-container">
   <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert">
     <i class="ri-check-double-line me-3"></i>
@@ -116,6 +112,3 @@
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 </div>
-
-
-<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
