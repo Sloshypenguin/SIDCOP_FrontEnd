@@ -151,7 +151,7 @@
                     </button>
                     <ul class="dropdown-menu" [class.show]="activeActionRow === empleado.empl_Id">
                       <li *ngIf="showEdit">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(empleado.empl_Id); activeActionRow = null;">
+                        <button type="button" class="dropdown-action-btn" (click)="editar(empleado); activeActionRow = null;">
                           Editar <i class="ri-edit-line"></i>
                         </button>
                       </li>

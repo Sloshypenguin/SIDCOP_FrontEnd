@@ -1,4 +1,3 @@
-  
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
@@ -375,8 +374,26 @@ export class ListComponent {
 
     editar(empleado: Empleado): void {
       console.log('Abriendo formulario de edición para:', empleado);
-      
-      this.empleadoEditando = { ...empleado }; // Hacer copia profunda
+      // Crear una copia profunda asegurando que todos los campos estén presentes y sin sobrescribir
+      this.empleadoEditando = {
+        empl_Id: empleado.empl_Id ?? undefined,
+        empl_DNI: empleado.empl_DNI || '',
+        empl_Codigo: empleado.empl_Codigo || '',
+        empl_Nombres: empleado.empl_Nombres || '',
+        empl_Apellidos: empleado.empl_Apellidos || '',
+        empl_Sexo: empleado.empl_Sexo || '',
+        empl_FechaNacimiento: empleado.empl_FechaNacimiento || '',
+        empl_Correo: empleado.empl_Correo || '',
+        empl_Telefono: empleado.empl_Telefono || '',
+        sucu_Id: empleado.sucu_Id ?? undefined,
+        esCv_Id: empleado.esCv_Id ?? undefined,
+        carg_Id: empleado.carg_Id ?? undefined,
+        colo_Id: empleado.colo_Id ?? undefined,
+        empl_DireccionExacta: empleado.empl_DireccionExacta || '',
+        empl_Estado: empleado.empl_Estado ?? 1,
+        usua_Creacion: empleado.usua_Creacion ?? 0,
+        empl_FechaCreacion: empleado.empl_FechaCreacion ?? '',
+      };
       this.showEditForm = true;
       this.showCreateForm = false; // Cerrar create si está abierto
       this.showDetailsForm = false; // Cerrar details si está abierto

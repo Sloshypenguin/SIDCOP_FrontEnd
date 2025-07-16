@@ -8,10 +8,10 @@ export class Empleado{
   empl_FechaNacimiento:  Date = new Date();
   empl_Correo: string = '';
   empl_Telefono: string = '';
-  sucu_Id: number = 0;
-  esCv_Id: number = 0;
-  carg_Id: number = 0;
-  colo_Id: number = 0;
+  sucu_Id?: number = 0;
+  esCv_Id?: number = 0;
+  carg_Id?: number = 0;
+  colo_Id?: number = 0;
   empl_DireccionExacta: string = '';
   empl_Estado: boolean = true;
   usua_Creacion: number = 0;
