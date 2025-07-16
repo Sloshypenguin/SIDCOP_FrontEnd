@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,9 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -19,85 +22,117 @@ import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
     RouterModule,
     BreadcrumbsComponent,
     TableModule,
-    PaginationModule
+    PaginationModule,
+    CreateComponent,
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  // bread crumb items
   breadCrumbItems!: Array<{}>;
 
-  constructor(
-    public table: ReactiveTableService<Modelo>,
-    private http: HttpClient
-  ) {
-    this.cargarDatos();
+  // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 
   ngOnInit(): void {
+    /**
+     * BreadCrumb
+     */
     this.breadCrumbItems = [
       { label: 'General' },
       { label: 'Modelos', active: true }
     ];
+
+    // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
-  // =============================
-  //  Controles de visibilidad
-  // =============================
-  showCreateForm = false;
-  showEditForm = false;
-  showDetailsForm = false;
-
-  // =============================
-  //  Control de acciones visibles
-  // =============================
-  showEdit = true;
-  showDelete = true;
-  showDetails = true;
-
-  // =============================
-  //  Datos de edición y detalle
-  // =============================
-  modeloEditando: Modelo | null = null;
-  modeloDetalle: Modelo | null = null;
-
-  // =============================
-  //  Row activo para menú
-  // =============================
-  activeActionRow: number | null = null;
-
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  // Cierra el dropdown si se hace click fuera
+  onDocumentClick(event: MouseEvent, rowIndex: number) {
+    const target = event.target as HTMLElement;
+    // Busca el dropdown abierto
+    const dropdowns = document.querySelectorAll('.dropdown-action-list');
+    let clickedInside = false;
+    dropdowns.forEach((dropdown, idx) => {
+      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
+        clickedInside = true;
+      }
+    });
+    if (!clickedInside && this.activeActionRow === rowIndex) {
+      this.activeActionRow = null;
+    }
   }
 
-  // =============================
-  //  Funciones requeridas por el HTML
-  // =============================
-
+  // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
-    console.log('Crear modelo');
-    this.showCreateForm = true;
-    this.showEditForm = false;
-    this.showDetailsForm = false;
-    this.activeActionRow = null;
+    console.log('Toggleando formulario de creación...');
+    this.showCreateForm = !this.showCreateForm;
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   editar(modelo: Modelo): void {
-    console.log('Editar modelo:', modelo);
-    this.modeloEditando = { ...modelo };
+    console.log('Abriendo formulario de edición para:', modelo);
+    console.log('Datos específicos:', {
+      id: modelo.mode_Id,
+      descripcion: modelo.mode_Descripcion,
+      marca: modelo.maVe_Marca,
+      completo: modelo
+    });
+    this.modeloEditando = { ...modelo }; // Hacer copia profunda
     this.showEditForm = true;
-    this.showCreateForm = false;
-    this.showDetailsForm = false;
-    this.activeActionRow = null;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   detalles(modelo: Modelo): void {
-    console.log('Detalles del modelo:', modelo);
-    this.modeloDetalle = { ...modelo };
+    console.log('Abriendo detalles para:', modelo);
+    this.modeloDetalle = { ...modelo }; // Hacer copia profunda
     this.showDetailsForm = true;
-    this.showCreateForm = false;
-    this.showEditForm = false;
-    this.activeActionRow = null;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  activeActionRow: number | null = null;
+  showEdit = true;
+  showDetails = true;
+  showDelete = true;
+  showCreateForm = false; // Control del collapse
+  showEditForm = false; // Control del collapse de edición
+  showDetailsForm = false; // Control del collapse de detalles
+  modeloEditando: Modelo | null = null;
+  modeloDetalle: Modelo | null = null;
+
+  // Propiedades para alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+
+  // Propiedades para confirmación de eliminación
+  mostrarConfirmacionEliminar = false;
+  modeloAEliminar: Modelo | null = null;
+
+  constructor(public table: ReactiveTableService<Modelo>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+    this.cargarDatos();
+  }
+
+  onActionMenuClick(rowIndex: number) {
+    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
   cerrarFormulario(): void {
@@ -115,22 +150,24 @@ export class ListComponent implements OnInit {
   }
 
   guardarModelo(modelo: Modelo): void {
-    console.log('Modelo guardado:', modelo);
+    console.log('Modelo guardado exitosamente desde create component:', modelo);
+    // Recargar los datos de la tabla
     this.cargarDatos();
     this.cerrarFormulario();
   }
 
   actualizarModelo(modelo: Modelo): void {
-    console.log('Modelo actualizado:', modelo);
+    console.log('Modelo actualizado exitosamente desde edit component:', modelo);
+    // Recargar los datos de la tabla
     this.cargarDatos();
     this.cerrarFormularioEdicion();
   }
 
   confirmarEliminar(modelo: Modelo): void {
-    console.log('Confirmar eliminación de modelo:', modelo);
+    console.log('Solicitando confirmación para eliminar:', modelo);
     this.modeloAEliminar = modelo;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null;
+    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
@@ -139,9 +176,91 @@ export class ListComponent implements OnInit {
   }
 
   eliminar(): void {
-    console.log('Eliminar modelo:', this.modeloAEliminar);
-    // A futuro: lógica de eliminación
-    this.cancelarEliminar();
+    if (!this.modeloAEliminar) return;
+    
+    console.log('Eliminando modelo:', this.modeloAEliminar);
+    
+    this.http.post(`${environment.apiBaseUrl}/Modelo/Eliminar/${this.modeloAEliminar.mode_Id}`, {}, {
+      headers: { 
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Respuesta del servidor:', response);
+        
+        // Verificar el código de estado en la respuesta
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Modelo eliminado exitosamente');
+            this.mensajeExito = `Modelo "${this.modeloAEliminar!.mode_Descripcion}" eliminado exitosamente`;
+            this.mostrarAlertaExito = true;
+            
+            // Ocultar la alerta después de 3 segundos
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            
+            this.cargarDatos();
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            // Error: está siendo utilizado
+            console.log('Modelo está siendo utilizado');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el modelo está siendo utilizado.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el modelo.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          }
+        } else {
+          // Respuesta inesperada
+          console.log('Respuesta inesperada del servidor');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar el modelo.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        }
+      },
+      error: (error) => {
+        console.error('Error al eliminar modelo:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error de comunicación con el servidor.';
+        
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        
+        // Cerrar el modal de confirmación
+        this.cancelarEliminar();
+      }
+    });
   }
 
   cerrarAlerta(): void {
@@ -153,27 +272,41 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  // =============================
-  //  Alertas y confirmación
-  // =============================
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
+  // Método para cargar las acciones disponibles del usuario
+  private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo de Modelos (ajusta el nombre si es diferente)
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID según corresponda para Modelos)
+          modulo = permisos.find((m: any) => m.Pant_Id === 15); // Cambiar ID según sea necesario
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Modelos'] || permisos['modelos'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
+  }
 
-  mostrarConfirmacionEliminar = false;
-  modeloAEliminar: Modelo | null = null;
-
-  // =============================
-  //  Carga inicial
-  // =============================
   private cargarDatos(): void {
     this.http.get<Modelo[]>(`${environment.apiBaseUrl}/Modelo/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Modelos recibidos:', data);
+      console.log('Datos recargados:', data);
       this.table.setData(data);
     });
   }

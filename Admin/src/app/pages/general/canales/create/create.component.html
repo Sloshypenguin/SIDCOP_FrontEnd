@@ -1,0 +1,84 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <h5 class="card-title mb-4">Crear Nuevo Canal</h5>
+
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div class="flex-grow-1">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <!-- Descripción -->
+          <div class="mb-3">
+            <div class="d-flex align-items-center">
+              <input
+                type="text"
+                class="form-control"
+                id="cana_Descripcion"
+                [(ngModel)]="canal.cana_Descripcion"
+                name="cana_Descripcion"
+                placeholder="Ingrese la descripción del canal"
+                [class.is-invalid]="mostrarErrores && !canal.cana_Descripcion.trim()"
+                required>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="mostrarErrores && !canal.cana_Descripcion.trim()">
+              <small>El campo Descripción es requerido</small>
+            </div>
+          </div>
+          <!-- Observaciones -->
+          <div class="mb-3">
+            <div class="d-flex align-items-center">
+              <textarea
+                class="form-control"
+                id="cana_Observaciones"
+                [(ngModel)]="canal.cana_Observaciones"
+                name="cana_Observaciones"
+                placeholder="Ingrese observaciones"
+                [class.is-invalid]="mostrarErrores && !canal.cana_Observaciones.trim()"
+                rows="3"
+                required></textarea>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="mostrarErrores && !canal.cana_Observaciones.trim()">
+              <small>El campo Observaciones es requerido</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
