@@ -9,7 +9,7 @@ export class Impuestos {
   impu_Estado: boolean = true;
     code_Status: number = 0;
   message_Status: string ='';
-
+  secuencia?: number;
   constructor(init?: Partial<Impuestos>) {
     Object.assign(this, init);
   }

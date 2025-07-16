@@ -39,7 +39,9 @@
           <table class="table table-gridjs table-style">
             <thead>
               <tr>
+
                 <th *ngIf="accionPermitida('editar')">Acciones</th>
+                 <th>No.</th>
                 <th>Descripción</th>
                 <th>Valor</th>
               </tr>
@@ -59,6 +61,7 @@
                     </ul>
                   </div>
                 </td>
+                <td>{{ data.secuencia }}</td>
                 <td>{{ data.impu_Descripcion }}</td>
                 <td>{{ data.impu_Valor | percent:'1.2-2' }}</td>
               </tr>
