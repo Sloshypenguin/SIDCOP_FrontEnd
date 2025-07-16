@@ -53,6 +53,9 @@ export class CreateComponent implements OnInit {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
+  MarcasVehiculos: any[] = [];
+
+  
 
   constructor(private http: HttpClient) {}
 
@@ -64,7 +67,7 @@ export class CreateComponent implements OnInit {
    * Carga las marcas disponibles para el select
    */
   private cargarMarcas(): void {
-    this.http.get<Marca[]>(`${environment.apiBaseUrl}/MarcaVehiculo/Listar`, {
+    this.http.get<Marca[]>(`${environment.apiBaseUrl}/MarcasVehiculos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
