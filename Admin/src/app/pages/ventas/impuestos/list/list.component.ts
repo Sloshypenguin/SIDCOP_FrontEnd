@@ -9,9 +9,8 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
-import { CreateComponent } from '../create/create.component';
-//import { EditComponent } from '../edit/edit.component';
-//import { DetailsComponent } from '../details/details.component';
+import { EditComponent } from '../edit/edit.component';
+
 
 @Component({
   selector: 'app-list',
@@ -23,28 +22,33 @@ import { CreateComponent } from '../create/create.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    CreateComponent,
-  //  EditComponent,
-   // DetailsComponent
+    EditComponent,
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
+  accionesDisponibles: string[] = [];
+
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'Ventas' },
       { label: 'Impuestos', active: true }
     ];
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
     const dropdowns = document.querySelectorAll('.dropdown-action-list');
     let clickedInside = false;
-    dropdowns.forEach((dropdown) => {
+    dropdowns.forEach((dropdown, idx) => {
       if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
         clickedInside = true;
       }
@@ -61,7 +65,7 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null;
   }
 
-  editar(impuesto: Impuestos): void {
+  editar(impuesto: Impuestos ): void {
     this.impuestoEditando = { ...impuesto };
     this.showEditForm = true;
     this.showCreateForm = false;
@@ -69,64 +73,50 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null;
   }
 
-  detalles(impuesto: Impuestos): void {
-    this.impuestoDetalle = { ...impuesto };
-    this.showDetailsForm = true;
+
+  activeActionRow: number | null = null;
+  showEdit = true;
+  showDetails = true;
+  showDelete = true;
+  showCreateForm = false;
+  showEditForm = false;
+  showDetailsForm = false;
+  impuestoEditando: Impuestos | null = null;
+
+
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+
+  mostrarConfirmacionEliminar = false;
+  impuestoAEliminar: Impuestos | null = null;
+
+  constructor(
+    public table: ReactiveTableService<Impuestos>,
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.cargardatos();
+  }
+
+  onActionMenuClick(rowIndex: number) {
+    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  }
+
+  cerrarFormulario(): void {
     this.showCreateForm = false;
+  }
+
+  cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.activeActionRow = null;
+    this.impuestoEditando = null;
   }
 
-  confirmarEliminar(impuesto: Impuestos): void {
-    this.impuestoAEliminar = impuesto;
-    this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null;
-  }
 
-  cancelarEliminar(): void {
-    this.mostrarConfirmacionEliminar = false;
-    this.impuestoAEliminar = null;
-  }
-
-  eliminar(): void {
-    if (!this.impuestoAEliminar) return;
-
-    this.http.post(`${environment.apiBaseUrl}/Impuestos/Eliminar/${this.impuestoAEliminar.impu_Id}`, {}, {
-      headers: {
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response: any) => {
-        if (response.success && response.data) {
-          const status = response.data.code_Status;
-          const message = response.data.message_Status || '';
-          if (status === 1) {
-            this.mensajeExito = `Impuesto "${this.impuestoAEliminar!.impu_Descripcion}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            setTimeout(() => this.cerrarAlerta(), 3000);
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (status === -1) {
-            this.mensajeError = message || 'No se puede eliminar: el impuesto está siendo utilizado.';
-            this.mostrarAlertaError = true;
-            setTimeout(() => this.cerrarAlerta(), 5000);
-            this.cancelarEliminar();
-          } else {
-            this.mensajeError = message || 'Error al eliminar el impuesto.';
-            this.mostrarAlertaError = true;
-            setTimeout(() => this.cerrarAlerta(), 5000);
-            this.cancelarEliminar();
-          }
-        } else {
-          this.mensajeError = response.message || 'Error inesperado al eliminar el impuesto.';
-          this.mostrarAlertaError = true;
-          setTimeout(() => this.cerrarAlerta(), 5000);
-          this.cancelarEliminar();
-        }
-      }
-    });
-  }
 
   guardarImpuesto(impuesto: Impuestos): void {
     console.log('Impuesto guardado exitosamente desde create component:', impuesto);
@@ -140,19 +130,7 @@ export class ListComponent implements OnInit {
     this.cerrarFormularioEdicion();
   }
 
-  cerrarFormulario(): void {
-    this.showCreateForm = false;
-  }
 
-  cerrarFormularioEdicion(): void {
-    this.showEditForm = false;
-    this.impuestoEditando = null;
-  }
-
-  cerrarFormularioDetalles(): void {
-    this.showDetailsForm = false;
-    this.impuestoDetalle = null;
-  }
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
@@ -163,8 +141,28 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  private cargarAccionesUsuario(): void {
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          modulo = permisos.find((m: any) => m.Pant_Id === 37); // Ajusta el ID
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          modulo = permisos['Impuestos'] || permisos['impuestos'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   private cargardatos(): void {
@@ -174,34 +172,4 @@ export class ListComponent implements OnInit {
       this.table.setData(data);
     });
   }
-
-  constructor(
-    public table: ReactiveTableService<Impuestos>,
-    private http: HttpClient,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    this.cargardatos();
-  }
-
-  activeActionRow: number | null = null;
-  showEdit = true;
-  showDetails = true;
-  showDelete = true;
-  showCreateForm = false;
-  showEditForm = false;
-  showDetailsForm = false;
-
-  impuestoEditando: Impuestos | null = null;
-  impuestoDetalle: Impuestos | null = null;
-  impuestoAEliminar: Impuestos | null = null;
-
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
-
-  mostrarConfirmacionEliminar = false;
 }
