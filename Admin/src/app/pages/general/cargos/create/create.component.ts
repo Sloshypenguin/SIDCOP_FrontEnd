@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cargos>();
+  isFocused = false;
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
