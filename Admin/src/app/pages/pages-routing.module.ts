@@ -43,6 +43,11 @@ const routes: Routes = [
       import('./extrapages/extrapages.module').then((m) => m.ExtrapagesModule),
   },
   {
+    path: 'acceso',
+    loadChildren: () =>
+      import('./acceso/acceso.module').then((m) => m.AccesoModule),
+  },
+  {
     path: 'general',
     loadChildren: () =>
       import('./general/general.module').then((m) => m.GeneralModule),

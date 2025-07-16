@@ -2,6 +2,7 @@ export class Municipio{
   muni_Codigo: string = '';
   muni_Descripcion: string = '';
   depa_Codigo: string = '';
+  departamentoDescripcion?: string;
   usua_Creacion: number = 0;
   muni_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;

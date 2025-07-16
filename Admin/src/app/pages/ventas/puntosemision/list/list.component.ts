@@ -9,9 +9,9 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
-// import { CreateComponent } from '../create/create.component';
-// import { EditComponent } from '../edit/edit.component';
-// import { DetailsComponent } from '../details/details.component';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -23,9 +23,9 @@ import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
-    // EditComponent,
-    // DetailsComponent
+    CreateComponent,
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -33,6 +33,14 @@ import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
 export class ListComponent implements OnInit {
   // bread crumb items
   breadCrumbItems!: Array<{}>;
+
+   // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
 
   ngOnInit(): void {
     /**
@@ -42,6 +50,10 @@ export class ListComponent implements OnInit {
       { label: 'Ventas' },
       { label: 'Puntos de Emision', active: true }
     ];
+
+       // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   // Cierra el dropdown si se hace click fuera
@@ -72,10 +84,11 @@ export class ListComponent implements OnInit {
     console.log('Abriendo formulario de edición para:', puntodeemision);
     console.log('Datos específicos:', {
       id: puntodeemision.puEm_Id,
+      codigo: puntodeemision.puEm_Codigo,
       descripcion: puntodeemision.puEm_Descripcion,
       completo: puntodeemision
     });
-    this.estadoCivilEditando = { ...puntodeemision }; // Hacer copia profunda
+    this.PEEditando = { ...puntodeemision }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
@@ -84,7 +97,7 @@ export class ListComponent implements OnInit {
 
   detalles(puntodeemision: PuntoEmision): void {
     console.log('Abriendo detalles para:', puntodeemision);
-    this.estadoCivilDetalle = { ...puntodeemision }; // Hacer copia profunda
+    this.PEDetalle = { ...puntodeemision }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -97,8 +110,8 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  estadoCivilEditando: PuntoEmision | null = null;
-  estadoCivilDetalle: PuntoEmision | null = null;
+  PEEditando: PuntoEmision | null = null;
+  PEDetalle: PuntoEmision | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -110,7 +123,7 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  estadoCivilAEliminar: PuntoEmision | null = null;
+  PEEliminar: PuntoEmision | null = null;
 
   constructor(public table: ReactiveTableService<PuntoEmision>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
@@ -128,24 +141,25 @@ export class ListComponent implements OnInit {
     this.showCreateForm = false;
   }
 
+  
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.estadoCivilEditando = null;
+    this.PEEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.estadoCivilDetalle = null;
+    this.PEDetalle = null;
   }
 
-  guardarEstadoCivil(puntodeemision: PuntoEmision): void {
+  guardarPE(puntodeemision: PuntoEmision): void {
     console.log('Estado civil guardado exitosamente desde create component:', puntodeemision);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarEstadoCivil(puntodeemision: PuntoEmision): void {
+  actualizarPE(puntodeemision: PuntoEmision): void {
     console.log('Estado civil actualizado exitosamente desde edit component:', puntodeemision);
     // Recargar los datos de la tabla
     this.cargardatos();
@@ -154,22 +168,22 @@ export class ListComponent implements OnInit {
 
   confirmarEliminar(puntodeemision: PuntoEmision): void {
     console.log('Solicitando confirmación para eliminar:', puntodeemision);
-    this.estadoCivilAEliminar = puntodeemision;
+    this.PEEliminar = puntodeemision;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.estadoCivilAEliminar = null;
+    this.PEEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.estadoCivilAEliminar) return;
+    if (!this.PEEliminar) return;
     
-    console.log('Eliminando estado civil:', this.estadoCivilAEliminar);
+    console.log('Eliminando estado civil:', this.PEEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.puEm_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/PuntoEmision/Eliminar/${this.PEEliminar.puEm_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -182,8 +196,8 @@ export class ListComponent implements OnInit {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Estado civil eliminado exitosamente');
-            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.puEm_Descripcion}" eliminado exitosamente`;
+            console.log('Punto de Emision exitosamente');
+            this.mensajeExito = `Punto de Emision "${this.PEEliminar!.puEm_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -247,6 +261,35 @@ export class ListComponent implements OnInit {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
+  }
+
+  private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   private cargardatos(): void {
