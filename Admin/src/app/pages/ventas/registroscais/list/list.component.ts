@@ -84,7 +84,7 @@ export class ListComponent implements OnInit {
 
   detalles(registroCai: RegistroCAI): void {
     console.log('Abriendo detalles para:', registroCai);
-    this.registroCAIDetalle = { ...registroCai }; // Hacer copia profunda
+    this.RegistroCAIDetalle = { ...registroCai }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -98,7 +98,7 @@ export class ListComponent implements OnInit {
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
   RegistroCAIEditando: RegistroCAI | null = null;
-  registroCAIDetalle: RegistroCAI | null = null;
+  RegistroCAIDetalle: RegistroCAI | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -135,7 +135,7 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.registroCAIDetalle = null;
+    this.RegistroCAIDetalle = null;
   }
 
   guardarRegistroCAI(registroCai: RegistroCAI): void {
