@@ -31,20 +31,9 @@
                 <div class="card-header p-0 position-relative" style="height: 90px; background: #141a2f; border-top-left-radius: 1rem; border-top-right-radius: 1rem; display: flex; justify-content: center; align-items: flex-end;">
                     <div style="position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #d6b68a; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;"></div>
 
-                    <!--
-                        <div style="position: absolute; top: 10px; left: 18px; z-index:1;">
-                        <span class="text-muted text-break">{{ data.secuencia }} </span>
-                        <svg width="20" height="12" viewBox="0 0" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="4" cy="6" r="2" fill="#141a2f" fill-opacity="0.5" />
-                            <circle cx="12" cy="6" r="2" fill="#141a2f" fill-opacity="0.3" />
-                        </svg>
-                        <span class="text-muted">{{ data.usua_EsAdmin ? 'Administrador': '' }}</span>
-                    </div>
-                    -->
-
                     <div style="background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #141a2f; margin-bottom: -35px; z-index:1;">
                         <img 
-                            src="assets/images/users/48/avatar-8.jpg" 
+                            src="{{ data.usua_Imagen || 'assets/images/users/48/avatar-8.jpg' }}" 
                             alt="Empleado"
                             class="avatar-img rounded-circle"
                             style="width: 64px; height: 64px; object-fit: cover; display: block;"
@@ -56,10 +45,10 @@
                             <button class="buttonConfig"
                                 [attr.aria-expanded]="activeActionRow === data.usua_Id"
                                 (click)="onActionMenuClick(data.usua_Id)">
-                                <i class="ri-settings-3-line" style="color: white; width: auto;"></i>
+                                <i class="ri-settings-3-line" style="color: white; font-size: 1.4em;"></i>
                             </button>
                             <span class="acciones-text">Acciones</span>
-                            <ul *ngIf="activeActionRow === data.usua_Id" class="dropdown-menu show" style="left: -80px;">
+                            <ul *ngIf="activeActionRow === data.usua_Id" class="dropdown-menu show" style="left: -100px;">
                                 <li *ngIf="accionPermitida('editar')">
                                     <button class="dropdown-action-btn" (click)="editar(data)">Editar
                                         <i class="ri-edit-line"></i></button>
@@ -68,7 +57,7 @@
                                     <li *ngIf="accionPermitida('cambiar estado')">
                                         <button class="dropdown-action-btn"
                                         (click)="confirmarEliminar(data)">Desactivar
-                                        <i class="ri-delete-bin-line"></i></button>
+                                        <i class="ri-user-unfollow-fill"></i></button>
                                     </li>
                                 }
                                 @else{
@@ -80,7 +69,7 @@
                                 }
                                 <li *ngIf="accionPermitida('detalle')">
                                     <button class="dropdown-action-btn" (click)="detalles(data)">Detalles
-                                        <i class="ri-user-unfollow-fill"></i></button>
+                                        <i class="ri-error-warning-fill"></i></button>
                                 </li>
                             </ul>
                         </div>
@@ -103,16 +92,12 @@
                         {{ data.nombreCompleto }}
                     </h5>
 
-                    <ul class="list-unstyled mb-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
-                        <li class="d-flex justify-content-center align-items-center mb-2" style="gap: 8px;">
-                            <i class="ri-contacts-fill" style="color: #141A2F;"></i>
-                            <span class="text-muted text-break">{{ data.usua_Usuario }}</span>
+                    <ul class="list-unstyled mb-4 mt-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
+                        <li class="d-flex justify-content-center align-items-center mb-2" style="gap: 4px;">
+                            <span class="text-muted text-break">Usuario:</span><span>{{ data.usua_Usuario }}</span>
                         </li>
-                        <li class="d-flex justify-content-center align-items-center" style="gap: 8px;">
-                            <i class="ri-key-2-fill" style="color: #141A2F;"></i>
-                            <span class="text-muted text-break" style="white-space: normal; word-break: break-word;">
-                                {{ data.role_Descripcion }}
-                            </span>
+                        <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
+                            <span class="text-muted text-break">Rol</span><span>{{ data.role_Descripcion }}</span>
                         </li>
                     </ul>
                 </div>
@@ -120,4 +105,15 @@
             </div>
         </div>
     }
+</div>
+
+<div class="row align-items-center mb-3" id="pagination-element">
+    <div class="col-sm">
+        <div class="text-muted text-center text-sm-start">
+            Showing <span class="fw-semibold">{{usuarios?.length}}</span> of <span class="fw-semibold">{{usuarioGrid?.length}}</span> Results
+        </div>
+    </div><!--end col-->
+    <div class="col-sm-auto mt-3 mt-sm-0">
+        <pagination class="pagination-wrap hstack justify-content-center gap-2" [totalItems]="usuarioGrid?.legnth" [itemsPerPage]="10" (pagrChanged)="pageChanged($event)"></pagination>
+    </div><!--end col-->
 </div>

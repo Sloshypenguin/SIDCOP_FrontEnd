@@ -202,4 +202,10 @@ export class ListComponent {
       this.usuarios = this.usuarioGrid.slice(0, 10);
     });
   }
+
+  pageChanged(event: any): void {
+    const startItem = (event.page - 1) * event.itemsPerPage;
+    const endItem = event.page * event.itemsPerPage;
+    this.usuarios = this.usuarioGrid.slice(startItem, endItem);
+  }
 }
