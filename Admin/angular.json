@@ -47,7 +47,9 @@
             "allowedCommonJsDependencies": [
               "@ckeditor/ckeditor5-build-classic",
               "sweetalert2",
-              "lodash"
+              "lodash",
+              "ev-emitter/ev-emitter",
+              "lottie-web"
             ]
           },
           "configurations": {
