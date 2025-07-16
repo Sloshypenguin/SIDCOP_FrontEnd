@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,7 +30,77 @@ import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
+  // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método para verificar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    // Convertir a minúsculas para hacer la comparación insensible a mayúsculas
+    const accionBuscada = accion.toLowerCase();
+    // Mapear nombres de acciones si es necesario
+    const accionesMapeadas: {[key: string]: string} = {
+      'detalles': 'detalle',  // Mapear 'detalles' a 'detalle' si es necesario
+      'nuevo': 'crear'       // Mapear 'nuevo' a 'crear' para el botón de nuevo
+    };
+    
+    const accionReal = accionesMapeadas[accionBuscada] || accionBuscada;
+    
+    return this.accionesDisponibles.some(a => a === accionReal);
+  }
+
+  // Método para cargar las acciones disponibles del usuario
+  cargarAccionesUsuario() {
+    let accionesArray: string[] = [];
+    let modulo: any = null;
+    // Buscar permisos en localStorage - NOTA: La clave correcta es 'permisosJson'
+    const permisosJson = localStorage.getItem('permisosJson');
+    console.log('permisosJson del localStorage:', permisosJson);
+    
+    if (permisosJson) {
+      try {
+        const permisos = JSON.parse(permisosJson);
+        console.log('permisos parseados:', permisos);
+        
+        if (Array.isArray(permisos)) {
+          console.log('Buscando módulo con Pant_Id: 12');
+          modulo = permisos.find((m: any) => {
+            console.log('Revisando módulo:', m);
+            return m.Pant_Id === 12;  // ID para Departamentos
+          });
+          console.log('Módulo encontrado (array):', modulo);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          console.log('Buscando módulo por clave');
+          modulo = permisos['Departamentos'] || permisos['departamentos'] || null;
+          console.log('Módulo encontrado (objeto):', modulo);
+        }
+        
+        if (modulo) {
+          console.log('Acciones en el módulo:', modulo.Acciones);
+          if (modulo.Acciones && Array.isArray(modulo.Acciones)) {
+            // Extraer solo el nombre de la acción y convertirlo a minúsculas
+            accionesArray = modulo.Acciones
+              .map((a: any) => {
+                const accion = a.Accion || a.accion || a;
+                console.log('Acción encontrada:', accion);
+                return typeof accion === 'string' ? accion.trim().toLowerCase() : '';
+              })
+              .filter((a: string) => a.length > 0);
+          }
+        } else {
+          console.log('No se encontró el módulo de Departamentos');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    } else {
+      console.log('No se encontró el item permisosJson en localStorage');
+    }
+    
+    this.accionesDisponibles = accionesArray;
+    console.log('Acciones finales disponibles:', this.accionesDisponibles);
+  }
 
   activeActionRow: number | null = null;
   showEdit = true;
@@ -111,17 +181,22 @@ export class ListComponent {
     });
   }
 
-  constructor(public table: ReactiveTableService<Departamento>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  ngOnInit(): void {
+    // BreadCrumb (si aplica)
+    // this.breadCrumbItems = [
+    //   { label: 'General' },
+    //   { label: 'Departamentos', active: true }
+    // ];
+    this.cargarAccionesUsuario();
     this.cargardatos();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
-   onActionMenuClick(rowIndex: number) {
+  constructor(public table: ReactiveTableService<Departamento>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+
+  onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
-
-  // (navigateToCreate eliminado, lógica movida a crear)
-
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
 
   cerrarFormulario(): void {
     this.showCreateForm = false;

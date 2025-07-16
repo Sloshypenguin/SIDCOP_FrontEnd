@@ -19,6 +19,23 @@ export class DetailsComponent implements OnChanges {
   mostrarAlertaError = false;
   mensajeError = '';
 
+  // Formatear fecha para mostrar con manejo de errores
+  formatearFecha(fecha: string | Date | null): string {
+    if (!fecha) return 'N/A';
+    try {
+      const date = new Date(fecha);
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return 'N/A';
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['departamentoData'] && changes['departamentoData'].currentValue) {
       this.cargarDetallesSimulado(changes['departamentoData'].currentValue);
@@ -52,17 +69,5 @@ export class DetailsComponent implements OnChanges {
     this.mensajeError = '';
   }
 
-  formatearFecha(fecha: string | Date | null): string {
-    if (!fecha) return 'N/A';
-    try {
-      const date = new Date(fecha);
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
-    } catch {
-      return String(fecha);
-    }
-  }
+
 }
