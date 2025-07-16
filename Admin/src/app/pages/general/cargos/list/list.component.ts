@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
-// import { CreateComponent } from '../create/create.component';
+import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { DetailsComponent } from '../details/details.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
+    CreateComponent,
     EditComponent,
     DetailsComponent
   ],
@@ -123,6 +123,12 @@ export class ListComponent {
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
+page: number = 1;
+
+cambiarPagina(nuevaPagina: number): void {
+  this.page = nuevaPagina;
+  this.table.setPage(nuevaPagina);
+}
 
   // (navigateToCreate eliminado, lógica movida a crear)
 
@@ -216,7 +222,7 @@ export class ListComponent {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el cargo.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -230,7 +236,7 @@ export class ListComponent {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el cargo.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
