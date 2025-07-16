@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
+import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<EstadoCivil>();
+  @Output() onSave = new EventEmitter<Cargos>();
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -26,18 +26,18 @@ export class CreateComponent {
 
   constructor(private http: HttpClient) {}
 
-  estadoCivil: EstadoCivil = {
-    esCv_Id: 0,
-    esCv_Descripcion: '',
+  cargo: Cargos = {
+    carg_Id: 0,
+    carg_Descripcion: '',
     usua_Creacion: 0,
+    carg_FechaCreacion: new Date(),
     usua_Modificacion: 0,
-    secuencia: 0,
-    esCv_FechaCreacion: new Date(),
-    esCv_FechaModificacion: new Date(),
+    carg_FechaModificacion: new Date(),
+    carg_Estado: true,
+    usuaC_Nombre : '',
+    usuaM_Nombre : '',
     code_Status: 0,
-    message_Status: '',
-    usuarioCreacion: '',
-    usuarioModificacion: ''
+    message_Status: ''
   };
 
   cancelar(): void {
@@ -48,18 +48,18 @@ export class CreateComponent {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
-    this.estadoCivil = {
-      esCv_Id: 0,
-      esCv_Descripcion: '',
+    this.cargo = {
+      carg_Id: 0,
+      carg_Descripcion: '',
       usua_Creacion: 0,
       usua_Modificacion: 0,
-      secuencia: 0,
-      esCv_FechaCreacion: new Date(),
-      esCv_FechaModificacion: new Date(),
+      carg_FechaCreacion: new Date(),
+      carg_FechaModificacion: new Date(),
+      carg_Estado : true,
       code_Status: 0,
       message_Status: '',
-      usuarioCreacion: '',
-      usuarioModificacion: ''
+      usuaC_Nombre: '',
+      usuaM_Nombre: '',
     };
     this.onCancel.emit();
   }
@@ -74,28 +74,29 @@ export class CreateComponent {
   }
 
   guardar(): void {
+    console.log('Intentando guardar cargo con datos:', this.cargo);
     this.mostrarErrores = true;
     
-    if (this.estadoCivil.esCv_Descripcion.trim()) {
+    if (this.cargo.carg_Descripcion.trim()) {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       
-      const estadoCivilGuardar = {
-        esCv_Id: 0,
-        esCv_Descripcion: this.estadoCivil.esCv_Descripcion.trim(),
+      const cargoGuardar = {
+        carg_Id: 0,
+        carg_Descripcion: this.cargo.carg_Descripcion,
         usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
-        esCv_FechaCreacion: new Date().toISOString(),
+        carg_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
-        numero: "", 
-        esCv_FechaModificacion: new Date().toISOString(),
-        usuarioCreacion: "", 
-        usuarioModificacion: "" 
+        carg_FechaModificacion : new Date().toISOString(),
+        carg_Estado: true,
+        usuaC_Nombre : '',
+        usuaM_Nombre : ''
       };
 
-      console.log('Guardando estado civil:', estadoCivilGuardar);
+      console.log('Guardando cargo:', cargoGuardar);
       
-      this.http.post<any>(`${environment.apiBaseUrl}/EstadosCiviles/Insertar`, estadoCivilGuardar, {
+      this.http.post<any>(`${environment.apiBaseUrl}/Cargo/Insertar`, cargoGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -103,22 +104,22 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Estado civil guardado exitosamente:', response);
-          this.mensajeExito = `Estado civil "${this.estadoCivil.esCv_Descripcion}" guardado exitosamente`;
+          console.log('Cargo guardado exitosamente:', response);
+          this.mensajeExito = `Cargo "${this.cargo.carg_Descripcion}" guardado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
           
           // Ocultar la alerta después de 3 segundos
           setTimeout(() => {
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.estadoCivil);
+            this.onSave.emit(this.cargo);
             this.cancelar();
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al guardar estado civil:', error);
+          console.error('Error al guardar cargo:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el estado civil. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al guardar el cargo. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;
           
           // Ocultar la alerta de error después de 5 segundos

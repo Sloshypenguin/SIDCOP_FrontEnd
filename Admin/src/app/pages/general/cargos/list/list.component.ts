@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
-// import { CreateComponent } from '../create/create.component';
+import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { DetailsComponent } from '../details/details.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
+    CreateComponent,
     EditComponent,
     DetailsComponent
   ],
@@ -31,10 +31,7 @@ import { DetailsComponent } from '../details/details.component';
   styleUrls: ['./list.component.scss']
 })
 
-export class ListComponent {
-
-    // bread crumb items
-  breadCrumbItems!: Array<{}>;
+export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     /**
@@ -44,7 +41,53 @@ export class ListComponent {
       { label: 'General' },
       { label: 'Cargos', active: true }
     ];
+
+    
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
+
+  private readonly PANTALLA_CARGOS_ID = 9;
+accionesDisponibles: string[] = [];
+
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+
+  private cargarAccionesUsuario(): void {
+  const permisosRaw = localStorage.getItem('permisosJson');
+  console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+
+  try {
+    if (!permisosRaw) return;
+
+    const permisos = JSON.parse(permisosRaw);
+    let modulo = null;
+
+    if (Array.isArray(permisos)) {
+      modulo = permisos.find((m: any) => m.Pant_Id === this.PANTALLA_CARGOS_ID);
+    } else if (typeof permisos === 'object' && permisos !== null) {
+      modulo = permisos['Cargos'] || permisos['cargos'] || null;
+    }
+
+    if (modulo && Array.isArray(modulo.Acciones)) {
+      this.accionesDisponibles = modulo.Acciones
+        .map((a: any) => a.Accion?.trim().toLowerCase())
+        .filter((a: string) => !!a);
+    }
+  } catch (error) {
+    console.error('Error al parsear permisosJson:', error);
+    this.accionesDisponibles = [];
+  }
+
+  console.log('Acciones disponibles final:', this.accionesDisponibles);
+}
+
+    // bread crumb items
+  breadCrumbItems!: Array<{}>;
 
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -123,6 +166,12 @@ export class ListComponent {
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
+page: number = 1;
+
+cambiarPagina(nuevaPagina: number): void {
+  this.page = nuevaPagina;
+  this.table.setPage(nuevaPagina);
+}
 
   // (navigateToCreate eliminado, lógica movida a crear)
 
@@ -168,12 +217,13 @@ export class ListComponent {
     this.cargoEliminar = null;
   }
 
-  eliminar(): void {
+
+  eliminar(): void {    
     if (!this.cargoEliminar) return;
     
     console.log('Eliminando cargo:', this.cargoEliminar);
 
-    this.http.post(`${environment.apiBaseUrl}/Cargos/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
+    this.http.put(`${environment.apiBaseUrl}/Cargo/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -201,9 +251,9 @@ export class ListComponent {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Este cargo está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el cargo, está siendo utilizado.';
             
             setTimeout(() => {  
               this.mostrarAlertaError = false;
@@ -216,7 +266,7 @@ export class ListComponent {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el cargo.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -230,7 +280,7 @@ export class ListComponent {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el cargo.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -243,6 +293,7 @@ export class ListComponent {
       },
     });
   }
+
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
