@@ -23,16 +23,16 @@
     <!-- Header con descripción -->
     <div class="details-header">
       <div class="details-title">Detalles de Estados Civiles</div>
-      <div class="details-id-row" style="display: flex; gap: 2rem; justify-content: flex-start;">
-        <div class="details-id">
-          <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ estadoCivilDetalle.esCv_Id || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Descripción</div>
-          <div class="details-id-value">{{ estadoCivilDetalle.esCv_Descripcion || 'N/A' }}</div>
-        </div>
-      </div>
+      <div class="details-id-row">
+  <div class="details-id">
+    <div class="details-id-label">Código</div>
+    <div class="details-id-value">{{ estadoCivilDetalle.esCv_Id || 'N/A' }}</div>
+  </div>
+  <div class="details-id">
+    <div class="details-id-label">Descripción</div>
+    <div class="details-id-value">{{ estadoCivilDetalle.esCv_Descripcion || 'N/A' }}</div>
+  </div>
+</div>
     </div>
       <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
     <!-- Tabla de auditoría -->
