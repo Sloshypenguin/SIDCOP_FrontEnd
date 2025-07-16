@@ -21,46 +21,119 @@
   </div>
 
   <div class="flex-grow-1">
-    <div class="row">
-      <div class="col-md-6">
-        <!-- Descripción -->
-        <div class="mb-3">
-          <label for="sucu_Descripcion" class="form-label">Descripción</label>
-          <input
-            type="text"
-            class="form-control"
-            [class.is-invalid]="!sucursal.sucu_Descripcion.trim() && mostrarErrores"
-            id="sucu_Descripcion"
-            [(ngModel)]="sucursal.sucu_Descripcion"
-            placeholder="Ingrese la descripción de la sucursal"
-            required>
-          <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Descripcion.trim() && mostrarErrores">
-            <small>El campo Descripción es requerido</small>
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <!-- Departamento -->
+          <div class="mb-3">
+            <label for="depa_Codigo" class="form-label">Departamento</label>
+            <select
+              id="depa_Codigo"
+              class="form-select"
+              [(ngModel)]="departamentoSeleccionado"
+              name="depa_Codigo"
+              (change)="onDepartamentoChange()"
+              required>
+              <option value="" disabled selected>Seleccione un departamento</option>
+              <option *ngFor="let departamento of departamentos" [value]="departamento.depa_Codigo">
+                {{ departamento.depa_Descripcion }}
+              </option>
+            </select>
+            <div class="text-danger mt-1" *ngIf="!departamentoSeleccionado && mostrarErrores">
+              <small>Debe seleccionar un departamento</small>
+            </div>
+          </div>
+          <!-- Dirección Exacta -->
+          <div class="mb-3">
+            <label for="sucu_DireccionExacta" class="form-label">Dirección Exacta</label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="!sucursal.sucu_DireccionExacta.trim() && mostrarErrores"
+              id="sucu_DireccionExacta"
+              [(ngModel)]="sucursal.sucu_DireccionExacta"
+              name="sucu_DireccionExacta"
+              placeholder="Ingrese la dirección exacta"
+              required>
+            <div class="text-danger mt-1" *ngIf="!sucursal.sucu_DireccionExacta.trim() && mostrarErrores">
+              <small>El campo Dirección es requerido</small>
+            </div>
+          </div>
+          <!-- Teléfono 1 -->
+          <div class="mb-3">
+            <label for="sucu_Telefono1" class="form-label">Teléfono 1</label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="!sucursal.sucu_Telefono1.trim() && mostrarErrores"
+              id="sucu_Telefono1"
+              [(ngModel)]="sucursal.sucu_Telefono1"
+              name="sucu_Telefono1"
+              placeholder="Ingrese el teléfono 1"
+              maxlength="10"
+              required>
+            <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Telefono1.trim() && mostrarErrores">
+              <small>El campo Teléfono 1 es requerido</small>
+            </div>
+          </div>
+          <!-- Correo -->
+          <div class="mb-3">
+            <label for="sucu_Correo" class="form-label">Correo</label>
+            <input
+              type="email"
+              class="form-control"
+              [class.is-invalid]="!sucursal.sucu_Correo.trim() && mostrarErrores"
+              id="sucu_Correo"
+              [(ngModel)]="sucursal.sucu_Correo"
+              name="sucu_Correo"
+              placeholder="Ingrese el correo"
+              required>
+            <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Correo.trim() && mostrarErrores">
+              <small>El campo Correo es requerido</small>
+            </div>
           </div>
         </div>
-        <!-- Municipio -->
-        <div class="mb-3">
-          <label for="muni_Codigo" class="form-label">Municipio</label>
-          <select
-            id="muni_Codigo"
-            class="form-select"
-            [(ngModel)]="municipioSeleccionado"
-            name="muni_Codigo"
-            (change)="onMunicipioChange()"
-            required>
-            <option value="" disabled selected>Seleccione un municipio</option>
-            <option *ngFor="let municipio of municipios" [value]="municipio.muni_Codigo">
-              {{ municipio.muni_Descripcion }}
-            </option>
-          </select>
-          <div class="text-danger mt-1" *ngIf="!municipioSeleccionado && mostrarErrores">
-            <small>Debe seleccionar un municipio</small>
+        <div class="col-md-6">
+          <!-- Municipio -->
+          <div class="mb-3">
+            <label for="muni_Codigo" class="form-label">Municipio</label>
+            <select
+              id="muni_Codigo"
+              class="form-select"
+              [(ngModel)]="municipioSeleccionado"
+              name="muni_Codigo"
+              (change)="onMunicipioChange()"
+              [disabled]="!departamentoSeleccionado"
+              required>
+              <option value="" disabled selected>Seleccione un municipio</option>
+              <option *ngFor="let municipio of municipios" [value]="municipio.muni_Codigo">
+                {{ municipio.muni_Descripcion }}
+              </option>
+            </select>
+            <div class="text-danger mt-1" *ngIf="!municipioSeleccionado && mostrarErrores">
+              <small>Debe seleccionar un municipio</small>
+            </div>
           </div>
-        </div>
-        <!-- Colonia -->
-        <div class="mb-3">
-          <label for="colo_Id" class="form-label">Colonia</label>
-          <select
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="sucu_Descripcion" class="form-label">Descripción</label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="!sucursal.sucu_Descripcion.trim() && mostrarErrores"
+              id="sucu_Descripcion"
+              [(ngModel)]="sucursal.sucu_Descripcion"
+              name="sucu_Descripcion"
+              placeholder="Ingrese la descripción de la sucursal"
+              required>
+            <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Descripcion.trim() && mostrarErrores">
+              <small>El campo Descripción es requerido</small>
+            </div>
+          </div>
+          <!-- Colonia -->
+          <div class="mb-3">
+            <label for="colo_Id" class="form-label">Colonia</label>
+            <select
               id="colo_Id"
               class="form-select"
               [(ngModel)]="sucursal.colo_Id"
@@ -72,71 +145,25 @@
                 {{ colonia.colo_Descripcion }}
               </option>
             </select>
-          <div class="text-danger mt-1" *ngIf="!sucursal.colo_Id && mostrarErrores">
-            <small>Debe seleccionar una colonia</small>
+            <div class="text-danger mt-1" *ngIf="!sucursal.colo_Id && mostrarErrores">
+              <small>Debe seleccionar una colonia</small>
+            </div>
           </div>
-        </div>
-        <!-- Teléfono 1 -->
-        <div class="mb-3">
-          <label for="sucu_Telefono1" class="form-label">Teléfono 1</label>
-          <input
-            type="text"
-            class="form-control"
-            [class.is-invalid]="!sucursal.sucu_Telefono1.trim() && mostrarErrores"
-            id="sucu_Telefono1"
-            [(ngModel)]="sucursal.sucu_Telefono1"
-            placeholder="Ingrese el teléfono 1"
-            maxlength="10"
-            required>
-          <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Telefono1.trim() && mostrarErrores">
-            <small>El campo Teléfono 1 es requerido</small>
-          </div>
-        </div>
-        <!-- Correo -->
-        <div class="mb-3">
-          <label for="sucu_Correo" class="form-label">Correo</label>
-          <input
-            type="email"
-            class="form-control"
-            [class.is-invalid]="!sucursal.sucu_Correo.trim() && mostrarErrores"
-            id="sucu_Correo"
-            [(ngModel)]="sucursal.sucu_Correo"
-            placeholder="Ingrese el correo"
-            required>
-          <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Correo.trim() && mostrarErrores">
-            <small>El campo Correo es requerido</small>
+          <!-- Teléfono 2 -->
+          <div class="mb-3">
+            <label for="sucu_Telefono2" class="form-label">Teléfono 2</label>
+            <input
+              type="text"
+              class="form-control"
+              id="sucu_Telefono2"
+              [(ngModel)]="sucursal.sucu_Telefono2"
+              name="sucu_Telefono2"
+              placeholder="Ingrese el teléfono 2"
+              maxlength="10">
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <!-- Dirección -->
-        <div class="mb-3">
-          <label for="sucu_DireccionExacta" class="form-label">Dirección Exacta</label>
-          <input
-            type="text"
-            class="form-control"
-            [class.is-invalid]="!sucursal.sucu_DireccionExacta.trim() && mostrarErrores"
-            id="sucu_DireccionExacta"
-            [(ngModel)]="sucursal.sucu_DireccionExacta"
-            placeholder="Ingrese la dirección exacta"
-            required>
-          <div class="text-danger mt-1" *ngIf="!sucursal.sucu_DireccionExacta.trim() && mostrarErrores">
-            <small>El campo Dirección es requerido</small>
-          </div>
-        </div>
-        <!-- Teléfono 2 -->
-        <div class="mb-3">
-          <label for="sucu_Telefono2" class="form-label">Teléfono 2</label>
-          <input
-            type="text"
-            class="form-control"
-            id="sucu_Telefono2"
-            [(ngModel)]="sucursal.sucu_Telefono2"
-            placeholder="Ingrese el teléfono 2"
-            maxlength="10">
-        </div>
-      </div>
-    </div>
+    </form>
   </div>
 
   <div class="mt-auto pt-3">

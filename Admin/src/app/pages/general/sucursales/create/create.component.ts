@@ -24,10 +24,13 @@ export class CreateComponent implements OnInit {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
+  departamentos: any[] = [];
+  departamentoSeleccionado: string = '';
+  municipiosAll: any[] = [];
   municipios: any[] = [];
+  municipioSeleccionado: string = '';
   coloniasfiltro: any[] = [];
   colonias: any[] = [];
-  municipioSeleccionado: string = '';
 
   sucursal: Sucursales = {
     sucu_Id: 0,
@@ -44,18 +47,43 @@ export class CreateComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
- ngOnInit(): void {
+  ngOnInit(): void {
+    // Obtener departamentos
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.departamentos = data;
+    });
+
+    // Obtener municipios (todos)
     this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.municipios = data;
+      this.municipiosAll = data;
     });
 
+    // Obtener colonias
     this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.coloniasfiltro = data;
     });
+  }
+
+  onDepartamentoChange(): void {
+    if (this.departamentoSeleccionado) {
+      this.municipios = this.municipiosAll.filter(
+        m => m.depa_Codigo === this.departamentoSeleccionado
+      );
+      this.municipioSeleccionado = '';
+      this.colonias = [];
+      this.sucursal.colo_Id = 0;
+    } else {
+      this.municipios = [];
+      this.municipioSeleccionado = '';
+      this.colonias = [];
+      this.sucursal.colo_Id = 0;
+    }
   }
 
   onMunicipioChange(): void {
@@ -69,6 +97,7 @@ export class CreateComponent implements OnInit {
       this.sucursal.colo_Id = 0;
     }
   }
+
   cancelar(): void {
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
@@ -90,7 +119,10 @@ export class CreateComponent implements OnInit {
       sucu_Estado: true
     };
     this.onCancel.emit();
+    this.departamentoSeleccionado = '';
     this.municipioSeleccionado = '';
+    this.municipios = [];
+    this.colonias = [];
   }
 
   cerrarAlerta(): void {
@@ -150,19 +182,19 @@ export class CreateComponent implements OnInit {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            }
+          }
         },
         error: (error) => {
-        if (error?.error?.data?.code_Status === 0) {
-          this.mostrarAlertaError = true;
-          this.mensajeError = error?.error?.data?.message_Status || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-        } 
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
-      }
+          if (error?.error?.data?.code_Status === 0) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = error?.error?.data?.message_Status || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
+            this.mostrarAlertaExito = false;
+          } 
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+        }
       });
     } else {
       this.mostrarAlertaWarning = true;
@@ -174,6 +206,6 @@ export class CreateComponent implements OnInit {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
       }, 4000);
-    }
+    } 
   }
 }

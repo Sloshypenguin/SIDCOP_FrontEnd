@@ -40,10 +40,13 @@ export class EditComponent implements OnChanges {
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
 
+  departamentos: any[] = [];
+  departamentoSeleccionado: string = '';
+  municipiosAll: any[] = [];
   municipios: any[] = [];
+  municipioSeleccionado: string = '';
   coloniasAll: any[] = [];
   colonias: any[] = [];
-  municipioSeleccionado: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -54,22 +57,50 @@ export class EditComponent implements OnChanges {
       this.mostrarErrores = false;
       this.cerrarAlerta();
 
-      // Cargar municipios y colonias
-      this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      // Cargar departamentos
+      this.http.get<any[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe(data => {
-        this.municipios = data;
-      });
+        this.departamentos = data;
 
-      this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe(data => {
-        this.coloniasAll = data;
-        // Seleccionar municipio y filtrar colonias
-        const coloniaActual = this.coloniasAll.find(c => c.colo_Id === this.sucursal.colo_Id);
-        this.municipioSeleccionado = coloniaActual ? coloniaActual.muni_Codigo : '';
-        this.onMunicipioChange();
+        // Si ya hay una colonia seleccionada, buscar el municipio y departamento correspondiente
+        this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+          headers: { 'x-api-key': environment.apiKey }
+        }).subscribe(coloniasData => {
+          this.coloniasAll = coloniasData;
+          const coloniaActual = this.coloniasAll.find(c => c.colo_Id === this.sucursal.colo_Id);
+          this.municipioSeleccionado = coloniaActual ? coloniaActual.muni_Codigo : '';
+          // Buscar el municipio para obtener el departamento
+          this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+            headers: { 'x-api-key': environment.apiKey }
+          }).subscribe(munisData => {
+            this.municipiosAll = munisData;
+            const municipioActual = this.municipiosAll.find(m => m.muni_Codigo === this.municipioSeleccionado);
+            this.departamentoSeleccionado = municipioActual ? municipioActual.depa_Codigo : '';
+            this.onDepartamentoChange();
+            this.onMunicipioChange();
+          });
+        });
       });
+    }
+  }
+
+  onDepartamentoChange(): void {
+    if (this.departamentoSeleccionado) {
+      this.municipios = this.municipiosAll.filter(
+        m => m.depa_Codigo === this.departamentoSeleccionado
+      );
+      // Si el municipio actual no pertenece al departamento seleccionado, limpiar selección
+      if (!this.municipios.some(m => m.muni_Codigo === this.municipioSeleccionado)) {
+        this.municipioSeleccionado = '';
+        this.colonias = [];
+        this.sucursal.colo_Id = 0;
+      }
+    } else {
+      this.municipios = [];
+      this.municipioSeleccionado = '';
+      this.colonias = [];
+      this.sucursal.colo_Id = 0;
     }
   }
 
@@ -112,7 +143,15 @@ export class EditComponent implements OnChanges {
       this.sucursal.sucu_Telefono1.trim() &&
       this.sucursal.sucu_Correo.trim()
     ) {
-      if (this.sucursal.sucu_Descripcion.trim() !== this.sucursalOriginal) {
+      const hayCambios =
+        this.sucursal.sucu_Descripcion.trim() !== this.sucursalData?.sucu_Descripcion?.trim() ||
+        this.sucursal.colo_Id !== this.sucursalData?.colo_Id ||
+        this.sucursal.sucu_DireccionExacta.trim() !== this.sucursalData?.sucu_DireccionExacta?.trim() ||
+        this.sucursal.sucu_Telefono1.trim() !== this.sucursalData?.sucu_Telefono1?.trim() ||
+        this.sucursal.sucu_Telefono2?.trim() !== this.sucursalData?.sucu_Telefono2?.trim() ||
+        this.sucursal.sucu_Correo.trim() !== this.sucursalData?.sucu_Correo?.trim();
+
+      if (hayCambios) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
