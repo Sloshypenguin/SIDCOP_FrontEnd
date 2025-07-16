@@ -123,6 +123,11 @@ guardarSucursal(sucursal: Sucursales): void {
   this.cargarDatos();
   this.cerrarFormulario();
 }
+actualizarSucursal(sucursal: Sucursales): void {
+  this.cargarDatos();
+  this.cerrarFormularioEdicion();
+}
+
   confirmarEliminar(sucursal: Sucursales): void {
     this.sucursalAEliminar = sucursal;
     this.mostrarConfirmacionEliminar = true;
