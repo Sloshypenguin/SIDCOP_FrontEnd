@@ -1,0 +1,304 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px">
+  <!-- Título del componente -->
+  <h5 class="card-title mb-4">Crear Nuevo Registro CAI</h5>
+
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div
+      *ngIf="mostrarAlertaExito"
+      class="alert alert-success alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Alerta de advertencia -->
+    <div
+      *ngIf="mostrarAlertaWarning"
+      class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Alerta de error -->
+    <div
+      *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+
+  <div class="flex-grow-1">
+    <div class="row">
+      <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >Descripcion<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="
+                !registroCai.regC_Descripcion.trim() && mostrarErrores
+              "
+              id="PECod"
+              [(ngModel)]="registroCai.regC_Descripcion"
+              placeholder="Ingrese el Codigo del Punto de Emision"
+              required
+            />
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!registroCai.regC_Descripcion.trim() && mostrarErrores"
+          >
+            <small>El campo Codigo es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >Sucursal<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select
+              id="sucursalId"
+              name="sucursalId"
+              class="form-select"
+              [class.is-invalid]="!registroCai.sucu_Id && mostrarErrores"
+              [(ngModel)]="registroCai.sucu_Id"
+              required
+            >
+              <option value="" disabled selected>Seleccione una opción</option>
+              <option *ngFor="let Depa of Sucursales" [value]="Depa.sucu_Id">
+                {{ Depa.sucu_Descripcion }}
+              </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!registroCai.sucu_Id && mostrarErrores"
+          >
+            <small>El campo Sucursal es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >CAI<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select
+              id="caiId"
+              name="caiId"
+              class="form-select"
+              [class.is-invalid]="!registroCai.nCai_Id && mostrarErrores"
+              [(ngModel)]="registroCai.nCai_Id"
+              required
+            >
+              <option value="" disabled selected>Seleccione una opción</option>
+              <option *ngFor="let Depa of CAI" [value]="Depa.nCai_Id">
+                {{ Depa.nCai_Descripcion }}
+              </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!registroCai.nCai_Id && mostrarErrores"
+          >
+            <small>El campo CAI es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >Punto de Emision<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select
+              id="puntoemisionId"
+              name="puntoemisionId"
+              class="form-select"
+              [class.is-invalid]="!registroCai.puEm_Id && mostrarErrores"
+              [(ngModel)]="registroCai.puEm_Id"
+              required
+            >
+              <option value="" disabled selected>Seleccione una opción</option>
+              <option *ngFor="let Depa of PE" [value]="Depa.puEm_Id">
+                {{ Depa.puEm_Descripcion }}
+              </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!registroCai.puEm_Id && mostrarErrores"
+          >
+            <small>El campo Punto de Emision es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >Rango Inicial<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="
+                !registroCai.regC_RangoInicial.trim() && mostrarErrores
+              "
+              id="RInicial"
+              [(ngModel)]="registroCai.regC_RangoInicial"
+              placeholder="Ingrese el Codigo del Punto de Emision"
+              required
+            />
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!registroCai.regC_RangoInicial.trim() && mostrarErrores"
+          >
+            <small>El campo rango inicial es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >Rango Final<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="
+                !registroCai.regC_RangoFinal.trim() && mostrarErrores
+              "
+              id="RInicial"
+              [(ngModel)]="registroCai.regC_RangoFinal"
+              placeholder="Ingrese el Codigo del Punto de Emision"
+              required
+            />
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!registroCai.regC_RangoFinal.trim() && mostrarErrores"
+          >
+            <small>El campo rango final es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="inicial-input" class="form-label"
+            >Fecha Inicial de Emision<span class="text-danger">*</span></label
+          >
+          <input
+            type="date"
+            id="inicial-input"
+            [(ngModel)]="registroCai.regC_FechaInicialEmision"
+            class="form-control"
+            [class.is-invalid]="
+              !registroCai.regC_FechaInicialEmision && mostrarErrores
+            "
+            placeholder="Seleccione la fecha de emision inicial"
+            required
+          />
+          <div
+            class="text-danger"
+            *ngIf="!registroCai.regC_FechaInicialEmision && mostrarErrores"
+          >
+            <small>La fecha inicial de emision es requerida</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="final-input" class="form-label"
+            >Fecha Final de Emision<span class="text-danger">*</span></label
+          >
+          <input
+            type="date"
+            id="final-input"
+            [(ngModel)]="registroCai.regC_FechaFinalEmision"
+            class="form-control"
+            [class.is-invalid]="
+              !registroCai.regC_FechaFinalEmision && mostrarErrores
+            "
+            placeholder="Seleccione la fecha de emision final"
+            required
+          />
+          <div
+            class="text-danger"
+            *ngIf="!registroCai.regC_FechaFinalEmision && mostrarErrores"
+          >
+            <small>La fecha final de emision es requerida</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            class="btn btn-primary gold"
+            (click)="cancelar()"
+          >
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
