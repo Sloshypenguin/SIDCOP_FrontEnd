@@ -1,1 +1,233 @@
-<p>edit works!</p>
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <!-- Título del componente -->
+  <h5 class="card-title mb-4">Editar nuevo empleado</h5>
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de advertencia -->
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <div class="flex-grow-1">
+    <div class="row">
+      <div class="col-lg-4 ">
+        <div class="mb-1">
+            <label for="empl_DNI"  class="form-label">DNI<span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!empleado.empl_DNI.trim() && mostrarErrores"
+              id="empl_DNI"
+              [(ngModel)]="empleado.empl_DNI"
+              placeholder="Ingrese el DNI del empleado"
+              required>
+          <div class="text-danger" *ngIf="!empleado.empl_DNI.trim() && mostrarErrores">
+            <small>El campo DNI es requerido</small>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="codigo-input"  class="form-label">Código<span class="text-danger">*</span></label>
+                <input type="text"  id="codigo-input"  [(ngModel)]="empleado.empl_Codigo"  class="form-control" [class.is-invalid]="!empleado.empl_Codigo.trim() && mostrarErrores" placeholder="Ingrese el código" required>
+                <div class="text-danger" *ngIf="!empleado.empl_Codigo.trim() && mostrarErrores">
+                    <small>El código es requerido</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="nombres-input"  class="form-label">Nombres<span class="text-danger">*</span></label>
+                <input type="text"  id="nombres-input"  [(ngModel)]="empleado.empl_Nombres"  class="form-control" [class.is-invalid]="!empleado.empl_Nombres.trim() && mostrarErrores" placeholder="Ingrese los nombres del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_Nombres.trim() && mostrarErrores">
+                    <small>Los nombres son requeridos</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="apellidos-input"  class="form-label">Apellidos<span class="text-danger">*</span></label>
+                <input type="text"  id="apellidos-input"  [(ngModel)]="empleado.empl_Apellidos"  class="form-control" [class.is-invalid]="!empleado.empl_Apellidos.trim() && mostrarErrores" placeholder="Ingrese los apellidos del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_Apellidos.trim() && mostrarErrores">
+                    <small>Los apellidos son requeridos</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+      <div class="col-lg-4">
+        <div class="mb-3">
+                <label for="sexo-input"  class="form-label">Sexo<span class="text-danger">*</span></label>
+                <input type="text"  id="sexo-input"  [(ngModel)]="empleado.empl_Sexo"  class="form-control" [class.is-invalid]="!empleado.empl_Sexo.trim() && mostrarErrores" placeholder="Ingrese el sexo del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_Sexo.trim() && mostrarErrores">
+                    <small>El sexo es requerido</small>
+                </div>
+        </div>
+      </div><!--end col-->
+
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="nacimiento-input"  class="form-label">Fecha de nacimiento<span class="text-danger">*</span></label>
+                <input type="date"  id="nacimiento-input"  [(ngModel)]="empleado.empl_FechaNacimiento"  class="form-control" [class.is-invalid]="!empleado.empl_FechaNacimiento && mostrarErrores" placeholder="Seleccione la fecha de nacimiento del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_FechaNacimiento && mostrarErrores">
+                    <small>La fecha de nacimiento es requerida</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="correo-input"  class="form-label">Correo electrónico<span class="text-danger">*</span></label>
+                <input type="text"  id="correo-input"  [(ngModel)]="empleado.empl_Correo"  class="form-control" [class.is-invalid]="!empleado.empl_Correo.trim() && mostrarErrores" placeholder="Ingrese el correo del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_Correo.trim() && mostrarErrores">
+                    <small>El correo es requerido</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="telefono-input"  class="form-label">Teléfono<span class="text-danger">*</span></label>
+                <input type="text"  id="telefono-input"  [(ngModel)]="empleado.empl_Telefono"  class="form-control" [class.is-invalid]="!empleado.empl_Telefono.trim() && mostrarErrores" placeholder="Ingrese el telefono del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_Telefono.trim() && mostrarErrores">
+                    <small>El teléfono es requerido</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="sucursal-input" class="form-label">Sucursal<span class="text-danger">*</span></label>
+                <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
+                <ng-select  [class.is-invalid]="!empleado.sucu_Id && mostrarErrores" [(ngModel)]="empleado.sucu_Id" [items]="sucursales" 
+                bindLabel="sucu_Descripcion" 
+                bindValue="sucu_Id"
+                placeholder="Seleccione una sucursal"
+                >
+                </ng-select>
+                <div class="text-danger" *ngIf="!empleado.sucu_Id && mostrarErrores">
+                    <small>La sucursal es requerida</small>
+                </div>
+            </div>
+      </div><!--end col-->
+
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="estadocivil-input" class="form-label">Estado civil<span class="text-danger">*</span></label>
+                <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
+                <ng-select  [class.is-invalid]="!empleado.esCv_Id && mostrarErrores" [(ngModel)]="empleado.esCv_Id" [items]="estadosCiviles" 
+                bindLabel="esCv_Descripcion" 
+                bindValue="esCv_Id"
+                placeholder="Seleccione un estado civil"
+                >
+                </ng-select>
+                <div class="text-danger" *ngIf="!empleado.esCv_Id && mostrarErrores">
+                    <small>El estado civil es requerido</small>
+                </div>
+            </div>
+      </div><!--end col-->
+
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="sucursal-input" class="form-label">Cargo<span class="text-danger">*</span></label>
+                <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
+                <ng-select  [class.is-invalid]="!empleado.carg_Id && mostrarErrores" [(ngModel)]="empleado.carg_Id" [items]="cargos" 
+                bindLabel="carg_Descripcion" 
+                bindValue="carg_Id"
+                placeholder="Seleccione un cargo"
+                >
+                </ng-select>
+                <div class="text-danger" *ngIf="!empleado.carg_Id && mostrarErrores">
+                    <small>El cargo es requerido</small>
+                </div>
+            </div>
+      </div><!--end col-->
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="sucursal-input" class="form-label">Colonia<span class="text-danger">*</span></label>
+                <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
+                <ng-select  [class.is-invalid]="!empleado.colo_Id && mostrarErrores" [(ngModel)]="empleado.colo_Id" [items]="colonias" 
+                bindLabel="colo_Descripcion" 
+                bindValue="colo_Id"
+                placeholder="Seleccione una colonia"
+                >
+                </ng-select>
+                <div class="text-danger" *ngIf="!empleado.colo_Id && mostrarErrores">
+                    <small>La colonia es requerida</small>
+                </div>
+            </div>
+      </div><!--end col-->
+
+      <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="direccion-input"  class="form-label">Dirección exacta<span class="text-danger">*</span></label>
+                <input type="text"  id="nombres-input"  [(ngModel)]="empleado.empl_DireccionExacta"  class="form-control" [class.is-invalid]="!empleado.empl_DireccionExacta.trim() && mostrarErrores" placeholder="Ingrese la dirección exacta del empleado" required>
+                <div class="text-danger" *ngIf="!empleado.empl_DireccionExacta.trim() && mostrarErrores">
+                    <small>La dirección es requerida</small>
+                </div>
+            </div>
+            
+      </div><!--end col-->
+
+
+    </div>
+  </div>
+  
+    <div class="mt-auto pt-3">
+        <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+                <span class="btn-text">Cancelar</span>
+                <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+            </button>
+            <button type="button" class="btn btn-primary" (click)="validarEdicion()">
+                <span class="btn-text">Guardar</span>
+                <span class="btn-icon"><i class="ri-save-line"></i></span>
+            </button>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

@@ -20,6 +20,7 @@ import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 
 import { CreateComponent } from '../create/create.component';
 import { DetailsComponent } from '../details/details.component';
+import { EditComponent } from '../edit/edit.component';
 
 @Component({
   standalone: true,
@@ -43,7 +44,8 @@ import { DetailsComponent } from '../details/details.component';
     BreadcrumbsComponent,
 
     CreateComponent,
-    DetailsComponent
+    DetailsComponent,
+    EditComponent
 
   ]
 })
@@ -71,6 +73,7 @@ export class ListComponent {
 
 
   empleadoDetalle: Empleado | null = null;
+  empleadoEditando: Empleado | null = null;
 
   // Propiedades para confirmación de eliminación
     mostrarConfirmacionEliminar = false;
@@ -365,5 +368,30 @@ export class ListComponent {
       this.showCreateForm = false; // Cerrar create si está abierto
       this.showEditForm = false; // Cerrar edit si está abierto
       this.activeActionRow = null; // Cerrar menú de acciones
+    }
+
+
+
+
+    editar(empleado: Empleado): void {
+      console.log('Abriendo formulario de edición para:', empleado);
+      
+      this.empleadoEditando = { ...empleado }; // Hacer copia profunda
+      this.showEditForm = true;
+      this.showCreateForm = false; // Cerrar create si está abierto
+      this.showDetailsForm = false; // Cerrar details si está abierto
+      this.activeActionRow = null; // Cerrar menú de acciones
+    }
+
+    actualizarEmpleado(empleado: Empleado): void {
+      console.log('Empleado actualizado exitosamente desde edit component:', empleado);
+      // Recargar los datos de la tabla
+      this.cargardatos();
+      this.cerrarFormularioEdicion();
+    }
+
+    cerrarFormularioEdicion(): void {
+      this.showEditForm = false;
+      this.empleadoEditando = null;
     }
 }
