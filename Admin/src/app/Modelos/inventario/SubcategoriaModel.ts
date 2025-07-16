@@ -5,7 +5,7 @@ export class Subcategoria{
   usua_Creacion: number = 0;
   subc_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
-  subc_FechaModificacion?: Date;
+  subc_FechaModificacion: Date = new Date();
   subc_Estado: boolean = false;
   
   cate_Descripcion: string = '';

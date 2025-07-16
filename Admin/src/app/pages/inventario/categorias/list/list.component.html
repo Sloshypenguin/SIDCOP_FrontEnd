@@ -93,7 +93,7 @@
                     </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.cate_Id}}</span></td>
+                <td><span class="fw-semibold">{{  (table.page - 1) * table.pageSizeValue + i + 1 }}</span></td>
                 <td>{{data.cate_Descripcion}}</td>
               </tr>
             </tbody>
@@ -156,7 +156,7 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la categoria <strong>{{ categoriaAEliminar?.cate_Descripcion }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la subcategoria <strong>{{ categoriaAEliminar?.cate_Descripcion }}</strong>?
           </p>
         </div>
       </div>

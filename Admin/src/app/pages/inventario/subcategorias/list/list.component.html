@@ -49,10 +49,10 @@
 <div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
-      <!-- <app-details 
-        [estadoCivilData]="estadoCivilDetalle" 
+      <app-details 
+        [subcategoriaData]="subcategoriaDetalle" 
         (onClose)="cerrarFormularioDetalles()">
-      </app-details> -->
+      </app-details>
     </div>
   </div>
 </div>
@@ -94,7 +94,7 @@
                     </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.subc_Id}}</span></td>
+                <td><span class="fw-semibold">{{  (table.page - 1) * table.pageSizeValue + i + 1 }}</span></td>
                 <td>{{data.subc_Descripcion}}</td>
                 <td>{{data.cate_Descripcion}}</td>
               </tr>
