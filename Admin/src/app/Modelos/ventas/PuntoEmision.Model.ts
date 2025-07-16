@@ -10,7 +10,10 @@ export class PuntoEmision {
   puEm_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
   puEm_FechaModificacion?: Date;
-  regC_Estado: boolean = true;
+  //regC_Estado: boolean = true;
+
+    code_Status: number = 0;
+  message_Status: string ='';
 
   constructor(init?: Partial<PuntoEmision>) {
     Object.assign(this, init);
