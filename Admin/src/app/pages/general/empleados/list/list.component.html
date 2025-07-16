@@ -33,6 +33,19 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- Collapse para el formulario de detalles -->
+        <div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+            <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
+                <div class="container-fluid flex-grow-1">
+                <app-details 
+                    [empleadoData]="empleadoDetalle" 
+                    (onClose)="cerrarFormularioDetalles()">
+                </app-details>
+                </div>
+            </div>
+        </div>
     </div>
 </div><!--end card-->
 
@@ -135,7 +148,7 @@
                         </button>
                       </li>
                       <li *ngIf="showDetails">
-                        <button type="button" class="dropdown-action-btn" >
+                        <button type="button" class="dropdown-action-btn" (click)="detalles(empleado)">
                           Detalles <i class="ri-error-warning-fill"></i>
                         </button>
                       </li>

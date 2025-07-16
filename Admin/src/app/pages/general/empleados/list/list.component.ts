@@ -19,6 +19,7 @@ import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 
 import { CreateComponent } from '../create/create.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   standalone: true,
@@ -41,7 +42,8 @@ import { CreateComponent } from '../create/create.component';
     DropzoneModule,
     BreadcrumbsComponent,
 
-    CreateComponent
+    CreateComponent,
+    DetailsComponent
 
   ]
 })
@@ -65,6 +67,10 @@ export class ListComponent {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
+  
+
+
+  empleadoDetalle: Empleado | null = null;
 
   // Propiedades para confirmación de eliminación
     mostrarConfirmacionEliminar = false;
@@ -246,6 +252,11 @@ export class ListComponent {
     this.showCreateForm = false;
   }
 
+  cerrarFormularioDetalles(): void {
+    this.showDetailsForm = false;
+    this.empleadoDetalle = null;
+  }
+
 
 
 
@@ -346,6 +357,13 @@ export class ListComponent {
 
 
 
-
-  
+  //Detailss
+  detalles(empleado: Empleado): void {
+      console.log('Abriendo detalles para:', empleado);
+      this.empleadoDetalle = { ...empleado }; // Hacer copia profunda
+      this.showDetailsForm = true;
+      this.showCreateForm = false; // Cerrar create si está abierto
+      this.showEditForm = false; // Cerrar edit si está abierto
+      this.activeActionRow = null; // Cerrar menú de acciones
+    }
 }
