@@ -99,18 +99,20 @@ export class EditComponent implements OnChanges {
 
     if (this.cargo.carg_Descripcion.trim()) {
       const cargoActualizar = {
-        Carg_Id: this.cargo.carg_Id,
-        Carg_Descripcion: this.cargo.carg_Descripcion.trim(),
-        Usua_Creacion: this.cargo.usua_Creacion,
-        Carg_FechaCreacion: this.cargo.carg_FechaCreacion,
-        Usua_Modificacion: environment.usua_Id,
+        carg_Id: this.cargo.carg_Id,
+        carg_Descripcion: this.cargo.carg_Descripcion.trim(),
+        usua_Creacion: this.cargo.usua_Creacion,
+        carg_FechaCreacion: this.cargo.carg_FechaCreacion,
+        usua_Modificacion: environment.usua_Id,
         // numero: this.cargo..secuencia || '',
-        Carg_FechaModificacion: new Date().toISOString(),
-        Carg_Estado: '',
+        carg_FechaModificacion: new Date().toISOString(),
+        carg_Estado: true,
+        usuaC_Nombre : '',
+        usuaM_Nombre : ''
         // usuarioModificacion: ''
       };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/cargo/Actualizar`, cargoActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Cargo/Actualizar`, cargoActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
