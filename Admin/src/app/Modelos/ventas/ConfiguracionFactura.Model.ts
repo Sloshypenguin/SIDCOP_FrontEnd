@@ -14,7 +14,7 @@ export class ConfiguracionFactura {
   coFa_FechaModificacion?: Date;
   coFa_Estado: boolean = true;
 
-
+  secuencia?: number;
 
       colo_Descripcion: string = '';
       muni_Codigo: string = '';
