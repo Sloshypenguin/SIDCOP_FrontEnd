@@ -68,28 +68,30 @@
                 <th class="gridjs-th">Contacto</th>
                 <th class="gridjs-th">Teléfono</th>
                 <th class="gridjs-th">Correo</th>
+                <th class="gridjs-th">Direccion</th>
+                <th class="gridjs-th">Observaciones</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" >
+                <td class="position-relative"  *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
                   <div class="dropdown-action-list">
                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
                       <span>Acciones</span>
                       <i class="ri-settings-3-line"></i>
                     </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="showEdit">
+                <ul *ngIf="activeActionRow === i" class="dropdown-menu show"> 
+                      <li *ngIf="accionPermitida('editar')">
                         <button type="button" class="dropdown-action-btn" (click)="editar(data)">
                           Editar <i class="ri-edit-line"></i>
                         </button>
                       </li>
-                      <li *ngIf="showDelete">
+                      <li *ngIf="accionPermitida('eliminar')">
                         <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
                           Eliminar <i class="ri-delete-bin-line"></i>
                         </button>
                       </li>
-                      <li *ngIf="showDetails">
+                      <li *ngIf="accionPermitida('detalle')">
                         <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
                           Detalles <i class="ri-error-warning-fill"></i>
                         </button>
@@ -103,6 +105,8 @@
                 <td>{{data.prov_NombreContacto}}</td>
                 <td>{{data.prov_Telefono}}</td>
                 <td>{{data.prov_Correo}}</td>
+                <td>{{data.depa_Descripcion +', ' +data.muni_Descripcion+ ', ' + data.prov_DireccionExacta}}</td>
+                <td>{{data.prov_Observaciones}}</td>
               </tr>
             </tbody>
           </table>

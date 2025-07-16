@@ -21,61 +21,97 @@
     <div class="row">
       <div class="col-md-6">
         <div class="mb-3">
-          <label>Código</label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor">
-        </div>
-        <div class="mb-3">
-          <label>Empresa</label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required [class.is-invalid]="!proveedor.prov_NombreEmpresa.trim() && mostrarErrores">
-          <span class="text-danger ms-2" *ngIf="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">*</span>
-        </div>
-        <div class="mb-3">
-          <label>Contacto</label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto">
-        </div>
-        <div class="mb-3">
-          <label>Teléfono</label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono">
-        </div>
-        <div class="mb-3">
-          <label>Correo</label>
-          <input type="email" class="form-control" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico">
-        </div>
-        <div class="mb-3">
-          <label>Dirección</label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta">
-        </div>
-        <div class="mb-3">
-          <label>Observaciones</label>
-          <textarea class="form-control" [(ngModel)]="proveedor.prov_Observaciones" placeholder="Observaciones"></textarea>
-        </div>
-       
-  <div class="col-md-6">
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-        <select 
-                id="ColoniaCodigo" 
-                name="ColoniaCodigo" 
-                class="form-select"
-                [class.is-invalid]="!proveedor.colo_Id && mostrarErrores"
-                [(ngModel)]="proveedor.colo_Id" 
-                required>
-                    <option value="" disabled selected>Seleccione una opción</option>
-                    <option 
-                        *ngFor="let colo of Colonia" 
-                        [value]="colo.colo_Id">
-                            {{colo.colo_Descripcion }}
-                    </option>
-            </select>
-             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!proveedor.colo_Id && mostrarErrores">
-            <small>El campo departamento es requerido</small>
+          <label>Código <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor" [class.is-invalid]="mostrarErrores && !proveedor.prov_Codigo?.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Codigo?.trim()">
+            <small>El campo Código es requerido</small>
           </div>
         </div>
       </div>
-
-
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Empresa <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreEmpresa?.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreEmpresa?.trim()">
+            <small>El campo empresa es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Contacto <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto" [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreContacto?.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreContacto?.trim()">
+            <small>El campo Contacto es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Teléfono <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono" [class.is-invalid]="mostrarErrores && !proveedor.prov_Telefono?.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Telefono?.trim()">
+            <small>El campo Teléfono es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Correo <span class="text-danger">*</span></label>
+          <input type="email" class="form-control" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico" [class.is-invalid]="mostrarErrores && !proveedor.prov_Correo?.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Correo?.trim()">
+            <small>El campo Correo es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Dirección <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta" [class.is-invalid]="mostrarErrores && !proveedor.prov_DireccionExacta?.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_DireccionExacta?.trim()">
+            <small>El campo Dirección es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Observaciones <span class="text-danger">*</span></label>
+          <textarea class="form-control" [(ngModel)]="proveedor.prov_Observaciones" placeholder="Observaciones" [class.is-invalid]="mostrarErrores && !proveedor.prov_Observaciones?.trim()"></textarea>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Observaciones?.trim()">
+            <small>El campo Observaciones es requerido</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label>Colonia <span class="text-danger">*</span></label>
+          <div class="d-flex align-items-center">
+            <select 
+              id="ColoniaCodigo" 
+              name="ColoniaCodigo" 
+              class="form-select"
+              [class.is-invalid]="mostrarErrores && !proveedor.colo_Id"
+              [(ngModel)]="proveedor.colo_Id" 
+              required>
+              <option value="" disabled selected>Seleccione una opción</option>
+              <option 
+                *ngFor="let colo of Colonia" 
+                [value]="colo.colo_Id">
+                {{colo.colo_Descripcion }}
+              </option>
+            </select>
+          </div>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.colo_Id">
+            <small>El campo colonia es requerido</small>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="mt-auto pt-3">

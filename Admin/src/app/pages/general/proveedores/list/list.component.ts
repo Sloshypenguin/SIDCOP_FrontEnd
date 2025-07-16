@@ -73,6 +73,10 @@ export class ListComponent implements OnInit {
       { label: 'Proveedores', active: true }
     ];
     this.cargarAccionesUsuario();
+
+  // this.showEdit = this.accionPermitida('editar');
+  // this.showDelete = this.accionPermitida('eliminar');
+  // this.showDetails = this.accionPermitida('detalle');
   }
 
   // Permisos
@@ -89,7 +93,7 @@ export class ListComponent implements OnInit {
         let modulo = null;
         if (Array.isArray(permisos)) {
           // Ajusta el Pant_Id según corresponda para Proveedores
-          modulo = permisos.find((m: any) => m.Pant_Id === 14);
+          modulo = permisos.find((m: any) => m.Pant_Id === 19);
         } else if (typeof permisos === 'object' && permisos !== null) {
           modulo = permisos['Proveedores'] || permisos['proveedores'] || null;
         }
@@ -165,6 +169,7 @@ export class ListComponent implements OnInit {
 
   confirmarEliminar(proveedor: Proveedor): void {
     this.proveedorAEliminar = proveedor;
+    console.log('Proveedor a eliminar:', this.proveedorAEliminar);
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null;
   }
@@ -176,7 +181,8 @@ export class ListComponent implements OnInit {
 
   eliminar(): void {
     if (!this.proveedorAEliminar) return;
-    this.http.post(`${environment.apiBaseUrl}/Proveedor/Eliminar/${this.proveedorAEliminar.prov_Id}`, {}, {
+    console.log('Eliminando proveedor:', this.proveedorAEliminar);
+    this.http.post(`${environment.apiBaseUrl}/Proveedor/Eliminar?id=${this.proveedorAEliminar.prov_Id}`,{}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'

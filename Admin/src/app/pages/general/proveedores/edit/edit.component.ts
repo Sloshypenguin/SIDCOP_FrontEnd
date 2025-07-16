@@ -61,7 +61,10 @@ export class EditComponent implements OnChanges {
 
   guardar(): void {
     this.mostrarErrores = true;
-    if (this.proveedor.prov_NombreEmpresa.trim()) {
+    if (this.proveedor.prov_NombreEmpresa.trim() && this.proveedor.prov_Codigo.trim() &&
+        this.proveedor.prov_NombreContacto.trim() && this.proveedor.prov_Telefono.trim() &&
+        this.proveedor.colo_Id > 0 && this.proveedor.prov_DireccionExacta.trim() &&
+        this.proveedor.prov_Correo.trim() && this.proveedor.prov_Observaciones.trim()) {
       const proveedorActualizar = {
         ...this.proveedor,
         usua_Modificacion: environment.usua_Id,
