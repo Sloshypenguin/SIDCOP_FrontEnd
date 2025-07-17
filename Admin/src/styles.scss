@@ -77,9 +77,6 @@
   display: flex;
   align-items: center;
   gap: 0.4em;
-    // Evita que el dropdown se corte en tablas con scroll horizontal
-    z-index: 2000 !important;
-    /* Si se requiere, se puede usar position: fixed y calcular la posición con JS para casos extremos */
   transition: background 0.2s, color 0.2s;
 }
 // Dropdown list inválidos en rojo
@@ -986,7 +983,7 @@ bs-dropdown-container {
   gap: 0;
 }
 #page-topbar {
-  z-index: 1000;
+  z-index:1051;
 }
 .gridjs-pagination .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
   display: none !important;
@@ -1081,7 +1078,6 @@ td.position-relative, .gridjs-td {
 }
 td.position-relative .dropdown-menu.show,
 .gridjs-td .dropdown-menu.show {
-  z-index: 1050 !important;
   position: absolute !important;
   left: var(--menu-left, 0) !important;
   top: var(--menu-top, 100%) !important;
@@ -1100,7 +1096,6 @@ td.position-relative .dropdown-menu.show,
   min-width: 1px !important;
   max-width: none !important;
   border-radius: 8px !important; 
-  z-index: 1050 !important;
 }
 
 .alert-container {
