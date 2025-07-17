@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
 import { environment } from 'src/environments/environment';
-import { co } from '@fullcalendar/core/internal-common';
+//import { co } from '@fullcalendar/core/internal-common';
 
 @Component({
   selector: 'app-create',
