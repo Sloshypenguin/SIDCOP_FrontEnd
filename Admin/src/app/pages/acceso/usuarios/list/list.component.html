@@ -63,7 +63,7 @@
                                 />
                             </div>
 
-                            <div style="position: absolute; top: 0px; right: 0px; z-index:1;">
+                            <div style="position: absolute; top: 0px; right: 0px; z-index:1;" *ngIf="accionPermitida('editar') || accionPermitida('cambiar estado') || accionPermitida('detalles') || accionPermitida('cambiar estado') || accionPermitida('restablecer contraseña') || accionPermitida('mostrar contraseña') ">
                                 <div class="dropdown-action-list" (document:click)="onDocumentClick($event, data.usua_Id)">
                                     <button class="buttonConfig"
                                         [attr.aria-expanded]="activeActionRow === data.usua_Id"
@@ -76,7 +76,7 @@
                                             <button class="dropdown-action-btn" (click)="editar(data)">Editar
                                                 <i class="ri-edit-line"></i></button>
                                         </li>
-                                        <li *ngIf="accionPermitida('restablecer contraseña')">
+                                        <li *ngIf="accionPermitida('mostrar contraseña')">
                                             <button class="dropdown-action-btn">Ver Clave
                                                 <i class="ri-eye-fill"></i></button>
                                         </li>

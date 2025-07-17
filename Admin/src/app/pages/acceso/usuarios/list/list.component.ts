@@ -174,7 +174,6 @@ export class ListComponent {
 
   private cargarAccionesUsuario(): void{
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try{
