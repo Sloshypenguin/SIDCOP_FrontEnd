@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ModalModule, ModalDirective } from 'ngx-bootstrap/modal';
@@ -23,6 +24,25 @@ import { EditComponent } from '../edit/edit.component';
 
 @Component({
   standalone: true,
+  animations: [
+    trigger('collapseAnimation', [
+      state('closed', style({
+        height: '0',
+        opacity: 0,
+        overflow: 'hidden',
+        padding: '0',
+      })),
+      state('open', style({
+        height: '*',
+        opacity: 1,
+        overflow: 'hidden',
+        padding: '*',
+      })),
+      transition('closed <=> open', [
+        animate('300ms cubic-bezier(.4,0,.2,1)')
+      ]),
+    ])
+  ],
   selector: 'app-grid',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
@@ -281,6 +301,15 @@ export class ListComponent {
     this.empleadoAEliminar = null;
   }
 
+  cerrarAlerta(): void {
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+  }
+
   eliminar(): void {
     if (!this.empleadoAEliminar) return;
     
@@ -296,64 +325,56 @@ export class ListComponent {
         console.log('Respuesta del servidor:', response);
         
         // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Empleado eliminado exitosamente');
-            this.mensajeExito = `Empleado "${this.empleadoAEliminar!.empl_Nombres}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
-
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('El empleado está siendo utilizado');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el empleado está siendo utilizado.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el empleado.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
+        if (response.success && (!response.data || response.data.code_Status === 1)) {
+          // Éxito: eliminado correctamente
+          this.mensajeExito = response.message || 'Empleado eliminado exitosamente';
+          this.mostrarAlertaExito = true;
+        
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+        
+          this.cargardatos();
+          this.cancelarEliminar();
+        } else if (response.data && response.data.code_Status === -1) {
+          // Está siendo utilizado
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el empleado.';
-          
+          this.mensajeError = response.data.message_Status || 'No se puede eliminar: el empleado está siendo utilizado.';
           setTimeout(() => {
             this.mostrarAlertaError = false;
             this.mensajeError = '';
           }, 5000);
-          
-          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        } else {
+          // Error general
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar el empleado.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
           this.cancelarEliminar();
         }
       },
+      error: (error) => {
+        // Mostrar siempre el mensaje tal como viene del backend
+        let msg = 'No se pudo eliminar el empleado.';
+        if (error && error.error) {
+          if (typeof error.error === 'string') {
+            msg = error.error;
+          } else if (error.error.message) {
+            msg = error.error.message;
+          }
+        }
+        this.mostrarAlertaError = true;
+        this.mensajeError = msg;
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        this.cancelarEliminar();
+      }
     });
   }
 

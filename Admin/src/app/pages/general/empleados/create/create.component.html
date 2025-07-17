@@ -34,10 +34,12 @@
             <input 
               type="text" 
               class="form-control" 
-              [class.is-invalid]="!empleado.empl_DNI.trim() && mostrarErrores"
               id="empl_DNI"
+              mask="0000-0000-00000"
+              maxlength="15"
+              [class.is-invalid]="!empleado.empl_DNI.trim() && mostrarErrores"
               [(ngModel)]="empleado.empl_DNI"
-              placeholder="Ingrese el DNI del empleado"
+              placeholder="0000-0000-00000"
               required>
           <div class="text-danger" *ngIf="!empleado.empl_DNI.trim() && mostrarErrores">
             <small>El campo DNI es requerido</small>
@@ -82,11 +84,18 @@
 
       <div class="col-lg-4">
         <div class="mb-3">
-                <label for="sexo-input"  class="form-label">Sexo<span class="text-danger">*</span></label>
-                <input type="text"  id="sexo-input"  [(ngModel)]="empleado.empl_Sexo"  class="form-control" [class.is-invalid]="!empleado.empl_Sexo.trim() && mostrarErrores" placeholder="Ingrese el sexo del empleado" required>
-                <div class="text-danger" *ngIf="!empleado.empl_Sexo.trim() && mostrarErrores">
+          <label class="form-label">Sexo<span class="text-danger">*</span></label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sexo" id="sexoM" [(ngModel)]="empleado.empl_Sexo" [value]="'M'" required>
+                    <label class="form-check-label" for="sexoM">Masculino</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sexo" id="sexoF" [(ngModel)]="empleado.empl_Sexo" [value]="'F'" required>
+                    <label class="form-check-label" for="sexoF">Femenino</label>
+                  </div>
+                  <div class="text-danger" *ngIf="!empleado.empl_Sexo && mostrarErrores">
                     <small>El sexo es requerido</small>
-                </div>
+                  </div>
         </div>
       </div><!--end col-->
 
@@ -116,7 +125,7 @@
       <div class="col-lg-4">
             <div class="mb-3">
                 <label for="telefono-input"  class="form-label">Teléfono<span class="text-danger">*</span></label>
-                <input type="text"  id="telefono-input"  [(ngModel)]="empleado.empl_Telefono"  class="form-control" [class.is-invalid]="!empleado.empl_Telefono.trim() && mostrarErrores" placeholder="Ingrese el telefono del empleado" required>
+                <input type="text"  id="telefono-input"  [(ngModel)]="empleado.empl_Telefono"  class="form-control" mask="0000-0000" maxlength="9" [class.is-invalid]="!empleado.empl_Telefono.trim() && mostrarErrores" placeholder="0000-0000" required>
                 <div class="text-danger" *ngIf="!empleado.empl_Telefono.trim() && mostrarErrores">
                     <small>El teléfono es requerido</small>
                 </div>

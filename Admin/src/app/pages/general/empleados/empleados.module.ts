@@ -34,6 +34,8 @@ import { RatingModule } from 'ngx-bootstrap/rating';
 
 // Component
 import { ListComponent } from './list/list.component';
+// Máscara de inputs
+import { provideNgxMask } from 'ngx-mask';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -64,6 +66,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     FlatpickrModule.forRoot()
   ],
   providers: [
+    provideNgxMask(),
     {
       provide: DROPZONE_CONFIG,
       useValue: DEFAULT_DROPZONE_CONFIG

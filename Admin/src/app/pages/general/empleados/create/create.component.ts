@@ -5,13 +5,16 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 import { environment } from 'src/environments/environment';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule, NgxMaskDirective, NgxMaskPipe],
   templateUrl: './create.component.html',
-  styleUrl: './create.component.scss'
+  styleUrl: './create.component.scss',
+  providers: [provideNgxMask()]
 })
 export class CreateComponent {
 
