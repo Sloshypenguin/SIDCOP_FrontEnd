@@ -86,29 +86,15 @@
               <tbody>
                 <tr *ngFor="let data of table.paginated$ | async; let i = index">
                   <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                    <div class="dropdown-action-list dropup">
-                      <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                        <span>Acciones</span>
-                        <i class="ri-settings-3-line"></i>
-                      </button>
-                      <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                        <li *ngIf="accionPermitida('editar')">
-                          <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                            Editar <i class="ri-edit-line"></i>
-                          </button>
-                        </li>
-                        <li *ngIf="accionPermitida('eliminar')">
-                          <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                            Eliminar <i class="ri-delete-bin-line"></i>
-                          </button>
-                        </li>
-                        <li *ngIf="accionPermitida('detalle')">
-                          <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                            Detalles <i class="ri-error-warning-fill"></i>
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
+                    <div class="dropdown-action-list">
+      <button type="button"
+        class="dropdown-toggle"
+        [attr.aria-expanded]="false"
+        (click)="onActionMenuClick(i, $event, data)">
+        <span>Acciones</span>
+        <i class="ri-settings-3-line"></i>
+      </button>
+    </div>
                   </td>
                   <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                   <td>{{data.esCv_Descripcion}}</td>
@@ -190,3 +176,29 @@
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
 
 <!-- end row -->
+
+<ul
+  *ngIf="floatingMenu.show"
+  class="dropdown-menu show"
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenu.top + 'px',
+    left: floatingMenu.left + 'px',
+    zIndex: 3000
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenu.data); closeFloatingMenu()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenu.data); closeFloatingMenu()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenu.data); closeFloatingMenu()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>

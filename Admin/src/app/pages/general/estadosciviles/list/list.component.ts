@@ -50,26 +50,10 @@ export class ListComponent implements OnInit {
       { label: 'General' },
       { label: 'Estados Civiles', active: true }
     ];
-
+    
     // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
     this.cargarAccionesUsuario();
     console.log('Acciones disponibles:', this.accionesDisponibles);
-  }
-
-  // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
   }
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
@@ -127,10 +111,42 @@ export class ListComponent implements OnInit {
   constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
   }
+  public floatingMenu = {
+    show: false,
+    top: 0,
+    left: 0,
+    data: null as any
+  };    
+  onActionMenuClick(i: number, event: MouseEvent, data: any) {
+    event.stopPropagation();
+    const button = (event.target as HTMLElement).closest('button');
+    if (!button) return;
+    const rect = button.getBoundingClientRect();
 
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+    // Si ya está abierto para el mismo registro, ciérralo
+    if (
+      this.floatingMenu.show &&
+      this.floatingMenu.data === data
+    ) {
+      this.closeFloatingMenu();
+      return;
+    }
+    this.floatingMenu = {
+      show: true,
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX,
+      data
+    };
+
+    setTimeout(() => {
+      window.addEventListener('click', this.closeFloatingMenu);
+    });
   }
+
+  closeFloatingMenu = () => {
+    this.floatingMenu.show = false;
+    window.removeEventListener('click', this.closeFloatingMenu);
+  };
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -298,3 +314,4 @@ export class ListComponent implements OnInit {
     });
   }
 }
+
