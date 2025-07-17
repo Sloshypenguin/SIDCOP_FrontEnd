@@ -39,6 +39,15 @@ import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
 
 export class ListComponent {
   
+  // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+  
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
@@ -66,7 +75,7 @@ export class ListComponent {
   editar(subcategoria: Subcategoria): void {
     console.log('Abriendo formulario de edición para:', subcategoria);
     console.log('Datos específicos:', {
-      id: subcategoria.cate_Id,
+      id: subcategoria.subc_Id,
       descripcion: subcategoria.subc_Descripcion,
       completo: subcategoria
     });
@@ -110,6 +119,41 @@ export class ListComponent {
 
   constructor(public table: ReactiveTableService<Subcategoria>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
+
+    // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
+  }
+
+
+  // Método para cargar las acciones disponibles del usuario
+  private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo 
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Categorias'] || permisos['categorias'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -165,7 +209,7 @@ export class ListComponent {
     
     console.log('Eliminando Subcategoria:', this.subcategoriaAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.subcategoriaAEliminar.cate_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Subcategoria/Eliminar?id=${this.subcategoriaAEliminar.subc_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -195,7 +239,7 @@ export class ListComponent {
             //result: está siendo utilizado
             console.log('Subcategoria está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: La subcategoria está siendo utilizado.';
+            this.mensajeError = /* response.data.message_Status  || */ 'No se puede eliminar: La subcategoria está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
