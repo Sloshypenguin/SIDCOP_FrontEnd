@@ -22,7 +22,7 @@ export class RegistroCAI {
   regC_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
   regC_FechaModificacion?: Date;
-  //regC_Estado: boolean = true;
+  regC_Estado: boolean = true;
 
     code_Status: number = 0;
   message_Status: string ='';
