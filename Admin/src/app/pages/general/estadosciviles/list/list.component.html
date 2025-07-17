@@ -195,7 +195,6 @@
     position: 'absolute',
     top: floatingMenuService.top + 'px',
     left: floatingMenuService.left + 'px',
-    zIndex: 3000
   }">
   <li *ngIf="accionPermitida('editar')">
     <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">

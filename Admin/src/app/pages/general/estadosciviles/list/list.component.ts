@@ -95,7 +95,7 @@ export class ListComponent implements OnInit {
     {
     this.cargardatos();
   }   
- 
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
