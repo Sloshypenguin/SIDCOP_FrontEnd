@@ -35,9 +35,9 @@ export class DetailsComponent implements OnChanges {
         this.cargoDetalle = { ...data };
         this.cargando = false;
       } catch (error) {
-        console.error('Error al cargar detalles del estado civil:', error);
+        console.error('Error al cargar detalles del cargo:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles del estado civil.';
+        this.mensajeError = 'Error al cargar los detalles del cargo.';
         this.cargando = false;
       }
     }, 500); // Simula tiempo de carga
