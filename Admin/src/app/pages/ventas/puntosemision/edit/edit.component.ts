@@ -29,7 +29,9 @@ export class EditComponent implements OnChanges {
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
-    usuarioModificacion: ''
+    usuarioModificacion: '',
+    secuencia: 0,
+    estado: '',
   };
 
 

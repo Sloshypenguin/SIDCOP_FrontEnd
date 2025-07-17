@@ -79,9 +79,10 @@
             <thead>
               <tr>
                  <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">Id</th>
+                <th class="gridjs-th">No.</th>
                 <th class="gridjs-th">Codigo</th>
                 <th class="gridjs-th">Descripcion</th>
+                <th class="gridjs-th">Estado</th>
          
               </tr>
             </thead>
@@ -113,11 +114,11 @@
                   </div>
                 </td>
                 <td>
-                  <span class="fw-semibold">{{ data.puEm_Id }}</span>
+                  <span class="fw-semibold">{{ data.secuencia }}</span>
                 </td>
                 <td>{{ data.puEm_Codigo }}</td>
                  <td>{{ data.puEm_Descripcion }}</td>
-      
+                 <td>{{ data.estado }}</td>
               </tr>
             </tbody>
           </table>

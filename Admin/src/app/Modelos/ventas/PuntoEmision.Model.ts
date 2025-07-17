@@ -12,7 +12,9 @@ export class PuntoEmision {
   puEm_FechaModificacion?: Date;
   //regC_Estado: boolean = true;
 
-    code_Status: number = 0;
+  secuencia: number = 0;
+  estado: string = '';
+  code_Status: number = 0;
   message_Status: string ='';
 
   constructor(init?: Partial<PuntoEmision>) {
