@@ -44,7 +44,7 @@ export class ListComponent implements OnInit {
 
     
     this.cargarAccionesUsuario();
-    console.log('Acciones disponibles:', this.accionesDisponibles);
+    // console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   private readonly PANTALLA_CARGOS_ID = 9;
@@ -59,7 +59,7 @@ accionesDisponibles: string[] = [];
 
   private cargarAccionesUsuario(): void {
   const permisosRaw = localStorage.getItem('permisosJson');
-  console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+  // console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
 
   try {
     if (!permisosRaw) return;
@@ -79,11 +79,11 @@ accionesDisponibles: string[] = [];
         .filter((a: string) => !!a);
     }
   } catch (error) {
-    console.error('Error al parsear permisosJson:', error);
+    // console.error('Error al parsear permisosJson:', error);
     this.accionesDisponibles = [];
   }
 
-  console.log('Acciones disponibles final:', this.accionesDisponibles);
+  // console.log('Acciones disponibles final:', this.accionesDisponibles);
 }
 
     // bread crumb items
@@ -107,7 +107,7 @@ accionesDisponibles: string[] = [];
   }
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
-    console.log('Toggleando formulario de creación...');
+    // console.log('Toggleando formulario de creación...');
     this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false; // Cerrar edit si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
@@ -115,12 +115,12 @@ accionesDisponibles: string[] = [];
   }
 
   editar(cargo: Cargos): void {
-    console.log('Abriendo formulario de edición para:', cargo);
-    console.log('Datos específicos:', {
-      id: cargo.carg_Id,
-      descripcion: cargo.carg_Descripcion,
-      completo: cargo
-    });
+    // console.log('Abriendo formulario de edición para:', cargo);
+    // console.log('Datos específicos:', {
+    //   id: cargo.carg_Id,
+    //   descripcion: cargo.carg_Descripcion,
+    //   completo: cargo
+    // });
     this.cargoEditando = { ...cargo }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
@@ -129,7 +129,7 @@ accionesDisponibles: string[] = [];
   }
 
   detalles(cargo: Cargos): void {
-    console.log('Abriendo detalles para:', cargo);
+    // console.log('Abriendo detalles para:', cargo);
     this.cargoDetalle = { ...cargo }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
@@ -192,21 +192,21 @@ cambiarPagina(nuevaPagina: number): void {
   }
 
   guardarCargo(cargo: Cargos): void {
-    console.log('Cargo guardado exitosamente desde create component:', cargo);
+    // console.log('Cargo guardado exitosamente desde create component:', cargo);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
   actualizarCargo(cargo: Cargos): void {
-    console.log('Cargo actualizado exitosamente desde edit component:', cargo);
+    // console.log('Cargo actualizado exitosamente desde edit component:', cargo);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
   confirmarEliminar(cargo: Cargos): void {
-    console.log('Solicitando confirmación para eliminar:', cargo);
+    // console.log('Solicitando confirmación para eliminar:', cargo);
     this.cargoEliminar = cargo;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
@@ -221,7 +221,7 @@ cambiarPagina(nuevaPagina: number): void {
   eliminar(): void {    
     if (!this.cargoEliminar) return;
     
-    console.log('Eliminando cargo:', this.cargoEliminar);
+    // console.log('Eliminando cargo:', this.cargoEliminar);
 
     this.http.put(`${environment.apiBaseUrl}/Cargo/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
       headers: {
@@ -230,13 +230,13 @@ cambiarPagina(nuevaPagina: number): void {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
+        // console.log('Respuesta del servidor:', response);
         
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Cargo eliminado exitosamente');
+            // console.log('Cargo eliminado exitosamente');
             this.mensajeExito = `Cargo "${this.cargoEliminar!.carg_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
@@ -251,7 +251,7 @@ cambiarPagina(nuevaPagina: number): void {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Este cargo está siendo utilizado');
+            // console.log('Este cargo está siendo utilizado');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'No se puede eliminar: el cargo, está siendo utilizado.';
             
@@ -264,7 +264,7 @@ cambiarPagina(nuevaPagina: number): void {
             this.cancelarEliminar();
           } else if (response.data.code_Status === 0) {
             // Error general
-            console.log('Error general al eliminar');
+            // console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'Error al eliminar el cargo.';
             
@@ -278,7 +278,7 @@ cambiarPagina(nuevaPagina: number): void {
           }
         } else {
           // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
+          // console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
           this.mensajeError = response.message || 'Error inesperado al eliminar el cargo.';
           
@@ -308,7 +308,7 @@ cambiarPagina(nuevaPagina: number): void {
     this.http.get<Cargos[]>(`${environment.apiBaseUrl}/Cargo/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
+      // console.log('Datos recargados:', data);
       this.table.setData(data);
     });
   }
