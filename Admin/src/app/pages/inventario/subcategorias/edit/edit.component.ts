@@ -39,6 +39,8 @@ export class EditComponent implements OnChanges {
   };
 
   subcategoriaOriginal = '';
+  categoriaOriginal = 0;
+
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -72,6 +74,7 @@ export class EditComponent implements OnChanges {
     if (changes['subcategoriaData'] && changes['subcategoriaData'].currentValue) {
       this.subcategoria = { ...changes['subcategoriaData'].currentValue };
       this.subcategoriaOriginal = this.subcategoria.subc_Descripcion || '';
+      this.categoriaOriginal = this.subcategoria.cate_Id || 0;
       this.mostrarErrores = false;
       this.cerrarAlerta();
     }
@@ -95,7 +98,7 @@ export class EditComponent implements OnChanges {
     this.mostrarErrores = true;
 
     if (this.subcategoria.subc_Descripcion.trim()) {
-      if (this.subcategoria.subc_Descripcion.trim() !== this.subcategoriaOriginal) {
+      if (this.subcategoria.subc_Descripcion.trim() !== this.subcategoriaOriginal || this.subcategoria.cate_Id !== this.categoriaOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;

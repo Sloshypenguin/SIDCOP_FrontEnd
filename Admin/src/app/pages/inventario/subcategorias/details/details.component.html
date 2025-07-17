@@ -58,7 +58,7 @@
             <span class="audit-user">{{ subcategoriaDetalle.usuarioModificacion || 'N/A' }}</span>
           </div>
           <div class="audit-col">
-            <span class="audit-date">{{ formatearFecha(subcategoriaDetalle.subc_FechaModificacion) }}</span>
+            <span class="audit-date">{{ formatearFecha(subcategoriaDetalle.subc_FechaModificacion || 'N/A' ) }}</span>
           </div>
         </div>
       </div>
