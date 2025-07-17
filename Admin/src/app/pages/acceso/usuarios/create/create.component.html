@@ -78,18 +78,42 @@
       <!-- Empleado -->
       <div class="col-md-6">
         <div class="mb-3">
-          <label for="usua_IdPersona" class="form-label">Empleado</label>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required
-          >
-            <option value="" disabled selected>Seleccione un empleado</option>
-            <option *ngFor="let emp of empleados" [value]="emp.empl_Id">{{ emp.Nombres }}</option>
-          </select>
-          <div class="text-danger mt-1" *ngIf="!usuario.usua_IdPersona && mostrarErrores">
-            <small>El campo Empleado es requerido</small>
+          <div class="col-12 display-flex flex-column">
+            <label class="form-label">¿Es Vendedor?</label>
+            <div class="form-check form-switch mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="usua_EsVendedor"
+                [(ngModel)]="usuario.usua_EsVendedor"
+              />
+            </div>
+          </div>
+
+          <div *ngIf="!usuario.usua_EsVendedor">
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required>
+              <option value="" disabled selected>Seleccione un empleado</option>
+              <option *ngFor="let emp of empleados" [value]="emp.empl_Id">{{ emp.empl_Nombres }}</option>
+            </select>
+            <div class="text-danger mt-1" *ngIf="!usuario.usua_IdPersona && mostrarErrores">
+              <small>El campo Empleado es requerido</small>
+            </div>
+          </div>
+
+          <div *ngIf="usuario.usua_EsVendedor">
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required>
+              <option value="" disabled selected>Seleccione un vendedor</option>
+              <option *ngFor="let ven of vendedores" [value]="ven.vend_Id">{{ ven.vend_Nombres }}</option>
+            </select>
+            <div class="text-danger mt-1" *ngIf="!usuario.usua_IdPersona && mostrarErrores">
+              <small>El campo Empleado es requerido</small>
+            </div>
           </div>
         </div>
       </div>
+
       <!-- Es Admin -->
       <div class="col-md-6">
         <div class="mb-3">

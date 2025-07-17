@@ -25,6 +25,7 @@ export class CreateComponent {
 
   roles: any[] = [];
   empleados: any[] = [];
+  vendedores: any[] = [];
 
   usuario: any = {
     usua_Usuario: '',
@@ -41,6 +42,7 @@ export class CreateComponent {
   constructor(private http: HttpClient) {
     this.cargarRoles();
     this.cargarEmpleados();
+    this.cargarVendedores();
   }
 
   cargarRoles() {
@@ -53,6 +55,12 @@ export class CreateComponent {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Empleado/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => this.empleados = data);
+  }
+
+  cargarVendedores() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.vendedores = data);
   }
 
   cancelar(): void {
