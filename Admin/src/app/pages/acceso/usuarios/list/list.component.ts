@@ -174,7 +174,6 @@ export class ListComponent {
 
   private cargarAccionesUsuario(): void{
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try{
@@ -221,7 +220,21 @@ export class ListComponent {
     });
   }
 
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
+  get startIndex(): number {
+    return this.usuarioGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
+  }
+
+  get endIndex(): number {
+    if (!this.usuarioGrid?.length) return 0;
+    const end = this.currentPage * this.itemsPerPage;
+    return end > this.usuarioGrid.length ? this.usuarioGrid.length : end;
+  }
+
   pageChanged(event: any): void {
+    this.currentPage = event.page;
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     this.usuarios = this.usuarioGrid.slice(startItem, endItem);
