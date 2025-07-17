@@ -112,11 +112,13 @@
                         <div class="card-body pt-5 mt-2 px-3 text-center">
                             @if (data.usua_Estado) {
                                 <span class="badge fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem; background-color: #CEE9C6; color: #365506">
+                                    <i class="ri-checkbox-blank-circle-fill" style="font-size: 0.6rem;"></i>
                                     Activo
                                 </span>
                             }
                             @else {
                                 <span class="badge fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem; background-color: #FBCFD4; color: #4E1212">
+                                    <i class="ri-close-fill" style="font-size: 0.6rem;"></i>
                                     Inactivo
                                 </span>
                             }
@@ -142,13 +144,13 @@
         <div class="row align-items-center mb-3 mx-2" id="pagination-element">
             <div class="col-sm">
                 <div class="text-sm-start">
-                    Mostrando <span>{{usuarios?.length}}</span> de <span>{{usuarioGrid?.length}}</span> registros
+                    Mostrando del <span>{{startIndex}}</span> - <span>{{endIndex}}</span> de <span>{{usuarioGrid?.length}}</span> registros
                 </div>
             </div>
             <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
                 <pagination 
                     [totalItems]="usuarioGrid?.length" 
-                    [itemsPerPage]="10" 
+                    [itemsPerPage]="itemsPerPage" 
                     (pageChanged)="pageChanged($event)">
                 </pagination>
             </div>
