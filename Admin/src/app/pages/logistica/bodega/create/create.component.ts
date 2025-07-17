@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
 })
-export class CreateComponent {
+export class CreateComponent  {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Bodega>();
   
@@ -24,7 +24,12 @@ export class CreateComponent {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.listarSucursales();
+    this.listarRegistroCai();
+    this.listarVendedores();
+    this.listarModelos();
+  }
 
   bodega: Bodega = {
     bode_Id: 0,
@@ -46,7 +51,40 @@ export class CreateComponent {
     message_Status: '',
     usuarioCreacion: '',
     usuarioModificacion: ''
+    
   };
+
+    sucursales: any[] = [];
+    registroCais: any[] = [];
+    vendedores: any[] = [];
+    modelos: any[] = [];
+
+
+ listarSucursales(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.sucursales = data);
+    };
+
+  listarRegistroCai(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.registroCais = data);
+    };
+
+  listarVendedores(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.vendedores = data);
+    };
+
+  listarModelos(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Modelo/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.modelos = data);
+    };
+
+  
 
   cancelar(): void {
     this.mostrarErrores = false;
@@ -92,7 +130,13 @@ export class CreateComponent {
   guardar(): void {
     this.mostrarErrores = true;
     
-    if (this.bodega.bode_Descripcion.trim()) {
+    if (this.bodega.bode_Descripcion.trim() &&
+        this.bodega.bode_Capacidad > 0 && this.bodega.bode_Placa.trim() &&
+        this.bodega.bode_TipoCamion.trim() && this.bodega.bode_VIN.trim() &&
+        this.bodega.sucu_Id > 0 && this.bodega.regC_Id > 0 && this.bodega.vend_Id > 0 && this.bodega.mode_Id > 0
+      
+      )
+      {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
@@ -100,18 +144,26 @@ export class CreateComponent {
       const bodegaGuardar = {
         bode_Id: 0,
         bode_Descripcion: this.bodega.bode_Descripcion.trim(),
+        sucu_Id: this.bodega.sucu_Id,
+        regC_Id: this.bodega.regC_Id,
+        vend_Id: this.bodega.vend_Id,
+        mode_Id: this.bodega.mode_Id,
+        bode_VIN: this.bodega.bode_VIN.trim(),
+        bode_Placa: this.bodega.bode_Placa.trim(),
+        bode_TipoCamion: this.bodega.bode_TipoCamion.trim(),
+        bode_Capacidad: this.bodega.bode_Capacidad,
         usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
-        esCv_FechaCreacion: new Date().toISOString(),
+        bode_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 
-        esCv_FechaModificacion: new Date().toISOString(),
+        bode_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: "", 
         usuarioModificacion: "" 
       };
 
-      console.log('Guardando estado civil:', bodegaGuardar);
+      console.log('Guardando bodega:', bodegaGuardar);
       
-      this.http.post<any>(`${environment.apiBaseUrl}/EstadosCiviles/Insertar`, bodegaGuardar, {
+      this.http.post<any>(`${environment.apiBaseUrl}/Bodega/Insertar`, bodegaGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -119,8 +171,8 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Estado civil guardado exitosamente:', response);
-          this.mensajeExito = `Estado civil "${this.bodega.bode_Descripcion}" guardado exitosamente`;
+          console.log('Bodega guardado exitosamente:', response);
+          this.mensajeExito = `Bodega "${this.bodega.bode_Descripcion}" guardado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
           
@@ -132,9 +184,9 @@ export class CreateComponent {
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al guardar estado civil:', error);
+          console.error('Error al guardar bodega:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el estado civil. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al guardar el bodega. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;
           
           // Ocultar la alerta de error después de 5 segundos

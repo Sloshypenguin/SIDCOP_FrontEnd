@@ -47,6 +47,8 @@ export class ListComponent implements OnInit {
       this.activeActionRow = null;
     }
   }
+
+
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
     console.log('Toggleando formulario de creación...');
@@ -104,11 +106,22 @@ export class ListComponent implements OnInit {
     this.cargardatos();
   }
 
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'Logística' },
       { label: 'Bodegas', active: true }
     ];
+
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -242,6 +255,35 @@ export class ListComponent implements OnInit {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
+  }
+
+  private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 28);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Bodegas'] || permisos['bodegas'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   private cargardatos(): void {

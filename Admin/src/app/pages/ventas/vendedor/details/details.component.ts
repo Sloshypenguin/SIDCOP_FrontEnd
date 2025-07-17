@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
+import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
 
 @Component({
   selector: 'app-details',
@@ -10,34 +10,34 @@ import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() bodegaData: Bodega | null = null;
+  @Input() vendedorData: Vendedor | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  bodegaDetalle: Bodega | null = null;
+  vendedorDetalle: Vendedor | null = null;
   cargando = false;
 
   mostrarAlertaError = false;
   mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['bodegaData'] && changes['bodegaData'].currentValue) {
-      this.cargarDetallesSimulado(changes['bodegaData'].currentValue);
+    if (changes['vendedorData'] && changes['vendedorData'].currentValue) {
+      this.cargarDetallesSimulado(changes['vendedorData'].currentValue);
     }
   }
 
   // Simulación de carga
-  cargarDetallesSimulado(data: Bodega): void {
+  cargarDetallesSimulado(data: Vendedor): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 
     setTimeout(() => {
       try {
-        this.bodegaDetalle = { ...data };
+        this.vendedorDetalle = { ...data };
         this.cargando = false;
       } catch (error) {
         console.error('Error al cargar detalles del estado civil:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles de la bodega.';
+        this.mensajeError = 'Error al cargar los detalles del vendedor.';
         this.cargando = false;
       }
     }, 500); // Simula tiempo de carga

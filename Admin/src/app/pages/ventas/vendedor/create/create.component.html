@@ -1,0 +1,426 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <!-- Título del componente -->
+  <h5 class="card-title mb-4">Crear Nueva Vendedor</h5>
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de advertencia -->
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <div class="flex-grow-1">
+    <div class="row">
+      <div class="col-md-6">
+        <label  class="form-label">Codigo<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_Codigo.trim() && mostrarErrores"
+              id="vendedorCodigo"
+              [(ngModel)]="vendedor.vend_Codigo"
+              placeholder="Ingrese el codigo del vendedor"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Codigo.trim() && mostrarErrores">
+            <small>El campo codigo del vendedor es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Identidad<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_DNI.trim() && mostrarErrores"
+              id="vend_DNI"
+              [(ngModel)]="vendedor.vend_DNI"
+              placeholder="Ingrese la identidad del vendedor"
+              required
+              mask="0000-0000-00000"
+              
+              >
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_DNI.trim() && mostrarErrores">
+            <small>El campo Identidad es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Nombres<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_Nombres.trim() && mostrarErrores"
+              id="vend_Nombres"
+              [(ngModel)]="vendedor.vend_Nombres"
+              placeholder="Ingrese los nombres del vendedor"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Nombres.trim() && mostrarErrores">
+            <small>El campo Nombres es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Apellidos<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_Apellidos.trim() && mostrarErrores"
+              id="vend_Apellidos"
+              [(ngModel)]="vendedor.vend_Apellidos"
+              placeholder="Ingrese los apellidos del vendedor"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Apellidos.trim() && mostrarErrores">
+            <small>El campo Apellidos es requerido</small>
+          </div>
+        </div>
+      </div>
+
+       <div class="col-md-6">
+        <label  class="form-label">Telefono<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_Telefono.trim() && mostrarErrores"
+              id="vend_Telefono"
+              [(ngModel)]="vendedor.vend_Telefono"
+              placeholder="Ingrese el telefono del vendedor"
+              required
+              mask="0000-0000"
+              >
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
+            <small>El campo telefono es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Sexo<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <ng-select
+                class="w-100"
+                [items]="sexos"
+                bindLabel="label"
+                bindValue="value"
+                [(ngModel)]="vendedor.vend_Sexo"
+                [searchable]="false"
+                [clearable]="false"
+                placeholder="Seleccione sexo"
+                required
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <i [class]="item.icon"></i> {{ item.label }}
+                </ng-template>
+              </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
+            <small>El campo correo es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Correo<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="email" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_Correo.trim() && mostrarErrores"
+              id="vend_Correo"
+              [(ngModel)]="vendedor.vend_Correo"
+              placeholder="Ingrese el Correo del vendedor"
+              required
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              >
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
+            <small>El campo correo es requerido</small>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <label  class="form-label">Supervisor<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+           <ng-select
+              class="w-100"
+                [items]="supervisores"
+                bindLabel="nombreCompleto"
+                bindValue="empl_Id"
+                [(ngModel)]="vendedor.vend_Supervisor"
+                [searchable]="true"
+                [clearable]="false"
+                [class.is-invalid]="!vendedor.vend_Supervisor && mostrarErrores"
+                placeholder="Seleccione un Supervisor"
+                required
+              >
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.nombreCompleto}}  
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                 {{ item.nombreCompleto}} 
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Supervisor && mostrarErrores">
+            <small>El campo Supervisor es requerido</small>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+  <label class="form-label">¿Tiene Ayudante?<span class="text-danger">*</span></label>
+  <div class="mb-3">
+    <div class="d-flex align-items-center">
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="ayudanteSwitch"
+          [(ngModel)]="tieneAyudante"
+          required
+        >
+        <label class="form-check-label ms-2" for="ayudanteSwitch">
+          {{ tieneAyudante ? 'Sí' : 'No' }}
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-6" *ngIf="tieneAyudante">
+  <label class="form-label">Ayudante<span class="text-danger">*</span></label>
+  <div class="mb-3">
+    <div class="d-flex align-items-center">
+      <ng-select
+        class="w-100"
+        [items]="ayudantes"
+        bindLabel="nombreCompleto"
+        bindValue="empl_Id"
+        [(ngModel)]="vendedor.vend_Ayudante"
+        [searchable]="true"
+        [clearable]="false"
+        placeholder="Seleccione un Ayudante"
+        required
+      >
+        <ng-template ng-label-tmp let-item="item">
+          {{ item.nombreCompleto }}
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item">
+          {{ item.nombreCompleto }}
+        </ng-template>
+      </ng-select>
+    </div>
+  </div>
+</div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Colonia<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+           <ng-select
+              class="w-100"
+                [items]="colonia"
+                bindLabel="colo_Descripcion"
+                bindValue="colo_Id"
+                [(ngModel)]="vendedor.colo_Id"
+                [searchable]="true"
+                [clearable]="false"
+                [class.is-invalid]="!vendedor.colo_Id && mostrarErrores"
+                placeholder="Seleccione una colonia"
+                required
+                [searchFn]="searchColonias"
+                (ngModelChange)="onColoniaSeleccionada($event)"
+              >
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.colo_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.colo_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.colo_Id && mostrarErrores">
+            <small>El campo Colonia es requerido</small>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <label  class="form-label">Direccion Exacta<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!vendedor.vend_DireccionExacta.trim() && mostrarErrores"
+              id="vend_DireccionExacta"
+              [(ngModel)]="vendedor.vend_DireccionExacta"
+               [disabled]="!vendedor.colo_Id"
+              [value]="direccionExactaInicial"
+              placeholder="Ingrese la Direccion exacta del vendedor"
+              required
+              >
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_DireccionExacta.trim() && mostrarErrores">
+            <small>El campo Direccion Exacta es requerida</small>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <label  class="form-label">Sucursal<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <ng-select
+              class="w-100"
+                [items]="sucursales"
+                bindLabel="sucu_Descripcion"
+                bindValue="sucu_Id"
+                [(ngModel)]="vendedor.sucu_Id"
+                [searchable]="true"
+                [clearable]="false"
+                [class.is-invalid]="!vendedor.sucu_Id && mostrarErrores"
+                placeholder="Seleccione una sucursal"
+                required
+                [searchFn]="searchSucursal"
+              >
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.sucu_Id && mostrarErrores">
+            <small>El campo sucursal es requerido</small>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="col-md-6">
+        <label  class="form-label">Tipo de Vendedor<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+             <select 
+                id="tipoVendedor" 
+                name="tipoVendedor" 
+                class="form-select"
+                [class.is-invalid]="!vendedor.vend_Tipo && mostrarErrores"
+                [(ngModel)]="vendedor.vend_Tipo"
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="P"  selected>Preventista</option>
+                    <option value="V"  selected>Venta Directa</option>
+                    <option value="F"  selected>Entregador</option>
+                    
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Tipo && mostrarErrores">
+            <small>El campo tipo de vendedor es requerido</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+  <label class="form-label">¿Es Contratista?<span class="text-danger">*</span></label>
+  <div class="mb-3">
+    <div class="d-flex align-items-center">
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="contratistaSwitch"
+          [(ngModel)]="vendedor.vend_EsExterno"
+          [class.is-invalid]="mostrarErrores && vendedor.vend_EsExterno === undefined"
+          required
+        >
+        <label class="form-check-label ms-2" for="contratistaSwitch">
+          {{ vendedor.vend_EsExterno ? 'Sí' : 'No' }}
+        </label>
+      </div>
+      <span class="text-danger ms-2" *ngIf="mostrarErrores && vendedor.vend_EsExterno === undefined">*</span>
+    </div>
+    <div class="text-danger mt-1" *ngIf="mostrarErrores && vendedor.vend_EsExterno === undefined">
+      <small>Debe indicar si es contratista</small>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+  
+  <div class="mt-auto pt-3" >
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
