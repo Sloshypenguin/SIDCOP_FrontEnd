@@ -63,28 +63,39 @@
               <thead>
                 <tr>
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
+                  <!-- no es necesario ordenar todas la columnas-->
                   <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
                     <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
                       No.
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                        <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
-                        <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column;">
+                       <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
                       </span>
+
                     </span>
                   </th>
                   <th class="gridjs-th" (click)="table.sortBy('esCv_Descripcion')" style="cursor:pointer;">
                     <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
                       Descripción
+                      <!-- iconos para ordenar -->
                       <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                        <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
-                        <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
                       </span>
                     </span>
                   </th>
                 </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let data of table.paginated$ | async; let i = index">
+              
+                <tr class="gridjs-th"*ngFor="let data of table.paginated$ | async; let i = index">
                   <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
                     <div class="dropdown-action-list">
                       <button type="button"
@@ -99,7 +110,7 @@
                   <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                   <td>{{data.esCv_Descripcion}}</td>
                 </tr>
-              </tbody>
+                </thead>
             </table>
           </div>
         </div>
