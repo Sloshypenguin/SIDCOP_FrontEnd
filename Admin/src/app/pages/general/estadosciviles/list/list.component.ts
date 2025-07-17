@@ -86,6 +86,45 @@ export class ListComponent implements OnInit {
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
+   constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+    this.cargardatos();
+  }
+  public floatingMenu = {
+    show: false,
+    top: 0,
+    left: 0,
+    data: null as any
+  };    
+ onActionMenuClick(i: number, event: MouseEvent, data: any) {
+  event.stopPropagation();
+  const button = (event.target as HTMLElement).closest('button');
+  if (!button) return;
+  const rect = button.getBoundingClientRect();
+
+  // Si ya está abierto para el mismo registro, ciérralo
+  if (
+    this.floatingMenu.show &&
+    this.floatingMenu.data === data
+  ) {
+    this.closeFloatingMenu();
+    return;
+  }
+    this.floatingMenu = {
+      show: true,
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX,
+      data
+    };
+
+    setTimeout(() => {
+      window.addEventListener('click', this.closeFloatingMenu);
+    });
+  }
+
+  closeFloatingMenu = () => {
+    this.floatingMenu.show = false;
+    window.removeEventListener('click', this.closeFloatingMenu);
+  };
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -107,46 +146,6 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   estadoCivilAEliminar: EstadoCivil | null = null;
-
-  constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
-  }
-  public floatingMenu = {
-    show: false,
-    top: 0,
-    left: 0,
-    data: null as any
-  };    
-  onActionMenuClick(i: number, event: MouseEvent, data: any) {
-    event.stopPropagation();
-    const button = (event.target as HTMLElement).closest('button');
-    if (!button) return;
-    const rect = button.getBoundingClientRect();
-
-    // Si ya está abierto para el mismo registro, ciérralo
-    if (
-      this.floatingMenu.show &&
-      this.floatingMenu.data === data
-    ) {
-      this.closeFloatingMenu();
-      return;
-    }
-    this.floatingMenu = {
-      show: true,
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX,
-      data
-    };
-
-    setTimeout(() => {
-      window.addEventListener('click', this.closeFloatingMenu);
-    });
-  }
-
-  closeFloatingMenu = () => {
-    this.floatingMenu.show = false;
-    window.removeEventListener('click', this.closeFloatingMenu);
-  };
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
