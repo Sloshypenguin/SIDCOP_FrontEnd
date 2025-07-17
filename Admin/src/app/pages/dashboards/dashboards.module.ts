@@ -2,24 +2,19 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-// Page route
+// Routing
 import { DashboardsRoutingModule } from './dashboards-routing.module';
+
+// Shared
 import { SharedModule } from 'src/app/shared/shared.module';
 
-// Simplebar
+// Components
+import { IndexComponent } from './index/index.component';
+import { LocalstorageDebugComponent } from './index/localstorage-debug.component';
+
+// UI y librerías
 import { SimplebarAngularModule } from 'simplebar-angular';
-
-// Count To
-import { CountUpModule } from 'ngx-countup';
-
-// Flat Picker
 import { FlatpickrModule } from 'angularx-flatpickr';
-
-// Apex Chart Package
-import { NgApexchartsModule } from 'ng-apexcharts';
-import { NgxEchartsModule } from 'ngx-echarts';
-import * as echarts from 'echarts';
-
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -28,42 +23,23 @@ import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
-// Leaflet map
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-
-// component
-import { AnalyticsComponent } from './analytics/analytics.component';
-
-import { IndexComponent } from './index/index.component';
-import { LocalstorageDebugComponent } from './index/localstorage-debug.component';
-
 @NgModule({
-  declarations: [
-    AnalyticsComponent,
 
-    IndexComponent,
-
-  ],
   imports: [
     CommonModule,
     DashboardsRoutingModule,
     SharedModule,
-    BsDropdownModule,
-    CountUpModule,
-    NgApexchartsModule,
-    TabsModule.forRoot(),
-    TooltipModule.forRoot(),
-    PaginationModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     SimplebarAngularModule,
-    ProgressbarModule.forRoot(),
-    LeafletModule,
-    NgxEchartsModule.forRoot({ echarts }),
-    ModalModule.forRoot(),
-    BsDatepickerModule.forRoot(),
     FlatpickrModule.forRoot(),
-    LocalstorageDebugComponent
+    BsDropdownModule.forRoot(),
+    TabsModule.forRoot(),
+    TooltipModule.forRoot(),
+    PaginationModule.forRoot(),
+    ProgressbarModule.forRoot(),
+    ModalModule.forRoot(),
+    BsDatepickerModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

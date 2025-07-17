@@ -29,9 +29,10 @@
   <div class="flex-grow-1">
     <div class="row">
       <div class="col-md-6">
+        <label  class="form-label">Descripción<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <input  
+            <input 
               type="text" 
               class="form-control" 
               [class.is-invalid]="!bodega.bode_Descripcion.trim() && mostrarErrores"
@@ -46,6 +47,201 @@
           </div>
         </div>
       </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">VIN<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!bodega.bode_VIN.trim() && mostrarErrores"
+              id="bode_VIN"
+              [(ngModel)]="bodega.bode_VIN"
+              placeholder="Ingrese el VIN de la bodega"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.bode_VIN.trim() && mostrarErrores">
+            <small>El campo VIN es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Placa<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="text" 
+              class="form-control" 
+              [class.is-invalid]="!bodega.bode_Placa.trim() && mostrarErrores"
+              id="bode_Placa"
+              [(ngModel)]="bodega.bode_Placa"
+              placeholder="Ingrese la placa de la bodega"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.bode_Placa.trim() && mostrarErrores">
+            <small>El campo placa es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Tipo de Camion<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+             <select 
+                id="tipoCamion" 
+                name="tipoCamion" 
+                class="form-select"
+                [class.is-invalid]="!bodega.bode_TipoCamion && mostrarErrores"
+                [(ngModel)]="bodega.bode_TipoCamion"
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="G"  selected>Grande</option>
+                    <option value="M"  selected>Mediano</option>
+                    <option value="P"  selected>Pequeño</option>
+                    
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.bode_TipoCamion && mostrarErrores">
+            <small>El campo tipo de camion es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Capacidad<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <input 
+              type="number" 
+              class="form-control" 
+              [class.is-invalid]="!bodega.bode_Capacidad && mostrarErrores"
+              id="bode_Capacidad"
+              [(ngModel)]="bodega.bode_Capacidad"
+              placeholder="Ingrese la capacidad de la bodega"
+              required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.bode_Capacidad && mostrarErrores">
+            <small>El campo capacidad es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Sucursal<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select 
+                id="sucursalId" 
+                name="sucursalId" 
+                class="form-select"
+                [class.is-invalid]="!bodega.sucu_Id && mostrarErrores"
+                [(ngModel)]="bodega.sucu_Id" 
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option 
+                        *ngFor="let Sucu of sucursales" 
+                        [value]="Sucu.sucu_Id">
+                            {{ Sucu.sucu_Descripcion }}
+                    </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.sucu_Id && mostrarErrores">
+            <small>El campo sucursal es requerido</small>
+          </div>
+        </div>
+      </div>
+
+
+       <div class="col-md-6">
+        <label  class="form-label">Registro Cai<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select 
+                id="registroCaiId" 
+                name="registroCaiId" 
+                class="form-select"
+                [class.is-invalid]="!bodega.regC_Id && mostrarErrores"
+                [(ngModel)]="bodega.regC_Id"
+                [(ngModel)]="bodega.regC_Id" 
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option 
+                        *ngFor="let regC of registroCais" 
+                        [value]="regC.regC_Id">
+                            {{ regC.regC_Descripcion }}
+                    </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.regC_Id && mostrarErrores">
+            <small>El campo registro Cai es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Vendedor<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select 
+                id="vendedorId" 
+                name="vendedorId" 
+                class="form-select"
+                [class.is-invalid]="!bodega.vend_Id && mostrarErrores"
+                [(ngModel)]="bodega.vend_Id"
+                [(ngModel)]="bodega.vend_Id" 
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option 
+                        *ngFor="let vend of vendedores" 
+                        [value]="vend.vend_Id">
+                            {{ vend.vend_Nombres }} {{ vend.vend_Apellidos }}
+                    </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.vend_Id && mostrarErrores">
+            <small>El campo vendedor es requerido</small>
+          </div>
+        </div>
+      </div>
+
+       <div class="col-md-6">
+        <label  class="form-label">Modelo<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select 
+                id="modeloId" 
+                name="modeloId" 
+                class="form-select"
+                [class.is-invalid]="!bodega.mode_Id && mostrarErrores"
+                [(ngModel)]="bodega.mode_Id"
+                [(ngModel)]="bodega.mode_Id" 
+                required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option 
+                        *ngFor="let mode of modelos" 
+                        [value]="mode.mode_Id">
+                            {{ mode.mode_Descripcion }}
+                    </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!bodega.mode_Id && mostrarErrores">
+            <small>El campo modelo es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      
     </div>
   </div>
   

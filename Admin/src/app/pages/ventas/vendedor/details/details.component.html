@@ -1,0 +1,155 @@
+<div class="details-container">
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <!-- Botón de regresar -->
+  <div class="details-header-button">
+    <button type="button" class="btn btn-primary" (click)="cerrar()">
+      <span class="btn-text">Regresar</span>
+      <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+    </button>
+  </div>
+  
+  <!-- Contenido de detalles -->
+  <div *ngIf="!cargando && vendedorDetalle" class="details-content">
+    
+    <!-- Header con descripción -->
+    <div class="details-header">
+      <div class="details-title">Detalles del Vendedor</div>
+      <div class="details-id-row">
+  <div class="details-id">
+    <div class="details-id-label">Codigo</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Codigo }}</div>
+  </div>
+  <div class="details-id">
+    <div class="details-id-label">DNI</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_DNI }}</div>
+  </div>
+  <div class="details-id">
+    <div class="details-id-label">Nombre Completo</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Nombres }} {{ vendedorDetalle.vend_Apellidos }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Sexo</div>
+    <div class="details-id-value"> {{
+    vendedorDetalle.vend_Sexo === 'M' ? 'Masculino' :
+    vendedorDetalle.vend_Sexo === 'F' ? 'Femenino' :
+    'N/A'
+  }}</div>
+
+   
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Telefono</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Telefono }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Correo</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Correo }}</div>
+  </div>
+  
+
+  <div class="details-id">
+    <div class="details-id-label">Colonia</div>
+    <div class="details-id-value">{{ vendedorDetalle.colo_Descripcion }}</div>
+  </div>
+
+   <div class="details-id">
+    <div class="details-id-label">Direccion Exacta</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_DireccionExacta }} </div>
+  </div>
+
+
+
+   <div class="details-id">
+    <div class="details-id-label">Sucursal</div>
+    <div class="details-id-value">{{ vendedorDetalle.sucu_Descripcion }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Supervisor</div>
+    <div class="details-id-value">{{ vendedorDetalle.nombreSupervisor }} {{ vendedorDetalle.apellidoSupervisor }}</div>
+  </div>
+
+   <div class="details-id">
+    <div class="details-id-label">Ayudante</div>
+    <div class="details-id-value">  {{
+    vendedorDetalle.nombreAyudante || vendedorDetalle.apellidoAyudante
+      ? (vendedorDetalle.nombreAyudante + ' ' + vendedorDetalle.apellidoAyudante)
+      : 'Sin ayudante'
+  }}</div>
+  </div>
+
+   <div class="details-id">
+    <div class="details-id-label">Tipo de Vendedor</div>
+    <div class="details-id-value"> {{
+    vendedorDetalle.vend_Tipo === 'P' ? 'Preventista' :
+    vendedorDetalle.vend_Tipo === 'V' ? 'Venta directa' :
+    vendedorDetalle.vend_Tipo === 'F' ? 'Entregador' :
+    'N/A'
+  }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Es contratista?</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_EsExterno == true? 'Si': 'No' }}</div>
+  </div>
+
+  </div>
+</div>
+    </div>
+     <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+    
+
+    
+    
+    <!-- Tabla de auditoría -->
+    <div class="audit-table-container">
+      <div class="audit-table">
+        <div class="audit-header">
+          <div class="audit-col">Acción</div>
+          <div class="audit-col">Usuario</div>
+          <div class="audit-col">Fecha</div>
+        </div>
+      
+      <!-- Fila de creación -->
+      <div class="audit-row">
+        <div class="audit-col">
+          <span class="audit-action">Creador</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-user">{{ vendedorDetalle?.usuarioCreacion || 'N/A' }}</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaCreacion ?? null) || 'N/A' }}</span>
+        </div>
+      </div>
+      
+      <!-- Fila de modificación -->
+      <div class="audit-row">
+        <div class="audit-col">
+          <span class="audit-action">Modificación</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-user">{{ vendedorDetalle?.usuarioModificacion || 'N/A' }}</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaModificacion?? null ) }}</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+  </div>
+

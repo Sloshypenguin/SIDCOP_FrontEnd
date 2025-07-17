@@ -3,6 +3,12 @@
     "MENU": {
       "TEXT": "MENÚ"
     },
+    "ACCESO": {
+      "TEXT": "Acceso",
+      "LIST": {
+        "USUARIOS": "Usuarios"
+      }
+    },
     "GENERAL": {
       "TEXT": "General",
       "LIST": {
@@ -19,7 +25,7 @@
       }
     },
     "INVENTARIO": {
-      "TEXT": "INVENTARIO",
+      "TEXT": "Inventario",
       "LIST": {
         "CATEGORIAS": "Categorias",
         "SUBCATEGORIAS": "Subcategorias"

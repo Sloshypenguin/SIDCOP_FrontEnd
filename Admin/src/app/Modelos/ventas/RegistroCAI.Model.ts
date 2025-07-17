@@ -24,6 +24,9 @@ export class RegistroCAI {
   regC_FechaModificacion?: Date;
   regC_Estado: boolean = true;
 
+    code_Status: number = 0;
+  message_Status: string ='';
+
   constructor(init?: Partial<RegistroCAI>) {
     Object.assign(this, init);
   }

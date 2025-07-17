@@ -23,9 +23,20 @@
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <h4 class="details-title">{{ departamentoDetalle.depa_Descripcion }}</h4>
-      <span>Departamento </span>
+      <div class="details-title">Detalles de Departamento</div>
+      <div class="details-id-row">
+        <div class="details-id">
+          <div class="details-id-label">Código</div>
+          <div class="details-id-value">{{ departamentoDetalle.depa_Codigo || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Descripción</div>
+          <div class="details-id-value">{{ departamentoDetalle.depa_Descripcion || 'N/A' }}</div>
+        </div>
+      </div>
     </div>
+    
+    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
     
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
@@ -36,18 +47,18 @@
           <div class="audit-col">Fecha</div>
         </div>
       
-      <!-- Fila de creación -->
-      <div class="audit-row">
-        <div class="audit-col">
-          <span class="audit-action">Creador</span>
+        <!-- Fila de creación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Creador</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user">{{ departamentoDetalle.usuarioCreacion || 'N/A' }}</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date">{{ formatearFecha(departamentoDetalle.depa_FechaCreacion) }}</span>
+          </div>
         </div>
-        <div class="audit-col">
-          <span class="audit-user">{{ departamentoDetalle.usuarioCreacion || 'N/A' }}</span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(departamentoDetalle.depa_FechaCreacion) }}</span>
-        </div>
-      </div>
       
       <!-- Fila de modificación -->
       <div class="audit-row">

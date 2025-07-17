@@ -9,9 +9,9 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
-// import { CreateComponent } from '../create/create.component';
-// import { EditComponent } from '../edit/edit.component';
-// import { DetailsComponent } from '../details/details.component';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -23,9 +23,9 @@ import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
-    // EditComponent,
-    // DetailsComponent
+    CreateComponent,
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -75,7 +75,7 @@ export class ListComponent implements OnInit {
       descripcion: registroCai.regC_Descripcion,
       completo: registroCai
     });
-    this.estadoCivilEditando = { ...registroCai }; // Hacer copia profunda
+    this.RegistroCAIEditando = { ...registroCai }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
@@ -84,7 +84,7 @@ export class ListComponent implements OnInit {
 
   detalles(registroCai: RegistroCAI): void {
     console.log('Abriendo detalles para:', registroCai);
-    this.estadoCivilDetalle = { ...registroCai }; // Hacer copia profunda
+    this.RegistroCAIDetalle = { ...registroCai }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -97,8 +97,8 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  estadoCivilEditando: RegistroCAI | null = null;
-  estadoCivilDetalle: RegistroCAI | null = null;
+  RegistroCAIEditando: RegistroCAI | null = null;
+  RegistroCAIDetalle: RegistroCAI | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -110,7 +110,7 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  estadoCivilAEliminar: RegistroCAI | null = null;
+  RegistroCAIAEliminar: RegistroCAI | null = null;
 
   constructor(public table: ReactiveTableService<RegistroCAI>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
@@ -130,22 +130,22 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.estadoCivilEditando = null;
+    this.RegistroCAIEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.estadoCivilDetalle = null;
+    this.RegistroCAIDetalle = null;
   }
 
-  guardarEstadoCivil(registroCai: RegistroCAI): void {
+  guardarRegistroCAI(registroCai: RegistroCAI): void {
     console.log('Estado civil guardado exitosamente desde create component:', registroCai);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarEstadoCivil(registroCai: RegistroCAI): void {
+  actualizarRegistroCAI(registroCai: RegistroCAI): void {
     console.log('Estado civil actualizado exitosamente desde edit component:', registroCai);
     // Recargar los datos de la tabla
     this.cargardatos();
@@ -154,22 +154,22 @@ export class ListComponent implements OnInit {
 
   confirmarEliminar(registroCai: RegistroCAI): void {
     console.log('Solicitando confirmación para eliminar:', registroCai);
-    this.estadoCivilAEliminar = registroCai;
+    this.RegistroCAIAEliminar = registroCai;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.estadoCivilAEliminar = null;
+    this.RegistroCAIAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.estadoCivilAEliminar) return;
+    if (!this.RegistroCAIAEliminar) return;
     
-    console.log('Eliminando estado civil:', this.estadoCivilAEliminar);
+    console.log('Eliminando estado civil:', this.RegistroCAIAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.regC_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.RegistroCAIAEliminar.regC_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -182,8 +182,8 @@ export class ListComponent implements OnInit {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Estado civil eliminado exitosamente');
-            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.regC_Descripcion}" eliminado exitosamente`;
+            console.log('Registro CAI eliminado exitosamente');
+            this.mensajeExito = `Registro CAI "${this.RegistroCAIAEliminar!.regC_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos

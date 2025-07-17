@@ -9,9 +9,9 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
-// import { CreateComponent } from '../create/create.component';
-// import { EditComponent } from '../edit/edit.component';
-// import { DetailsComponent } from '../details/details.component';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -23,9 +23,9 @@ import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
-    // EditComponent,
-    // DetailsComponent
+    CreateComponent,
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -53,6 +53,9 @@ export class ListComponent implements OnInit {
       { label: 'Ventas' },
       { label: 'Vendedores', active: true }
     ];
+
+     this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
@@ -110,6 +113,13 @@ export class ListComponent implements OnInit {
     this.cargardatos();
   }
 
+   accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
@@ -132,15 +142,15 @@ export class ListComponent implements OnInit {
     this.vendedorDetalle = null;
   }
 
-  guardarBodega(vendedor: Vendedor): void {
-    console.log('Estado civil guardado exitosamente desde create component:', vendedor);
+  guardarVendedor(vendedor: Vendedor): void {
+    console.log('Vendedor guardado exitosamente desde create component:', vendedor);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarBodega(vendedor: Vendedor): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', vendedor);
+  actualizarVendedor(vendedor: Vendedor): void {
+    console.log('Vendedor actualizado exitosamente desde edit component:', vendedor);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
@@ -161,7 +171,7 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.vendedorEliminar) return;
     
-    console.log('Eliminando estado civil:', this.vendedorEliminar);
+    console.log('Eliminando Vendedor:', this.vendedorEliminar);
     
     this.http.post(`${environment.apiBaseUrl}/Vendedores/Eliminar/${this.vendedorEliminar.vend_Id}`, {}, {
       headers: { 
@@ -176,8 +186,8 @@ export class ListComponent implements OnInit {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Bodega eliminada exitosamente');
-            this.mensajeExito = `Bodega "${this.vendedorEliminar!.vend_Nombres}" eliminada exitosamente`;
+            console.log('Vendedor eliminada exitosamente');
+            this.mensajeExito = `Vendedor "${this.vendedorEliminar!.vend_Nombres}" eliminada exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -191,9 +201,9 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('La bodega está siendo utilizada');
+            console.log('el Vendedor está siendo utilizada');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la bodega está siendo utilizada.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la Vendedor está siendo utilizada.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -206,7 +216,7 @@ export class ListComponent implements OnInit {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar la bodega.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el Vendedor.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -220,7 +230,7 @@ export class ListComponent implements OnInit {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar la bodega.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar la Vendedor.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -241,6 +251,35 @@ export class ListComponent implements OnInit {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
+  }
+
+   private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 28);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Vendedors'] || permisos['Vendedors'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   private cargardatos(): void {
