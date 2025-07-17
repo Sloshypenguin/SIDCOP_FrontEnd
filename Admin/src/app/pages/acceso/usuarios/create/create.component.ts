@@ -202,7 +202,7 @@ export class CreateComponent {
       formData.append('upload_preset', 'subidas_usuarios');
       //Subidas usuarios Carpeta identificadora en Cloudinary
       //dwiprwtmo es el nombre de la cuenta de Cloudinary
-      const url = 'https://api.cloudinary.com/v1_1/dwiprwtmo/upload';
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
 
       
       fetch(url, {

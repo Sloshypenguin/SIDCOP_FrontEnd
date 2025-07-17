@@ -155,5 +155,68 @@
                 </pagination>
             </div>
         </div>
+
+        <div class="alert-container">
+            <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+                <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+                <strong>¡Éxito!</strong> {{ mensajeExito }}
+                <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+            </div>
+            <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+                <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+                <strong>¡Atención!</strong> {{ mensajeWarning }}
+                <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+            </div>
+            <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+                <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+                <strong>¡Error!</strong> {{ mensajeError }}
+                <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+                        <i class=""></i>
+                        <h4>Confirmación</h4>
+                        <i class="ri-close-line custom-modal-close" (click)="cancelarEliminar()"></i>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        @if(usuarioEliminar?.usua_Estado){
+                            <div class="text-center"> 
+                                <p class="mt-2 custom-modal-text">
+                                    ¿Estás seguro(a) que deseas desactivar el usuario:  <strong>{{ usuarioEliminar?.usua_Usuario }}</strong>?
+                                </p>
+                            </div>
+                        }
+                        @else if(!usuarioEliminar?.usua_Estado){
+                            <div class="text-center"> 
+                                <p class="mt-2 custom-modal-text">
+                                    ¿Estás seguro(a) que deseas activar el usuario:  <strong>{{ usuarioEliminar?.usua_Usuario }}</strong>?
+                                </p>
+                            </div>
+                        }
+                    </div>
+                    <div class="modal-footer custom-modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm btn-minw-5" (click)="cancelarEliminar()"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
+                        @if(usuarioEliminar?.usua_Estado){
+                            <button type="button" class="btn btn-primary green btn-sm btn-minw-5" (click)="eliminar()">
+                                <span class="btn-text">Si</span>
+                                <span class="btn-icon"><i class="ri-check-line"></i></span>
+                            </button>
+                        }
+                        @else if (!usuarioEliminar?.usua_Estado) {
+                            <button type="button" class="btn btn-primary green btn-sm btn-minw-5" (click)="eliminar()">
+                                <span class="btn-text">Si</span>
+                                <span class="btn-icon"><i class="ri-check-line"></i></span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+
     </div>
 </div>

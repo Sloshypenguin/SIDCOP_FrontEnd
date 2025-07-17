@@ -152,14 +152,76 @@ export class ListComponent {
 
   eliminar(): void {
     if(!this.usuarioEliminar) return;
-
-    this.http.post(`${environment.apiBaseUrl}/Usuarios/Eliminar/${this.usuarioEliminar.usua_Id}`, {},{
+    const usuarioEliminar: Usuario = {
+      secuencia: 0,
+      usua_Id: this.usuarioEliminar.usua_Id,
+      usua_Usuario: '',
+      usua_Clave: '',
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: environment.usua_Id,
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: environment.usua_Id,
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson:"",
+      role_Descripcion: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: '',
+    }
+    this.http.post(`${environment.apiBaseUrl}/Usuarios/CambiarEstado`, usuarioEliminar,{
       headers:{
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
+      next: (response: any) =>{
+        console.log('Respuesta del servidor:', response);
+        if(response.success && response.data){
+          if(response.data.code_Status === 1){
+            if(this.usuarioEliminar!.usua_Estado) {
+              this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" desactivado exitosamente`;
+              this.mostrarAlertaExito = true;
+            }
+            if(!this.usuarioEliminar!.usua_Estado) {
+              this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" activado exitosamente`;
+              this.mostrarAlertaExito = true;
+            }
 
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+
+            this.cargarDatos();
+            this.cancelarEliminar();
+          }else if (response.data.code_Status === -1){
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status;
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+
+            this.cancelarEliminar();
+          }
+        } else {
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al cambiar el estado al usuario.';
+
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          this.cancelarEliminar();
+        }
+      }
     })
   }
 
