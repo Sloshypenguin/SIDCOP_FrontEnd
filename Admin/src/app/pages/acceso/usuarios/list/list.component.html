@@ -9,16 +9,34 @@
     <div class="card-body">
         <div class="row align-items-center g-2">
             <div class="col-lg-3 me-auto">
-                <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2 mb-2" click="crear()">
+                <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
                     <span class="btn-text">Nuevo</span>
                     <span class="btn-icon"><i class="ri-add-line"></i></span>
                 </button>           
             </div>
+            <div class="col-2 ms-auto position-relative">
+              <input
+                type="text"
+                class="form-control ps-5"
+                placeholder="Buscar..."
+                [(ngModel)]="busqueda"
+                (ngModelChange)="filtradorUsuarios()"
+              />
+              <i class="ri-search-line search-icon" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
+            </div>
         </div>
     </div>
+
+    <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
+      <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+            <div class="container-fluid flex-grow-1">
+                <app-create-usuario (onCancel)="cerrarFormulario()" (onSave)="guardarUsuario($event)"></app-create-usuario>
+            </div>
+      </div>
+    </div>
     
-    <div class="row row-cols-xxl-5 g-4 mx-2">
-        @for (data of usuarios; track usuarios.usua_Id) {
+    <div class="row row-cols-xxl-5 g-4 mx-2 mb-4">
+        <ng-container *ngFor="let data of usuariosFiltrados; trackBy: trackByUsuarioId">
             <div class="col">
                 <div class="card card-empleado position-relative h-100">
                     <div class="card-header p-0 position-relative" style="height: 90px; background: #141a2f; border-top-left-radius: 1rem; border-top-right-radius: 1rem; display: flex; justify-content: center; align-items: flex-end;">
@@ -34,11 +52,12 @@
                         </div>
 
                         <div style="background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #d6b68a; margin-bottom: -35px; z-index:1;">
-                            <img 
-                                src="{{ data.usua_Imagen || 'assets/images/users/48/avatar-8.jpg' }}" 
-                                alt="Usuarios"
-                                class="avatar-img rounded-circle"
-                                style="width: 64px; height: 64px; object-fit: cover; display: block;"
+                            <img
+                              [src]="data.usua_Imagen"
+                              (error)="onImgError($event)"
+                              alt="Usuarios"
+                              class="avatar-img rounded-circle"
+                              style="width: 64px; height: 64px; object-fit: cover; display: block;"
                             />
                         </div>
 
@@ -106,7 +125,7 @@
                     <span class="text-center" style="color: #554439;">{{data.usua_EsAdmin ? 'Administrador' : ''}}</span>
                 </div>
             </div>
-        }
+        </ng-container>
     </div>
 
     <div class="row align-items-center mb-3 mx-2" id="pagination-element">
