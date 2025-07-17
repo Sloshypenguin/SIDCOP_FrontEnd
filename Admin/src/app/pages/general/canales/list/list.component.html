@@ -5,14 +5,14 @@
     { label: 'Canales', active: true }
   ]"
 >
-  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
+<img class="icon-breadcrumb" style="width: 10vh; height: 10vh;" src="assets/images/svg/channels.svg" alt="breadcrumb icon" />
 </app-breadcrumbs>
 
 <div class="row">
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
-        <div class="d-flex justify-content-between mb-3 flex-wrap" >
+        <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm" >
           <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>

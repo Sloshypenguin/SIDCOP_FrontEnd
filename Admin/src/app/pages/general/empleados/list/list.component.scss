@@ -96,3 +96,85 @@
   word-break: break-word;
   line-height: 1.4;
 }
+
+
+
+@media (max-width: 576px) {
+  .card-empleado {
+    .card-body {
+      padding: 1.5rem 1rem;
+
+      ul {
+        align-items: flex-start !important;
+
+        li {
+          justify-content: flex-start !important;
+          flex-direction: row;
+          flex-wrap: wrap;
+          word-break: break-word;
+        }
+
+        span {
+          text-align: left;
+        }
+      }
+
+      .dropdown-action-list {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    h5 {
+      font-size: 1rem;
+    }
+
+    .avatar-img {
+      width: 64px;
+      height: 64px;
+    }
+  }
+}
+
+
+//Estilos del skeleton
+.skeleton-card {
+  .skeleton-header {
+    height: 90px;
+    background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+  }
+
+  .skeleton-badge {
+    width: 40%;
+    height: 20px;
+    margin: 0 auto;
+  }
+
+  .skeleton-title {
+    width: 60%;
+    height: 22px;
+    margin: 0 auto;
+  }
+
+  .skeleton-line {
+    height: 16px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

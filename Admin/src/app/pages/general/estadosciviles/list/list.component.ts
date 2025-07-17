@@ -132,10 +132,6 @@ export class ListComponent implements OnInit {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  // (navigateToCreate eliminado, lógica movida a crear)
-
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
-
   cerrarFormulario(): void {
     this.showCreateForm = false;
   }
@@ -282,6 +278,7 @@ export class ListComponent implements OnInit {
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
