@@ -89,7 +89,13 @@ export class EditComponent implements OnInit, OnChanges {
     this.mostrarErrores = true;
 
     if ((this.coloniaEditada.colo_Descripcion ?? '').trim() && (this.coloniaEditada.muni_Codigo ?? '').trim()) {
-      if ((this.coloniaEditada.colo_Descripcion ?? '').trim() !== this.coloniaOriginal || (this.coloniaEditada.muni_Codigo ?? '').trim() !== this.coloniaOriginal) {
+      // Compara todos los campos relevantes para detectar cambios
+      const descripcionOriginal = (this.coloniaOriginal ?? '').trim();
+      const descripcionActual = (this.coloniaEditada.colo_Descripcion ?? '').trim();
+      const muniCodigoOriginal = (this.coloniaData?.muni_Codigo ?? '').trim();
+      const muniCodigoActual = (this.coloniaEditada.muni_Codigo ?? '').trim();
+
+      if (descripcionActual !== descripcionOriginal || muniCodigoActual !== muniCodigoOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
