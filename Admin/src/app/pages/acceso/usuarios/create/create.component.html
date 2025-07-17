@@ -39,6 +39,7 @@
 
   <div class="flex-grow-1">
     <div class="row">
+
       <!-- Usuario -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -50,6 +51,7 @@
           </div>
         </div>
       </div>
+
       <!-- Clave -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -61,6 +63,7 @@
           </div>
         </div>
       </div>
+
       <!-- Rol -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -75,11 +78,15 @@
           </div>
         </div>
       </div>
+
       <!-- Empleado -->
       <div class="col-md-6">
         <div class="mb-3">
-          <div class="col-12 display-flex flex-column">
-            <label class="form-label">¿Es Vendedor?</label>
+          <div class="col-12" style="display: flex;">
+            <div style="width: auto; margin-right: 10px;">
+              <label class="form-label">¿Es Vendedor?</label>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
             <div class="form-check form-switch mb-2">
               <input
                 class="form-check-input"
@@ -91,7 +98,6 @@
           </div>
 
           <div *ngIf="!usuario.usua_EsVendedor">
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required>
               <option value="" disabled selected>Seleccione un empleado</option>
               <option *ngFor="let emp of empleados" [value]="emp.empl_Id">{{ emp.empl_Nombres }}</option>
@@ -102,7 +108,6 @@
           </div>
 
           <div *ngIf="usuario.usua_EsVendedor">
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required>
               <option value="" disabled selected>Seleccione un vendedor</option>
               <option *ngFor="let ven of vendedores" [value]="ven.vend_Id">{{ ven.vend_Nombres }}</option>
@@ -131,9 +136,6 @@
           </div>
         </div>
       </div>
-      
-      <input type="hidden" [(ngModel)]="usuario.usua_EsVendedor" />
-
     </div>
   </div>
 

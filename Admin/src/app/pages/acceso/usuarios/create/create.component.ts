@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 
 @Component({
   selector: 'app-create-usuario',
@@ -27,16 +28,26 @@ export class CreateComponent {
   empleados: any[] = [];
   vendedores: any[] = [];
 
-  usuario: any = {
+  usuario: Usuario = {
+    secuencia: 0,
+    usua_Id: 0,
     usua_Usuario: '',
     usua_Clave: '',
-    role_Id: '',
-    usua_IdPersona: '',
-    usua_EsVendedor: 0,
+    role_Id: 0,
+    usua_IdPersona: 0,
+    usua_EsVendedor: false,
     usua_EsAdmin: false,
     usua_Imagen: 'https://res.cloudinary.com/dwiprwtmo/image/upload/v1746503950/wzivrxowirdm6eg5hfbo.jpg',
-    usua_Creacion: environment.usua_Id,
-    usua_FechaCreacion: new Date().toISOString()
+    usua_Creacion: 0,
+    usua_FechaCreacion: new Date(),
+    usua_Modificacion: 0,
+    usua_FechaModificacion: new Date(),
+    usua_Estado: true,
+    permisosJson: '',
+    role_Descripcion: '',
+    nombreCompleto: '',
+    code_Status: 0,
+    message_Status: '',
   };
 
   constructor(private http: HttpClient) {
@@ -72,15 +83,25 @@ export class CreateComponent {
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
     this.usuario = {
+      secuencia: 0,
+      usua_Id: 0,
       usua_Usuario: '',
       usua_Clave: '',
-      role_Id: '',
-      usua_IdPersona: '',
-      usua_EsVendedor: 0,
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
       usua_EsAdmin: false,
       usua_Imagen: 'https://res.cloudinary.com/dwiprwtmo/image/upload/v1746503950/wzivrxowirdm6eg5hfbo.jpg',
-      usua_Creacion: environment.usua_Id,
-      usua_FechaCreacion: new Date().toISOString()
+      usua_Creacion: 0,
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: 0,
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson:"",
+      role_Descripcion: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: '',
     };
     this.onCancel.emit();
   }
@@ -96,25 +117,31 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
-    if (
-      this.usuario.usua_Usuario.trim() &&
-      this.usuario.usua_Clave.trim() &&
-      this.usuario.role_Id &&
-      this.usuario.usua_IdPersona
-    ) {
-      // Limpiar alertas previas
+    if (this.usuario.usua_Usuario.trim() && this.usuario.usua_Clave.trim() && this.usuario.role_Id && this.usuario.usua_IdPersona) 
+    {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
-
-      // Por ahora, la imagen es la default o la que el usuario seleccione (ver método abajo)
       const usuarioGuardar = {
-        ...this.usuario,
-        usua_EsAdmin: this.usuario.usua_EsAdmin ? 1 : 0,
-        usua_EsVendedor: 0, // Siempre 0 por ahora
+        secuencia: 0,
+        usua_Id: 0,
+        usua_Usuario: this.usuario.usua_Usuario.trim(),
+        usua_Clave: this.usuario.usua_Clave.trim(),
+        role_Id: this.usuario.role_Id,
+        usua_IdPersona: this.usuario.usua_IdPersona,
+        usua_EsVendedor: this.usuario.usua_EsVendedor,
+        usua_EsAdmin: this.usuario.usua_EsAdmin,
+        usua_Imagen: this.usuario.usua_Imagen,
         usua_Creacion: environment.usua_Id,
-        usua_FechaCreacion: new Date().toISOString()
+        usua_FechaCreacion: new Date().toISOString(),
+        usua_Modificacion: environment.usua_Id,
+        usua_FechaModificacion: new Date().toISOString(),
+        usua_Estado: true,
+        permisosJson:"",
+        role_Descripcion: '',
+        nombreCompleto: '',
+        code_Status: 0,
+        message_Status: '',
       };
-
       this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/Insertar`, usuarioGuardar, {
         headers: {
           'X-Api-Key': environment.apiKey,
