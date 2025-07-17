@@ -62,8 +62,24 @@
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">No.</th>
-                <th class="gridjs-th">Descripción</th>
+                <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                  <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                    No.
+                    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                      <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                      <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                    </span>
+                  </span>
+                </th> 
+                <th class="gridjs-th" (click)="table.sortBy('esCv_Descripcion')" style="cursor:pointer;">
+                  <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                    Descripción
+                    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                      <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                      <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                    </span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
