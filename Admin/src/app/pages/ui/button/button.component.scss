@@ -1,22 +1,35 @@
-.btn i {
-  font-size:1.6em;
-  vertical-align: middle;
-}
-.btn{
-    display: inline-flex;
-    align-items: center;
-    font-size:0.9rem;
-    padding: 0 0.5rem;
-    height: 2.375rem;
-    min-width: 2.375rem;
-    border-width: 0.1875rem !important;
-    border-radius: 0.75rem;
+// Variables
+$dark-color: rgb(20, 26, 47);
+$light-color: rgb(187, 190, 202);
+$gold-bg: #edeadb;
+$gold-color: rgb(153, 119, 78);
+$gray-bg: #E8E8E8;
+$gray-color: rgb(135, 135, 135);
+$red-bg: #FFD8D8;
+$red-color: rgb(175, 29, 29);
+$white: rgb(255, 255, 255);
+
+// Base button styles
+.btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 0 0.5rem;
+  height: 2.375rem;
+  min-width: 2.375rem;
+  border-width: 0.1875rem;
+  border-radius: 0.75rem;
+  
+  i {
+    font-size: 1.6em;
+    vertical-align: middle;
+  }
 }
 
+// Primary button with variants
 .btn-primary {
-
-  background-color: rgb(187, 190, 202) !important;
-  border: rgb(20, 26, 47) 0.3125rem !important;
+  background-color: $light-color;
+  border: $dark-color 0.3125rem;
   position: relative;
   display: flex;
   align-items: center;
@@ -25,11 +38,12 @@
   height: 2.5rem;
   border-radius: 0.4375rem;
   overflow: hidden;
-  color:rgb(20, 26, 47);
+  color: $dark-color;
   padding: 0;
   transition: all 0.3s ease;
   cursor: pointer;
 
+  // Common elements
   .btn-text {
     z-index: 2;
     flex: 1;
@@ -47,7 +61,7 @@
     align-items: center;
     justify-content: center;
     width: 2.5rem;
-    color:rgb(187, 190, 202);
+    color: $light-color;
     transition: transform 0.4s ease;
     border-radius: 0;
   }
@@ -59,21 +73,22 @@
     right: 0;
     width: 2.5rem;
     height: 100%;
-    background-color: rgb(20, 26, 47); 
+    background-color: $dark-color;
     z-index: 1;
     transition: all 0.2s ease;
   }
 
+  // Hover state
   &:hover {
-    color: rgb(187, 190, 202);
+    color: $light-color;
     justify-content: center;
 
-   .btn-text {
+    .btn-text {
       opacity: 0;
     }
 
     .btn-icon {
-     transform: translateX(-100%) scale(1.2) rotate(-360deg);
+      transform: translateX(-100%) scale(1.2) rotate(-360deg);
     }
 
     &::before {
@@ -81,114 +96,56 @@
       right: 0;
     }
   }
+  
+  // Minimum width variant
   &.btn-minw-5 {
-  min-width: 5rem !important;
-  pointer-events: auto;
-    &:hover {
-       .btn-icon {
-        color: rgb(255, 255, 255) !important;
-        transform: translateX(-50%) scale(1.2) rotate(-360deg) !important;
-      }
+    min-width: 5rem;
+    pointer-events: auto;
+    
+    &:hover .btn-icon {
+      color: $white;
+      transform: translateX(-50%) scale(1.2) rotate(-360deg);
     }
   }
-  &.gold {
-    background-color: #edeadb !important;
-    color:  rgb(255, 255, 255) !important;
-    border-color: rgb(153, 119, 78) !important;
+  
+  // Color variants using a mixin
+  @mixin color-variant($bg-color, $text-color, $hover-bg) {
+    background-color: $bg-color;
+    color: $text-color;
     
     .btn-text {
-      color: rgb(102, 77, 45) !important;
+      color: $text-color;
     }
     
     .btn-icon {
-      color: rgb(255, 255, 255) !important;
+      color: $white;
     }
     
     &::before {
-      background-color: rgb(153, 119, 78) !important;
+      background-color: $hover-bg;
     }
     
     &:hover {
-      background-color: rgb(153, 119, 78) !important;
-      
-      .btn-icon {
-        background-color: rgb(153, 119, 78) !important;
-        transform: translateX(-100%) scale(1.2) rotate(-360deg);
-      }
-      
-      &::before {
-        background-color: rgb(153, 119, 78) !important;
-      }
-    }
-  }
-    &.gray {
-    background-color: #E8E8E8 !important;
-    color: rgb(135, 135, 135) !important;
-
-    
-    .btn-text {
-      color: rgb(135, 135, 135) !important;
-    }
-    
-    .btn-icon {
-      color: rgb(255, 255, 255) !important;
-    }
-    
-    &::before {
-      background-color: rgb(135, 135, 135) !important;
-    }
-    
-    &:hover {
-      color: rgb(255, 255, 255) !important;
+      color: $white;
       
       .btn-text {
-        color: rgb(255, 255, 255) !important;
+        color: $white;
       }
       
       .btn-icon {
-        color: rgb(255, 255, 255) !important;
+        color: $white;
         transform: translateX(-100%) scale(1.2) rotate(-360deg);
       }
       
       &::before {
-        background-color: rgb(135, 135, 135) !important;
+        background-color: $hover-bg;
       }
     }
   }
-   &.red {
-    background-color: #FFD8D8 !important;
-    color: rgb(175, 29, 29) !important;
-
-    
-    .btn-text {
-      color: rgb(175, 29, 29) !important;
-    }
-    
-    .btn-icon {
-      color: rgb(255, 255, 255) !important;
-    }
-    
-    &::before {
-      background-color: rgb(175, 29, 29) !important;
-    }
-    
-    &:hover {
-      color: rgb(255, 255, 255) !important;
-      
-      .btn-text {
-        color: rgb(255, 255, 255) !important;
-      }
-      
-      .btn-icon {
-        color: rgb(255, 255, 255) !important;
-        transform: translateX(-100%) scale(1.2) rotate(-360deg);
-      }
-      
-      &::before {
-        background-color: rgb(175, 29, 29) !important;
-      }
-    }
-  }
+  
+  &.gold { @include color-variant($gold-bg, rgb(102, 77, 45), $gold-color); }
+  &.gray { @include color-variant($gray-bg, $gray-color, $gray-color); }
+  &.red { @include color-variant($red-bg, $red-color, $red-color); }
 }
 .btn-primary span:empty + span.icon-dark {
   width: 100%;
