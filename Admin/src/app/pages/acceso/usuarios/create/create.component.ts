@@ -37,7 +37,7 @@ export class CreateComponent {
     usua_IdPersona: 0,
     usua_EsVendedor: false,
     usua_EsAdmin: false,
-    usua_Imagen: 'https://res.cloudinary.com/dwiprwtmo/image/upload/v1746503950/wzivrxowirdm6eg5hfbo.jpg',
+    usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
     usua_Creacion: 0,
     usua_FechaCreacion: new Date(),
     usua_Modificacion: 0,
@@ -91,7 +91,7 @@ export class CreateComponent {
       usua_IdPersona: 0,
       usua_EsVendedor: false,
       usua_EsAdmin: false,
-      usua_Imagen: 'https://res.cloudinary.com/dwiprwtmo/image/upload/v1746503950/wzivrxowirdm6eg5hfbo.jpg',
+      usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
       usua_Creacion: 0,
       usua_FechaCreacion: new Date(),
       usua_Modificacion: 0,
@@ -191,17 +191,31 @@ export class CreateComponent {
     }
   }
 
-  // Previsualización de imagen (por ahora solo local, luego aquí se subirá a Cloudinary)
   onImagenSeleccionada(event: any) {
+    // Obtenemos el archivo seleccionado desde el input tipo file
     const file = event.target.files[0];
+
     if (file) {
-      // Aquí luego se subirá a Cloudinary y se actualizará el campo usua_Imagen con la URL devuelta
-      // Por ahora solo previsualizamos localmente
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.usuario.usua_Imagen = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      // para enviar la imagen a Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'subidas_usuarios');
+      //Subidas usuarios Carpeta identificadora en Cloudinary
+      //dwiprwtmo es el nombre de la cuenta de Cloudinary
+      const url = 'https://api.cloudinary.com/v1_1/dwiprwtmo/upload';
+
+      
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.usuario.usua_Imagen = data.secure_url;
+      })
+      .catch(error => {
+        console.error('Error al subir la imagen a Cloudinary:', error);
+      });
     }
   }
 }
