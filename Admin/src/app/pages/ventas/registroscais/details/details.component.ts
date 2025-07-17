@@ -1,7 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
-
+import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
 
 @Component({
   selector: 'app-details',
@@ -11,34 +10,34 @@ import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() subcategoriaData: Subcategoria | null = null;
+  @Input() registroCaiData: RegistroCAI | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  subcategoriaDetalle: Subcategoria | null = null;
-  cargando = false;  
+  RegistroCAIDetalle: RegistroCAI | null = null;
+  cargando = false;
 
   mostrarAlertaError = false;
   mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['subcategoriaData'] && changes['subcategoriaData'].currentValue) {
-      this.cargarDetallesSimulado(changes['subcategoriaData'].currentValue);
+    if (changes['registroCaiData'] && changes['registroCaiData'].currentValue) {
+      this.cargarDetallesSimulado(changes['registroCaiData'].currentValue);
     }
   }
 
   // Simulación de carga
-  cargarDetallesSimulado(data: Subcategoria): void {
+  cargarDetallesSimulado(data: RegistroCAI): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 
     setTimeout(() => {
       try {
-        this.subcategoriaDetalle = { ...data };
+        this.RegistroCAIDetalle = { ...data };
         this.cargando = false;
       } catch (error) {
-        console.error('Error al cargar detalles de la subcategoria:', error);
+        console.error('Error al cargar detalles de Registros CAI:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles de la subcategoria.';
+        this.mensajeError = 'Error al cargar los detalles del Registros CAI.';
         this.cargando = false;
       }
     }, 500); // Simula tiempo de carga
