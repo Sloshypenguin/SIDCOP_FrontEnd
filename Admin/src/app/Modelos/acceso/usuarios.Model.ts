@@ -1,4 +1,5 @@
 export class Usuario{
+    secuencia: number = 0;
     usua_Id: number = 0;
     usua_Usuario: string = '';
     usua_Clave: string = '';
@@ -14,6 +15,7 @@ export class Usuario{
     usua_Estado: boolean = false;
 
     role_Descripcion: string = '';
+    nombreCompleto: string = '';
 
     constructor(init?: Partial<Usuario>) {
         Object.assign(this, init);

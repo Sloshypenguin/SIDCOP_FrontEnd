@@ -57,15 +57,9 @@
 }
 
 .icon-breadcrumb {
-  height: 100%;
-  width: auto;
-  max-height: 6vh;
+  height: 32px !important;
+  width: 32px !important;
   object-fit: contain;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 2.5vh;
-  margin: auto 0;
-  transform: none;
-  display: inline-block;
+  margin-left: 8px !important;
+  vertical-align: middle !important;
 }
