@@ -7,7 +7,7 @@ export class Cargos {
   carg_FechaModificacion?: Date;
   carg_Estado: boolean = true;
   usuarioCreacion: string = '';
-  usuarioModificacion?: string = '';
+  usuarioModificacion: string = '';
   code_Status: number = 0;
   message_Status: string = '';
   constructor(init?: Partial<Cargos>) {
