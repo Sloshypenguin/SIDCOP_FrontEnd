@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Proveedor } from 'src/app/Modelos/general/Proveedor.Model';
 import { environment } from 'src/environments/environment';
+import { provideRouter } from '@angular/router';
 
 @Component({
   selector: 'app-edit',
@@ -26,6 +27,7 @@ export class EditComponent implements OnChanges {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
+  mostrarConfirmacionEditar = false;
 
   // Catálogos para DDL dependientes
   Departamentos: any[] = [];
@@ -33,6 +35,7 @@ export class EditComponent implements OnChanges {
   TodosColonias: any[] = [];
   Municipios: any[] = [];
   Colonias: any[] = [];
+  ProveedorOriginal: Proveedor = new Proveedor();
   selectedDepa: string = '';
   selectedMuni: string = '';
 
@@ -79,6 +82,10 @@ export class EditComponent implements OnChanges {
     if (changes['proveedorData'] && changes['proveedorData'].currentValue) {
       this.proveedor = { ...changes['proveedorData'].currentValue };
       this.mostrarErrores = false;
+      this.ProveedorOriginal = { ...this.proveedor };
+
+
+
       this.cerrarAlerta();
       // Sincronizar selects dependientes
       if (this.TodosMunicipios.length && this.TodosColonias.length) {
@@ -104,6 +111,51 @@ export class EditComponent implements OnChanges {
       }
     }
   }
+
+
+
+  validarEdicion(): void {
+    this.mostrarErrores = true;
+
+    if (this.proveedor.prov_NombreEmpresa.trim() && this.proveedor.prov_Codigo.trim() &&
+        this.proveedor.prov_NombreContacto.trim() && this.proveedor.prov_Telefono.trim() &&
+        this.proveedor.colo_Id > 0 && this.proveedor.prov_DireccionExacta.trim() &&
+        this.proveedor.prov_Correo.trim() && this.proveedor.prov_Observaciones.trim()) {
+      if (
+        this.proveedor.prov_NombreEmpresa.trim() !== this.ProveedorOriginal.prov_NombreEmpresa.trim() ||
+        this.proveedor.prov_Codigo.trim() !== this.ProveedorOriginal.prov_Codigo.trim() ||
+        this.proveedor.prov_NombreContacto.trim() !== this.ProveedorOriginal.prov_NombreContacto.trim() ||
+        this.proveedor.prov_Telefono.trim() !== this.ProveedorOriginal.prov_Telefono.trim() ||
+        this.proveedor.colo_Id !== this.ProveedorOriginal.colo_Id ||
+        this.proveedor.prov_DireccionExacta.trim() !== this.ProveedorOriginal.prov_DireccionExacta.trim() ||
+        this.proveedor.prov_Correo.trim() !== this.ProveedorOriginal.prov_Correo.trim() ||
+        this.proveedor.prov_Observaciones.trim() !== this.ProveedorOriginal.prov_Observaciones.trim()
+      ) {
+        this.mostrarConfirmacionEditar = true;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'No se han detectado cambios.';
+        console.error('No se han detectado cambios en el proveedor.');
+        setTimeout(() => this.cerrarAlerta(), 4000);
+      }
+    } else {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+    }
+  }
+
+
+  cancelarEdicion(): void {
+    this.mostrarConfirmacionEditar = false;
+  }
+
+  confirmarEdicion(): void {
+    this.mostrarConfirmacionEditar = false;
+    console.log('Confirmar edición de proveedor');
+    this.guardar();
+  }
+
 
   cancelar(): void {
     this.cerrarAlerta();

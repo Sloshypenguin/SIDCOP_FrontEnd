@@ -14,7 +14,7 @@ import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 
 
 export class DetailsComponent implements OnChanges {
-  @Input() estadoCivilData: Categoria | null = null;
+  @Input() categoriaData: Categoria | null = null;
   @Output() onClose = new EventEmitter<void>();
 
   categoriaDetalle: Categoria | null = null;
@@ -24,8 +24,8 @@ export class DetailsComponent implements OnChanges {
   mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['estadoCivilData'] && changes['estadoCivilData'].currentValue) {
-      this.cargarDetallesSimulado(changes['estadoCivilData'].currentValue);
+    if (changes['categoriaData'] && changes['categoriaData'].currentValue) {
+      this.cargarDetallesSimulado(changes['categoriaData'].currentValue);
     }
   }
 

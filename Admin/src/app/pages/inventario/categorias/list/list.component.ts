@@ -32,6 +32,14 @@ import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 
 
 export class ListComponent {
+
+  // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
   
   // Cierra el dropdown si se hace click fuera
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -104,6 +112,40 @@ export class ListComponent {
 
   constructor(public table: ReactiveTableService<Categoria>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.cargardatos();
+
+    // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
+  }
+
+  // Método para cargar las acciones disponibles del usuario
+  private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo 
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Categorias'] || permisos['categorias'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -159,7 +201,7 @@ export class ListComponent {
     
     console.log('Eliminando Categoria:', this.categoriaAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Categorias/Eliminar/${this.categoriaAEliminar.cate_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Categorias/Eliminar?id=${this.categoriaAEliminar.cate_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -189,7 +231,7 @@ export class ListComponent {
             //result: está siendo utilizado
             console.log('Categoria está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el Categoria está siendo utilizado.';
+            this.mensajeError = /* response.data.message_Status || */ 'No se puede eliminar: el Categoria está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
