@@ -1,7 +1,6 @@
 <div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
   <h5 class="card-title mb-4">Crear Nuevo Usuario</h5>
 
-  <!-- Imagen de usuario -->
   <div class="d-flex justify-content-center mb-4">
     <div style="position: relative;">
       <img
@@ -16,11 +15,10 @@
       </label>
     </div>
   </div>
-  <div class="text-center mb-3 text-muted" style="font-size: 0.9rem;">
-    Foto de perfil (opcional)
+  <div class="text-center mb-3" style="font-size: 0.9rem;">
+    <label for="usua_Usuario" class="form-label">Usuario</label>
   </div>
 
-  <!-- Alertas -->
   <div class="alert-container">
     <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
@@ -46,15 +44,7 @@
         <div class="mb-3">
           <label for="usua_Usuario" class="form-label">Usuario</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <input
-            type="text"
-            class="form-control"
-            id="usua_Usuario"
-            [(ngModel)]="usuario.usua_Usuario"
-            [class.is-invalid]="!usuario.usua_Usuario.trim() && mostrarErrores"
-            placeholder="Ingrese el nombre de usuario"
-            required
-          />
+          <input type="text" class="form-control" id="usua_Usuario" [(ngModel)]="usuario.usua_Usuario" [class.is-invalid]="!usuario.usua_Usuario.trim() && mostrarErrores" placeholder="Ingrese el nombre de usuario" required/>
           <div class="text-danger mt-1" *ngIf="!usuario.usua_Usuario.trim() && mostrarErrores">
             <small>El campo Usuario es requerido</small>
           </div>
@@ -65,15 +55,7 @@
         <div class="mb-3">
           <label for="usua_Clave" class="form-label">Contraseña</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <input
-            type="password"
-            class="form-control"
-            id="usua_Clave"
-            [(ngModel)]="usuario.usua_Clave"
-            [class.is-invalid]="!usuario.usua_Clave.trim() && mostrarErrores"
-            placeholder="Ingrese la contraseña"
-            required
-          />
+          <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="usuario.usua_Clave" [class.is-invalid]="!usuario.usua_Clave.trim() && mostrarErrores" placeholder="Ingrese la contraseña" required />
           <div class="text-danger mt-1" *ngIf="!usuario.usua_Clave.trim() && mostrarErrores">
             <small>El campo Contraseña es requerido</small>
           </div>
@@ -84,13 +66,7 @@
         <div class="mb-3">
           <label for="role_Id" class="form-label">Rol</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <select
-            id="role_Id"
-            class="form-select"
-            [(ngModel)]="usuario.role_Id"
-            [class.is-invalid]="!usuario.role_Id && mostrarErrores"
-            required
-          >
+          <select id="role_Id" class="form-select" [(ngModel)]="usuario.role_Id" [class.is-invalid]="!usuario.role_Id && mostrarErrores" required>
             <option value="" disabled selected>Seleccione un rol</option>
             <option *ngFor="let rol of roles" [value]="rol.role_Id">{{ rol.role_Descripcion }}</option>
           </select>
@@ -104,12 +80,7 @@
         <div class="mb-3">
           <label for="usua_IdPersona" class="form-label">Empleado</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <select
-            id="usua_IdPersona"
-            class="form-select"
-            [(ngModel)]="usuario.usua_IdPersona"
-            [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores"
-            required
+          <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required
           >
             <option value="" disabled selected>Seleccione un empleado</option>
             <option *ngFor="let emp of empleados" [value]="emp.empl_Id">{{ emp.Nombres }}</option>
@@ -136,7 +107,7 @@
           </div>
         </div>
       </div>
-      <!-- Es Vendedor (oculto, siempre false/0) -->
+      
       <input type="hidden" [(ngModel)]="usuario.usua_EsVendedor" />
 
     </div>
