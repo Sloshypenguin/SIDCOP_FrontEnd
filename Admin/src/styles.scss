@@ -128,6 +128,9 @@
   font-size: 1.1em;
 }
 /* === MODAL DE CONFIRMACIÓN GLOBAL === */
+.modal-backdrop.fade{
+  z-index: 1999;
+}
 .custom-modal {
   z-index: 2000;
   min-width: 80vh;
