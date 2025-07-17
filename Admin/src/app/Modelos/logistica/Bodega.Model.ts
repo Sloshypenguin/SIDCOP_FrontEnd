@@ -18,6 +18,11 @@ export class Bodega{
   usuarioModificacion: string = '';
   code_Status: number = 0;
   message_Status: string ='';
+  sucu_Descripcion?: string;
+  regC_Descripcion?: string;
+  vend_Nombres?: string;
+  vend_Apellidos?: string;
+  mode_Descripcion?: string;
 
   constructor(init?: Partial<Bodega>) {
     Object.assign(this, init);

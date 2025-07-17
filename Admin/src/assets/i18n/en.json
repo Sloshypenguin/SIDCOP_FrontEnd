@@ -27,7 +27,7 @@
       }
     },
     "INVENTARIO": {
-      "TEXT": "INVENTARIO",
+      "TEXT": "Inventario",
       "LIST": {
         "CATEGORIAS": "Categorias",
         "SUBCATEGORIAS": "Subcategorias"
