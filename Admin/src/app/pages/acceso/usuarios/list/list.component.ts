@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
-import { CreateComponent } from '../create/create.component';
+import { CreateComponent as CreateUsuarioComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { DetailsComponent } from '../details/details.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    CreateComponent,
+    CreateUsuarioComponent,
     EditComponent,
     DetailsComponent
   ],
@@ -34,6 +34,9 @@ export class ListComponent {
   breadCrumbItems!: Array<{}>;
   accionesDisponibles: string [] = [];
 
+  busqueda: string = '';
+  usuariosFiltrados: any[] = [];
+
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
@@ -41,10 +44,11 @@ export class ListComponent {
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'Acceso' },
-      { label: 'U', active: true }
+      { label: 'Usuarios', active: true }
     ];
 
     this.cargarAccionesUsuario();
+    this.cargarDatos();
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -170,6 +174,7 @@ export class ListComponent {
 
   private cargarAccionesUsuario(): void{
     const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try{
@@ -181,7 +186,7 @@ export class ListComponent {
           modulo = permisos['Usuarios'] || permisos['usuarios'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
-          accionesArray = modulo.Acciones.map((a: any) => a.accion).filter((a:any) => a && typeof a === 'string');
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a:any) => typeof a === 'string');
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
@@ -190,12 +195,45 @@ export class ListComponent {
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLocaleLowerCase());
   }
 
+  usuarioGrid: any = [];
+  usuarios: any = [];
+
+  filtradorUsuarios(): void {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) {
+      this.usuariosFiltrados = this.usuarios;
+    } else {
+      this.usuariosFiltrados = this.usuarios.filter((usuario: any) =>
+        (usuario.nombreCompleto || '').toLowerCase().includes(termino) ||
+        (usuario.usua_Usuario || '').toLowerCase().includes(termino) ||
+        (usuario.role_Descripcion || '').toLowerCase().includes(termino)
+      );
+    }
+  }
+
   private cargarDatos(): void {
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+      this.usuarioGrid = data || [];
+      this.usuarios = this.usuarioGrid.slice(0, 10);
+      this.filtradorUsuarios();
     });
+  }
+
+  pageChanged(event: any): void {
+    const startItem = (event.page - 1) * event.itemsPerPage;
+    const endItem = event.page * event.itemsPerPage;
+    this.usuarios = this.usuarioGrid.slice(startItem, endItem);
+    this.filtradorUsuarios();
+  }
+
+  trackByUsuarioId(index: number, item: any): any {
+    return item.usua_Id;
+  }
+
+  onImgError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/images/users/32/user-dummy-img.jpg';
   }
 }
