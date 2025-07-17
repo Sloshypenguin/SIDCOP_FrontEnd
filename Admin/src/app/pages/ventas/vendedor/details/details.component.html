@@ -19,31 +19,30 @@
   </div>
   
   <!-- Contenido de detalles -->
-  <div *ngIf="!cargando && bodegaDetalle" class="details-content">
+  <div *ngIf="!cargando && vendedorDetalle" class="details-content">
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <div class="details-title">Detalles de Estados Civiles</div>
+      <div class="details-title">Detalles del Vendedor</div>
       <div class="details-id-row">
   <div class="details-id">
-    <div class="details-id-label">Descripción</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_Descripcion }}</div>
+    <div class="details-id-label">Codigo</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Codigo }}</div>
   </div>
   <div class="details-id">
-    <div class="details-id-label">VIN</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_VIN }}</div>
+    <div class="details-id-label">DNI</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_DNI }}</div>
   </div>
   <div class="details-id">
-    <div class="details-id-label">Placa</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_Placa }}</div>
+    <div class="details-id-label">Nombre Completo</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Nombres }} {{ vendedorDetalle.vend_Apellidos }}</div>
   </div>
 
   <div class="details-id">
-    <div class="details-id-label">Tipo de Camion</div>
+    <div class="details-id-label">Sexo</div>
     <div class="details-id-value"> {{
-    bodegaDetalle.bode_TipoCamion === 'G' ? 'Grande' :
-    bodegaDetalle.bode_TipoCamion === 'M' ? 'Mediano' :
-    bodegaDetalle.bode_TipoCamion === 'P' ? 'Pequeño' :
+    vendedorDetalle.vend_Sexo === 'M' ? 'Masculino' :
+    vendedorDetalle.vend_Sexo === 'F' ? 'Femenino' :
     'N/A'
   }}</div>
 
@@ -51,31 +50,62 @@
   </div>
 
   <div class="details-id">
-    <div class="details-id-label">Capacidad</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_Capacidad }} QQ</div>
+    <div class="details-id-label">Telefono</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Telefono }}</div>
   </div>
 
   <div class="details-id">
-    <div class="details-id-label">Registro Cai</div>
-    <div class="details-id-value">{{ bodegaDetalle.regC_Descripcion }}</div>
+    <div class="details-id-label">Correo</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_Correo }}</div>
   </div>
   
 
   <div class="details-id">
-    <div class="details-id-label">Modelo</div>
-    <div class="details-id-value">{{ bodegaDetalle.mode_Descripcion }}</div>
+    <div class="details-id-label">Colonia</div>
+    <div class="details-id-value">{{ vendedorDetalle.colo_Descripcion }}</div>
   </div>
 
    <div class="details-id">
-    <div class="details-id-label">Vendedor</div>
-    <div class="details-id-value">{{ bodegaDetalle.vend_Nombres }} {{ bodegaDetalle.vend_Apellidos }}</div>
+    <div class="details-id-label">Direccion Exacta</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_DireccionExacta }} </div>
   </div>
 
 
 
    <div class="details-id">
     <div class="details-id-label">Sucursal</div>
-    <div class="details-id-value">{{ bodegaDetalle.sucu_Descripcion }}</div>
+    <div class="details-id-value">{{ vendedorDetalle.sucu_Descripcion }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Supervisor</div>
+    <div class="details-id-value">{{ vendedorDetalle.nombreSupervisor }} {{ vendedorDetalle.apellidoSupervisor }}</div>
+  </div>
+
+   <div class="details-id">
+    <div class="details-id-label">Ayudante</div>
+    <div class="details-id-value">  {{
+    vendedorDetalle.nombreAyudante || vendedorDetalle.apellidoAyudante
+      ? (vendedorDetalle.nombreAyudante + ' ' + vendedorDetalle.apellidoAyudante)
+      : 'Sin ayudante'
+  }}</div>
+  </div>
+
+   <div class="details-id">
+    <div class="details-id-label">Tipo de Vendedor</div>
+    <div class="details-id-value"> {{
+    vendedorDetalle.vend_Tipo === 'P' ? 'Preventista' :
+    vendedorDetalle.vend_Tipo === 'V' ? 'Venta directa' :
+    vendedorDetalle.vend_Tipo === 'F' ? 'Entregador' :
+    'N/A'
+  }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Es contratista?</div>
+    <div class="details-id-value">{{ vendedorDetalle.vend_EsExterno == true? 'Si': 'No' }}</div>
+  </div>
+
   </div>
 </div>
     </div>
@@ -99,10 +129,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ bodegaDetalle.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ vendedorDetalle?.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaCreacion) }}</span>
+          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaCreacion ?? null) || 'N/A' }}</span>
         </div>
       </div>
       
@@ -112,14 +142,14 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ bodegaDetalle.usuarioModificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ vendedorDetalle?.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaModificacion?? null ) }}</span>
+          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaModificacion?? null ) }}</span>
         </div>
       </div>
     </div>
     </div>
     
   </div>
-</div>
+
