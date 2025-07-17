@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
-// import { CreateComponent } from '../create/create.component';
+import { CreateComponent } from '../create/create.component';
 // import { EditComponent } from '../edit/edit.component';
 // import { DetailsComponent } from '../details/details.component';
 
@@ -22,8 +22,8 @@ import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
     RouterModule,
     BreadcrumbsComponent,
     TableModule,
-    PaginationModule
-    // CreateComponent,
+    PaginationModule,
+    CreateComponent
     // EditComponent,
     // DetailsComponent
   ],
@@ -34,6 +34,13 @@ export class ListComponent implements OnInit {
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
+    // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // Método robusto para validar si una acción está permitida
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
 
   ngOnInit(): void {
     /**
@@ -41,8 +48,13 @@ export class ListComponent implements OnInit {
      */
     this.breadCrumbItems = [
       { label: 'General' },
-      { label: 'Estados Civiles', active: true }
+      { label: 'Clientes', active: true }
     ];
+
+    // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
+    
   }
 
   // Cierra el dropdown si se hace click fuera
@@ -72,8 +84,8 @@ export class ListComponent implements OnInit {
   editar(cliente: Cliente): void {
     console.log('Abriendo formulario de edición para:', cliente);
     console.log('Datos específicos:', {
-      id: cliente.esCv_Id,
-      descripcion: cliente.esCv_Descripcion,
+      id: cliente.clie_Id,
+      descripcion: cliente.clie_Nombres,
       completo: cliente
     });
     this.clienteEditando = { ...cliente }; // Hacer copia profunda
@@ -248,6 +260,35 @@ export class ListComponent implements OnInit {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
+  }
+
+  private cargarAccionesUsuario(): void {
+    // Obtener permisosJson del localStorage
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // Si es objeto, buscar por clave
+          modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // Extraer solo el nombre de la acción
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   private cargardatos(): void {
