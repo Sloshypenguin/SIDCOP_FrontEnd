@@ -39,7 +39,7 @@ import { EditComponent } from '../edit/edit.component';
         padding: '*',
       })),
       transition('closed <=> open', [
-        animate('300ms cubic-bezier(.4,0,.2,1)')
+        animate('500ms cubic-bezier(.4,0,.2,1)')
       ]),
     ])
   ],
