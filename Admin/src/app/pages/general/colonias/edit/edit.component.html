@@ -1,1 +1,144 @@
-<p>edit works!</p>
+<div>
+  <!-- Alerta de error -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de advertencia -->
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <!-- Encabezado -->
+  <div class="mb-4">
+    <h5 class="card-title mb-4">Editar Colonia</h5>
+  </div>
+
+  <!-- Formulario -->
+    <div class="row">
+      
+      <!-- Descripcion -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="edit_colo_Descripcion" class="form-label">Descripción</label>
+          <input 
+            type="text" 
+            id="edit_colo_Descripcion" 
+            name="edit_colo_Descripcion" 
+            class="form-control" 
+            [(ngModel)]="coloniaEditada.colo_Descripcion" 
+            required>
+        </div>
+      </div>
+
+      <!-- Departamento -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="depa_Codigo" class="form-label">Departamento</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+          <select 
+            id="depa_Codigo" 
+            name="depa_Codigo" 
+            class="form-select" 
+            [(ngModel)]="selectedDepa" 
+            (change)="cargarMunicipios(selectedDepa)"
+            required>
+            <option value="" disabled selected>Seleccione un Departamento</option>
+            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion }}</option>
+          </select>
+          <div *ngIf="cargando" class="form-text text-muted">Cargando Departamentos...</div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
+            <small>El campo Departamento es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Nueva fila-->
+
+    <div class="row">
+
+      <!-- Municipio -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="muni_Codigo" class="form-label">Municipio</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+          <select 
+            id="muni_Codigo" 
+            name="muni_Codigo" 
+            class="form-select" 
+            [(ngModel)]="coloniaEditada.muni_Codigo" 
+            required>
+            <option value="" disabled selected>Seleccione un Municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <div *ngIf="cargando" class="form-text text-muted">Cargando Municipios...</div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!(coloniaEditada.muni_Codigo ?? '').trim() && mostrarErrores">
+            <small>El campo Municipio es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+        <span class="btn-text">Cancelar</span>
+        <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+      </button>
+      <button type="button" class="btn btn-primary" (click)="validarEdicion()">
+        <span class="btn-text">Guardar</span>
+        <span class="btn-icon"><i class="ri-save-line"></i></span>
+      </button>
+    </div>
+</div>
+
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEditar }" [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Confirmación</span>
+        <i class="ri-close-line custom-modal-close" (click)="cancelarEdicion()"></i>
+      </div>
+      <hr class="custom-modal-divider">
+      <div class="modal-body custom-modal-body">
+        <div class="text-center">
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-edit-line me-2 custom-modal-alert-icon" (click)="cancelarEdicion()"></i>
+            ¿Estás seguro que deseas editar la colonia <strong>"{{ coloniaOriginal }}"</strong> por <strong>"{{ coloniaEditada.colo_Descripcion }}"</strong>?
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button type="button" class="btn btn-primary  btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
+          <span class="btn-text">No</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        </button>
+        <button type="button" class="btn btn-primary  btn-minw-5 btn-sm" (click)="confirmarEdicion()">
+          <span class="btn-text">Si</span>
+          <span class="btn-icon"><i class="ri-save-line"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

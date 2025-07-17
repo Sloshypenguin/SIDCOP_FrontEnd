@@ -8,10 +8,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Canal } from 'src/app/Modelos/general/Canal.model';
+import { Canal } from 'src/app/Modelos/general/Canal.Model';
+import { CreateComponent } from '../create/create.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
-  selector: 'app-list',
+  selector: 'app-list-canales',
   standalone: true,
   imports: [
     CommonModule,
@@ -19,7 +22,10 @@ import { Canal } from 'src/app/Modelos/general/Canal.model';
     RouterModule,
     BreadcrumbsComponent,
     TableModule,
-    PaginationModule
+    PaginationModule,
+    CreateComponent,
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -27,11 +33,11 @@ import { Canal } from 'src/app/Modelos/general/Canal.model';
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
 
-  constructor(
-    public table: ReactiveTableService<Canal>,
-    private http: HttpClient
-  ) {
-    this.cargarDatos();
+
+  accionesDisponibles: string[] = [];
+
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 
   ngOnInit(): void {
@@ -39,50 +45,51 @@ export class ListComponent implements OnInit {
       { label: 'General' },
       { label: 'Canales', active: true }
     ];
+    this.cargarAccionesUsuario();
+    this.cargardatos();
   }
 
-  // =============================
-  //  Controles de visibilidad
-  // =============================
-  showCreateForm = false;
-  showEditForm = false;
-  showDetailsForm = false;
-
-  // =============================
-  //  Control de acciones visibles
-  // =============================
-  showEdit = true;
-  showDelete = true;
-  showDetails = true;
-
-  // =============================
-  //  Datos de edición y detalle
-  // =============================
-  CanalEditando: Canal | null = null;
-  CanalDetalle: Canal | null = null;
-
-  // =============================
-  //  Row activo para menú
-  // =============================
+  // Dropdown acciones
   activeActionRow: number | null = null;
-
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  // =============================
-  //  Funciones requeridas por el HTML
-  // =============================
+  // Form controls
+  showCreateForm = false;
+  showEditForm = false;
+  showDetailsForm = false;
+  canalEditando: Canal | null = null;
+  canalDetalle: Canal | null = null;
+
+  // Alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+
+  // Confirmación eliminar
+  mostrarConfirmacionEliminar = false;
+  canalAEliminar: Canal | null = null;
+
+  constructor(
+    public table: ReactiveTableService<Canal>,
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   crear(): void {
-    this.showCreateForm = true;
+    this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
   editar(canal: Canal): void {
-    this.CanalEditando = { ...canal };
+    this.canalEditando = { ...canal };
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
@@ -90,7 +97,7 @@ export class ListComponent implements OnInit {
   }
 
   detalles(canal: Canal): void {
-    this.CanalDetalle = { ...canal };
+    this.canalDetalle = { ...canal };
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
@@ -103,38 +110,88 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.CanalEditando = null;
+    this.canalEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.CanalDetalle = null;
+    this.canalDetalle = null;
   }
 
   guardarCanal(canal: Canal): void {
-    this.cargarDatos();
+    this.cargardatos();
     this.cerrarFormulario();
+    this.mostrarAlertaExito = true;
+    this.mensajeExito = 'Canal guardado exitosamente';
+    setTimeout(() => this.mostrarAlertaExito = false, 3000);
   }
 
   actualizarCanal(canal: Canal): void {
-    this.cargarDatos();
+    this.cargardatos();
     this.cerrarFormularioEdicion();
+    this.mostrarAlertaExito = true;
+    this.mensajeExito = 'Canal actualizado exitosamente';
+    setTimeout(() => this.mostrarAlertaExito = false, 3000);
   }
 
   confirmarEliminar(canal: Canal): void {
-    this.CanalAEliminar = canal;
+    this.canalAEliminar = canal;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null;
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.CanalAEliminar = null;
+    this.canalAEliminar = null;
   }
 
   eliminar(): void {
-    // Aquí va la lógica de eliminación real
-    this.cancelarEliminar();
+    if (!this.canalAEliminar) return;
+    this.http.post(`${environment.apiBaseUrl}/Canal/Eliminar/${this.canalAEliminar.cana_Id}`, {}, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            this.mensajeExito = `Canal "${this.canalAEliminar!.cana_Descripcion}" eliminado exitosamente`;
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            this.cargardatos();
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el canal está siendo utilizado.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el canal.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            this.cancelarEliminar();
+          }
+        } else {
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar el canal.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        }
+      }
+    });
   }
 
   cerrarAlerta(): void {
@@ -146,32 +203,36 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  // =============================
-  //  Alertas y confirmación
-  // =============================
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
-
-  mostrarConfirmacionEliminar = false;
-  CanalAEliminar: Canal | null = null;
-
-  // =============================
-  //  Carga inicial
-  // =============================
-  private cargarDatos(): void {
-    this.http.get<any[]>(
-      `${environment.apiBaseUrl}/Canal/Listar`,
-      {
-        headers: { 'x-api-key': environment.apiKey }
-      }
-
-    ).subscribe(data => {
-      // Mapeo si es necesario, dependiendo de cómo venga la respuesta
+  private cargardatos(): void {
+    this.http.get<Canal[]>(`${environment.apiBaseUrl}/Canal/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
       this.table.setData(data);
     });
   }
+
+  // Método para cargar las acciones disponibles del usuario
+  private cargarAccionesUsuario(): void {
+    const permisosRaw = localStorage.getItem('permisosJson');
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // Ajusta el ID si cambia en el futuro
+          modulo = permisos.find((m: any) => m.Pant_Id === 11);
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          modulo = permisos['Canales'] || permisos['canales'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    }
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+  }
 }
+

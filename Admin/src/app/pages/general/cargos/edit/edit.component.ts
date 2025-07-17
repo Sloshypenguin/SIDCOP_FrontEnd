@@ -25,8 +25,8 @@ export class EditComponent implements OnChanges {
     carg_FechaCreacion: new Date(),
     usua_Modificacion: 0,
     carg_FechaModificacion: new Date(),
-    usuaM_Nombre : '',
-    usuaC_Nombre : '', 
+    usuarioModificacion : '',
+    usuarioCreacion : '', 
     carg_Estado: true,
     code_Status: 0,
     message_Status: ''
@@ -99,18 +99,20 @@ export class EditComponent implements OnChanges {
 
     if (this.cargo.carg_Descripcion.trim()) {
       const cargoActualizar = {
-        Carg_Id: this.cargo.carg_Id,
-        Carg_Descripcion: this.cargo.carg_Descripcion.trim(),
-        Usua_Creacion: this.cargo.usua_Creacion,
-        Carg_FechaCreacion: this.cargo.carg_FechaCreacion,
-        Usua_Modificacion: environment.usua_Id,
+        carg_Id: this.cargo.carg_Id,
+        carg_Descripcion: this.cargo.carg_Descripcion.trim(),
+        usua_Creacion: this.cargo.usua_Creacion,
+        carg_FechaCreacion: this.cargo.carg_FechaCreacion,
+        usua_Modificacion: environment.usua_Id,
         // numero: this.cargo..secuencia || '',
-        Carg_FechaModificacion: new Date().toISOString(),
-        Carg_Estado: '',
+        carg_FechaModificacion: new Date().toISOString(),
+        carg_Estado: true,
+        usuarioCreacion : '',
+        usuarioModificacion : ''
         // usuarioModificacion: ''
       };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/cargo/Actualizar`, cargoActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Cargo/Actualizar`, cargoActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',

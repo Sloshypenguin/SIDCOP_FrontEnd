@@ -1,0 +1,249 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <!-- Título -->
+  <h5 class="card-title mb-4">Editar Configuración de Factura</h5>
+
+  <!-- Alertas -->
+  <div class="alert-container">
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <div class="flex-grow-1">
+    <div class="row">
+
+      <!-- Nombre Empresa -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="nombreEmpresa" class="form-label me-2">Nombre de la Empresa</label>
+          <span class="text-danger">*</span>
+          <input type="text" class="form-control" placeholder="Nombre de la Empresa"
+            [(ngModel)]="configFactura.coFa_NombreEmpresa"
+            [class.is-invalid]="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores"
+            required />
+          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores">
+            <small>El campo Nombre de la Empresa es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="direccion" class="form-label me-2">Dirección de la Empresa</label>
+          <span class="text-danger">*</span>
+          <input type="text" class="form-control" placeholder="Dirección de la Empresa"
+            [(ngModel)]="configFactura.coFa_DireccionEmpresa"
+            [class.is-invalid]="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores"
+            required />
+          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores">
+            <small>El campo Dirección de la Empresa es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- RTN -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="rtn" class="form-label me-2">RTN</label>
+          <span class="text-danger">*</span>
+          <input type="text" class="form-control" placeholder="RTN"
+            [(ngModel)]="configFactura.coFa_RTN"
+            [class.is-invalid]="!configFactura.coFa_RTN.trim() && mostrarErrores"
+            required />
+          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_RTN.trim() && mostrarErrores">
+            <small>El campo RTN es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Correo -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="correo" class="form-label me-2">Correo Electrónico</label>
+          <span class="text-danger">*</span>
+          <input type="email" class="form-control" placeholder="Correo Electrónico"
+            [(ngModel)]="configFactura.coFa_Correo"
+            [class.is-invalid]="!configFactura.coFa_Correo.trim() && mostrarErrores"
+            required />
+          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Correo.trim() && mostrarErrores">
+            <small>El campo Correo Electrónico es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teléfono 1 -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="telefono1" class="form-label me-2">Teléfono 1</label>
+          <span class="text-danger">*</span>
+          <input type="text" class="form-control" placeholder="Teléfono 1"
+            [(ngModel)]="configFactura.coFa_Telefono1"
+            [class.is-invalid]="!configFactura.coFa_Telefono1.trim() && mostrarErrores"
+            required />
+          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Telefono1.trim() && mostrarErrores">
+            <small>El campo Teléfono 1 es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teléfono 2 (opcional) -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="telefono2" class="form-label me-2">Teléfono 2 (opcional)</label>
+          <span class="text-danger">*</span>
+          <input type="text" class="form-control" placeholder="Teléfono 2 (opcional)"
+            [(ngModel)]="configFactura.coFa_Telefono2" />
+        </div>
+      </div>
+        
+
+      <!-- Departamento -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="departamento" class="form-label me-2">Departamento</label>
+          <span class="text-danger">*</span>
+          <select class="form-select"
+            [(ngModel)]="selectedDepa"
+            (change)="cargarMunicipios(selectedDepa)"
+            [class.is-invalid]="!selectedDepa && mostrarErrores"
+            required>
+            <option value="" disabled>Seleccione Departamento</option>
+            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
+              {{ depa.depa_Descripcion }}
+            </option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="!selectedDepa && mostrarErrores">
+            <small>El campo Departamento es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Municipio -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="municipio" class="form-label me-2">Municipio</label>
+          <span class="text-danger">*</span>
+          <select class="form-select"
+            [(ngModel)]="selectedMuni"
+            (change)="cargarColonias(selectedMuni)"
+            [disabled]="!selectedDepa"
+            [class.is-invalid]="!selectedMuni && mostrarErrores && selectedDepa"
+            required>
+            <option value="" disabled>Seleccione Municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
+              {{ muni.muni_Descripcion }}
+            </option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="!selectedMuni && mostrarErrores && selectedDepa">
+            <small>El campo Municipio es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonia -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="colonia" class="form-label me-2">Colonia</label>
+          <span class="text-danger">*</span>
+          <select class="form-select"
+            [(ngModel)]="configFactura.colo_Id"
+            [disabled]="!selectedMuni"
+            [class.is-invalid]="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni"
+            required>
+            <option value="0" disabled>Seleccione Colonia</option>
+            <option *ngFor="let col of Colonias" [value]="col.colo_Id">
+              {{ col.colo_Nombre }}
+            </option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni">
+            <small>El campo Colonia es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logo -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="logo" class="form-label me-2">Logo</label>
+          <span class="text-danger">*</span>
+          <input type="file" class="form-control" accept="image/*"
+            (change)="onImageSelected($event)"
+            [class.is-invalid]="!configFactura.coFa_Logo && mostrarErrores && !logoSeleccionado"
+            required />
+          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Logo && mostrarErrores && !logoSeleccionado">
+            <small>El campo Logo es requerido</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Botones -->
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="validarEdicion()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEditar }"
+  [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Confirmación</span>
+        <i class="ri-close-line custom-modal-close" (click)="cancelarEdicion()"></i>
+      </div>
+      <hr class="custom-modal-divider">
+      <div class="modal-body custom-modal-body">
+        <div class="text-center">
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-edit-line me-2 custom-modal-alert-icon"></i>
+            ¿Estás seguro que deseas editar la configuración de factura de
+            <strong>"{{ configFacturaOriginal.coFa_NombreEmpresa }}"</strong>?
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button type="button" class="btn btn-primary btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
+          <span class="btn-text">No</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        </button>
+        <button type="button" class="btn btn-primary btn-minw-5 btn-sm" (click)="confirmarEdicion()">
+          <span class="btn-text">Sí</span>
+          <span class="btn-icon"><i class="ri-save-line"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay modal -->
+<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEditar }" *ngIf="mostrarConfirmacionEditar"></div>

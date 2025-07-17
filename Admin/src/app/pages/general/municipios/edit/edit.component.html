@@ -30,12 +30,14 @@
     <div class="row">
       <div class="col-md-6">
         <div class="mb-3">
+          <label for="muni_Descripcion" class="form-label">Descripción</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
             <input  
               type="text" 
               class="form-control" 
               [class.is-invalid]="!municipio.muni_Descripcion.trim() && mostrarErrores"
-              id="municipioDescripcion"
+              id="muni_Descripcion"
               [(ngModel)]="municipio.muni_Descripcion"
               placeholder="Ingrese la descripción del municipio"
               required>
