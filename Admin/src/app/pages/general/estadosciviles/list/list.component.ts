@@ -132,10 +132,6 @@ export class ListComponent implements OnInit {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  // (navigateToCreate eliminado, lógica movida a crear)
-
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
-
   cerrarFormulario(): void {
     this.showCreateForm = false;
   }
@@ -280,8 +276,10 @@ export class ListComponent implements OnInit {
           modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          console.log('Acciones del módulo:', modulo.Acciones);
           // Extraer solo el nombre de la acción
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);

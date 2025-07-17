@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
 import { environment } from 'src/environments/environment';
 
+
 @Component({
   selector: 'app-edit',
   standalone: true,
