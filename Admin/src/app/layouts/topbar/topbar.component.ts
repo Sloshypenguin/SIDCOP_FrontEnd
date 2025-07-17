@@ -84,8 +84,7 @@ export class TopbarComponent {
         this.userData.last_name = '';
       }
     }
-    
-    console.log('Datos de usuario en topbar:', this.userData);
+
     
     this.cartData = cartList
     this.cartData.map((x: any) => {
