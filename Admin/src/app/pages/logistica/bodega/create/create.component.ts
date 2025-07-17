@@ -130,7 +130,13 @@ export class CreateComponent  {
   guardar(): void {
     this.mostrarErrores = true;
     
-    if (this.bodega.bode_Descripcion.trim()) {
+    if (this.bodega.bode_Descripcion.trim() &&
+        this.bodega.bode_Capacidad > 0 && this.bodega.bode_Placa.trim() &&
+        this.bodega.bode_TipoCamion.trim() && this.bodega.bode_VIN.trim() &&
+        this.bodega.sucu_Id > 0 && this.bodega.regC_Id > 0 && this.bodega.vend_Id > 0 && this.bodega.mode_Id > 0
+      
+      )
+      {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
@@ -155,7 +161,7 @@ export class CreateComponent  {
         usuarioModificacion: "" 
       };
 
-      console.log('Guardando estado civil:', bodegaGuardar);
+      console.log('Guardando bodega:', bodegaGuardar);
       
       this.http.post<any>(`${environment.apiBaseUrl}/Bodega/Insertar`, bodegaGuardar, {
         headers: { 
@@ -165,8 +171,8 @@ export class CreateComponent  {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Estado civil guardado exitosamente:', response);
-          this.mensajeExito = `Estado civil "${this.bodega.bode_Descripcion}" guardado exitosamente`;
+          console.log('Bodega guardado exitosamente:', response);
+          this.mensajeExito = `Bodega "${this.bodega.bode_Descripcion}" guardado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
           
@@ -178,9 +184,9 @@ export class CreateComponent  {
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al guardar estado civil:', error);
+          console.error('Error al guardar bodega:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el estado civil. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al guardar el bodega. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;
           
           // Ocultar la alerta de error después de 5 segundos
