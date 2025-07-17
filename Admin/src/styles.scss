@@ -1079,11 +1079,10 @@ td.position-relative .dropdown-menu.show,
 }
 
 .table-responsive {
-  overflow-x: auto !important;
+  overflow-x: visible !important;
   overflow-y: visible !important;
 }
 
-// estilos de alertas flotantes
 .alert-container {
   position: fixed;
   top: 20px;

@@ -57,63 +57,65 @@
   </div>
 </div>
 
-        <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-                <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
-                  <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                    No.
-                    <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                      <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
-                      <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+       <div class="table-radius-container">
+          <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
+                  <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      No.
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                        <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                        <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                      </span>
                     </span>
-                  </span>
-                </th> 
-                <th class="gridjs-th" (click)="table.sortBy('esCv_Descripcion')" style="cursor:pointer;">
-                  <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                    Descripción
-                    <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                      <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
-                      <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('esCv_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Descripción
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                        <i class="ri-arrow-up-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                        <i class="ri-arrow-down-s-line" [ngStyle]="table.sortField === 'esCv_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}" style="font-size: 1.1em; line-height: 1;"></i>
+                      </span>
                     </span>
-                  </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                  <div class="dropdown-action-list dropup">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('eliminar')">
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('detalle')">
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
-                <td>{{data.esCv_Descripcion}}</td>
-              </tr>
-            </tbody>
-          </table>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of table.paginated$ | async; let i = index">
+                  <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
+                    <div class="dropdown-action-list dropup">
+                      <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
+                        <span>Acciones</span>
+                        <i class="ri-settings-3-line"></i>
+                      </button>
+                      <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
+                        <li *ngIf="accionPermitida('editar')">
+                          <button type="button" class="dropdown-action-btn" (click)="editar(data)">
+                            Editar <i class="ri-edit-line"></i>
+                          </button>
+                        </li>
+                        <li *ngIf="accionPermitida('eliminar')">
+                          <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
+                            Eliminar <i class="ri-delete-bin-line"></i>
+                          </button>
+                        </li>
+                        <li *ngIf="accionPermitida('detalle')">
+                          <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
+                            Detalles <i class="ri-error-warning-fill"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                  <td><span class="fw-semibold">{{data.secuencia}}</span></td>
+                  <td>{{data.esCv_Descripcion}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="row justify-content-md-between align-items-md-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <ng-container *ngIf="(table.paginated$ | async) as paginados">
