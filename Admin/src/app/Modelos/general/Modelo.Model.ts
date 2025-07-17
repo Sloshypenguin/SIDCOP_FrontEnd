@@ -1,4 +1,4 @@
-export class Modelo{
+ export class Modelo{
   mode_Id: number = 0;
   maVe_Id: number = 0;
   maVe_Marca: string = '';
