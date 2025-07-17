@@ -29,6 +29,10 @@ export class Vendedor{
   vend_FechaModificacion?: Date;
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
+  nombreSupervisor?: string = '';
+  apellidoSupervisor?: string = '';
+  nombreAyudante?: string = '';
+  apellidoAyudante?: string = '';
   code_Status: number = 0;
   message_Status: string ='';
 

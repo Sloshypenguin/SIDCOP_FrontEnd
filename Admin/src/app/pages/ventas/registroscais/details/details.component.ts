@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
+import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
 
 @Component({
   selector: 'app-details',
@@ -10,34 +10,34 @@ import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() bodegaData: Bodega | null = null;
+  @Input() registroCaiData: RegistroCAI | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  bodegaDetalle: Bodega | null = null;
+  RegistroCAIDetalle: RegistroCAI | null = null;
   cargando = false;
 
   mostrarAlertaError = false;
   mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['bodegaData'] && changes['bodegaData'].currentValue) {
-      this.cargarDetallesSimulado(changes['bodegaData'].currentValue);
+    if (changes['registroCaiData'] && changes['registroCaiData'].currentValue) {
+      this.cargarDetallesSimulado(changes['registroCaiData'].currentValue);
     }
   }
 
   // Simulación de carga
-  cargarDetallesSimulado(data: Bodega): void {
+  cargarDetallesSimulado(data: RegistroCAI): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 
     setTimeout(() => {
       try {
-        this.bodegaDetalle = { ...data };
+        this.RegistroCAIDetalle = { ...data };
         this.cargando = false;
       } catch (error) {
-        console.error('Error al cargar detalles del estado civil:', error);
+        console.error('Error al cargar detalles de Registros CAI:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles de la bodega.';
+        this.mensajeError = 'Error al cargar los detalles del Registros CAI.';
         this.cargando = false;
       }
     }, 500); // Simula tiempo de carga
