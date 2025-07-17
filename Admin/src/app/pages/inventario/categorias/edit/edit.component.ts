@@ -17,7 +17,7 @@ import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 
 
 export class EditComponent implements OnChanges {
-  @Input() estadoCivilData: Categoria | null = null;
+  @Input() categoriaData: Categoria | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Categoria>();
 
@@ -50,8 +50,8 @@ export class EditComponent implements OnChanges {
   constructor(private http: HttpClient) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['estadoCivilData'] && changes['estadoCivilData'].currentValue) {
-      this.categoria = { ...changes['estadoCivilData'].currentValue };
+    if (changes['categoriaData'] && changes['categoriaData'].currentValue) {
+      this.categoria = { ...changes['categoriaData'].currentValue };
       this.estadoCivilOriginal = this.categoria.cate_Descripcion || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
