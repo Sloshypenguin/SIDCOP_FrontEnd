@@ -107,8 +107,8 @@ export class EditComponent implements OnChanges {
         // numero: this.cargo..secuencia || '',
         carg_FechaModificacion: new Date().toISOString(),
         carg_Estado: true,
-        usuaC_Nombre : '',
-        usuaM_Nombre : ''
+        usuarioCreacion : '',
+        usuarioModificacion : ''
         // usuarioModificacion: ''
       };
 

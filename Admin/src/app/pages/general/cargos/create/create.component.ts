@@ -91,8 +91,8 @@ export class CreateComponent {
         usua_Modificacion: 0,
         carg_FechaModificacion : new Date().toISOString(),
         carg_Estado: true,
-        usuaC_Nombre : '',
-        usuaM_Nombre : ''
+        usuarioCreacion : '',
+        usuarioModificacion : ''
       };
 
       console.log('Guardando cargo:', cargoGuardar);
