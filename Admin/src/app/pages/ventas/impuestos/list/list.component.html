@@ -13,7 +13,6 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
-
         <!-- Buscador -->
         <div class="d-flex justify-content-end mb-3 flex-wrap" *ngIf="!showEditForm && !showDetailsForm">
           <div class="search-box mb-2">
@@ -34,42 +33,77 @@
             </div>
           </div>
         </div>
-
-        <!-- Tabla -->
-        <div class="table-responsive" *ngIf="!showEditForm && !showDetailsForm">
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-
-                <th *ngIf="accionPermitida('editar')">Acciones</th>
-                 <th>No.</th>
-                <th>Descripción</th>
-                <th>Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td *ngIf="accionPermitida('editar')" class="position-relative">
-                  <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li>
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">Editar <i class="ri-edit-line"></i></button>
-                      </li>
-                    </ul>
+<!-- Tabla -->
+      <div class="table-radius-container">
+          <div class="table-responsive" *ngIf=" !showEditForm && !showDetailsForm">
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th class="gridjs-th" *ngIf="accionPermitida('editar')">Acciones</th>
+                  <!-- no es necesario ordenar todas la columnas-->
+                  <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                    <span class="table-header-flex">
+                      No.
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column;">
+                       <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('impu_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Descripción
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'impu_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'impu_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                    <th class="gridjs-th" (click)="table.sortBy('impu_Valor')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Valor
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'impu_Valor' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'impu_Valor' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr class="gridjs-th"*ngFor="let data of table.paginated$ | async; let i = index">
+                  <td class="position-relative" *ngIf="accionPermitida('editar')">
+                    <div class="dropdown-action-list">
+                      <button type="button"
+                    class="dropdown-toggle"
+                    [attr.aria-expanded]="false"
+                    (click)="floatingMenuService.open($event, data)">
+                    <span>Acciones</span>
+                    <i class="ri-settings-3-line"></i>
+                  </button>
                   </div>
-                </td>
-                <td>{{ data.secuencia }}</td>
-                <td>{{ data.impu_Descripcion }}</td>
-                <td>{{ data.impu_Valor | percent:'1.2-2' }}</td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                  <td><span class="fw-semibold">{{data.secuencia}}</span></td>
+                  <td>{{data.impu_Descripcion}}</td>
+                  <td>{{data.impu_Valor | percent:'1.2-2'}}</td>
+                </tr>
+                </thead>
+            </table>
+          </div>
         </div>
-
         <!-- Paginación -->
         <div class="row justify-content-md-between align-items-md-center" *ngIf="!showEditForm && !showDetailsForm">
           <ng-container *ngIf="(table.paginated$ | async) as paginados">
@@ -98,21 +132,40 @@
 
 <!-- Alertas flotantes -->
 <div class="alert-container">
-  <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert">
-    <i class="ri-check-double-line me-3"></i>
+  <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
     <strong>¡Éxito!</strong> {{ mensajeExito }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 
-  <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert">
-    <i class="ri-alert-line me-3"></i>
+  <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
     <strong>¡Atención!</strong> {{ mensajeWarning }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 
-  <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert">
-    <i class="ri-error-warning-line me-3"></i>
+  <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
     <strong>¡Error!</strong> {{ mensajeError }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 </div>
+
+
+
+
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  
+</ul>

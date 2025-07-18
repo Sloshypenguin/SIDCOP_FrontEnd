@@ -12,7 +12,7 @@ import { ConfiguracionFactura } from 'src/app/Modelos/ventas/ConfiguracionFactur
 import { CreateComponent } from '../create/create.component';
 import { EditConfigFacturaComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
-
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -71,16 +71,16 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null;
   }
 
-  editar(impuesto: ConfiguracionFactura): void {
-    this.impuestoEditando = { ...impuesto };
+  editar(ConfiguracioFactura: ConfiguracionFactura): void {
+    this.ConfiguracioFacturaEditando = { ...ConfiguracioFactura };
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
-  detalles(impuesto: ConfiguracionFactura): void {
-    this.impuestoDetalle = { ...impuesto };
+  detalles(ConfiguracioFactura: ConfiguracionFactura): void {
+    this.ConfiguracioFacturaDetalle = { ...ConfiguracioFactura };
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
@@ -98,7 +98,7 @@ export class ListComponent implements OnInit {
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.impuestoAEliminar = null;
+    this.ConfiguracioFacturaAEliminar = null;
   }
 
 eliminar(): void {
@@ -188,14 +188,14 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`,
 
 
 
-  guardarImpuesto(impuesto: ConfiguracionFactura): void {
-    console.log('Impuesto guardado exitosamente desde create component:', impuesto);
+  guardarConfiguracioFactura(ConfiguracioFactura: ConfiguracionFactura): void {
+    console.log('ConfiguracioFactura guardado exitosamente desde create component:', ConfiguracioFactura);
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarImpuesto(impuesto: ConfiguracionFactura): void {
-    console.log('Impuesto actualizado exitosamente desde edit component:', impuesto);
+  actualizarConfiguracioFactura(ConfiguracioFactura: ConfiguracionFactura): void {
+    console.log('ConfiguracioFactura actualizado exitosamente desde edit component:', ConfiguracioFactura);
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
@@ -206,12 +206,12 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`,
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.impuestoEditando = null;
+    this.ConfiguracioFacturaEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.impuestoDetalle = null;
+    this.ConfiguracioFacturaDetalle = null;
   }
 
   cerrarAlerta(): void {
@@ -239,7 +239,8 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`,
     public table: ReactiveTableService<ConfiguracionFactura>,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {
     this.cargardatos();
   }
@@ -252,9 +253,9 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`,
   showEditForm = false;
   showDetailsForm = false;
 
-  impuestoEditando: ConfiguracionFactura | null = null;
-  impuestoDetalle: ConfiguracionFactura | null = null;
-  impuestoAEliminar: ConfiguracionFactura | null = null;
+  ConfiguracioFacturaEditando: ConfiguracionFactura | null = null;
+  ConfiguracioFacturaDetalle: ConfiguracionFactura | null = null;
+  ConfiguracioFacturaAEliminar: ConfiguracionFactura | null = null;
 
   mostrarAlertaExito = false;
   mensajeExito = '';
