@@ -100,18 +100,25 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-primary gold" (click)="cancelar()">
-        <span class="btn-text">Cancelar</span>
-        <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
-      </button>
-      <button type="button" class="btn btn-primary" (click)="validarEdicion()">
-        <span class="btn-text">Guardar</span>
-        <span class="btn-icon"><i class="ri-save-line"></i></span>
-      </button>
+    <div class="mt-auto pt-3">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+              <span class="btn-text">Cancelar</span>
+              <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+            </button>
+            <button type="button" class="btn btn-primary" (click)="validarEdicion()">
+              <span class="btn-text">Guardar</span>
+              <span class="btn-icon"><i class="ri-save-line"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 </div>
 
+<!-- Modal de confirmación para editar -->
 <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEditar }" [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -129,11 +136,11 @@
         </div>
       </div>
       <div class="modal-footer custom-modal-footer">
-        <button type="button" class="btn btn-primary  btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
+        <button type="button" class="btn btn-primary btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
           <span class="btn-text">No</span>
           <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
         </button>
-        <button type="button" class="btn btn-primary  btn-minw-5 btn-sm" (click)="confirmarEdicion()">
+        <button type="button" class="btn btn-primary btn-minw-5 btn-sm" (click)="confirmarEdicion()">
           <span class="btn-text">Si</span>
           <span class="btn-icon"><i class="ri-save-line"></i></span>
         </button>
@@ -141,4 +148,6 @@
     </div>
   </div>
 </div>
+<!-- Overlay para el modal -->
+<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEditar }" *ngIf="mostrarConfirmacionEditar"></div>
 

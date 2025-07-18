@@ -104,8 +104,8 @@ export class EditComponent implements OnChanges {
       usua_Modificacion: environment.usua_Id,
       cana_FechaModificacion: new Date().toISOString(),
       cana_Estado: this.canal.cana_Estado,
-      usuaC_Nombre: this.canal.usuaC_Nombre || '',
-      usuaM_Nombre: this.canal.usuaM_Nombre || ''
+      UsuarioCreacion: this.canal.UsuarioCreacion || '',
+      UsuarioModificacion: this.canal.UsuarioModificacion || ''
     };
 
 
