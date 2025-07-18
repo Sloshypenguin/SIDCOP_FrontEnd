@@ -187,7 +187,10 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar`,
 }
 
 
-
+  onImgError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/images/users/32/user-dummy-img.jpg';
+  }
   guardarConfiguracioFactura(ConfiguracioFactura: ConfiguracionFactura): void {
     console.log('ConfiguracioFactura guardado exitosamente desde create component:', ConfiguracioFactura);
     this.cargardatos();

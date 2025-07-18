@@ -197,7 +197,12 @@
                   <td>{{data.coFa_Correo}}</td>
                   <td>{{data.coFa_Telefono1}}</td>
                   <td>{{data.coFa_Telefono2}}</td>
-                  <td>{{data.coFa_Logo}}</td>
+                  <td>
+                       <img
+                        [src]="data.coFa_Logo" (error)="onImgError($event)" alt="Logo"
+                        class="avatar-img rounded-circle"
+                        style="width: 64px; height: 64px; object-fit: cover; display: block;"/>
+                  </td>
                 </tr>
                 </thead>
             </table>
