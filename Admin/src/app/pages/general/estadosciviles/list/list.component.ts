@@ -12,7 +12,7 @@ import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
-
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -50,26 +50,10 @@ export class ListComponent implements OnInit {
       { label: 'General' },
       { label: 'Estados Civiles', active: true }
     ];
-
+    
     // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
     this.cargarAccionesUsuario();
     console.log('Acciones disponibles:', this.accionesDisponibles);
-  }
-
-  // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
   }
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
@@ -102,6 +86,16 @@ export class ListComponent implements OnInit {
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
+   constructor(public table: ReactiveTableService<EstadoCivil>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  )
+    {
+    this.cargardatos();
+  }   
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -123,14 +117,6 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   estadoCivilAEliminar: EstadoCivil | null = null;
-
-  constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
-  }
-
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -298,3 +284,4 @@ export class ListComponent implements OnInit {
     });
   }
 }
+

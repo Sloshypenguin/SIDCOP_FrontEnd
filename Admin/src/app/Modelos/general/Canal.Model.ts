@@ -7,8 +7,8 @@ export class Canal {
   usua_Modificacion?: number;
   cana_FechaModificacion?: Date;
   cana_Estado: boolean = true;
-  usuaC_Nombre: string = '';
-  usuaM_Nombre: string = '';
+  UsuarioCreacion: string = '';
+  UsuarioModificacion: string = '';
 
   constructor(init?: Partial<Canal>) {
     Object.assign(this, init);
