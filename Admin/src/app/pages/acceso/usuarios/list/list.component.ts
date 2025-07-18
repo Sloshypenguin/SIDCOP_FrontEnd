@@ -175,6 +175,7 @@ export class ListComponent {
       code_Status: 0,
       message_Status: '',
     }
+    this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Usuarios/CambiarEstado`, usuarioEliminar,{
       headers:{
         'X-Api-Key': environment.apiKey,
@@ -182,31 +183,41 @@ export class ListComponent {
       }
     }).subscribe({
       next: (response: any) =>{
-        console.log('Respuesta del servidor:', response);
-        if(response.success && response.data){
-          if(response.data.code_Status === 1){
-            if (this.usuarioEliminar!.usua_Estado) {
-              this.mostrarOverlayCarga = true;
-              setTimeout(() => {
-                this.mostrarOverlayCarga = false;
+        setTimeout(() =>{
+          this.mostrarOverlayCarga = false;
+          if(response.success && response.data){
+            if(response.data.code_Status === 1){
+              if(this.usuarioEliminar!.usua_Estado) {
                 this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" desactivado exitosamente`;
                 this.mostrarAlertaExito = true;
-                setTimeout(() => {
-                  this.mensajeExito = '';
-                  this.mostrarAlertaExito = false;
-                  this.cancelarEliminar();
-                  this.cargarDatos();
-                }, 2000);
+              }
+              if(!this.usuarioEliminar!.usua_Estado) {
+                this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" activado exitosamente`;
+                this.mostrarAlertaExito = true;
+              }
+
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
               }, 3000);
+
+              this.cargarDatos();
+              this.cancelarEliminar();
+            }else if (response.data.code_Status === -1){
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status;
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              this.cancelarEliminar();
             }
-            if(!this.usuarioEliminar!.usua_Estado) {
-              this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" activado exitosamente`;
-              this.mostrarAlertaExito = true;
-            }
-          }else if (response.data.code_Status === -1){
+          } else {
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status;
-            
+            this.mensajeError = response.message || 'Error inesperado al cambiar el estado al usuario.';
+
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
@@ -214,17 +225,7 @@ export class ListComponent {
 
             this.cancelarEliminar();
           }
-        } else {
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al cambiar el estado al usuario.';
-
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          this.cancelarEliminar();
-        }
+        },1000)
       }
     })
   }
@@ -277,12 +278,16 @@ export class ListComponent {
   }
 
   private cargarDatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.usuarioGrid = data || [];
-      this.usuarios = this.usuarioGrid.slice(0, 10);
-      this.filtradorUsuarios();
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.usuarioGrid = data || [];
+        this.usuarios = this.usuarioGrid.slice(0, 10);
+        this.filtradorUsuarios();
+      },800);
     });
   }
 
