@@ -72,8 +72,8 @@ export class CreateComponent {
         usua_Modificacion: 0,
         cana_FechaModificacion: new Date().toISOString(),
         cana_Estado: true,
-        usuaC_Nombre: '',
-        usuaM_Nombre: ''
+        UsuarioCreacion: '',
+        UsuarioModificacion: ''
       };
 
       this.http.post<any>(`${environment.apiBaseUrl}/Canal/Insertar`, canalGuardar, {

@@ -1,10 +1,29 @@
 // Usar un contenedor externo para el border-radius y overflow
+// Agrega esto al final de tu gridjs.component.scss o styles.scss
+
 .table-radius-container {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(189, 189, 189, 0.15);
-  border: 2px solid #cfd8dc;
+  box-shadow: 0 2px 8px rgba(189, 189, 189, 0.10);
+  border: 1.5px solid #cfd8dc;
   background: #f8fafb;
+  margin-bottom: 1rem;
+}
+
+// Si quieres que la tabla también tenga bordes redondeados internos:
+.table-radius-container .table,
+.table-radius-container .table-style {
+  border-radius: 16px !important;
+  overflow: hidden;
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+.table-radius-container .table,
+.table-radius-container .table-style {
+  border-radius: 16px !important;
+  overflow: hidden;
+  border-collapse: separate !important;
+  border-spacing: 0;
 }
 .table-style {
   border-radius: 0 !important;
@@ -27,12 +46,16 @@
   color: #fff !important;
   background-color: #141a2f !important;
   border-right: 1px solid #141a2f !important;
+  vertical-align: middle !important;
+  font-size: 1.1em !important;
   border-bottom: 1.5px solid #141a2f !important;
+  padding-top: 0rem !important;
+  padding-bottom: 0em !important;
 }
 .table-style thead th:last-child {
   border-right: none !important;
 }
-
+// Puedes agregarlo en styles.scss o gridjs.component.scss
 .table-style td {
   background: #fff !important;
   border-right: 1px solid #e0e0e0 !important;
@@ -160,8 +183,4 @@
     max-height: 300px;
     overflow-y: visible;
   }
-}
-
-.table-responsive {
-  overflow: visible !important;
 }
