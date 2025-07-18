@@ -53,22 +53,16 @@
     <!-- DNI -->
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteDNI" class="form-label">Identidad<span class="text-danger">*</span></label>
+        <label for="clienteDNI" class="form-label">Identidad</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_DNI.trim() && mostrarErrores"
             id="clienteDNI"
             [(ngModel)]="cliente.clie_DNI"
             placeholder="Ingrese el DNI del cliente"
             mask="0000-0000-00000"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_DNI.trim() && mostrarErrores">
-          <small>El campo DNI del Cliente es requerido</small>
         </div>
       </div>
     </div>
@@ -76,21 +70,15 @@
     <!-- RTN -->
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteRTN" class="form-label">RTN<span class="text-danger">*</span></label>
+        <label for="clienteRTN" class="form-label">RTN</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_RTN.trim() && mostrarErrores"
             id="clienteRTN"
             [(ngModel)]="cliente.clie_RTN"
             placeholder="Ingrese el RTN del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_RTN.trim() && mostrarErrores">
-          <small>El campo RTN del Cliente es requerido</small>
         </div>
       </div>
     </div>
@@ -98,21 +86,15 @@
     <!-- Nombres -->
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteNombres" class="form-label">Nombres<span class="text-danger">*</span></label>
+        <label for="clienteNombres" class="form-label">Nombres</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_Nombres.trim() && mostrarErrores"
             id="clienteNombres"
             [(ngModel)]="cliente.clie_Nombres"
             placeholder="Ingrese el nombre del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_Nombres.trim() && mostrarErrores">
-          <small>El campo Nombres del Cliente es requerido</small>
         </div>
       </div>
     </div>
@@ -120,21 +102,15 @@
     <!-- Apellidos -->
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteApellidos" class="form-label">Apellidos<span class="text-danger">*</span></label>
+        <label for="clienteApellidos" class="form-label">Apellidos</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_Apellidos.trim() && mostrarErrores"
             id="clienteApellidos"
             [(ngModel)]="cliente.clie_Apellidos"
             placeholder="Ingrese los apellidos del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_Apellidos.trim() && mostrarErrores">
-          <small>El campo Apellidos del Cliente es requerido</small>
         </div>
       </div>
     </div>
@@ -209,21 +185,15 @@
     <!-- Correo -->
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteCorreo" class="form-label">Correo<span class="text-danger">*</span></label>
+        <label for="clienteCorreo" class="form-label">Correo</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_Correo.trim() && mostrarErrores"
             id="clienteCorreo"
             [(ngModel)]="cliente.clie_Correo"
             placeholder="Ingrese el correo del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_Correo.trim() && mostrarErrores">
-          <small>El campo Correo del Cliente es requerido</small>
         </div>
       </div>
     </div>
@@ -265,20 +235,14 @@
 
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="clienteFechaNacimiento" class="form-label">Fecha de Nacimiento<span class="text-danger">*</span></label>
+            <label for="clienteFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
             <div class="d-flex align-items-center">
             <input
                 type="date"
                 id="clienteFechaNacimiento"
                 class="form-control"
                 [(ngModel)]="cliente.clie_FechaNacimiento"
-                [class.is-invalid]="!cliente.clie_FechaNacimiento && mostrarErrores"
-                required
             />
-            <span class="text-danger ms-2" *ngIf="!cliente.clie_FechaNacimiento && mostrarErrores">*</span>
-            </div>
-            <div class="text-danger mt-1" *ngIf="!cliente.clie_FechaNacimiento && mostrarErrores">
-            <small>El campo Fecha de Nacimiento es requerido</small>
             </div>
         </div>
     </div>
@@ -307,50 +271,38 @@
 
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteEstadoCivil" class="form-label">Estado Civil<span class="text-danger">*</span></label>
+        <label for="clienteEstadoCivil" class="form-label">Estado Civil</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.esCv_Descripcion.trim() && mostrarErrores"
             id="clienteEstadoCivil"
             [(ngModel)]="cliente.esCv_Descripcion"
             placeholder="Ingrese el estado civil del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.esCv_Descripcion.trim() && mostrarErrores">
-          <small>El campo Estado Civil del Cliente es requerido</small>
         </div>
       </div>
     </div>
 
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteRuta" class="form-label">Ruta<span class="text-danger">*</span></label>
+        <label for="clienteRuta" class="form-label">Ruta</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.ruta_Descripcion.trim() && mostrarErrores"
             id="clienteRuta"
             [(ngModel)]="cliente.ruta_Descripcion"
             placeholder="Ingrese la ruta del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.ruta_Descripcion.trim() && mostrarErrores">
-          <small>El campo Ruta del Cliente es requerido</small>
         </div>
       </div>
     </div>
 
     <!-- Limite de Crédito (Decimal) -->
-<div class="col-md-5">
+<div class="col-md-6">
   <div class="mb-3">
-    <label for="clienteLimiteCredito" class="form-label">Límite de Crédito<span class="text-danger">*</span></label>
+    <label for="clienteLimiteCredito" class="form-label">Límite de Crédito</label>
     <input
       type="number"
       class="form-control"
@@ -363,9 +315,9 @@
 </div>
 
 <!-- Días de Crédito (Entero con flechitas) -->
-    <div class="col-md-5">
+    <div class="col-md-6">
     <div class="mb-3">
-        <label for="clienteDiasCredito" class="form-label">Días de Crédito<span class="text-danger">*</span></label>
+        <label for="clienteDiasCredito" class="form-label">Días de Crédito</label>
         <input
         type="number"
         class="form-control"
@@ -377,9 +329,9 @@
     </div>
 
 <!-- Saldo (Decimal) -->
-    <div class="col-md-5">
+    <div class="col-md-6">
     <div class="mb-3">
-        <label for="clienteSaldo" class="form-label">Saldo<span class="text-danger">*</span></label>
+        <label for="clienteSaldo" class="form-label">Saldo</label>
         <input
         type="number"
         class="form-control"
@@ -394,42 +346,30 @@
 
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteObservaciones" class="form-label">Observaciones<span class="text-danger">*</span></label>
+        <label for="clienteObservaciones" class="form-label">Observaciones</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_Observaciones.trim() && mostrarErrores"
             id="clienteObservaciones"
             [(ngModel)]="cliente.clie_Observaciones"
             placeholder="Ingrese las observaciones del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_Observaciones.trim() && mostrarErrores">
-          <small>El campo Observaciones del Cliente es requerido</small>
         </div>
       </div>
     </div>
 
     <div class="col-md-6">
       <div class="mb-3">
-        <label for="clienteObservaciones" class="form-label">Observaciones<span class="text-danger">*</span></label>
+        <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Retiro</label>
         <div class="d-flex align-items-center">
           <input
             type="text"
             class="form-control"
-            [class.is-invalid]="!cliente.clie_ObservacionRetiro.trim() && mostrarErrores"
-            id="clienteObservaciones"
+            id="clienteObservacionesRetiro"
             [(ngModel)]="cliente.clie_ObservacionRetiro"
             placeholder="Ingrese las observaciones del cliente"
-            required
           />
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-        </div>
-        <div class="text-danger mt-1" *ngIf="!cliente.clie_ObservacionRetiro.trim() && mostrarErrores">
-          <small>El campo Observaciones Retiro del Cliente es requerido</small>
         </div>
       </div>
     </div>
