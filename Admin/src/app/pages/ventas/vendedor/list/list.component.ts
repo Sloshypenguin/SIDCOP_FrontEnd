@@ -10,8 +10,8 @@ import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
 import { CreateComponent } from '../create/create.component';
-// import { EditComponent } from '../edit/edit.component';
-// import { DetailsComponent } from '../details/details.component';
+import { EditComponent } from '../edit/edit.component';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
   selector: 'app-list',
@@ -24,8 +24,8 @@ import { CreateComponent } from '../create/create.component';
     TableModule,
     PaginationModule,
     CreateComponent,
-    // EditComponent,
-    // DetailsComponent
+    EditComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -143,14 +143,14 @@ export class ListComponent implements OnInit {
   }
 
   guardarVendedor(vendedor: Vendedor): void {
-    console.log('Estado civil guardado exitosamente desde create component:', vendedor);
+    console.log('Vendedor guardado exitosamente desde create component:', vendedor);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
   actualizarVendedor(vendedor: Vendedor): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', vendedor);
+    console.log('Vendedor actualizado exitosamente desde edit component:', vendedor);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
@@ -171,7 +171,7 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.vendedorEliminar) return;
     
-    console.log('Eliminando estado civil:', this.vendedorEliminar);
+    console.log('Eliminando Vendedor:', this.vendedorEliminar);
     
     this.http.post(`${environment.apiBaseUrl}/Vendedores/Eliminar/${this.vendedorEliminar.vend_Id}`, {}, {
       headers: { 
@@ -201,7 +201,7 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('La Vendedor está siendo utilizada');
+            console.log('el Vendedor está siendo utilizada');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'No se puede eliminar: la Vendedor está siendo utilizada.';
             
@@ -216,7 +216,7 @@ export class ListComponent implements OnInit {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar la Vendedor.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el Vendedor.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;

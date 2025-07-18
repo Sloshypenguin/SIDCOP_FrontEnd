@@ -2,44 +2,152 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
+import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
 import { environment } from 'src/environments/environment';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule,  NgxMaskDirective, NgSelectModule],
+   providers: [provideNgxMask()],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
-  @Input() bodegaData: Bodega | null = null;
+  @Input() vendedorData: Vendedor | null = null;
   @Output() onCancel = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<Bodega>();
+  @Output() onSave = new EventEmitter<Vendedor>();
 
- bodega: Bodega = {
-     bode_Id: 0,
-    bode_Descripcion: '',
-    bode_Capacidad: 0,
-    bode_Placa: '',
-    bode_TipoCamion: '',
-    bode_VIN: '',
-    mode_Id: 0,
-    regC_Id: 0,
-    sucu_Id: 0,
+ vendedor: Vendedor = {
     vend_Id: 0,
+    vend_Nombres: '',
+    vend_Apellidos: '',
+    vend_Codigo: '',
+    vend_Telefono: '',
+    vend_Correo: '',
+    vend_DNI: '',
+    vend_Sexo: '',
+    vend_Tipo: '',
+    vend_DireccionExacta: '',
+    vend_Supervisor: 0,
+    vend_Ayudante: 0,
+    vend_EsExterno: false,
+    colo_Id: 0,
+    sucu_Id: 0,
+    vend_Estado:'',
+    vend_FechaCreacion: new Date(),
+    vend_FechaModificacion: new Date(),
     usua_Creacion: 0,
     usua_Modificacion: 0,
-    secuencia: 0,
-    bode_FechaCreacion: new Date(),
-    bode_FechaModificacion: new Date(),
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
     usuarioModificacion: ''
+    
   };
 
-  bodegaOriginal = '';
+    sucursales: any[] = [];
+    colonia: any[] = [];
+    supervisores: any[] = [];
+    ayudantes: any[] = [];
+    modelos: any[] = [];
+
+
+    searchSucursal = (term: string, item: any) => {
+  term = term.toLowerCase();
+  return (
+    item.sucu_Descripcion?.toLowerCase().includes(term) ||
+    item.muni_Descripcion?.toLowerCase().includes(term) ||
+    item.depa_Descripcion?.toLowerCase().includes(term)
+  );
+};
+
+ searchColonias = (term: string, item: any) => {
+  term = term.toLowerCase();
+  return (
+    item.colo_Descripcion?.toLowerCase().includes(term) ||
+    item.muni_Descripcion?.toLowerCase().includes(term) ||
+    item.depa_Descripcion?.toLowerCase().includes(term)
+  );
+};
+
+ordenarPorMunicipioYDepartamento(colonias: any[]): any[] {
+  return colonias.sort((a, b) => {
+    // Primero por departamento
+    if (a.depa_Descripcion < b.depa_Descripcion) return -1;
+    if (a.depa_Descripcion > b.depa_Descripcion) return 1;
+    // Luego por municipio
+    if (a.muni_Descripcion < b.muni_Descripcion) return -1;
+    if (a.muni_Descripcion > b.muni_Descripcion) return 1;
+    return 0;
+  });
+}
+
+ listarSucursales(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.sucursales = this.ordenarPorMunicipioYDepartamento(data));
+    };
+
+  listarColonias(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.colonia = this.ordenarPorMunicipioYDepartamento(data));
+    };
+
+  listarEmpleados(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Empleado/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => {
+    if (Array.isArray(data)) {
+          this.supervisores = data
+        .filter((empleado: any) => empleado.carg_Id === 1)
+        .map((empleado: any) => ({
+          ...empleado,
+          nombreCompleto: `${empleado.empl_Nombres} ${empleado.empl_Apellidos}`
+        }));
+      this.ayudantes = data
+        .filter((empleado: any) => empleado.carg_Id !== 1)
+        .map((empleado: any) => ({
+          ...empleado,
+          nombreCompleto: `${empleado.empl_Nombres} ${empleado.empl_Apellidos}`
+        }));
+    } else {
+      this.supervisores = [];
+      this.ayudantes = [];
+    }
+  });
+    };
+
+
+
+  
+
+
+
+    direccionExactaInicial: string = '';
+
+onColoniaSeleccionada(colo_Id: number) {
+  const coloniaSeleccionada = this.colonia.find((c: any) => c.colo_Id === colo_Id);
+  if (coloniaSeleccionada) {
+    this.direccionExactaInicial = coloniaSeleccionada.colo_Descripcion;
+    this.vendedor.vend_DireccionExacta = coloniaSeleccionada.colo_Descripcion;
+  } else {
+    this.direccionExactaInicial = '';
+    this.vendedor.vend_DireccionExacta = '';
+  }
+}
+
+sexos: any[] = [
+  { label: 'Masculino', value: 'M', icon: 'fa-solid fa-person' },
+  { label: 'Femenino', value: 'F', icon: 'fa-solid fa-person-dress' }
+];
+
+tieneAyudante: boolean = false;
+
+  vendedorOriginal = '';
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -51,47 +159,20 @@ export class EditComponent implements OnChanges {
 
   constructor(private http: HttpClient) {
     this.listarSucursales();
-    this.listarRegistroCai();
-    this.listarVendedores();
-    this.listarModelos();
+    this.listarEmpleados();
+    this.listarColonias();
   }
 
 
-   sucursales: any[] = [];
-    registroCais: any[] = [];
-    vendedores: any[] = [];
-    modelos: any[] = [];
 
 
- listarSucursales(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.sucursales = data);
-    };
 
-  listarRegistroCai(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.registroCais = data);
-    };
-
-  listarVendedores(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.vendedores = data);
-    };
-
-  listarModelos(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/Modelo/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.modelos = data);
-    };
-
+ 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['bodegaData'] && changes['bodegaData'].currentValue) {
-      this.bodega = { ...changes['bodegaData'].currentValue };
-      this.bodegaOriginal = this.bodega.bode_Descripcion || '';
+    if (changes['vendedorData'] && changes['vendedorData'].currentValue) {
+      this.vendedor = { ...changes['vendedorData'].currentValue };
+      this.vendedorOriginal = this.vendedor.vend_Codigo || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
     }
@@ -115,15 +196,19 @@ export class EditComponent implements OnChanges {
     this.mostrarErrores = true;
 
     if (
-    !this.bodega.bode_Descripcion.trim() ||
-    !this.bodega.bode_VIN.trim() ||
-    !this.bodega.bode_Placa.trim() ||
-    !this.bodega.bode_TipoCamion.trim() ||
-    !this.bodega.bode_Capacidad ||
-    !this.bodega.sucu_Id ||
-    !this.bodega.vend_Id ||
-    !this.bodega.mode_Id ||
-    !this.bodega.regC_Id
+    !this.vendedor.vend_Codigo.trim() ||
+    !this.vendedor.vend_DNI.trim() ||
+    !this.vendedor.vend_Nombres.trim() ||
+    !this.vendedor.vend_Apellidos.trim() ||
+    !this.vendedor.vend_Telefono.trim() ||
+    !this.vendedor.vend_Correo.trim() ||
+    !this.vendedor.vend_Sexo ||
+    !this.vendedor.vend_DireccionExacta.trim() ||
+    !this.vendedor.sucu_Id ||
+    !this.vendedor.colo_Id ||
+    !this.vendedor.vend_Tipo.trim() ||
+    !this.vendedor.vend_Supervisor ||
+    (this.tieneAyudante && !this.vendedor.vend_Ayudante) 
   ) {
     this.mostrarAlertaWarning = true;
     this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
@@ -133,15 +218,20 @@ export class EditComponent implements OnChanges {
 
   // Detectar cambios en los campos principales
   const cambios =
-    this.bodega.bode_Descripcion.trim() !== (this.bodegaData?.bode_Descripcion?.trim() ?? '') ||
-    this.bodega.bode_VIN.trim() !== (this.bodegaData?.bode_VIN?.trim() ?? '') ||
-    this.bodega.bode_Placa.trim() !== (this.bodegaData?.bode_Placa?.trim() ?? '') ||
-    this.bodega.bode_TipoCamion.trim() !== (this.bodegaData?.bode_TipoCamion?.trim() ?? '') ||
-    this.bodega.bode_Capacidad !== (this.bodegaData?.bode_Capacidad ?? 0) ||
-    this.bodega.sucu_Id !== (this.bodegaData?.sucu_Id ?? 0) ||
-    this.bodega.vend_Id !== (this.bodegaData?.vend_Id ?? 0) ||
-    this.bodega.mode_Id !== (this.bodegaData?.mode_Id ?? 0) ||
-    this.bodega.regC_Id !== (this.bodegaData?.regC_Id ?? 0);
+    this.vendedor.vend_Codigo.trim() !== (this.vendedorData?.vend_Codigo?.trim() ?? '') ||
+  this.vendedor.vend_DNI.trim() !== (this.vendedorData?.vend_DNI?.trim() ?? '') ||
+  this.vendedor.vend_Nombres.trim() !== (this.vendedorData?.vend_Nombres?.trim() ?? '') ||
+  this.vendedor.vend_Apellidos.trim() !== (this.vendedorData?.vend_Apellidos?.trim() ?? '') ||
+  this.vendedor.vend_Telefono.trim() !== (this.vendedorData?.vend_Telefono?.trim() ?? '') ||
+  this.vendedor.vend_Correo.trim() !== (this.vendedorData?.vend_Correo?.trim() ?? '') ||
+  this.vendedor.vend_Sexo !== (this.vendedorData?.vend_Sexo ?? '') ||
+  this.vendedor.vend_DireccionExacta.trim() !== (this.vendedorData?.vend_DireccionExacta?.trim() ?? '') ||
+  this.vendedor.sucu_Id !== (this.vendedorData?.sucu_Id ?? 0) ||
+  this.vendedor.colo_Id !== (this.vendedorData?.colo_Id ?? 0) ||
+  this.vendedor.vend_Tipo.trim() !== (this.vendedorData?.vend_Tipo?.trim() ?? '') ||
+  this.vendedor.vend_Supervisor !== (this.vendedorData?.vend_Supervisor ?? 0) ||
+  (this.tieneAyudante && this.vendedor.vend_Ayudante !== (this.vendedorData?.vend_Ayudante ?? 0)) ||
+  this.vendedor.vend_EsExterno !== (this.vendedorData?.vend_EsExterno ?? false);
 
   if (cambios) {
     this.mostrarConfirmacionEditar = true;
@@ -164,28 +254,36 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (this.bodega.bode_Descripcion.trim()) {
-      const bodegaActualizar = {
-        bode_Id: this.bodega.bode_Id,
-        bode_Descripcion: this.bodega.bode_Descripcion.trim(),
-        sucu_Id: this.bodega.sucu_Id,
-        regC_Id: this.bodega.regC_Id,
-        vend_Id: this.bodega.vend_Id,
-        mode_Id: this.bodega.mode_Id,
-        bode_VIN: this.bodega.bode_VIN.trim(),
-        bode_Placa: this.bodega.bode_Placa.trim(),
-        bode_TipoCamion: this.bodega.bode_TipoCamion.trim(),
-        bode_Capacidad: this.bodega.bode_Capacidad,
-        usua_Creacion: this.bodega.usua_Creacion,
-        bode_FechaCreacion: this.bodega.bode_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
-        numero: this.bodega.secuencia || '',
-        bode_FechaModificacion: new Date().toISOString(),
-        usuarioCreacion: '',
-        usuarioModificacion: ''
-      };
+   if (this.vendedor.vend_Nombres.trim()) {
+  const VendedorActualizar: any = {
+    vend_Id: this.vendedor.vend_Id,
+    vend_Codigo: this.vendedor.vend_Codigo.trim(),
+    vend_DNI: this.vendedor.vend_DNI.trim(),
+    vend_Nombres: this.vendedor.vend_Nombres.trim(),
+    vend_Apellidos: this.vendedor.vend_Apellidos.trim(),
+    vend_Telefono: this.vendedor.vend_Telefono.trim(),
+    vend_Correo: this.vendedor.vend_Correo.trim(),
+    vend_Sexo: this.vendedor.vend_Sexo,
+    vend_Tipo: this.vendedor.vend_Tipo.trim(),
+    vend_DireccionExacta: this.vendedor.vend_DireccionExacta.trim(),
+    sucu_Id: this.vendedor.sucu_Id,
+    colo_Id: this.vendedor.colo_Id,
+    vend_Supervisor: this.vendedor.vend_Supervisor || 0,
+    vend_EsExterno: this.vendedor.vend_EsExterno || false,
+    usua_Creacion: this.vendedor.usua_Creacion,
+    vend_FechaCreacion: this.vendedor.vend_FechaCreacion,
+    usua_Modificacion: environment.usua_Id,
+    vend_FechaModificacion: new Date().toISOString(),
+    usuarioCreacion: '',
+    usuarioModificacion: ''
+  };
 
-      this.http.put<any>(`${environment.apiBaseUrl}/Bodega/Actualizar`, bodegaActualizar, {
+  // Solo agregar vend_Ayudante si tieneAyudante es true
+  if (this.tieneAyudante && this.vendedor.vend_Ayudante) {
+    VendedorActualizar.vend_Ayudante = this.vendedor.vend_Ayudante;
+  }
+
+      this.http.put<any>(`${environment.apiBaseUrl}/Vendedores/Actualizar`, VendedorActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
@@ -193,20 +291,20 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `La bodega "${this.bodega.bode_Descripcion}" actualizado exitosamente`;
+          this.mensajeExito = `El Vendedor "${this.vendedor.vend_Nombres}" actualizado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
 
           setTimeout(() => {
             this.mostrarAlertaExito = false;
-            this.onSave.emit(this.bodega);
+            this.onSave.emit(this.vendedor);
             this.cancelar();
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar la bodega:', error);
+          console.error('Error al actualizar la Vendedor:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al actualizar la bodega. Por favor, intente nuevamente.';
+          this.mensajeError = 'Error al actualizar la Vendedor. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);
         }
       });

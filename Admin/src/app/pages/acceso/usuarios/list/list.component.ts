@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
-import { CreateComponent } from '../create/create.component';
+import { CreateComponent as CreateUsuarioComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 
@@ -23,7 +23,7 @@ import { DetailsComponent } from '../details/details.component';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    CreateComponent,
+    CreateUsuarioComponent,
     EditComponent,
     DetailsComponent
   ],
@@ -33,6 +33,9 @@ import { DetailsComponent } from '../details/details.component';
 export class ListComponent {
   breadCrumbItems!: Array<{}>;
   accionesDisponibles: string [] = [];
+
+  busqueda: string = '';
+  usuariosFiltrados: any[] = [];
 
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
@@ -45,6 +48,7 @@ export class ListComponent {
     ];
 
     this.cargarAccionesUsuario();
+    this.cargarDatos();
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -170,7 +174,6 @@ export class ListComponent {
 
   private cargarAccionesUsuario(): void{
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try{
@@ -194,44 +197,56 @@ export class ListComponent {
   usuarioGrid: any = [];
   usuarios: any = [];
 
+  filtradorUsuarios(): void {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) {
+      this.usuariosFiltrados = this.usuarios;
+    } else {
+      this.usuariosFiltrados = this.usuarios.filter((usuario: any) =>
+        (usuario.nombreCompleto || '').toLowerCase().includes(termino) ||
+        (usuario.usua_Usuario || '').toLowerCase().includes(termino) ||
+        (usuario.role_Descripcion || '').toLowerCase().includes(termino)
+      );
+    }
+  }
+
   private cargarDatos(): void {
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.usuarioGrid = data || [];
       this.usuarios = this.usuarioGrid.slice(0, 10);
+      this.filtradorUsuarios();
     });
   }
 
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
+  get startIndex(): number {
+    return this.usuarioGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
+  }
+
+  get endIndex(): number {
+    if (!this.usuarioGrid?.length) return 0;
+    const end = this.currentPage * this.itemsPerPage;
+    return end > this.usuarioGrid.length ? this.usuarioGrid.length : end;
+  }
+
   pageChanged(event: any): void {
+    this.currentPage = event.page;
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     this.usuarios = this.usuarioGrid.slice(startItem, endItem);
+    this.filtradorUsuarios();
   }
 
-  term: any;
-
-  filterdata() {
-    if (this.term) {
-      this.usuarios = this.usuarioGrid.filter((el: any) => el.name?.toLowerCase().includes(this.term.toLowerCase()));
-    } else {
-      this.usuarios = this.usuarioGrid.slice(0, 10);
-    }
-    // noResultElement
-    this.updateNoResultDisplay();
+  trackByUsuarioId(index: number, item: any): any {
+    return item.usua_Id;
   }
 
-  updateNoResultDisplay() {
-    const noResultElement = document.querySelector('.noresult') as HTMLElement;
-    const paginationElement = document.getElementById('pagination-element') as HTMLElement;
-    if (noResultElement && paginationElement) {
-      if (this.term && this.usuarios.length === 0) {
-        noResultElement.style.display = 'block';
-        paginationElement.classList.add('d-none');
-      } else {
-        noResultElement.style.display = 'none';
-        paginationElement.classList.remove('d-none');
-      }
-    }
+  onImgError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/images/users/32/user-dummy-img.jpg';
   }
 }

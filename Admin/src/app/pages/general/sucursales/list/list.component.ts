@@ -147,20 +147,60 @@ actualizarSucursal(sucursal: Sucursales): void {
         'accept': '*/*'
       }
     }).subscribe({
-      next: (response) => {
-        this.mensajeExito = `Sucursal "${this.sucursalAEliminar!.sucu_Descripcion}" eliminada exitosamente`;
-        this.mostrarAlertaExito = true;
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-        }, 3000);
-        this.cargarDatos();
-        this.cancelarEliminar();
+      next: (response: any) => {
+        // ...
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+
+            this.mensajeExito = `Sucursal "${this.sucursalAEliminar!.sucu_Descripcion}" eliminada exitosamente`;
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            this.cargarDatos();
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la sucursal está siendo utilizada.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar la sucursal.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            this.cancelarEliminar();
+          }
+        } else {
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar la sucursal.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        }
       },
-      error: () => {
+      error: (err) => {
+        const codeStatus = err?.error?.data?.code_Status;
+        const messageStatus = err?.error?.data?.message_Status;
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al eliminar la sucursal. Por favor, intente nuevamente.';
-        setTimeout(() => {
+        if (codeStatus === -1) {
+          this.mensajeError = messageStatus || 'No se puede eliminar: la sucursal está siendo utilizada.';
+        } else if (codeStatus === 0) {
+          this.mensajeError = messageStatus || 'Error al eliminar la sucursal.';
+        } else {
+          this.mensajeError = err?.error?.message || 'Error al eliminar la sucursal. Intenta de nuevo.';
+        }
+        setTimeout(() => {  
           this.mostrarAlertaError = false;
+          this.mensajeError = '';
         }, 5000);
         this.cancelarEliminar();
       }
@@ -192,7 +232,7 @@ actualizarSucursal(sucursal: Sucursales): void {
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
         }
       } catch (e) {
-        console.error('Error al parsear permisosJson:', e);
+        // Silenciar error de parseo de permisosJson
       }
     }
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
