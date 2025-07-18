@@ -132,8 +132,14 @@ export class ListComponent {
   }
 
   guardarUsuario(usuario: Usuario): void {
-    this.cargarDatos();
-    this.cerrarFormulario();
+    this.showCreateForm = false;
+    this.mensajeExito = `Usuario guardado exitosamente`;
+    this.mostrarAlertaExito = true;
+    setTimeout(() => {
+      this.mostrarAlertaExito = false;
+      this.mensajeExito = '';
+      this.cargarDatos();
+    }, 3000);
   }
 
   actualizarUsuario(usuario: Usuario): void {
