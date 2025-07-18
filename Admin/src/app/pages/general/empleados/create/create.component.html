@@ -212,8 +212,8 @@
 
       <div class="col-lg-12">
         <div class="mb-3">
-          <label class="form-label">Imagen del empleado<span class="text-danger">*</span></label>
-          <dropzone  class="dropzone" [config]="dropzoneConfig" [message]="'Selecciona una imagen para subir'" (success)="onUploadSuccess($event)"></dropzone>
+          <label class="form-label">Imagen del restaurante<span class="text-danger">*</span></label>
+          <dropzone class="dropzone" [config]="dropzoneConfig" [message]="'Selecciona una imagen para subir.'" (success)="onFileSelected($event)"></dropzone>
           @if (uploadedFiles) {
           <ul class="list-unstyled mb-0" id="dropzone-preview">
               @for (file of uploadedFiles; track $index) {
@@ -236,7 +236,7 @@
                               </div>
                           </div>
                           <div class="flex-shrink-0 ms-3">
-                              <button (click)="removeFile(file)" class="btn btn-sm btn-danger">Delete</button>
+                              <button (click)="removeFile(file)" class="btn btn-sm btn-danger">Eliminar</button>
                           </div>
                       </div>
                   </div>
@@ -244,7 +244,8 @@
           }
           </ul>
           }
-      </div>
+        </div>
+        
       </div>
       
 

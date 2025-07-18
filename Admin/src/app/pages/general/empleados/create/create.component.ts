@@ -141,7 +141,8 @@ export class CreateComponent {
       empl_FechaModificacion: new Date().toISOString(),
       };
       
-      console.log('Guardando estado civil:', estadoCivilGuardar);
+      console.log('Datos a enviar al backend:', estadoCivilGuardar);
+      console.log('URL de la imagen (empl_Imagen):', estadoCivilGuardar.empl_Imagen);
         
       this.http.post<any>(`${environment.apiBaseUrl}/Empleado/Insertar`, estadoCivilGuardar, {
       headers: { 
@@ -156,11 +157,10 @@ export class CreateComponent {
       this.mostrarAlertaExito = true;
       this.mostrarErrores = false;
         
-      // Ocultar la alerta después de 3 segundos
-      setTimeout(() => {
-      this.mostrarAlertaExito = false;
       this.onSave.emit(this.empleado);
       this.cancelar();
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
       }, 3000);
       },
       error: (error) => {
@@ -267,7 +267,7 @@ export class CreateComponent {
     //Crear imagenes
 
     public dropzoneConfig: DropzoneConfigInterface = {
-      url: 'https://localhost:7091/SubirImagen',
+      url: 'https://httpbin.org/post', // No subir a ningún endpoint automáticamente
       clickable: true,
       addRemoveLinks: true,
       previewsContainer: false,
@@ -281,19 +281,29 @@ export class CreateComponent {
     // File Upload
     imageURL: any;
 
-    async onUploadSuccess(event: any) {
-      // event[0] es el archivo (File)
-      const file = event[0];
+    async onFileSelected(event: any) {
+      // event puede ser un array de archivos o un solo archivo dependiendo de Dropzone
+      const file = Array.isArray(event) ? event[0] : event;
+      if (!file) return;
+      // Previsualización local inmediata
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.uploadedFiles = [{ ...file, dataURL: e.target.result, name: file.name }];
+      };
+      reader.readAsDataURL(file);
+      // Intentar subir a Cloudinary
       try {
         const imageUrl = await this.uploadImageToCloudinary(file);
         this.empleado.empl_Imagen = imageUrl;
-        // Mostrar la imagen subida en la UI
+        // Actualizar preview con la URL de Cloudinary
         this.uploadedFiles = [{ ...file, dataURL: imageUrl, name: file.name }];
       } catch (error) {
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al subir la imagen a Cloudinary.';
-        }
       }
+    }
+
+    
 
       // Subida directa a Cloudinary
       async uploadImageToCloudinary(file: File): Promise<string> {
@@ -306,6 +316,7 @@ export class CreateComponent {
           method: 'POST',
           body: formData
         });
+        console.log(response);
         const data = await response.json();
         if (!data.secure_url) throw new Error('No se pudo obtener la URL de la imagen');
         return data.secure_url;

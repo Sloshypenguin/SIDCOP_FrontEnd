@@ -99,7 +99,7 @@
                 </div>
                 <div style="background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #D5B58A; margin-bottom: -35px; z-index:2;">
                     <img
-                      src="assets/images/users/48/avatar-8.jpg"
+                      src="{{ empleado.empl_Imagen }}"
                       class="avatar-img rounded-circle"
                       alt="Empleado"
                       style="width: 64px; height: 64px; object-fit: cover; display: block;"
@@ -120,7 +120,7 @@
 
                 <div class="d-flex justify-content-center align-items-center gap-2 text-muted mb-2" style="font-size: 0.875rem;">
                     <i class="bi bi-person-badge" style="color: #141A2F;"></i>
-                    <span>Empleado general</span>
+                    <span>{{empleado.carg_Descripcion}}</span>
                 </div>
 
                 <!-- Info -->
