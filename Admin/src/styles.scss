@@ -1,4 +1,4 @@
-/* Botón especial para acciones en el dropdown de acciones */
+
 .dropdown-action-btn {
   background-color: rgb(187, 190, 202) !important;
   border: none !important;
@@ -808,23 +808,6 @@ ngx-dropzone-preview {
   margin: 25px;
 }
 
-//
-
-// .nav-pills {
-//   --tb-nav-pills-link-active-bg: none !important;
-//   --tb-nav-link-padding-y: 0!important ;
-//   --tb-nav-link-padding-x: 0 !important;
-// }
-
-// .nav-link{
-//   padding: 0 ;
-// }
-
-// .nav-item {
-//   .active{
-//     background-color:  !important;
-//   }
-// }
 
 [data-bs-theme="dark"] {
   .ng-select .ng-select-container {
@@ -908,13 +891,7 @@ ngx-dropzone-preview {
   }
 }
 
-.dropdown-responsive {
-  left: 0 !important;
-}
 
-.table-dropdown {
-  right: 0 !important;
-}
 
 @media (max-width: 425px) {
   .profile-dropdown {
@@ -1080,7 +1057,34 @@ bs-dropdown-container {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.3em;
+  gap: 0.4em;
+}
+
+/* Unifica estilo grueso y oscuro para encabezados de tabla personalizados */
+.table-style thead th,
+th.gridjs-th {
+  color: #fff !important;
+  background-color: #141a2f !important;
+  border-right: 1px solid #141a2f !important;
+  vertical-align: middle !important;
+  font-size: 1.2em !important;
+  font-weight: 700 !important;
+  padding-top: 0.5em !important;
+  padding-bottom: 0.5em !important;
+  padding-left: 2em !important;
+  padding-right: 0.8em !important;
+  margin-left: 0.5em;
+}
+.gridjs-th {
+  text-align: left;
+  padding-left: 2em;
+  padding-right: 0.8em;
+  padding-top: 0.7em;
+  padding-bottom: 0.7em;
+  margin-left: 0.5em;
+  /* Ejemplo: */
+  /* width: 120px; */
+  /* font-weight: 600; */
 }
 
 .table-header-sort-icons {
@@ -1098,7 +1102,6 @@ td.position-relative, .gridjs-td {
 }
 
 .dropdown-menu.show {
-  background: transparent !important;
   color: inherit !important;
   border: none !important;
   overflow: hidden !important;  
