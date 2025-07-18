@@ -136,7 +136,7 @@ export class SidebarComponent {
 
   // Click wise Parent active class add
   toggleParentItem(event: any, item: any) {
-    // console.log('fdfdsf');
+
 
     this.toggleItem(event, item)
     let isCurrentMenuId = event.target.closest('a.nav-link');
