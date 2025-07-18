@@ -37,23 +37,28 @@ export class CreateComponent {
   }
 
   private cargarPantallas(): void {
+    // Realiza una petición GET para obtener la lista de pantallas
     this.http.get(`${environment.apiBaseUrl}/Roles/ListarPantallas`, {
       headers: { 'x-api-key': environment.apiKey },
       responseType: 'text'
     }).subscribe({
       next: raw => {
         try {
+          // Limpia espacios y ajusta el formato si la respuesta no es un array
           let data = raw.trim();
           if (!data.startsWith('[')) {
             data = `[${data}]`;
           }
+          // Parsea la respuesta y la asigna a 'esquemas'
           const parsed = JSON.parse(data);
           this.esquemas = Array.isArray(parsed) ? parsed : [parsed];
         } catch (e) {
+          // Muestra error si no se puede parsear la respuesta
           console.error('No se pudo parsear la respuesta de pantallas:', e, raw);
         }
       },
       error: err => {
+        // Muestra error si falla la petición HTTP
         console.error('Error al cargar pantallas:', err);
       }
     });
