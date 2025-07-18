@@ -403,7 +403,8 @@ export class ListComponent {
         empl_Nombres: empleado.empl_Nombres || '',
         empl_Apellidos: empleado.empl_Apellidos || '',
         empl_Sexo: empleado.empl_Sexo || '',
-        empl_FechaNacimiento: empleado.empl_FechaNacimiento || '',
+        
+        empl_FechaNacimiento: new Date(empleado.empl_FechaNacimiento) || '',
         empl_Correo: empleado.empl_Correo || '',
         empl_Telefono: empleado.empl_Telefono || '',
         sucu_Id: empleado.sucu_Id ?? undefined,
@@ -414,6 +415,7 @@ export class ListComponent {
         empl_Estado: empleado.empl_Estado ?? 1,
         usua_Creacion: empleado.usua_Creacion ?? 0,
         empl_FechaCreacion: empleado.empl_FechaCreacion ?? '',
+        empl_Imagen: empleado.empl_Imagen || '', // Asegura que la imagen actual se pase al editar
       };
       this.showEditForm = true;
       this.showCreateForm = false; // Cerrar create si está abierto

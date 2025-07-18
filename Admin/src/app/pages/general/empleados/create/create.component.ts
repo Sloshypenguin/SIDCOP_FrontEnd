@@ -110,17 +110,36 @@ export class CreateComponent {
       this.mensajeWarning = '';
     }
   
-    guardar(): void {
+    async guardar(): Promise<void> {
+
+      // Si hay un archivo local seleccionado en uploadedFiles, subirlo a Cloudinary
+    if (this.uploadedFiles.length > 0 && this.uploadedFiles[0].file) {
+      try {
+        const imageUrl = await this.uploadImageToCloudinary(this.uploadedFiles[0].file);
+        this.empleado.empl_Imagen = imageUrl;
+      } catch (error) {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al subir la imagen a Cloudinary.';
+        return; // No continuar si la imagen no se pudo subir
+      }
+    }
       this.mostrarErrores = true;
+
+      
         
       if (this.empleado.empl_DNI.trim()) {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
+
+      const dni = this.empleado.empl_DNI.trim();
+      const dniMask = dni.length === 15 ? dni.slice(0, 4) + '-' + dni.slice(4, 8) + '-' + dni.slice(8, 15) : dni;
+
+      const telefono = this.empleado.empl_Telefono.trim();
         
       const estadoCivilGuardar = {
       empl_Id: 0,
-      empl_DNI: this.empleado.empl_DNI,
+      empl_DNI: dniMask,
       empl_Codigo: this.empleado.empl_Codigo,
       empl_Nombres: this.empleado.empl_Nombres,
       empl_Apellidos: this.empleado.empl_Apellidos,
@@ -281,26 +300,16 @@ export class CreateComponent {
     // File Upload
     imageURL: any;
 
-    async onFileSelected(event: any) {
-      // event puede ser un array de archivos o un solo archivo dependiendo de Dropzone
+    onFileSelected(event: any) {
       const file = Array.isArray(event) ? event[0] : event;
       if (!file) return;
+
       // Previsualización local inmediata
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.uploadedFiles = [{ ...file, dataURL: e.target.result, name: file.name }];
+        this.uploadedFiles = [{ ...file, dataURL: e.target.result, name: file.name, file: file }];
       };
       reader.readAsDataURL(file);
-      // Intentar subir a Cloudinary
-      try {
-        const imageUrl = await this.uploadImageToCloudinary(file);
-        this.empleado.empl_Imagen = imageUrl;
-        // Actualizar preview con la URL de Cloudinary
-        this.uploadedFiles = [{ ...file, dataURL: imageUrl, name: file.name }];
-      } catch (error) {
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al subir la imagen a Cloudinary.';
-      }
     }
 
     
