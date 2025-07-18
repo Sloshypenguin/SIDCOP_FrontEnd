@@ -65,7 +65,7 @@
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
                   <!-- no es necesario ordenar todas la columnas-->
                   <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                    <span class="table-header-flex">
                       No.
                       <!-- iconos para ordenar -->
                       <span style="display: flex; flex-direction: column;">
@@ -76,7 +76,6 @@
                         [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                       </i>
                       </span>
-
                     </span>
                   </th>
                   <th class="gridjs-th" (click)="table.sortBy('esCv_Descripcion')" style="cursor:pointer;">
@@ -94,7 +93,6 @@
                     </span>
                   </th>
                 </tr>
-              
                 <tr class="gridjs-th"*ngFor="let data of table.paginated$ | async; let i = index">
                   <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
                     <div class="dropdown-action-list">

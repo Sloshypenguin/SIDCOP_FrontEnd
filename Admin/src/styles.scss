@@ -1056,20 +1056,47 @@ bs-dropdown-container {
   border-radius: 0 20px 20px 0 !important;
 }
 .icon-sort {
-  font-size: 1.3em;
-  font-weight: bold;
+  font-size: 0.9em;
   line-height: 1;
   transition: color 0.2s;
   cursor: pointer;
-  height: 1em;
+  height: 1.3em;
+  width: 1.3em;
+  min-width: 1.3em;
+  min-height: 1.3em;
+  max-width: 1.3em;
+  max-height: 1.3em;
   vertical-align: middle;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin: 0 !important;
   padding: 0 !important;
+  box-sizing: content-box;
 }
+
+
+.table-header-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.table-header-sort-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3em;
+  min-height: 2.6em;
+}
+
 td.position-relative, .gridjs-td {
   position: relative;
 }
+
 .dropdown-menu.show {
   background: transparent !important;
   color: inherit !important;
