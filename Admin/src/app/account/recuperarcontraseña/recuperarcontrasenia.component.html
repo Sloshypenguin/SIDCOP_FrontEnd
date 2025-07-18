@@ -1,0 +1,18 @@
+    <h2 class="login-title">Inicio de sesión</h2>
+    <form  class="login-form">
+      <div class="login-input-group">
+        <label for="username" class="login-label">Usuario</label>
+        <div class="login-input-icon">
+          <i class="ri-user-line"></i>
+          <input type="text" formControlName="email" id="username" placeholder="Nombre de usuario" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-login">
+        <span class="btn-text">INGRESAR</span>
+        <i class="ri-login-box-line"></i>
+      </button>
+      
+      <div class="login-forgot">
+        <a routerLink="/auth/pass-reset">¿Olvidaste tu contraseña?</a>
+      </div>
+    </form>

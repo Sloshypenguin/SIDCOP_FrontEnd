@@ -7,7 +7,7 @@
     <path d="M-14 -58H1254.03C1254.03 -58 1352.86 156.604 1244.99 140.529C661 53.5 -9.47848 150.011 -9.47848 150.011L-14 -58Z" fill="#141A2F"/>
   </svg>
 </header>
-<section class="auth-page-wrapper d-flex align-items-center justify-content-center min-vh-100">
+<section class="auth-page-wrapper d-flex align-items-center justify-content-center min-vh-100" *ngIf="!showrecuperar">
   <div class="login-overlay"></div>
   <div class="login-card">
     <h2 class="login-title">Inicio de sesión</h2>
@@ -36,16 +36,17 @@
       </button>
 
       <div class="login-forgot">
-        <a routerLink="/auth/pass-reset">¿Olvidaste tu contraseña?</a>
+        <a (click)="showrecuperar=true" [ngStyle]="{'cursor':'pointer'}">Olvidaste tu contraseña?</a>
       </div>
     </form>
   </div>
+</section> 
+<!-- recuperar contraseña-->
+<section class="auth-page-wrapper d-flex align-items-center justify-content-center min-vh-100" *ngIf="showrecuperar">
+  <div class="login-overlay"></div>
+  <div class="login-card">
+         <app-recuperarcontrasenia></app-recuperarcontrasenia>
+  </div>
 </section>
-       <button type="submit" class="btn btn-login">
-        <span class="btn-text">Enviar</span>
-        <i class="ri-send-plane-2-line"></i>
-      </button>
-       <button type="submit" class="btn btn-login">
-        <i class="ri-arrow-left-line"></i>
-        <span class="btn-text">Regresar</span>
-      </button> 
+
+      

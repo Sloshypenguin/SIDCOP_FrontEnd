@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.service';
 import { login } from 'src/app/store/Authentication/authentication.actions';
+import { RecuperarcontraseniaComponent } from 'src/app/account/recuperarcontraseña/recuperarcontrasenia.component';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { login } from 'src/app/store/Authentication/authentication.actions';
 export class LoginComponent {
 
   // Login Form
+  showrecuperar=false;
   loginForm!: UntypedFormGroup;
   submitted = false;
   fieldTextType!: boolean;

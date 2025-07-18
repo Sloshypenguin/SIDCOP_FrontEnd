@@ -8,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './recuperarcontrasenia.component.scss'
 })
 export class RecuperarcontraseniaComponent {
-
+  fieldTextType!: boolean;
 }
