@@ -7,7 +7,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AuthModule } from './auth/auth.module';
 
 // Component
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './login/login/login.component';
 
 
 

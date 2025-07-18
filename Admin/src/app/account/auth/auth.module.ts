@@ -6,19 +6,9 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { ErrorsModule } from './errors/errors.module';
 
 
-
-// Component
-import { SigninComponent } from './signin/signin.component';
-
-import { LockscreenComponent } from './lockscreen/lockscreen.component';
-import { LogoutComponent } from './logout/logout.component';
-
-
 @NgModule({
   declarations: [
-    SigninComponent,
-    LockscreenComponent,
-    LogoutComponent,
+
   ],
   imports: [
     CommonModule,
@@ -26,9 +16,7 @@ import { LogoutComponent } from './logout/logout.component';
     ErrorsModule
   ],
   exports: [
-    SigninComponent,
-    LockscreenComponent,
-    LogoutComponent
+
   ]
 
 })
