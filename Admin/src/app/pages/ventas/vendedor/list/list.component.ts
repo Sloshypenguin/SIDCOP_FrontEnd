@@ -12,6 +12,7 @@ import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -109,8 +110,9 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   vendedorEliminar: Vendedor | null = null;
 
-  constructor(public table: ReactiveTableService<Vendedor>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Vendedor>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
     this.cargardatos();
+
   }
 
    accionesDisponibles: string[] = [];
