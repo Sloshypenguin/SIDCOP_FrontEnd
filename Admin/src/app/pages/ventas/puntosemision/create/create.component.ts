@@ -24,7 +24,18 @@ export class CreateComponent {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  constructor(private http: HttpClient) {}
+  Sucursales: any[] = [];
+
+   cargarSucursales() {
+      this.http.get<any>('https://localhost:7071/Sucursales/Listar', {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.Sucursales = data);
+    };
+
+  constructor(private http: HttpClient) {
+    this.cargarSucursales();
+
+  }
 
   puntoEmision: PuntoEmision = {
     puEm_Id: 0,
@@ -32,7 +43,7 @@ export class CreateComponent {
     puEm_Descripcion: '',
     usua_Creacion: 0,
     usua_Modificacion: 0,
-   
+    sucu_Id: 0,
     puEm_FechaCreacion: new Date(),
     puEm_FechaModificacion: new Date(),
     code_Status: 0,
@@ -57,7 +68,7 @@ export class CreateComponent {
     puEm_Descripcion: '',
     usua_Creacion: 0,
     usua_Modificacion: 0,
-   
+    sucu_Id: 0,
     puEm_FechaCreacion: new Date(),
     puEm_FechaModificacion: new Date(),
     code_Status: 0,
@@ -95,10 +106,12 @@ export class CreateComponent {
         usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
         puEm_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
-        numero: "", 
+        sucu_Id: this.puntoEmision.sucu_Id,
         puEm_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: "", 
-        usuarioModificacion: "" 
+        usuarioModificacion: "",
+        estado: '',
+        secuencia: 0,
       };
 
       console.log('Guardando puntoE:', puntoemisionGuardar);
@@ -124,6 +137,8 @@ export class CreateComponent {
           }, 3000);
         },
         error: (error) => {
+          console.log('Entro esto', puntoemisionGuardar)
+         // console.log('Error al guardar punto de emision:', error);
           console.error('Error al guardar punto de emision:', error);
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al punto de emision. Por favor, intente nuevamente.';

@@ -65,6 +65,37 @@
           </div>
         </div>
       </div>
+
+       <div class="col-md-6">
+        <label for="nombres-input" class="form-label"
+          >Sucursal<span class="text-danger">*</span></label
+        >
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <select
+              id="sucursalId"
+              name="sucursalId"
+              class="form-select"
+              [class.is-invalid]="!puntoEmision.sucu_Id && mostrarErrores"
+              [(ngModel)]="puntoEmision.sucu_Id"
+              required
+            >
+              <option value="" disabled selected>Seleccione una opción</option>
+              <option *ngFor="let Sucu of Sucursales" [value]="Sucu.sucu_Id">
+                {{ Sucu.sucu_Descripcion }}
+              </option>
+            </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!puntoEmision.sucu_Id && mostrarErrores"
+          >
+            <small>El campo Sucursal es requerido</small>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   
