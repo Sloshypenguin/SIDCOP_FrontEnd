@@ -22,8 +22,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Código <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor" [class.is-invalid]="mostrarErrores && !proveedor.prov_Codigo?.trim()">
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Codigo?.trim()">
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor" [class.is-invalid]="mostrarErrores && !proveedor.prov_Codigo.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Codigo.trim()">
             <small>El campo Código es requerido</small>
           </div>
         </div>
@@ -31,8 +31,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Empresa <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreEmpresa?.trim()">
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreEmpresa?.trim()">
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">
             <small>El campo empresa es requerido</small>
           </div>
         </div>
@@ -42,8 +42,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Contacto <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto" [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreContacto?.trim()">
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreContacto?.trim()">
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto" [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreContacto.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreContacto.trim()">
             <small>El campo Contacto es requerido</small>
           </div>
         </div>
@@ -51,8 +51,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Teléfono <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono" [class.is-invalid]="mostrarErrores && !proveedor.prov_Telefono?.trim()">
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Telefono?.trim()">
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono" [class.is-invalid]="mostrarErrores && !proveedor.prov_Telefono.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Telefono.trim()">
             <small>El campo Teléfono es requerido</small>
           </div>
         </div>
@@ -62,8 +62,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Correo <span class="text-danger">*</span></label>
-          <input type="email" class="form-control" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico" [class.is-invalid]="mostrarErrores && !proveedor.prov_Correo?.trim()">
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Correo?.trim()">
+          <input type="email" class="form-control" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico" [class.is-invalid]="mostrarErrores && !proveedor.prov_Correo.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Correo.trim()">
             <small>El campo Correo es requerido</small>
           </div>
         </div>
@@ -71,8 +71,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Dirección <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta" [class.is-invalid]="mostrarErrores && !proveedor.prov_DireccionExacta?.trim()">
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_DireccionExacta?.trim()">
+          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta" [class.is-invalid]="mostrarErrores && !proveedor.prov_DireccionExacta.trim()">
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_DireccionExacta.trim()">
             <small>El campo Dirección es requerido</small>
           </div>
         </div>
@@ -136,8 +136,8 @@
       <div class="col-md-12">
         <div class="mb-3">
           <label>Observaciones <span class="text-danger">*</span></label>
-          <textarea class="form-control" [(ngModel)]="proveedor.prov_Observaciones" placeholder="Observaciones" [class.is-invalid]="mostrarErrores && !proveedor.prov_Observaciones?.trim()"></textarea>
-          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Observaciones?.trim()">
+          <textarea class="form-control" [(ngModel)]="proveedor.prov_Observaciones" placeholder="Observaciones" [class.is-invalid]="mostrarErrores && !proveedor.prov_Observaciones.trim()"></textarea>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Observaciones.trim()">
             <small>El campo Observaciones es requerido</small>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
   selector: 'app-details',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './details.component.html',
+  templateUrl:'./details.component.html',
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges{
