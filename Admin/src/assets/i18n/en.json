@@ -31,7 +31,8 @@
       "TEXT": "Inventario",
       "LIST": {
         "CATEGORIAS": "Categorias",
-        "SUBCATEGORIAS": "Subcategorias"
+        "SUBCATEGORIAS": "Subcategorias",
+        "PRODUCTOS": "Productos"
       }
     },
     "VENTAS": {

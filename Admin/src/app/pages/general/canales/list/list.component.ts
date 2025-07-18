@@ -147,7 +147,7 @@ export class ListComponent implements OnInit {
 
   eliminar(): void {
     if (!this.canalAEliminar) return;
-    this.http.post(`${environment.apiBaseUrl}/Canal/Eliminar/${this.canalAEliminar.cana_Id}`, {}, {
+    this.http.put(`${environment.apiBaseUrl}/Canal/Eliminar/${this.canalAEliminar.cana_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'

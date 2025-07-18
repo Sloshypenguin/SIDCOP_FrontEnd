@@ -12,6 +12,11 @@ const routes: Routes = [
     path: 'subcategorias',
     loadChildren: () =>
       import('./subcategorias/subcategorias.module').then(m => m.SubcategoriasModule)
+  },
+  {
+    path: 'productos',
+    loadChildren: () =>
+      import('./productos/productos.module').then(m => m.ProductosModule)
   }
 ];
 
