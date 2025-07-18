@@ -128,10 +128,12 @@
 
                             <ul class="list-unstyled mb-4 mt-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
                                 <li class="d-flex justify-content-center align-items-center mb-2" style="gap: 4px;">
-                                    <span class="text-muted text-break">Usuario:</span><span>{{ data.usua_Usuario }}</span>
+                                    <span class="text-muted text-break">Usuario:</span>
+                                    <span>{{ data.usua_Usuario }}</span>
                                 </li>
                                 <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
-                                    <span class="text-muted text-break">Rol:</span><span>{{ data.role_Descripcion }}</span>
+                                    <span class="text-muted text-break">Rol:</span>
+                                    <span>{{ data.role_Descripcion }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -154,9 +156,9 @@
                     (pageChanged)="pageChanged($event)">
                 </pagination>
             </div>
-        </div>
+        </div>        
 
-        <div class="alert-container">
+        <div class="alert-container" style="z-index: 3000;">
             <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
                 <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
                 <strong>¡Éxito!</strong> {{ mensajeExito }}
@@ -220,6 +222,14 @@
             </div>
         </div>
         <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+    </div>
+</div>
 
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+    <div class="loading-wave">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
     </div>
 </div>

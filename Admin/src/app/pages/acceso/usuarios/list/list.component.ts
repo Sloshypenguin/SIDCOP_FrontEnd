@@ -12,6 +12,7 @@ import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 import { CreateComponent as CreateUsuarioComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -96,6 +97,7 @@ export class ListComponent {
   usuarioDetalles: Usuario | null = null;
 
   //Propiedades para las alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -183,22 +185,24 @@ export class ListComponent {
         console.log('Respuesta del servidor:', response);
         if(response.success && response.data){
           if(response.data.code_Status === 1){
-            if(this.usuarioEliminar!.usua_Estado) {
-              this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" desactivado exitosamente`;
-              this.mostrarAlertaExito = true;
+            if (this.usuarioEliminar!.usua_Estado) {
+              this.mostrarOverlayCarga = true;
+              setTimeout(() => {
+                this.mostrarOverlayCarga = false;
+                this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" desactivado exitosamente`;
+                this.mostrarAlertaExito = true;
+                setTimeout(() => {
+                  this.mensajeExito = '';
+                  this.mostrarAlertaExito = false;
+                  this.cancelarEliminar();
+                  this.cargarDatos();
+                }, 2000);
+              }, 3000);
             }
             if(!this.usuarioEliminar!.usua_Estado) {
               this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" activado exitosamente`;
               this.mostrarAlertaExito = true;
             }
-
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-
-            this.cargarDatos();
-            this.cancelarEliminar();
           }else if (response.data.code_Status === -1){
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status;
