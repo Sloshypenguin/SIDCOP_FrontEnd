@@ -34,7 +34,8 @@ export class EditComponent implements OnInit, OnChanges {
     usuarioCreacion: '',
     usuarioModificacion: '',
     code_Status: 0,
-    message_Status: ''
+    message_Status: '',
+    mode_Estado: true // Aseguramos que el estado esté inicializado
   };
 
   modeloOriginal = '';
@@ -159,7 +160,9 @@ export class EditComponent implements OnInit, OnChanges {
         usua_Modificacion: environment.usua_Id,
         mode_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
-        usuarioModificacion: ''
+        usuarioModificacion: '',
+        mave_Marca: '',
+        mode_Estado: this.modelo.mode_Estado
       };
 
       this.http.put<any>(`${environment.apiBaseUrl}/Modelo/Actualizar`, modeloActualizar, {

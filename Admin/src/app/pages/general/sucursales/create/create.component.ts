@@ -185,11 +185,18 @@ export class CreateComponent implements OnInit {
           }
         },
         error: (error) => {
-          if (error?.error?.data?.code_Status === 0) {
-            this.mostrarAlertaError = true;
-            this.mensajeError = error?.error?.data?.message_Status || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
-            this.mostrarAlertaExito = false;
-          } 
+          console.error('Error al guardar sucursal:', error);
+          const codeStatus = error?.error?.data?.code_Status;
+          const messageStatus = error?.error?.data?.message_Status;
+          this.mostrarAlertaError = true;
+          if (codeStatus === 0) {
+            this.mensajeError = messageStatus || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
+          } else if (codeStatus === -1) {
+            this.mensajeError = messageStatus || 'Ya existe una sucursal con estos datos.';
+          } else {
+            this.mensajeError = error?.error?.message || 'Error inesperado al guardar la sucursal.';
+          }
+          this.mostrarAlertaExito = false;
           setTimeout(() => {
             this.mostrarAlertaError = false;
             this.mensajeError = '';
