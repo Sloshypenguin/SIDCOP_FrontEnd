@@ -1,11 +1,36 @@
+// Variables
+$primary-color: #141A2F;
+$secondary-color: #BBBECA;
+$white: #fff;
+$border-color: #dee2e6;
+$light-bg: #f8f9fa;
+$light-bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+$box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+$border-radius: 12px;
+
+// Mixins
+@mixin card-container {
+  border-radius: $border-radius;
+  overflow: hidden;
+  box-shadow: $box-shadow;
+  border: 1px solid $border-color;
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 // Estilos para el componente de detalles
 .details-container {
   min-height: 400px;
-  background: #fff;
-  border-radius: 12px;
+  background: $white;
+  border-radius: $border-radius;
   overflow: hidden;
 }
 
+// Alert styles
 .alert-container {
   position: relative;
   z-index: 1000;
@@ -17,56 +42,52 @@
   right: 20px;
   z-index: 1050;
   max-width: 400px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: $box-shadow;
 }
 
 // Loading state
 .loading-container {
-  display: flex;
+  @include flex-center;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   padding: 4rem 2rem;
   text-align: center;
 }
 
 .loading-text {
   margin-top: 1rem;
-  color: #141A2F;
+  color: $primary-color;
   font-size: 0.9rem;
 }
 
 // Header section
 .details-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: $light-bg-gradient;
   padding: 2rem;
   text-align: center;
-  border-radius: 12px;
+  @include card-container;
   margin: 1rem 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #dee2e6;
 }
 
 .details-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #141A2F;
+  color: $primary-color;
   margin-bottom: 0.5rem;
 }
 
 .details-id {
   font-size: 0.9rem;
-  color: #141A2F;
-  background: #fff;
+  color: $primary-color;
+  background: $white;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
-  border: 1px solid #dee2e6;
+  border: 1px solid $border-color;
 }
 
 // Header button section
 .details-header-button {
   padding: 0.5rem 1rem;
-  background: #fff;
+  background: $white;
   margin-left: -0.5rem;
   margin-top: -0.5rem;
 }
@@ -74,22 +95,19 @@
 // Audit table container
 .audit-table-container {
   margin: 1rem 0.5rem;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #dee2e6;
+  @include card-container;
 }
 
 // Audit table
 .audit-table {
   margin: 0;
-  background: #fff;
+  background: $white;
 }
 
 .audit-header {
   display: flex;
-  background: #141A2F;
-  color: #BBBECA;
+  background: $primary-color;
+  color: $secondary-color;
   font-weight: 600;
   font-size: 0.9rem;
   

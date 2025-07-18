@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
 import { environment } from 'src/environments/environment';
-import { co } from '@fullcalendar/core/internal-common';
+//import { co } from '@fullcalendar/core/internal-common';
 
 @Component({
   selector: 'app-create',
@@ -69,6 +69,7 @@ export class CreateComponent {
     regC_FechaInicialEmision: new Date(),
     regC_FechaFinalEmision: new Date(),
 
+      regC_Estado: true,
     usua_Creacion: 0,
     usua_Modificacion: 0,
    
@@ -106,6 +107,7 @@ export class CreateComponent {
 
     usua_Creacion: 0,
     usua_Modificacion: 0,
+    regC_Estado: true,
    
     regC_FechaCreacion: new Date(),
     regC_FechaModificacion: new Date(),
