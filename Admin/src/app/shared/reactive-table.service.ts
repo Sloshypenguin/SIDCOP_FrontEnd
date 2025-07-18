@@ -3,12 +3,24 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ReactiveTableService<T> {
+  sortField: keyof T | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
   private data$ = new BehaviorSubject<T[]>([]);
   private searchTerm$ = new BehaviorSubject<string>('');
   private page$ = new BehaviorSubject<number>(1);
   private pageSize = 10;
   private searchFields: (keyof T)[] = [];
   private autoFields = true;
+
+  sortBy(field: keyof T) {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.page$.next(1); // reset page on sort
+  }
 
   setConfig(fields: (keyof T)[]) {
     this.searchFields = fields;
@@ -43,6 +55,22 @@ export class ReactiveTableService<T> {
               ((item[field] || '') + '').toLowerCase().includes(term)
             )
           );
+        }
+        // Ordenamiento
+        if (this.sortField) {
+          filtered = [...filtered].sort((a, b) => {
+            const aValue = a[this.sortField!];
+            const bValue = b[this.sortField!];
+            if (aValue == null && bValue == null) return 0;
+            if (aValue == null) return this.sortDirection === 'asc' ? -1 : 1;
+            if (bValue == null) return this.sortDirection === 'asc' ? 1 : -1;
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+              return this.sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+            }
+            return this.sortDirection === 'asc'
+              ? (('' + aValue).localeCompare('' + bValue, undefined, { sensitivity: 'base' }))
+              : (('' + bValue).localeCompare('' + aValue, undefined, { sensitivity: 'base' }));
+          });
         }
         const start = (page - 1) * this.pageSize;
         return filtered.slice(start, start + this.pageSize);

@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Estados Civiles',
+      title: 'Productos',
     },
     children: [
       { 
@@ -17,15 +17,16 @@ const routes: Routes = [
         path: 'list',
         loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
         data: {
-          title: 'Listado de Estados Civiles',
+          title: 'Listado de Productos',
         }
       },
     ]
   }
-]; 
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class EstadosCivilesRoutingModule {}
+export class ProductosRoutingModule {}
+
