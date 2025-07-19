@@ -12,6 +12,7 @@ import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -33,149 +34,83 @@ import { DetailsComponent } from '../details/details.component';
 
 export class ListComponent implements OnInit {
 
-  ngOnInit(): void {
-    /**
-     * BreadCrumb
-     */
-    this.breadCrumbItems = [
-      { label: 'General' },
-      { label: 'Cargos', active: true }
-    ];
+  // bread crumb items
+  breadCrumbItems!: Array<{}>;
 
-    
-    this.cargarAccionesUsuario();
-    console.log('Acciones disponibles:', this.accionesDisponibles);
-  }
-
-  private readonly PANTALLA_CARGOS_ID = 9;
-accionesDisponibles: string[] = [];
-
-
-  // Método robusto para validar si una acción está permitida
+  accionesDisponibles: string[] = [];
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 
-
-  private cargarAccionesUsuario(): void {
-  const permisosRaw = localStorage.getItem('permisosJson');
-  console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
-
-  try {
-    if (!permisosRaw) return;
-
-    const permisos = JSON.parse(permisosRaw);
-    let modulo = null;
-
-    if (Array.isArray(permisos)) {
-      modulo = permisos.find((m: any) => m.Pant_Id === this.PANTALLA_CARGOS_ID);
-    } else if (typeof permisos === 'object' && permisos !== null) {
-      modulo = permisos['Cargos'] || permisos['cargos'] || null;
-    }
-
-    if (modulo && Array.isArray(modulo.Acciones)) {
-      this.accionesDisponibles = modulo.Acciones
-        .map((a: any) => a.Accion?.trim().toLowerCase())
-        .filter((a: string) => !!a);
-    }
-  } catch (error) {
-    console.error('Error al parsear permisosJson:', error);
-    this.accionesDisponibles = [];
+  ngOnInit(): void {
+    this.breadCrumbItems = [
+      { label: 'General' },
+      { label: 'Cargos', active: true }
+    ];
+    this.cargarAccionesUsuario();
   }
 
-  console.log('Acciones disponibles final:', this.accionesDisponibles);
-}
+  private readonly PANTALLA_CARGOS_ID = 9;
 
-    // bread crumb items
-  breadCrumbItems!: Array<{}>;
-
-  // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
-  }
-  // Métodos para los botones de acción principales (crear, editar, detalles)
-  crear(): void {
-    console.log('Toggleando formulario de creación...');
-    this.showCreateForm = !this.showCreateForm;
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-
-  editar(cargo: Cargos): void {
-    console.log('Abriendo formulario de edición para:', cargo);
-    console.log('Datos específicos:', {
-      id: cargo.carg_Id,
-      descripcion: cargo.carg_Descripcion,
-      completo: cargo
-    });
-    this.cargoEditando = { ...cargo }; // Hacer copia profunda
-    this.showEditForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-
-  detalles(cargo: Cargos): void {
-    console.log('Abriendo detalles para:', cargo);
-    this.cargoDetalle = { ...cargo }; // Hacer copia profunda
-    this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-  activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
   showDelete = true;
-  showCreateForm = false; // Control del collapse
-  showEditForm = false; // Control del collapse de edición
-  showDetailsForm = false; // Control del collapse de detalles
+  showCreateForm = false;
+  showEditForm = false;
+  showDetailsForm = false;
   cargoEditando: Cargos | null = null;
   cargoDetalle: Cargos | null = null;
-  
-  // Propiedades para alertas
+
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
-  
-  // Propiedades para confirmación de eliminación
+
   mostrarConfirmacionEliminar = false;
   cargoEliminar: Cargos | null = null;
 
-  constructor(public table: ReactiveTableService<Cargos>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  page: number = 1;
+
+  constructor(
+    public table: ReactiveTableService<Cargos>,
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService // <-- Agrega el servicio aquí
+  ) {
     this.cargardatos();
     this.table.setConfig(['carg_Id', 'carg_Descripcion']);
   }
 
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  cambiarPagina(nuevaPagina: number): void {
+    this.page = nuevaPagina;
+    this.table.setPage(nuevaPagina);
   }
-page: number = 1;
 
-cambiarPagina(nuevaPagina: number): void {
-  this.page = nuevaPagina;
-  this.table.setPage(nuevaPagina);
-}
+  crear(): void {
+    this.showCreateForm = !this.showCreateForm;
+    this.showEditForm = false;
+    this.showDetailsForm = false;
+    // Elimina activeActionRow
+  }
 
-  // (navigateToCreate eliminado, lógica movida a crear)
+  editar(cargo: Cargos): void {
+    this.cargoEditando = { ...cargo };
+    this.showEditForm = true;
+    this.showCreateForm = false;
+    this.showDetailsForm = false;
+    // Elimina activeActionRow
+  }
 
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
+  detalles(cargo: Cargos): void {
+    this.cargoDetalle = { ...cargo };
+    this.showDetailsForm = true;
+    this.showCreateForm = false;
+    this.showEditForm = false;
+    // Elimina activeActionRow
+  }
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -192,24 +127,19 @@ cambiarPagina(nuevaPagina: number): void {
   }
 
   guardarCargo(cargo: Cargos): void {
-    console.log('Cargo guardado exitosamente desde create component:', cargo);
-    // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
   actualizarCargo(cargo: Cargos): void {
-    console.log('Cargo actualizado exitosamente desde edit component:', cargo);
-    // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
   confirmarEliminar(cargo: Cargos): void {
-    console.log('Solicitando confirmación para eliminar:', cargo);
     this.cargoEliminar = cargo;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null; // Cerrar menú de acciones
+    // Elimina activeActionRow
   }
 
   cancelarEliminar(): void {
@@ -217,12 +147,9 @@ cambiarPagina(nuevaPagina: number): void {
     this.cargoEliminar = null;
   }
 
-
-  eliminar(): void {    
+  eliminar(): void {
     if (!this.cargoEliminar) return;
-    
-    console.log('Eliminando cargo:', this.cargoEliminar);
-
+    // Si tu API requiere POST, cambia PUT por POST aquí
     this.http.put(`${environment.apiBaseUrl}/Cargo/Eliminar/${this.cargoEliminar.carg_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
@@ -230,70 +157,45 @@ cambiarPagina(nuevaPagina: number): void {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Cargo eliminado exitosamente');
             this.mensajeExito = `Cargo "${this.cargoEliminar!.carg_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
             setTimeout(() => {
               this.mostrarAlertaExito = false;
               this.mensajeExito = '';
             }, 3000);
-            
-
             this.cargardatos();
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Este cargo está siendo utilizado');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'No se puede eliminar: el cargo, está siendo utilizado.';
-            
-            setTimeout(() => {  
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el cargo.';
-            
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            
-            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el cargo.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
             this.cancelarEliminar();
           }
         } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
           this.mensajeError = response.message || 'Error inesperado al eliminar el cargo.';
-          
           setTimeout(() => {
             this.mostrarAlertaError = false;
             this.mensajeError = '';
           }, 5000);
-          
-          // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
       },
     });
   }
-
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
@@ -304,12 +206,32 @@ cambiarPagina(nuevaPagina: number): void {
     this.mensajeWarning = '';
   }
 
+  private cargarAccionesUsuario(): void {
+    const permisosRaw = localStorage.getItem('permisosJson');
+    try {
+      if (!permisosRaw) return;
+      const permisos = JSON.parse(permisosRaw);
+      let modulo = null;
+      if (Array.isArray(permisos)) {
+        modulo = permisos.find((m: any) => m.Pant_Id === this.PANTALLA_CARGOS_ID);
+      } else if (typeof permisos === 'object' && permisos !== null) {
+        modulo = permisos['Cargos'] || permisos['cargos'] || null;
+      }
+      if (modulo && Array.isArray(modulo.Acciones)) {
+        this.accionesDisponibles = modulo.Acciones
+          .map((a: any) => a.Accion?.trim().toLowerCase())
+          .filter((a: string) => !!a);
+      }
+    } catch (error) {
+      this.accionesDisponibles = [];
+    }
+  }
+
   private cargardatos(): void {
     this.http.get<Cargos[]>(`${environment.apiBaseUrl}/Cargo/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
       this.table.setData(data);
     });
   }
-} 
+}
