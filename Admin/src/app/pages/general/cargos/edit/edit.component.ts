@@ -131,7 +131,7 @@ export class EditComponent implements OnChanges {
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar cargo:', error);
+          // console.error('Error al actualizar cargo:', error);
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al actualizar el cargo. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);
