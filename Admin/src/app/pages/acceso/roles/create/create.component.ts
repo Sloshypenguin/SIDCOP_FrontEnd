@@ -5,6 +5,32 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
 import { environment } from 'src/environments/environment';
 
+interface TreeItem {
+  id: string;
+  name: string;
+  type: 'esquema' | 'pantalla' | 'accion';
+  selected: boolean;
+  expanded: boolean;
+  children?: TreeItem[];
+  parent?: TreeItem;
+}
+
+interface Esquema {
+  Esquema: string;
+  Pantallas: Pantalla[];
+}
+
+interface Pantalla {
+  Pant_Id: number;
+  Pant_Descripcion: string;
+  Acciones: Accion[];
+}
+
+interface Accion {
+  Accion_Id: number;
+  Accion: string;
+}
+
 @Component({
   selector: 'app-create',
   standalone: true,
@@ -24,13 +50,8 @@ export class CreateComponent {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  esquemas: any[] = [];
-  pantallas: any[] = [];
-  acciones: any[] = [];
-
-  esquemaSeleccionado: any = null;
-  pantallaSeleccionada: any = null;
-  accionSeleccionada: any = null;
+  treeData: TreeItem[] = [];
+  selectedItems: TreeItem[] = [];
 
   constructor(private http: HttpClient) {
     this.cargarPantallas();
@@ -51,29 +72,81 @@ export class CreateComponent {
           }
           // Parsea la respuesta y la asigna a 'esquemas'
           const parsed = JSON.parse(data);
-          this.esquemas = Array.isArray(parsed) ? parsed : [parsed];
+          
+          // Construye la estructura del TreeView
+          this.treeData = parsed.map((esquema: Esquema) => ({
+            id: esquema.Esquema,
+            name: esquema.Esquema,
+            type: 'esquema',
+            selected: false,
+            expanded: true, // Iniciar con esquemas expandidos
+            children: esquema.Pantallas.map((pantalla: Pantalla) => ({
+              id: `${esquema.Esquema}_${pantalla.Pant_Id}`,
+              name: pantalla.Pant_Descripcion,
+              type: 'pantalla',
+              selected: false,
+              expanded: false, // Iniciar con pantallas colapsadas
+              children: pantalla.Acciones.map((accion: Accion) => ({
+                id: `${esquema.Esquema}_${pantalla.Pant_Id}_${accion.Accion_Id}`,
+                name: accion.Accion,
+                type: 'accion',
+                selected: false
+              }))
+            }))
+          }));
         } catch (e) {
-          // Muestra error si no se puede parsear la respuesta
           console.error('No se pudo parsear la respuesta de pantallas:', e, raw);
         }
       },
       error: err => {
-        // Muestra error si falla la petición HTTP
         console.error('Error al cargar pantallas:', err);
       }
     });
   }
 
-  onEsquemaChange() {
-    this.pantallas = this.esquemaSeleccionado?.Pantallas || [];
-    this.pantallaSeleccionada = null;
-    this.acciones = [];
-    this.accionSeleccionada = null;
+  toggleSelection(item: TreeItem): void {
+    item.selected = !item.selected;
+    
+    // Si es una acción o pantalla, selecciona/deselecciona todas sus acciones
+    if (item.type === 'pantalla' || item.type === 'esquema') {
+      this.updateChildrenSelection(item);
+    }
+    
+    this.updateSelectedItems();
   }
 
-  onPantallaChange() {
-    this.acciones = this.pantallaSeleccionada?.Acciones || [];
-    this.accionSeleccionada = null;
+  toggleExpand(item: TreeItem): void {
+    if (item.children && item.children.length > 0) {
+      item.expanded = !item.expanded;
+    }
+  }
+
+  private updateChildrenSelection(parent: TreeItem): void {
+    if (parent.children) {
+      const newState = parent.selected;
+      parent.children.forEach(child => {
+        child.selected = newState;
+        if (child.children) {
+          this.updateChildrenSelection(child);
+        }
+      });
+    }
+  }
+
+  private updateSelectedItems(): void {
+    this.selectedItems = this.getAllSelectedItems(this.treeData);
+  }
+
+  private getAllSelectedItems(items: TreeItem[]): TreeItem[] {
+    return items.reduce<TreeItem[]>((acc, item) => {
+      if (item.selected) {
+        acc.push(item);
+      }
+      if (item.children) {
+        acc.push(...this.getAllSelectedItems(item.children));
+      }
+      return acc;
+    }, []);
   }
 
   rol: Rol = {
@@ -90,6 +163,72 @@ export class CreateComponent {
     usuarioModificacion: '',
     role_Estado: true
   };
+
+  guardar(): void {
+    if (!this.rol.role_Descripcion.trim()) {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+        this.mensajeWarning = '';
+      }, 4000);
+      return;
+    }
+
+    // Preparar los datos seleccionados para enviar
+    const seleccionados = this.selectedItems.map(item => ({
+      esquema: item.type === 'esquema' ? item.name : item.parent?.name,
+      pantalla: item.type === 'pantalla' ? item.name : item.parent?.name,
+      accion: item.type === 'accion' ? item.name : null
+    }));
+
+    // Enviar datos seleccionados a otro endpoint
+    console.log('Datos seleccionados:', seleccionados);
+
+    // Preparar datos del rol para guardar
+    const rolGuardar = {
+      role_Id: 0,
+      role_Descripcion: this.rol.role_Descripcion.trim(),
+      usua_Creacion: environment.usua_Id,
+      role_FechaCreacion: new Date().toISOString(),
+      usua_Modificacion: 0,
+      numero: "", 
+      role_FechaModificacion: new Date().toISOString(),
+      usuarioCreacion: "", 
+      usuarioModificacion: "" 
+    };
+
+    this.http.post<Rol>(`${environment.apiBaseUrl}/Roles/Insertar`, rolGuardar, {
+      headers: { 
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: Rol) => {
+        this.mostrarAlertaExito = true;
+        this.mensajeExito = `Rol "${this.rol.role_Descripcion}" guardado exitosamente`;
+        
+        // Ocultar la alerta después de 3 segundos
+        setTimeout(() => {
+          this.mostrarAlertaExito = false;
+          this.onSave.emit(response);
+          this.cancelar();
+        }, 3000);
+      },
+      error: (error: any) => {
+        console.error('Error al guardar el rol:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = error.error?.message || 'Error al guardar el rol. Por favor, intente nuevamente.';
+        
+        // Ocultar la alerta de error después de 5 segundos
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
+  }
 
   cancelar(): void {
     this.mostrarErrores = false;
@@ -124,71 +263,4 @@ export class CreateComponent {
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
   }
-
-  guardar(): void {
-    this.mostrarErrores = true;
-    
-    if (this.rol.role_Descripcion.trim()) {
-      // Limpiar alertas previas
-      this.mostrarAlertaWarning = false;
-      this.mostrarAlertaError = false;
-      
-      const rolGuardar = {
-        role_Id: 0,
-        role_Descripcion: this.rol.role_Descripcion.trim(),
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
-        role_FechaCreacion: new Date().toISOString(),
-        usua_Modificacion: 0,
-        numero: "", 
-        role_FechaModificacion: new Date().toISOString(),
-        usuarioCreacion: "", 
-        usuarioModificacion: "" 
-      };
-      
-      this.http.post<any>(`${environment.apiBaseUrl}/Roles/Insertar`, rolGuardar, {
-        headers: { 
-          'X-Api-Key': environment.apiKey,
-          'Content-Type': 'application/json',
-          'accept': '*/*'
-        }
-      }).subscribe({
-        next: (response) => {
-          this.mensajeExito = `Rol "${this.rol.role_Descripcion}" guardado exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
-          
-          // Ocultar la alerta después de 3 segundos
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
-            this.onSave.emit(this.rol);
-            this.cancelar();
-          }, 3000);
-        },
-        error: (error) => {
-          console.error('Error al guardar el rol:', error);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el rol. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-          
-          // Ocultar la alerta de error después de 5 segundos
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-        }
-      });
-    } else {
-      // Mostrar alerta de warning para campos vacíos
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-      this.mostrarAlertaError = false;
-      this.mostrarAlertaExito = false;
-      
-      // Ocultar la alerta de warning después de 4 segundos
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 4000);
-    }
-  }  
 }

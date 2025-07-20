@@ -30,6 +30,7 @@
     <div class="row">
       <div class="col-md-6">
         <div class="mb-3">
+          <label for="rol.role_Descripcion" class="form-label">Rol<span class="text-danger">*</span></label>
           <div class="d-flex align-items-center">
             <input 
               type="text" 
@@ -46,23 +47,47 @@
           </div>
         </div>
       </div>
-      <!-- Esquema -->
-        <select [(ngModel)]="esquemaSeleccionado" (change)="onEsquemaChange()">
-          <option [ngValue]="null">Seleccione un esquema</option>
-          <option *ngFor="let esquema of esquemas" [ngValue]="esquema">{{ esquema.Esquema }}</option>
-        </select>
-
-        <!-- Pantalla -->
-        <select [(ngModel)]="pantallaSeleccionada" (change)="onPantallaChange()" [disabled]="!pantallas.length">
-          <option [ngValue]="null">Seleccione una pantalla</option>
-          <option *ngFor="let pantalla of pantallas" [ngValue]="pantalla">{{ pantalla.Pant_Descripcion }}</option>
-        </select>
-
-        <!-- Acción -->
-        <select [(ngModel)]="accionSeleccionada" [disabled]="!acciones.length">
-          <option [ngValue]="null">Seleccione una acción</option>
-          <option *ngFor="let accion of acciones" [ngValue]="accion">{{ accion.Accion }}</option>
-        </select>
+      <!-- TreeView de Pantallas y Acciones -->
+       <label class="form-label">Pantallas y Acciones<span class="text-danger">*</span></label>
+        <div class="tree-container">
+          <div class="tree-item" *ngFor="let esquema of treeData">
+            <div class="tree-node" (click)="toggleExpand(esquema)">
+              <div class="tree-toggle" *ngIf="esquema.children?.length">
+                <i class="ri-arrow-down-s-line" [ngClass]="{ 'ri-arrow-right-s-line': !esquema.expanded }"></i>
+              </div>
+              <input type="checkbox" 
+                     [checked]="esquema.selected" 
+                     (change)="toggleSelection(esquema)" 
+                     [attr.data-id]="esquema.id">
+              <span>{{ esquema.name }}</span>
+            </div>
+            <div class="tree-children" *ngIf="esquema.expanded">
+              <div class="tree-item" *ngFor="let pantalla of esquema.children">
+                <div class="tree-node" (click)="toggleExpand(pantalla)">
+                  <div class="tree-toggle" *ngIf="pantalla.children?.length">
+                    <i class="ri-arrow-down-s-line" [ngClass]="{ 'ri-arrow-right-s-line': !pantalla.expanded }"></i>
+                  </div>
+                  <input type="checkbox" 
+                         [checked]="pantalla.selected" 
+                         (change)="toggleSelection(pantalla)" 
+                         [attr.data-id]="pantalla.id">
+                  <span>{{ pantalla.name }}</span>
+                </div>
+                <div class="tree-children" *ngIf="pantalla.expanded">
+                  <div class="tree-item" *ngFor="let accion of pantalla.children">
+                    <div class="tree-node">
+                      <input type="checkbox" 
+                             [checked]="accion.selected" 
+                             (change)="toggleSelection(accion)" 
+                             [attr.data-id]="accion.id">
+                      <span>{{ accion.name }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
   
