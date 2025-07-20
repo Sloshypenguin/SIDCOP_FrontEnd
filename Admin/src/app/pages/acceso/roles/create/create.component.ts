@@ -79,13 +79,13 @@ export class CreateComponent {
             name: esquema.Esquema,
             type: 'esquema',
             selected: false,
-            expanded: true, // Iniciar con esquemas expandidos
+            expanded: false, // Iniciar con todos los nodos colapsados
             children: esquema.Pantallas.map((pantalla: Pantalla) => ({
               id: `${esquema.Esquema}_${pantalla.Pant_Id}`,
               name: pantalla.Pant_Descripcion,
               type: 'pantalla',
               selected: false,
-              expanded: false, // Iniciar con pantallas colapsadas
+              expanded: false, // Iniciar con todos los nodos colapsados
               children: pantalla.Acciones.map((accion: Accion) => ({
                 id: `${esquema.Esquema}_${pantalla.Pant_Id}_${accion.Accion_Id}`,
                 name: accion.Accion,
@@ -230,6 +230,19 @@ export class CreateComponent {
     });
   }
 
+  private clearSelections(): void {
+    const clearNode = (node: TreeItem) => {
+      node.selected = false;
+      node.expanded = false; // Agregado: también resetea el estado de expansión
+      if (node.children) {
+        node.children.forEach(child => clearNode(child));
+      }
+    };
+    
+    this.treeData.forEach(esquema => clearNode(esquema));
+    this.selectedItems = [];
+  }
+
   cancelar(): void {
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
@@ -238,6 +251,10 @@ export class CreateComponent {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
+    
+    // Limpiar selecciones del TreeView
+    this.clearSelections();
+    
     this.rol = {
       role_Id: 0,
       role_Descripcion: '',
