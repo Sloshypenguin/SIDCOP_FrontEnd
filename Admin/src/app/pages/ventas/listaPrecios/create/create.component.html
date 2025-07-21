@@ -1,0 +1,249 @@
+
+<app-breadcrumbs
+  [title]="'Listas de Precios'"
+  
+  [breadcrumbItems]="breadCrumbItems"
+>
+  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" style="width: 14vh; height: 12vh;" 
+       src="assets/images/imagenes/FACTURADOS.svg" alt="icono breadcrumb" />
+</app-breadcrumbs>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+
+      <div class="card-body">
+        
+
+        <!-- Botones de acción y buscador -->
+        <div class="d-flex justify-content-between mb-3 flex-wrap">
+          <button 
+
+          type="button" class="btn btn-primary me-2 mb-2" >
+            <span class="btn-text">Nueva Lista</span>
+            <span class="btn-icon"><i class="ri-add-line"></i></span>
+          </button>
+          <div class="search-box mb-2">
+
+            <div class="mb-3">
+                <ng-select
+                [items]="productosLista"
+                bindLabel="prod_Descripcion"
+                bindValue="prod_Id"
+                [(ngModel)]="productoSeleccionado"
+                [searchable]="true"
+                placeholder="Selecciona un Producto"
+                [clearable]="true">
+              </ng-select>
+                
+
+              <!-- <select class="form-select" [(ngModel)]="selectedCate"
+                [class.is-invalid]="!selectedCate && mostrarErrores"
+                required>
+                <option value=0 disabled selected>Seleccione una Categoria</option>
+                <option *ngFor="let cate of Categorias" [value]="cate.cate_Id">{{ cate.cate_Descripcion }}</option>
+              </select> -->
+            </div>
+
+            <!-- <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)"> -->
+            <!-- <i class="ri-search-line search-icon"></i> -->
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+        <!-- Título del componente -->
+        <!-- <h5 class="card-title mb-4">Listas de Precios</h5> -->
+        
+        <!-- Contenedor de alertas flotantes -->
+        <div class="alert-container">
+            <!-- Alerta de éxito -->
+            <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+            <strong>¡Éxito!</strong> {{ mensajeExito }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+            </div>
+            
+            <!-- Alerta de advertencia -->
+            <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+            <strong>¡Atención!</strong> {{ mensajeWarning }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+            </div>
+            
+            <!-- Alerta de error -->
+            <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+            <strong>¡Error!</strong> {{ mensajeError }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+            </div>
+        </div>
+        
+
+        <div class="position-relative mt-4">
+          <div class="card extra-element-card border-primary shadow-lg" style="background: #f8f9fa;">
+            <div 
+            [ngClass]="{ 'rounded-bottom-2': isCollapsed, 'rounded-bottom-0': !isCollapsed }"
+            class="card-header text-white position-relative" style="min-height: 3rem; background: #141a2e"
+            >
+              <span>Lista de Precios #</span>
+              <button
+                class="btn btn-light btn-sm position-absolute end-0 top-0 m-2"
+                type="button"
+                (click)="isCollapsed = !isCollapsed"
+                aria-label="Toggle"
+              >
+                <i
+                  [ngClass]="{
+                    'ri-arrow-up-s-line': !isCollapsed,
+                    'ri-arrow-down-s-line': isCollapsed
+                  }"
+                  class="fs-4"
+                ></i>
+              </button>
+            </div>
+            <div [collapse]="isCollapsed">
+              <div class="card-body" style="min-height: 200px;">
+                <!-- Your collapsible content here -->
+                <div class="container-fluid">
+                  <div class="flex-grow-1">
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+
+                    <label class="form-label me-2" for="precioContado">Precio Contado:</label>
+
+                    <div class="d-flex align-items-center">
+
+                      <input  
+                        type="text" 
+                        class="form-control" 
+                        [class.is-invalid]="!categoria.cate_Descripcion.trim() && mostrarErrores"
+                        id="estadoCivilDescripcion"
+                        [(ngModel)]="categoria.cate_Descripcion"
+                        placeholder="Ingrese la descripción del estado civil"
+                        required>
+                        <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                    </div>
+                    <div class="text-danger mt-1" *ngIf="!categoria.cate_Descripcion.trim() && mostrarErrores">
+                        <small>El campo Descripción de la Categoria es requerido</small>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+
+                      <label class="form-label me-2" for="precioContado">Precio Credito:</label>
+
+                    <div class="d-flex align-items-center">
+
+                      <input  
+                        type="text" 
+                        class="form-control" 
+                        [class.is-invalid]="!categoria.cate_Descripcion.trim() && mostrarErrores"
+                        id="estadoCivilDescripcion"
+                        [(ngModel)]="categoria.cate_Descripcion"
+                        placeholder="Ingrese la descripción del estado civil"
+                        required>
+                        <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                    </div>
+                    <div class="text-danger mt-1" *ngIf="!categoria.cate_Descripcion.trim() && mostrarErrores">
+                        <small>El campo Descripción de la Categoria es requerido</small>
+                    </div>
+                    </div>
+                </div>
+                </div>
+              </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <button class="btn btn-primary" type="button" (click)="isCollapsed = !isCollapsed">
+          Toggle
+        </button>
+        <div [collapse]="isCollapsed">
+          <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
+            <div class="container-fluid">
+
+              
+
+              
+
+              
+            
+        
+            </div>
+          </div>
+        </div> -->
+        
+
+
+
+
+
+
+
+        <!-- Botones -->
+        <div class="mt-auto pt-3">
+            <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+                    <span class="btn-text">Cancelar</span>
+                    <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+                </button>
+                <button type="button" class="btn btn-primary" (click)="validarEdicion()">
+                    <span class="btn-text">Guardar</span>
+                    <span class="btn-icon"><i class="ri-save-line"></i></span>
+                </button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+        <!-- Modal de confirmación para editar -->
+        <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEditar }" [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+                <span>Confirmación</span>
+                <i class="ri-close-line custom-modal-close" (click)="cancelarEdicion()"></i>
+            </div>
+            <hr class="custom-modal-divider">
+            <div class="modal-body custom-modal-body">
+                <div class="text-center">
+                <p class="mt-2 custom-modal-text">
+                    <i class="ri-edit-line me-2 custom-modal-alert-icon" (click)="cancelarEdicion()"></i>
+                    ¿Estás seguro que deseas editar la Categoria? <strong>"{{ estadoCivilOriginal }}"</strong> por <strong>"{{ categoria.cate_Descripcion }}"</strong>?
+                </p>
+                </div>
+            </div>
+            <div class="modal-footer custom-modal-footer">
+                <button type="button" class="btn btn-primary  btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
+                <span class="btn-text">No</span>
+                <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+                </button>
+                <button type="button" class="btn btn-primary  btn-minw-5 btn-sm" (click)="confirmarEdicion()">
+                <span class="btn-text">Si</span>
+                <span class="btn-icon"><i class="ri-save-line"></i></span>
+                </button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Overlay para el modal -->
+        <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEditar }" *ngIf="mostrarConfirmacionEditar"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
