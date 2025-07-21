@@ -1,18 +1,145 @@
-    <h2 class="login-title">Inicio de sesión</h2>
-    <form  class="login-form">
-      <div class="login-input-group">
-        <label for="username" class="login-label">Usuario</label>
+<!-- Pantalla para confirmar la nueva contraseña -->
+<div class="login-card login-card-grande" *ngIf="mostrarPantallaConfirmar">
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <div style="margin-bottom: 1.5rem;">
+      <i class="ri-key-line" style="font-size: 3rem; color: #d6b68a;"></i>
+    </div>
+    <h2 class="login-title">Confirmar Contraseña</h2>
+    <div class="login-subtitle" style="color:#fff; font-size:1.08rem; margin-bottom:1.5rem; text-align:center; opacity:0.85;">
+      Ingrese la nueva contraseña para terminar el proceso
+    </div>
+    <form class="login-form" autocomplete="off" style="width:100%;">
+      <div class="login-input-group" style="margin: 0 auto; display: flex; flex-direction: column; align-items: center; width: 100%;">
+        <label for="nuevaContrasena" class="login-label">Nueva Contraseña</label>
         <div class="login-input-icon">
-          <i class="ri-user-line"></i>
-          <input type="text" formControlName="email" id="username" placeholder="Nombre de usuario" />
+          <input
+            [type]="mostrarPassword1 ? 'text' : 'password'"
+            [(ngModel)]="nuevaContrasena"
+            name="nuevaContrasena"
+            id="nuevaContrasena"
+            placeholder="Nueva Contraseña"
+            style="padding-right:2.5rem;"
+          />
+          <i class="ri-eye-line" *ngIf="!mostrarPassword1" (click)="mostrarPassword1 = true" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
+          <i class="ri-eye-off-line" *ngIf="mostrarPassword1" (click)="mostrarPassword1 = false" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
         </div>
       </div>
-      <button type="submit" class="btn btn-login">
-        <span class="btn-text">INGRESAR</span>
-        <i class="ri-login-box-line"></i>
-      </button>
-      
-      <div class="login-forgot">
-        <a routerLink="/auth/pass-reset">¿Olvidaste tu contraseña?</a>
+      <div class="login-input-group" style="margin: 0 auto; display: flex; flex-direction: column; align-items: center; width: 100%;">
+        <label for="confirmarContrasena" class="login-label">Confirmar Nueva Contraseña</label>
+        <div class="login-input-icon">
+          <input
+            [type]="mostrarPassword2 ? 'text' : 'password'"
+            [(ngModel)]="confirmarContrasena"
+            name="confirmarContrasena"
+            id="confirmarContrasena"
+            placeholder="Confirmar Nueva Contraseña"
+            style="padding-right:2.5rem;"
+          />
+          <i class="ri-eye-line" *ngIf="!mostrarPassword2" (click)="mostrarPassword2 = true" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
+          <i class="ri-eye-off-line" *ngIf="mostrarPassword2" (click)="mostrarPassword2 = false" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
+        </div>
+      </div>
+      <div class="codigo-btn-row" style="justify-content: center; width: 100%;margin-top: 10%;">
+        <button type="button" class="btn btn-login" (click)="regresarConfirmar()">
+          <i class="ri-arrow-left-line"></i>
+          <span class="btn-text">Regresar</span>
+        </button>
+        <button type="button" class="btn btn-login gold" (click)="confirmarNuevaContrasena()">
+          <i class="ri-checkbox-circle-line"></i>
+          <span class="btn-text">Confirmar</span>
+        </button>
       </div>
     </form>
+  </div>
+</div>
+
+
+<!-- Pantalla para ingresar el código de recuperación -->
+<div class="login-card " *ngIf="mostrarPantallaCodigo">
+  <div class="codigo-card-content">
+    <div class="codigo-icon">
+      <i class="ri-mail-send-line"></i>
+    </div>
+    <h2 class="login-title">Ingresar Código</h2>
+    <div class="login-subtitle">
+      Ingrese el código enviado a su correo electrónico para continuar el restablecimiento de contraseña
+    </div>
+    <div class="codigo-inputs">
+      <ng-container *ngFor="let i of [0,1,2,3,4,5]; let idx = index">
+        <input
+          maxlength="1"
+          class="codigo-input"
+          type="text"
+          [(ngModel)]="codigoIngresado[i]"
+          name="codigo{{i}}"
+          #codeInput{{i}}
+          [value]="codigoIngresado[i] === '0' ? '' : codigoIngresado[i]"
+          (input)="onInputKeyUp($event, i)"
+        />
+      </ng-container>
+    </div>
+    <div class="codigo-btn-row">
+      <button type="button" class="btn btn-login" (click)="cancelarPantallaCodigo()">
+        <i class="ri-arrow-left-line"></i>
+        <span class="btn-text">Regresar</span>
+      </button>
+      <button type="button" class="btn btn-login gold" (click)="confirmarCodigo()">
+        <i class="ri-checkbox-line"></i>
+        <span class="btn-text">Confirmar</span>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="login-card" *ngIf="!mostrarPantallaCodigo && !mostrarPantallaConfirmar">
+  <div></div>
+  <h2 class="login-title">Restablecer Contraseña</h2>
+  <div class="login-subtitle">
+    Ingrese su usuario y así recibirá un correo con el código para reestablecer su contraseña
+  </div>
+  <form class="login-form">
+    <div class="login-input-group">
+      <label for="usuario" class="login-label">Usuario</label>
+      <div class="login-input-icon">
+        <i class="ri-user-line"></i>
+        <input type="text" [(ngModel)]="usuario.usua_Usuario" name="usua_Usuario" id="usuario" placeholder="Usuario"/>
+      </div>
+      <div class="text-danger mt-1" *ngIf="!usuario.usua_Usuario.trim() && mostrarErrores">
+        <small>El campo Usuario es requerido</small>
+      </div>
+    </div>
+    <div class="codigo-btn-row">
+      <button type="button" class="btn btn-login" (click)="verificarusuario()">
+        <span class="btn-text">Enviar</span>
+        <i class="ri-send-plane-2-line"></i>
+      </button>
+      <button type="button" class="btn btn-login" (click)="cancelar()">
+        <i class="ri-arrow-left-line"></i>
+        <span class="btn-text">Regresar</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+
+
+
+<!-- Contenedor de alertas flotantes -->
+<div class="alert-container">
+  <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+    <strong>¡Éxito!</strong> {{ mensajeExito }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+    <strong>¡Atención!</strong> {{ mensajeWarning }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+    <strong>¡Error!</strong> {{ mensajeError }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
+</div>

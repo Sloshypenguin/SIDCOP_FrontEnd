@@ -34,9 +34,9 @@
         <span class="btn-text">INGRESAR</span>
         <i class="ri-login-box-line"></i>
       </button>
-
+      
       <div class="login-forgot">
-        <a (click)="showrecuperar=true" [ngStyle]="{'cursor':'pointer'}">Olvidaste tu contraseña?</a>
+        <a (click)="showrecuperar=true" [ngStyle]="{'cursor':'pointer'}">Olvidaste tu contraseñas?</a>
       </div>
     </form>
   </div>
@@ -44,9 +44,7 @@
 <!-- recuperar contraseña-->
 <section class="auth-page-wrapper d-flex align-items-center justify-content-center min-vh-100" *ngIf="showrecuperar">
   <div class="login-overlay"></div>
-  <div class="login-card">
-         <app-recuperarcontrasenia></app-recuperarcontrasenia>
-  </div>
+         <app-recuperarcontrasenia (onCancel)="volver()"></app-recuperarcontrasenia>
 </section>
 
       

@@ -49,7 +49,10 @@ export class LoginComponent {
       password: ['123', [Validators.required]],
     });
   }
+  volver() {
+    this.showrecuperar = false;
 
+  }
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
