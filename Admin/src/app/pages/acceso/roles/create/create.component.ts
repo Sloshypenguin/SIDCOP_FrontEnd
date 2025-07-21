@@ -27,7 +27,7 @@ interface Pantalla {
 }
 
 interface Accion {
-  Accion_Id: number;
+  Acci_Id: number;
   Accion: string;
 }
 
@@ -145,7 +145,7 @@ export class CreateComponent {
                 children: []
               };
               pantallaNode.children = pantalla.Acciones.map((accion: Accion) => ({
-                id: `${pantalla.Pant_Id}_${accion.Accion_Id}`,
+                id: `${pantalla.Pant_Id}_${accion.Acci_Id}`,
                 name: accion.Accion,
                 type: 'accion',
                 selected: false,
@@ -227,31 +227,48 @@ export class CreateComponent {
           headers: { 'X-Api-Key': environment.apiKey }
         }).subscribe({
           next: (roles) => {
-            const ultimoRol = roles[roles.length - 1];
+            const ultimoRol = roles[0];
 
-            const permisos = this.selectedItems.map(item => {
-              // El id de la acción es "14_1" (pantallaId_accionId)
-              const [pantallaIdStr, accionIdStr] = item.id.split('_');
-              const pantallaId = Number(pantallaIdStr);
-              const accionId = Number(accionIdStr);
+            const permisos = this.selectedItems
+            .filter(item => item.type === 'accion')
+            .map(item => {
+              // Obtener el id de pantalla desde el padre y el id de acción desde el propio nodo
+              const pantallaId = item.parent ? Number(item.parent.id.split('_').pop()) : undefined;
+              const accionId = Number(item.id.split('_').pop());
 
-              // Buscar el AcPa_Id correcto
+              if (!pantallaId || !accionId) {
+                console.warn(`No se pudo obtener Pant_Id o Accion_Id para item:`, item);
+                return null;
+              }
+
               const acPa = accionesPorPantalla.find(ap => ap.Pant_Id === pantallaId && ap.Acci_Id === accionId);
-
+              if (!acPa) {
+                console.warn(`No existe AcPa_Id para Pant_Id=${pantallaId} y Acci_Id=${accionId}`);
+                return null;
+              }
               return {
-                perm_Id: 0,
-                acPa_Id: acPa ? acPa.AcPa_Id : 0,
-                role_Id: ultimoRol.role_Id, // El rol recién creado
-                role_Descripcion: ultimoRol.role_Descripcion,
-                pant_Id: pantallaId,
-                pant_Descripcion: item.parent ? item.parent.name : '',
-                acci_Id: accionId,
-                acci_Descripcion: item.name,
+                acPa_Id: acPa.AcPa_Id,
+                role_Id: ultimoRol.role_Id,
                 usua_Creacion: environment.usua_Id,
-                perm_FechaCreacion: new Date().toISOString(),
-                usua_Modificacion: 0,
-                perm_FechaModificacion: new Date().toISOString()
+                perm_FechaCreacion: new Date().toISOString()
               };
+            })
+            .filter(permiso => permiso !== null);
+
+            permisos.forEach(permiso => {
+              this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
+                headers: {
+                  'X-Api-Key': environment.apiKey,
+                  'Content-Type': 'application/json',
+                  'accept': '*/*'
+                }
+              }).subscribe({
+                error: err => {
+                  this.mostrarAlertaError = true;
+                  this.mensajeError = 'Error al guardar permisos.';
+                  console.error(err);
+                }
+              });
             });
 
             // Enviar los permisos uno por uno
