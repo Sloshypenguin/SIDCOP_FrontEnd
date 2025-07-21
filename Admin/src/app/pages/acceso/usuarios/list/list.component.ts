@@ -10,7 +10,7 @@ import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 import { CreateComponent as CreateUsuarioComponent } from '../create/create.component';
-import { EditComponent } from '../edit/edit.component';
+import { EditComponent as EditUsuarioComponent} from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { set } from 'lodash';
 import {
@@ -32,7 +32,7 @@ import {
     TableModule,
     PaginationModule,
     CreateUsuarioComponent,
-    EditComponent,
+    EditUsuarioComponent,
     DetailsComponent
   ],
   templateUrl: './list.component.html',
@@ -88,7 +88,7 @@ export class ListComponent {
     ];
 
     this.cargarAccionesUsuario();
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -149,7 +149,7 @@ export class ListComponent {
 
 
   constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private route: ActivatedRoute){
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -177,13 +177,19 @@ export class ListComponent {
     setTimeout(() => {
       this.mostrarAlertaExito = false;
       this.mensajeExito = '';
-      this.cargarDatos();
+      this.cargarDatos(false);
     }, 3000);
   }
 
   actualizarUsuario(usuario: Usuario): void {
-    this.cargarDatos();
-    this.cerrarFormularioEdicion();
+    this.showEditForm = false;
+    this.mensajeExito = `Usuario actualizado exitosamente`;
+    this.mostrarAlertaExito = true;
+    setTimeout(() => {
+      this.mostrarAlertaExito = false;
+      this.mensajeExito = '';
+      this.cargarDatos(false);
+    }, 3000);
   }
 
   confirmarEliminar(usuario: Usuario): void {
@@ -246,7 +252,7 @@ export class ListComponent {
                 this.mensajeExito = '';
               }, 3000);
 
-              this.cargarDatos();
+              this.cargarDatos(false);
               this.cancelarEliminar();
             }else if (response.data.code_Status === -1){
               this.mostrarAlertaError = true;
@@ -322,22 +328,22 @@ export class ListComponent {
     }
   }
 
-  private cargarDatos(): void {
-    this.mostrarOverlayCarga = true;
+  private cargarDatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       setTimeout(() => {
         this.mostrarOverlayCarga = false;
         this.usuarioGrid = data || [];
-        this.usuarios = this.usuarioGrid.slice(0, 10);
+        this.usuarios = this.usuarioGrid.slice(0, 12);
         this.filtradorUsuarios();
-      },800);
+      },500);
     });
   }
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 12;
 
   get startIndex(): number {
     return this.usuarioGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
