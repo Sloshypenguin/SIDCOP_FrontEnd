@@ -83,6 +83,7 @@
           (input)="onInputKeyUp($event, i)"
         />
       </ng-container>
+
     </div>
     <div class="codigo-btn-row">
       <button type="button" class="btn btn-login" (click)="cancelarPantallaCodigo()">
@@ -94,6 +95,12 @@
         <span class="btn-text">Confirmar</span>
       </button>
     </div>
+              <div class="login-forgot" *ngIf="mostrarPantallaCodigo">
+        <a (click)="reenviarcodigo()" [ngStyle]="{'cursor': reenviarDisabled ? 'not-allowed' : 'pointer', 'color': reenviarDisabled ? '#aaa' : ''}" [class.disabled]="reenviarDisabled">
+          Reenviar Código
+          <span *ngIf="reenviarDisabled"> ({{ tiempoRestante }}s)</span>
+        </a>
+      </div>
   </div>
 </div>
 <div class="login-card" *ngIf="!mostrarPantallaCodigo && !mostrarPantallaConfirmar">
