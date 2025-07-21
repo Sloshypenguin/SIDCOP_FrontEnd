@@ -31,6 +31,49 @@ interface Accion {
   Accion: string;
 }
 
+// Lista completa de acciones por pantalla
+const accionesPorPantalla = [
+  { AcPa_Id: 1, Pant_Id: 6, Acci_Id: 1 }, { AcPa_Id: 2, Pant_Id: 6, Acci_Id: 2 }, { AcPa_Id: 3, Pant_Id: 6, Acci_Id: 3 }, { AcPa_Id: 4, Pant_Id: 6, Acci_Id: 5 },
+  { AcPa_Id: 5, Pant_Id: 7, Acci_Id: 1 }, { AcPa_Id: 6, Pant_Id: 7, Acci_Id: 2 }, { AcPa_Id: 7, Pant_Id: 7, Acci_Id: 5 }, { AcPa_Id: 8, Pant_Id: 7, Acci_Id: 6 },
+  { AcPa_Id: 9, Pant_Id: 7, Acci_Id: 7 }, { AcPa_Id: 10, Pant_Id: 7, Acci_Id: 8 }, { AcPa_Id: 11, Pant_Id: 8, Acci_Id: 1 }, { AcPa_Id: 12, Pant_Id: 8, Acci_Id: 2 },
+  { AcPa_Id: 13, Pant_Id: 8, Acci_Id: 3 }, { AcPa_Id: 14, Pant_Id: 8, Acci_Id: 5 }, { AcPa_Id: 15, Pant_Id: 9, Acci_Id: 1 }, { AcPa_Id: 16, Pant_Id: 9, Acci_Id: 2 },
+  { AcPa_Id: 17, Pant_Id: 9, Acci_Id: 3 }, { AcPa_Id: 18, Pant_Id: 9, Acci_Id: 5 }, { AcPa_Id: 19, Pant_Id: 10, Acci_Id: 1 }, { AcPa_Id: 20, Pant_Id: 10, Acci_Id: 2 },
+  { AcPa_Id: 21, Pant_Id: 10, Acci_Id: 5 }, { AcPa_Id: 22, Pant_Id: 10, Acci_Id: 6 }, { AcPa_Id: 23, Pant_Id: 11, Acci_Id: 1 }, { AcPa_Id: 24, Pant_Id: 11, Acci_Id: 2 },
+  { AcPa_Id: 25, Pant_Id: 11, Acci_Id: 3 }, { AcPa_Id: 26, Pant_Id: 11, Acci_Id: 5 }, { AcPa_Id: 27, Pant_Id: 12, Acci_Id: 1 }, { AcPa_Id: 28, Pant_Id: 12, Acci_Id: 2 },
+  { AcPa_Id: 29, Pant_Id: 12, Acci_Id: 3 }, { AcPa_Id: 30, Pant_Id: 12, Acci_Id: 5 }, { AcPa_Id: 31, Pant_Id: 13, Acci_Id: 1 }, { AcPa_Id: 32, Pant_Id: 13, Acci_Id: 2 },
+  { AcPa_Id: 33, Pant_Id: 13, Acci_Id: 3 }, { AcPa_Id: 34, Pant_Id: 13, Acci_Id: 5 }, { AcPa_Id: 35, Pant_Id: 14, Acci_Id: 1 }, { AcPa_Id: 36, Pant_Id: 14, Acci_Id: 2 },
+  { AcPa_Id: 37, Pant_Id: 14, Acci_Id: 3 }, { AcPa_Id: 38, Pant_Id: 14, Acci_Id: 5 }, { AcPa_Id: 39, Pant_Id: 15, Acci_Id: 1 }, { AcPa_Id: 40, Pant_Id: 15, Acci_Id: 2 },
+  { AcPa_Id: 41, Pant_Id: 15, Acci_Id: 3 }, { AcPa_Id: 42, Pant_Id: 15, Acci_Id: 5 }, { AcPa_Id: 43, Pant_Id: 16, Acci_Id: 1 }, { AcPa_Id: 44, Pant_Id: 16, Acci_Id: 2 },
+  { AcPa_Id: 45, Pant_Id: 16, Acci_Id: 3 }, { AcPa_Id: 46, Pant_Id: 16, Acci_Id: 5 }, { AcPa_Id: 47, Pant_Id: 17, Acci_Id: 1 }, { AcPa_Id: 48, Pant_Id: 17, Acci_Id: 2 },
+  { AcPa_Id: 49, Pant_Id: 17, Acci_Id: 3 }, { AcPa_Id: 50, Pant_Id: 17, Acci_Id: 5 }, { AcPa_Id: 51, Pant_Id: 18, Acci_Id: 1 }, { AcPa_Id: 52, Pant_Id: 18, Acci_Id: 2 },
+  { AcPa_Id: 53, Pant_Id: 18, Acci_Id: 3 }, { AcPa_Id: 54, Pant_Id: 18, Acci_Id: 5 }, { AcPa_Id: 55, Pant_Id: 19, Acci_Id: 1 }, { AcPa_Id: 56, Pant_Id: 19, Acci_Id: 2 },
+  { AcPa_Id: 57, Pant_Id: 19, Acci_Id: 3 }, { AcPa_Id: 58, Pant_Id: 19, Acci_Id: 5 }, { AcPa_Id: 59, Pant_Id: 20, Acci_Id: 1 }, { AcPa_Id: 60, Pant_Id: 20, Acci_Id: 2 },
+  { AcPa_Id: 61, Pant_Id: 20, Acci_Id: 3 }, { AcPa_Id: 62, Pant_Id: 20, Acci_Id: 5 }, { AcPa_Id: 63, Pant_Id: 21, Acci_Id: 1 }, { AcPa_Id: 64, Pant_Id: 21, Acci_Id: 2 },
+  { AcPa_Id: 65, Pant_Id: 21, Acci_Id: 3 }, { AcPa_Id: 66, Pant_Id: 21, Acci_Id: 5 }, { AcPa_Id: 67, Pant_Id: 22, Acci_Id: 1 }, { AcPa_Id: 68, Pant_Id: 22, Acci_Id: 2 },
+  { AcPa_Id: 69, Pant_Id: 22, Acci_Id: 3 }, { AcPa_Id: 70, Pant_Id: 22, Acci_Id: 5 }, { AcPa_Id: 71, Pant_Id: 23, Acci_Id: 1 }, { AcPa_Id: 72, Pant_Id: 23, Acci_Id: 2 },
+  { AcPa_Id: 73, Pant_Id: 23, Acci_Id: 3 }, { AcPa_Id: 74, Pant_Id: 23, Acci_Id: 5 }, { AcPa_Id: 75, Pant_Id: 24, Acci_Id: 1 }, { AcPa_Id: 76, Pant_Id: 24, Acci_Id: 2 },
+  { AcPa_Id: 77, Pant_Id: 24, Acci_Id: 3 }, { AcPa_Id: 78, Pant_Id: 24, Acci_Id: 5 }, { AcPa_Id: 79, Pant_Id: 25, Acci_Id: 1 }, { AcPa_Id: 80, Pant_Id: 25, Acci_Id: 2 },
+  { AcPa_Id: 81, Pant_Id: 25, Acci_Id: 3 }, { AcPa_Id: 82, Pant_Id: 25, Acci_Id: 5 }, { AcPa_Id: 83, Pant_Id: 26, Acci_Id: 1 }, { AcPa_Id: 84, Pant_Id: 26, Acci_Id: 2 },
+  { AcPa_Id: 85, Pant_Id: 26, Acci_Id: 3 }, { AcPa_Id: 86, Pant_Id: 26, Acci_Id: 5 }, { AcPa_Id: 87, Pant_Id: 27, Acci_Id: 1 }, { AcPa_Id: 88, Pant_Id: 27, Acci_Id: 2 },
+  { AcPa_Id: 89, Pant_Id: 27, Acci_Id: 3 }, { AcPa_Id: 90, Pant_Id: 27, Acci_Id: 5 }, { AcPa_Id: 91, Pant_Id: 28, Acci_Id: 1 }, { AcPa_Id: 92, Pant_Id: 28, Acci_Id: 2 },
+  { AcPa_Id: 93, Pant_Id: 28, Acci_Id: 3 }, { AcPa_Id: 94, Pant_Id: 28, Acci_Id: 5 }, { AcPa_Id: 95, Pant_Id: 29, Acci_Id: 1 }, { AcPa_Id: 96, Pant_Id: 29, Acci_Id: 2 },
+  { AcPa_Id: 97, Pant_Id: 29, Acci_Id: 3 }, { AcPa_Id: 98, Pant_Id: 29, Acci_Id: 5 }, { AcPa_Id: 99, Pant_Id: 30, Acci_Id: 1 }, { AcPa_Id: 100, Pant_Id: 30, Acci_Id: 2 },
+  { AcPa_Id: 101, Pant_Id: 30, Acci_Id: 3 }, { AcPa_Id: 102, Pant_Id: 30, Acci_Id: 5 }, { AcPa_Id: 103, Pant_Id: 31, Acci_Id: 1 }, { AcPa_Id: 104, Pant_Id: 31, Acci_Id: 2 },
+  { AcPa_Id: 105, Pant_Id: 31, Acci_Id: 3 }, { AcPa_Id: 106, Pant_Id: 31, Acci_Id: 5 }, { AcPa_Id: 107, Pant_Id: 32, Acci_Id: 1 }, { AcPa_Id: 108, Pant_Id: 32, Acci_Id: 2 },
+  { AcPa_Id: 109, Pant_Id: 32, Acci_Id: 5 }, { AcPa_Id: 110, Pant_Id: 32, Acci_Id: 6 }, { AcPa_Id: 111, Pant_Id: 33, Acci_Id: 1 }, { AcPa_Id: 112, Pant_Id: 33, Acci_Id: 2 },
+  { AcPa_Id: 113, Pant_Id: 33, Acci_Id: 3 }, { AcPa_Id: 114, Pant_Id: 33, Acci_Id: 5 }, { AcPa_Id: 115, Pant_Id: 34, Acci_Id: 1 }, { AcPa_Id: 116, Pant_Id: 34, Acci_Id: 2 },
+  { AcPa_Id: 117, Pant_Id: 34, Acci_Id: 3 }, { AcPa_Id: 118, Pant_Id: 34, Acci_Id: 5 }, { AcPa_Id: 119, Pant_Id: 35, Acci_Id: 1 }, { AcPa_Id: 120, Pant_Id: 35, Acci_Id: 2 },
+  { AcPa_Id: 121, Pant_Id: 35, Acci_Id: 3 }, { AcPa_Id: 122, Pant_Id: 35, Acci_Id: 5 }, { AcPa_Id: 123, Pant_Id: 36, Acci_Id: 1 }, { AcPa_Id: 124, Pant_Id: 36, Acci_Id: 2 },
+  { AcPa_Id: 125, Pant_Id: 36, Acci_Id: 3 }, { AcPa_Id: 126, Pant_Id: 36, Acci_Id: 5 }, { AcPa_Id: 127, Pant_Id: 37, Acci_Id: 2 }, { AcPa_Id: 128, Pant_Id: 38, Acci_Id: 1 },
+  { AcPa_Id: 129, Pant_Id: 38, Acci_Id: 2 }, { AcPa_Id: 130, Pant_Id: 38, Acci_Id: 3 }, { AcPa_Id: 131, Pant_Id: 38, Acci_Id: 5 }, { AcPa_Id: 132, Pant_Id: 39, Acci_Id: 1 },
+  { AcPa_Id: 133, Pant_Id: 39, Acci_Id: 2 }, { AcPa_Id: 134, Pant_Id: 39, Acci_Id: 3 }, { AcPa_Id: 135, Pant_Id: 39, Acci_Id: 5 }, { AcPa_Id: 136, Pant_Id: 40, Acci_Id: 1 },
+  { AcPa_Id: 137, Pant_Id: 40, Acci_Id: 2 }, { AcPa_Id: 138, Pant_Id: 40, Acci_Id: 5 }, { AcPa_Id: 139, Pant_Id: 40, Acci_Id: 6 }, { AcPa_Id: 140, Pant_Id: 41, Acci_Id: 1 },
+  { AcPa_Id: 141, Pant_Id: 41, Acci_Id: 2 }, { AcPa_Id: 142, Pant_Id: 41, Acci_Id: 5 }, { AcPa_Id: 143, Pant_Id: 41, Acci_Id: 6 }, { AcPa_Id: 144, Pant_Id: 42, Acci_Id: 1 },
+  { AcPa_Id: 145, Pant_Id: 42, Acci_Id: 2 }, { AcPa_Id: 146, Pant_Id: 42, Acci_Id: 3 }, { AcPa_Id: 147, Pant_Id: 42, Acci_Id: 5 }, { AcPa_Id: 148, Pant_Id: 43, Acci_Id: 1 },
+  { AcPa_Id: 149, Pant_Id: 43, Acci_Id: 2 }, { AcPa_Id: 150, Pant_Id: 43, Acci_Id: 3 }, { AcPa_Id: 151, Pant_Id: 43, Acci_Id: 5 }, { AcPa_Id: 152, Pant_Id: 45, Acci_Id: 1 },
+  { AcPa_Id: 153, Pant_Id: 45, Acci_Id: 2 }, { AcPa_Id: 154, Pant_Id: 45, Acci_Id: 3 }, { AcPa_Id: 155, Pant_Id: 45, Acci_Id: 5 }
+];
+
 @Component({
   selector: 'app-create',
   standalone: true,
@@ -41,113 +84,9 @@ interface Accion {
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Rol>();
-  
-  mostrarErrores = false;
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
 
   treeData: TreeItem[] = [];
   selectedItems: TreeItem[] = [];
-
-  constructor(private http: HttpClient) {
-    this.cargarPantallas();
-  }
-
-  private cargarPantallas(): void {
-    // Realiza una petición GET para obtener la lista de pantallas
-    this.http.get(`${environment.apiBaseUrl}/Roles/ListarPantallas`, {
-      headers: { 'x-api-key': environment.apiKey },
-      responseType: 'text'
-    }).subscribe({
-      next: raw => {
-        try {
-          // Limpia espacios y ajusta el formato si la respuesta no es un array
-          let data = raw.trim();
-          if (!data.startsWith('[')) {
-            data = `[${data}]`;
-          }
-          // Parsea la respuesta y la asigna a 'esquemas'
-          const parsed = JSON.parse(data);
-          
-          // Construye la estructura del TreeView
-          this.treeData = parsed.map((esquema: Esquema) => ({
-            id: esquema.Esquema,
-            name: esquema.Esquema,
-            type: 'esquema',
-            selected: false,
-            expanded: false, // Iniciar con todos los nodos colapsados
-            children: esquema.Pantallas.map((pantalla: Pantalla) => ({
-              id: `${esquema.Esquema}_${pantalla.Pant_Id}`,
-              name: pantalla.Pant_Descripcion,
-              type: 'pantalla',
-              selected: false,
-              expanded: false, // Iniciar con todos los nodos colapsados
-              children: pantalla.Acciones.map((accion: Accion) => ({
-                id: `${esquema.Esquema}_${pantalla.Pant_Id}_${accion.Accion_Id}`,
-                name: accion.Accion,
-                type: 'accion',
-                selected: false
-              }))
-            }))
-          }));
-        } catch (e) {
-          console.error('No se pudo parsear la respuesta de pantallas:', e, raw);
-        }
-      },
-      error: err => {
-        console.error('Error al cargar pantallas:', err);
-      }
-    });
-  }
-
-  toggleSelection(item: TreeItem): void {
-    item.selected = !item.selected;
-    
-    // Si es una acción o pantalla, selecciona/deselecciona todas sus acciones
-    if (item.type === 'pantalla' || item.type === 'esquema') {
-      this.updateChildrenSelection(item);
-    }
-    
-    this.updateSelectedItems();
-  }
-
-  toggleExpand(item: TreeItem): void {
-    if (item.children && item.children.length > 0) {
-      item.expanded = !item.expanded;
-    }
-  }
-
-  private updateChildrenSelection(parent: TreeItem): void {
-    if (parent.children) {
-      const newState = parent.selected;
-      parent.children.forEach(child => {
-        child.selected = newState;
-        if (child.children) {
-          this.updateChildrenSelection(child);
-        }
-      });
-    }
-  }
-
-  private updateSelectedItems(): void {
-    this.selectedItems = this.getAllSelectedItems(this.treeData);
-  }
-
-  private getAllSelectedItems(items: TreeItem[]): TreeItem[] {
-    return items.reduce<TreeItem[]>((acc, item) => {
-      if (item.selected) {
-        acc.push(item);
-      }
-      if (item.children) {
-        acc.push(...this.getAllSelectedItems(item.children));
-      }
-      return acc;
-    }, []);
-  }
 
   rol: Rol = {
     role_Id: 0,
@@ -164,97 +103,199 @@ export class CreateComponent {
     role_Estado: true
   };
 
+  mostrarErrores = false;
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+
+  constructor(private http: HttpClient) {
+    this.cargarPantallas();
+  }
+
+  private cargarPantallas(): void {
+    this.http.get(`${environment.apiBaseUrl}/Roles/ListarPantallas`, {
+      headers: { 'x-api-key': environment.apiKey },
+      responseType: 'text'
+    }).subscribe({
+      next: raw => {
+        try {
+          let data = raw.trim();
+          if (!data.startsWith('[')) data = `[${data}]`;
+          const parsed = JSON.parse(data);
+          this.treeData = parsed.map((esquema: Esquema) => {
+            const esquemaNode: TreeItem = {
+              id: esquema.Esquema,
+              name: esquema.Esquema,
+              type: 'esquema',
+              selected: false,
+              expanded: false,
+              children: []
+            };
+            esquemaNode.children = esquema.Pantallas.map((pantalla: Pantalla) => {
+              const pantallaNode: TreeItem = {
+                id: `${esquema.Esquema}_${pantalla.Pant_Id}`,
+                name: pantalla.Pant_Descripcion,
+                type: 'pantalla',
+                selected: false,
+                expanded: false,
+                parent: esquemaNode,
+                children: []
+              };
+              pantallaNode.children = pantalla.Acciones.map((accion: Accion) => ({
+                id: `${pantalla.Pant_Id}_${accion.Accion_Id}`,
+                name: accion.Accion,
+                type: 'accion',
+                selected: false,
+                expanded: false,
+                parent: pantallaNode
+              }));
+              return pantallaNode;
+            });
+            return esquemaNode;
+          });
+        } catch (e) {
+          console.error('No se pudo parsear:', e);
+        }
+      },
+      error: err => console.error('Error al cargar pantallas:', err)
+    });
+  }
+
+  toggleSelection(item: TreeItem): void {
+    item.selected = !item.selected;
+    if (item.type === 'pantalla' || item.type === 'esquema') {
+      this.updateChildrenSelection(item, item.selected);
+    }
+    this.updateSelectedItems();
+  }
+
+  private updateChildrenSelection(parent: TreeItem, selected: boolean): void {
+    if (parent.children) {
+      for (const child of parent.children) {
+        child.selected = selected;
+        if (child.children) {
+          this.updateChildrenSelection(child, selected);
+        }
+      }
+    }
+  }
+
+  private updateSelectedItems(): void {
+    this.selectedItems = this.getAllSelectedItems(this.treeData);
+  }
+
+  private getAllSelectedItems(items: TreeItem[]): TreeItem[] {
+    return items.reduce<TreeItem[]>((acc, item) => {
+      if (item.selected && item.type === 'accion') acc.push(item);
+      if (item.children) acc.push(...this.getAllSelectedItems(item.children));
+      return acc;
+    }, []);
+  }
+
   guardar(): void {
     if (!this.rol.role_Descripcion.trim()) {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 4000);
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos.';
+      setTimeout(() => this.mostrarAlertaWarning = false, 4000);
       return;
     }
 
-    // Preparar los datos seleccionados para enviar
-    const seleccionados = this.selectedItems.map(item => ({
-      esquema: item.type === 'esquema' ? item.name : item.parent?.name,
-      pantalla: item.type === 'pantalla' ? item.name : item.parent?.name,
-      accion: item.type === 'accion' ? item.name : null
-    }));
-
-    // Enviar datos seleccionados a otro endpoint
-    console.log('Datos seleccionados:', seleccionados);
-
-    // Preparar datos del rol para guardar
-    const rolGuardar = {
+    const rolInsertar = {
       role_Id: 0,
       role_Descripcion: this.rol.role_Descripcion.trim(),
       usua_Creacion: environment.usua_Id,
       role_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
-      numero: "", 
+      numero: '',
       role_FechaModificacion: new Date().toISOString(),
-      usuarioCreacion: "", 
-      usuarioModificacion: "" 
+      usuarioCreacion: '',
+      usuarioModificacion: ''
     };
 
-    this.http.post<Rol>(`${environment.apiBaseUrl}/Roles/Insertar`, rolGuardar, {
-      headers: { 
+    this.http.post<Rol>(`${environment.apiBaseUrl}/Roles/Insertar`, rolInsertar, {
+      headers: {
         'X-Api-Key': environment.apiKey,
         'Content-Type': 'application/json',
         'accept': '*/*'
       }
     }).subscribe({
-      next: (response: Rol) => {
-        this.mostrarAlertaExito = true;
-        this.mensajeExito = `Rol "${this.rol.role_Descripcion}" guardado exitosamente`;
-        
-        // Ocultar la alerta después de 3 segundos
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-          this.onSave.emit(response);
-          this.cancelar();
-        }, 3000);
+      next: () => {
+        this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
+          headers: { 'X-Api-Key': environment.apiKey }
+        }).subscribe({
+          next: (roles) => {
+            const ultimoRol = roles[roles.length - 1];
+
+            const permisos = this.selectedItems.map(item => {
+              // El id de la acción es "14_1" (pantallaId_accionId)
+              const [pantallaIdStr, accionIdStr] = item.id.split('_');
+              const pantallaId = Number(pantallaIdStr);
+              const accionId = Number(accionIdStr);
+
+              // Buscar el AcPa_Id correcto
+              const acPa = accionesPorPantalla.find(ap => ap.Pant_Id === pantallaId && ap.Acci_Id === accionId);
+
+              return {
+                perm_Id: 0,
+                acPa_Id: acPa ? acPa.AcPa_Id : 0,
+                role_Id: ultimoRol.role_Id, // El rol recién creado
+                role_Descripcion: ultimoRol.role_Descripcion,
+                pant_Id: pantallaId,
+                pant_Descripcion: item.parent ? item.parent.name : '',
+                acci_Id: accionId,
+                acci_Descripcion: item.name,
+                usua_Creacion: environment.usua_Id,
+                perm_FechaCreacion: new Date().toISOString(),
+                usua_Modificacion: 0,
+                perm_FechaModificacion: new Date().toISOString()
+              };
+            });
+
+            // Enviar los permisos uno por uno
+            permisos.forEach(permiso => {
+              console.log('Permiso enviado:', permiso);
+              this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
+                headers: {
+                  'X-Api-Key': environment.apiKey,
+                  'Content-Type': 'application/json',
+                  'accept': '*/*'
+                }
+              }).subscribe({
+                error: err => {
+                  this.mostrarAlertaError = true;
+                  this.mensajeError = 'Error al guardar permisos.';
+                  console.error(err);
+                }
+              });
+            });
+
+            this.mostrarAlertaExito = true;
+            this.mensajeExito = `Rol y permisos guardados correctamente.`;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.onSave.emit(ultimoRol);
+              this.cancelar();
+            }, 3000);
+          },
+          error: () => {
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'No se pudo obtener el último rol insertado.';
+          }
+        });
       },
-      error: (error: any) => {
-        console.error('Error al guardar el rol:', error);
+      error: error => {
         this.mostrarAlertaError = true;
-        this.mensajeError = error.error?.message || 'Error al guardar el rol. Por favor, intente nuevamente.';
-        
-        // Ocultar la alerta de error después de 5 segundos
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
+        this.mensajeError = 'Error al guardar el rol.';
+        console.error(error);
       }
     });
   }
 
-  private clearSelections(): void {
-    const clearNode = (node: TreeItem) => {
-      node.selected = false;
-      node.expanded = false; // Agregado: también resetea el estado de expansión
-      if (node.children) {
-        node.children.forEach(child => clearNode(child));
-      }
-    };
-    
-    this.treeData.forEach(esquema => clearNode(esquema));
-    this.selectedItems = [];
-  }
-
   cancelar(): void {
-    this.mostrarErrores = false;
-    this.mostrarAlertaExito = false;
-    this.mensajeExito = '';
-    this.mostrarAlertaError = false;
-    this.mensajeError = '';
-    this.mostrarAlertaWarning = false;
-    this.mensajeWarning = '';
-    
-    // Limpiar selecciones del TreeView
     this.clearSelections();
-    
     this.rol = {
       role_Id: 0,
       role_Descripcion: '',
@@ -272,12 +313,23 @@ export class CreateComponent {
     this.onCancel.emit();
   }
 
+  private clearSelections(): void {
+    const clearNode = (node: TreeItem) => {
+      node.selected = false;
+      node.expanded = false;
+      if (node.children) node.children.forEach(child => clearNode(child));
+    };
+    this.treeData.forEach(esq => clearNode(esq));
+    this.selectedItems = [];
+  }
+
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
-    this.mensajeExito = '';
     this.mostrarAlertaError = false;
-    this.mensajeError = '';
     this.mostrarAlertaWarning = false;
-    this.mensajeWarning = '';
+  }
+
+  toggleExpand(item: TreeItem): void {
+    item.expanded = !item.expanded;
   }
 }
