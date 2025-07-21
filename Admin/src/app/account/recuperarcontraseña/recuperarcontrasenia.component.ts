@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './recuperarcontrasenia.component.scss'
 })
 export class RecuperarcontraseniaComponent {
+  mostrarErroresConfirmar = false;
   // --- Confirmar contraseña screen logic ---
   mostrarPantallaConfirmar = false;
   nuevaContrasena: string = '';
@@ -22,7 +23,6 @@ export class RecuperarcontraseniaComponent {
   onInputKeyUp(event: Event, idx: number): void {
     const input = event.target as HTMLInputElement;
     let value = input.value;
-    // Only allow single alphanumeric character
     if (!/^([a-zA-Z0-9]?)$/.test(value)) {
       input.value = '';
       this.codigoIngresado[idx] = '';
@@ -30,7 +30,6 @@ export class RecuperarcontraseniaComponent {
     }
     // Store character or clear
     this.codigoIngresado[idx] = value;
-    // Auto-advance if character entered and not last input
     if (value.length === 1 && idx < 5) {
       setTimeout(() => {
         const nextInput = document.querySelector<HTMLInputElement>(`input[name='codigo${idx+1}']`);
@@ -40,7 +39,7 @@ export class RecuperarcontraseniaComponent {
         }
       }, 0);
     }
-    // Go back if deleted and not first input
+
     if (!value && idx > 0) {
       setTimeout(() => {
         const prevInput = document.querySelector<HTMLInputElement>(`input[name='codigo${idx-1}']`);
@@ -62,7 +61,6 @@ export class RecuperarcontraseniaComponent {
   mostrarErrores = false;
   correo = '';
 
-  // --- Code entry screen logic ---
   mostrarPantallaCodigo = false;
   codigoIngresado: string[] = ['', '', '', '', '', ''];
   codigoGenerado: string = '';
@@ -77,6 +75,13 @@ export class RecuperarcontraseniaComponent {
     this.mensajeWarning = '';
   }
   cancelar(): void {
+    this.mostrarPantallaConfirmar = false;
+    this.mostrarPantallaCodigo = false;
+    this.nuevaContrasena = '';
+    this.confirmarContrasena = '';
+    this.codigoIngresado = ['', '', '', '', '', ''];
+    this.correo = '';
+    this.mostrarErroresConfirmar = false;
     this.onCancel.emit();
   }
   usuario: Usuario = {
@@ -231,13 +236,8 @@ export class RecuperarcontraseniaComponent {
   }
 
   confirmarNuevaContrasena(): void {
+    this.mostrarErroresConfirmar = true;
     if (!this.nuevaContrasena || !this.confirmarContrasena) {
-      this.mostrarAlertaError = true;
-      this.mensajeError = 'Debes ingresar y confirmar la nueva contraseña.';
-      setTimeout(() => {
-        this.mostrarAlertaError = false;
-        this.mensajeError = '';
-      }, 4000);
       return;
     }
     if (this.nuevaContrasena !== this.confirmarContrasena) {
@@ -249,11 +249,22 @@ export class RecuperarcontraseniaComponent {
       }, 4000);
       return;
     }
-    // Lógica para guardar la nueva contraseña en el backend
     const usuarioActualizado = {
-      ...this.usuario,
+      usua_Id: this.usuario.usua_Id,
+      usua_Usuario: '',
+      correo: '',
       usua_Clave: this.nuevaContrasena,
-      correo: this.correo
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: 0,
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: 1,
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson: ''
     };
     this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/RestablecerClave`, usuarioActualizado, {
       headers: {
@@ -263,13 +274,28 @@ export class RecuperarcontraseniaComponent {
       }
     }).subscribe({
       next: (response) => {
-        if (response.mensaje && response.mensaje.includes('exitosamente')) {
+        const codeStatus = response?.data?.code_Status;
+        const messageStatus = response?.data?.message_Status || 'No se pudo actualizar la contraseña.';
+        if (codeStatus === 1) {
           this.mostrarAlertaExito = true;
-          this.mensajeExito = '¡Contraseña actualizada exitosamente!';
-          this.mostrarPantallaConfirmar = false;
+          this.mensajeExito = messageStatus;
+
+          setTimeout(() => {
+            this.cancelar();
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+
+
+          }, 2000);
+        } else if (codeStatus === -1) {
+          this.mostrarAlertaError = true;
+          this.mensajeError = messageStatus;
+        } else if (codeStatus === 0) {
+          this.mostrarAlertaError = true;
+          this.mensajeError = 'Error al actualizar la contraseña.';
         } else {
           this.mostrarAlertaError = true;
-          this.mensajeError = response.mensaje || 'No se pudo actualizar la contraseña.';
+          this.mensajeError = 'No se pudo actualizar la contraseña.';
         }
         setTimeout(() => {
           this.mostrarAlertaExito = false;

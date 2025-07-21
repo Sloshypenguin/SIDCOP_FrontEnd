@@ -23,6 +23,9 @@
           <i class="ri-eye-line" *ngIf="!mostrarPassword1" (click)="mostrarPassword1 = true" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
           <i class="ri-eye-off-line" *ngIf="mostrarPassword1" (click)="mostrarPassword1 = false" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
         </div>
+        <div class="text-danger mt-1" *ngIf="!nuevaContrasena.trim() && mostrarErroresConfirmar">
+          <small>El campo Nueva Contraseña es requerido</small>
+        </div>
       </div>
       <div class="login-input-group" style="margin: 0 auto; display: flex; flex-direction: column; align-items: center; width: 100%;">
         <label for="confirmarContrasena" class="login-label">Confirmar Nueva Contraseña</label>
@@ -37,6 +40,9 @@
           />
           <i class="ri-eye-line" *ngIf="!mostrarPassword2" (click)="mostrarPassword2 = true" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
           <i class="ri-eye-off-line" *ngIf="mostrarPassword2" (click)="mostrarPassword2 = false" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;"></i>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!confirmarContrasena.trim() && mostrarErroresConfirmar">
+          <small>El campo Confirmar Nueva Contraseña es requerido</small>
         </div>
       </div>
       <div class="codigo-btn-row" style="justify-content: center; width: 100%;margin-top: 10%;">
