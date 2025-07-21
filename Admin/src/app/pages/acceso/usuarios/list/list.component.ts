@@ -13,6 +13,13 @@ import { CreateComponent as CreateUsuarioComponent } from '../create/create.comp
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { set } from 'lodash';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 @Component({
   selector: 'app-list',
@@ -29,7 +36,18 @@ import { set } from 'lodash';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrl: './list.component.scss',
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({ opacity: 0, height: 0 }),
+        animate('300ms ease-out', style({ opacity: 0, height: '*' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, height: 0 }))
+      ])
+    ])
+  ]
 })
 export class ListComponent {
   breadCrumbItems!: Array<{}>;
