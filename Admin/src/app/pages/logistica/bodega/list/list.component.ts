@@ -13,7 +13,14 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
-
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+//Importaciones de Animaciones
 
 @Component({
   selector: 'app-list',
@@ -30,7 +37,40 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
@@ -93,6 +133,7 @@ export class ListComponent implements OnInit {
   bodegaDetalle: Bodega | null = null;
   
   // Propiedades para alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -105,7 +146,7 @@ export class ListComponent implements OnInit {
   bodegaAEliminar: Bodega | null = null;
 
   constructor(public table: ReactiveTableService<Bodega>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
 
   accionesDisponibles: string[] = [];
@@ -149,14 +190,14 @@ export class ListComponent implements OnInit {
   guardarBodega(bodega: Bodega): void {
     console.log('Bodega guardada exitosamente desde create component:', bodega);
     // Recargar los datos de la tabla
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormulario();
   }
 
   actualizarBodega(bodega: Bodega): void {
     console.log('Bodega actualizada exitosamente desde edit component:', bodega);
     // Recargar los datos de la tabla
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
   }
 
@@ -201,7 +242,7 @@ export class ListComponent implements OnInit {
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -286,12 +327,18 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  //Declaramos un estado en el cargarDatos, esto para hacer el overlay
+  //segun dicha funcion de recargar, ya que si vienes de hacer una accion
+  //es innecesario mostrar el overlay de carga
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Bodega[]>(`${environment.apiBaseUrl}/Bodega/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.table.setData(data);
+      },500);
     });
   }
 }
