@@ -25,8 +25,7 @@
   border-radius: 18px;                
   padding: 2.3rem 2rem 2.3rem 2rem;    
   min-width: 70vh;  
-  max-width: 400vh;                    
-  width: auto;                         
+  max-width: 400vh;                                  
   margin: 0 auto;                      
   box-shadow: 0 8px 32px rgba(20, 26, 47, 0.32); 
   display: flex;
@@ -207,4 +206,42 @@
 
 .login-input-icon span {
   display: none !important;
+}
+
+/* Responsive para login */
+@media (max-width: 600px) {
+  .login-card {
+    min-width: 98vw;
+    max-width: 99vw;
+    padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+    border-radius: 12px;
+  }
+  .login-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+  .login-form {
+    max-width: 98vw;
+    padding: 0;
+  }
+  .login-input-group {
+    max-width: 98vw;
+    margin-bottom: 1rem;
+  }
+  .login-input-icon {
+    max-width: 98vw;
+    padding: 0.15rem 0.5rem;
+  }
+  .login-header {
+    height: 120px;
+    min-width: 100vw;
+  }
+  .login-logo {
+    height: 48px;
+    max-width: 220px;
+  }
+  .btn-login {
+    font-size: 0.95rem;
+    padding: 0.7em 1.2em;
+  }
 }

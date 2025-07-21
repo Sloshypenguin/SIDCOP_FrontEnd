@@ -8,20 +8,21 @@ import { AuthModule } from './auth/auth.module';
 
 // Component
 import { LoginComponent } from './login/login/login.component';
+import { RecuperarcontraseniaComponent } from './recuperarcontraseña/recuperarcontrasenia.component';
 
 
 
 @NgModule({
   declarations: [
-    LoginComponent,
-
+    LoginComponent
   ],
   imports: [
     CommonModule,
     AccountRoutingModule,
     AuthModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RecuperarcontraseniaComponent
   ]
 })
 export class AccountModule { }
