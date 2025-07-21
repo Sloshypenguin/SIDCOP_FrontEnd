@@ -40,11 +40,32 @@ import {
   animations: [
     trigger('fadeExpand', [
       transition(':enter', [
-        style({ opacity: 0, height: 0 }),
-        animate('300ms ease-out', style({ opacity: 0, height: '*' }))
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.95)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
       ]),
       transition(':leave', [
-        animate('300ms ease-in', style({ opacity: 0, height: 0 }))
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
       ])
     ])
   ]
