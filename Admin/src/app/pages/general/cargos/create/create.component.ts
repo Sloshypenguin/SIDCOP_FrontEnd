@@ -75,7 +75,7 @@ export class CreateComponent {
   }
 
   guardar(): void {
-    console.log('Intentando guardar cargo con datos:', this.cargo);
+    // console.log('Intentando guardar cargo con datos:', this.cargo);
     this.mostrarErrores = true;
     
     if (this.cargo.carg_Descripcion.trim()) {
@@ -95,7 +95,7 @@ export class CreateComponent {
         usuarioModificacion : ''
       };
 
-      console.log('Guardando cargo:', cargoGuardar);
+      // console.log('Guardando cargo:', cargoGuardar);
       
       this.http.post<any>(`${environment.apiBaseUrl}/Cargo/Insertar`, cargoGuardar, {
         headers: { 
@@ -105,7 +105,7 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Cargo guardado exitosamente:', response);
+          // console.log('Cargo guardado exitosamente:', response);
           this.mensajeExito = `Cargo "${this.cargo.carg_Descripcion}" guardado exitosamente`;
           this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
@@ -118,7 +118,7 @@ export class CreateComponent {
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al guardar cargo:', error);
+          // console.error('Error al guardar cargo:', error);
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al guardar el cargo. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;
