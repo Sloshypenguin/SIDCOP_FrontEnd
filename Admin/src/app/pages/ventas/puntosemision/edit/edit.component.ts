@@ -23,13 +23,16 @@ export class EditComponent implements OnChanges {
     puEm_Descripcion: '',
     usua_Creacion: 0,
     usua_Modificacion: 0,
+    sucu_Id: 0,
    
     puEm_FechaCreacion: new Date(),
     puEm_FechaModificacion: new Date(),
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
-    usuarioModificacion: ''
+    usuarioModificacion: '',
+    secuencia: 0,
+    estado: '',
   };
 
 
@@ -42,8 +45,18 @@ export class EditComponent implements OnChanges {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
+  Sucursales: any[] = [];
 
-  constructor(private http: HttpClient) {}
+   cargarSucursales() {
+      this.http.get<any>('https://localhost:7071/Sucursales/Listar', {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.Sucursales = data);
+    };
+
+  constructor(private http: HttpClient) {
+    this.cargarSucursales();
+
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['PEData'] && changes['PEData'].currentValue) {
@@ -106,10 +119,12 @@ export class EditComponent implements OnChanges {
         usua_Creacion: this.puntoEmision.usua_Creacion,
         puEm_FechaCreacion: this.puntoEmision.puEm_FechaCreacion,
         usua_Modificacion: environment.usua_Id,
-       
+        sucu_Id: this.puntoEmision.sucu_Id,
         puEm_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
-        usuarioModificacion: ''
+        usuarioModificacion: '',
+        estado: '',
+        secuencia: 0,
       };
 
       this.http.put<any>(`${environment.apiBaseUrl}/PuntoEmision/Actualizar`, PEActualizar, {

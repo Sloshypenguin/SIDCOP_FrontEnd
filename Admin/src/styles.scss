@@ -954,7 +954,7 @@ bs-dropdown-container {
   gap: 0;
 }
 #page-topbar {
-  z-index:1051;
+  z-index: 100;
 }
 .gridjs-pagination .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
   display: none !important;

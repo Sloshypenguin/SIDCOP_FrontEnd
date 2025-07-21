@@ -30,6 +30,12 @@ export const MENU: MenuItem[] = [
                 link: '/acceso/usuarios',
                 parentId: 6
             },
+            {
+                id: 62,
+                label: 'MENUITEMS.ACCESO.LIST.ROLES',
+                link: '/acceso/roles',
+                parentId: 6
+            },
         ]
     },
     {
@@ -190,6 +196,14 @@ export const MENU: MenuItem[] = [
                 id: 28,
                 label: 'MENUITEMS.LOGISTICA.LIST.BODEGAS',
                 link: '/logistica/bodegas',
+                parentId: 4,
+                icon: 'ri-truck-line'
+            },
+
+            {
+                id: 29,
+                label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
+                link: '/logistica/traslados',
                 parentId: 4,
                 icon: 'ri-truck-line'
             }
