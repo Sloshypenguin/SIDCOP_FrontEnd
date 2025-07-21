@@ -12,6 +12,7 @@ import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -56,22 +57,6 @@ export class ListComponent implements OnInit {
     console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
-  // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
-  }
-
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
     console.log('Toggleando formulario de creación...');
@@ -105,6 +90,15 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
+  constructor(public table: ReactiveTableService<Modelo>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  ) {
+    this.cargarDatos();
+  }
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -126,14 +120,6 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   modeloAEliminar: Modelo | null = null;
-
-  constructor(public table: ReactiveTableService<Modelo>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargarDatos();
-  }
-
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -291,8 +277,10 @@ export class ListComponent implements OnInit {
           modulo = permisos['Modelos'] || permisos['modelos'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          console.log('Acciones del módulo:', modulo.Acciones);
           // Extraer solo el nombre de la acción
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
