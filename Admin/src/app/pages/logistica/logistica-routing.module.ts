@@ -7,6 +7,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./bodega/bodega.module').then(m => m.BodegaModule)
   },
+   {
+    path: 'traslados',
+    loadChildren: () =>
+      import('./traslados/traslado.module').then(m => m.TrasladoModule)
+  }
 ];
 
 @NgModule({

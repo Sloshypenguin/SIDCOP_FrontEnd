@@ -167,7 +167,7 @@ export class CreateComponent {
         usuarioModificacion: "" 
       };
 
-      console.log('Guardando puntoE:', registroscaisGuardar);
+      console.log('Guardando registro:', registroscaisGuardar);
       
       this.http.post<any>(`${environment.apiBaseUrl}/RegistrosCaiS/Crear`, registroscaisGuardar, {
         headers: { 
