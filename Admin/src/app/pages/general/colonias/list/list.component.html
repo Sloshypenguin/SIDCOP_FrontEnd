@@ -62,8 +62,34 @@
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles')">Acciones</th>
-                <th class="gridjs-th">Codigo</th>
-                <th class="gridjs-th">Descripción</th>
+                <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                  <span class="table-header-flex">
+                    No.
+                    <!-- iconos para ordenar -->
+                    <span style="display: flex; flex-direction: column;">
+                     <i class="ri-arrow-up-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    <i class="ri-arrow-down-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    </span>
+                  </span>
+                </th>
+                <th class="gridjs-th" (click)="table.sortBy('colo_Descripcion')" style="cursor:pointer;">
+                  <span class="table-header-flex">
+                    Descripción
+                    <!-- iconos para ordenar -->
+                    <span style="display: flex; flex-direction: column;">
+                     <i class="ri-arrow-up-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'colo_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    <i class="ri-arrow-down-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'colo_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    </span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -93,7 +119,7 @@
                     </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.colo_Id}}</span></td>
+                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                 <td>{{data.colo_Descripcion}}</td>
               </tr>
             </tbody>
