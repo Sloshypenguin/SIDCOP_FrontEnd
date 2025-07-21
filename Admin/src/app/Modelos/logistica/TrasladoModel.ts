@@ -1,0 +1,22 @@
+export class Traslado {
+  tras_Id: number = 0;
+  tras_Origen: number = 0;
+  origen: string = ''; // Descripción del origen (ej. "Sucursal Rio De Piedra")
+  tras_Destino: number = 0;
+  destino: string = ''; // Descripción del destino (ej. "Bodega #1 Vehiculo")
+  tras_Fecha: Date = new Date();
+  tras_Observaciones: string = '';
+  usua_Creacion: number = 0;
+  tras_FechaCreacion: Date = new Date();
+  usua_Modificacion?: number;
+  tras_FechaModificacion?: Date;
+  tras_Estado: boolean = true;
+
+  // Campos adicionales para seguimiento de estado (opcional)
+  code_Status?: number;
+  message_Status?: string;
+
+  constructor(init?: Partial<Traslado>) {
+    Object.assign(this, init);
+  }
+}

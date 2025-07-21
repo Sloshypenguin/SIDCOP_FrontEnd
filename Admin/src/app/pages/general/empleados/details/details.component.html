@@ -12,7 +12,7 @@
   
   <!-- Botón de regresar -->
   <div class="details-header-button">
-    <button type="button" class="btn btn-primary" (click)="cerrar()">
+    <button type="button" class="btn btn-primary mb-3" (click)="cerrar()">
       <span class="btn-text">Regresar</span>
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
@@ -20,34 +20,84 @@
   
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && empleadoDetalle" class="details-content">
-    
-    <div class="card shadow-sm mb-4">
+  <div class="row g-4 align-items-stretch">
+    <!-- Card izquierda: Imagen + Nombre -->
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm employee-photo-card position-relative">
+        <ng-container *ngIf="empleadoDetalle?.empl_Imagen; else noImage">
+          <img [src]="empleadoDetalle?.empl_Imagen" alt="Foto del empleado" class="employee-img-card" />
+          <div class="employee-img-overlay">
+            <span class="employee-img-name">{{ empleadoDetalle?.empl_Nombres }} {{ empleadoDetalle?.empl_Apellidos }}</span>
+          </div>
+        </ng-container>
+        <ng-template #noImage>
+          <div class="employee-img-placeholder-card d-flex flex-column justify-content-center align-items-center h-100">
+            <i class="ri-user-3-line display-1"></i>
+            <span class="employee-img-name mt-3">{{ empleadoDetalle?.empl_Nombres }} {{ empleadoDetalle?.empl_Apellidos }}</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <!-- Card derecha: Detalles -->
+    <div class="col-md-8">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+  <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+    <i class="ri-user-3-line me-2 fs-4"></i>
+    <h5 class="mb-0">Detalles del Empleado</h5>
+  </div>
   <div class="card-body">
     <div class="row g-3">
-
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">DNI</label>
-        <div class="form-control-plaintext">{{ empleadoDetalle.empl_DNI }}</div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-profile-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">DNI</div>
+            <div class="detail-value">{{ empleadoDetalle?.empl_DNI }}</div>
+          </div>
+        </div>
       </div>
-
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Correo electrónico</label>
-        <div class="form-control-plaintext">{{ empleadoDetalle.empl_Correo }}</div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-mail-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Correo electrónico</div>
+            <div class="detail-value">{{ empleadoDetalle?.empl_Correo }}</div>
+          </div>
+        </div>
       </div>
-
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Teléfono</label>
-        <div class="form-control-plaintext">{{ empleadoDetalle.empl_Telefono }}</div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-phone-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Teléfono</div>
+            <div class="detail-value">{{ empleadoDetalle?.empl_Telefono }}</div>
+          </div>
+        </div>
       </div>
-
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Dirección</label>
-        <div class="form-control-plaintext">{{ empleadoDetalle.empl_DireccionExacta }}</div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-map-pin-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Dirección</div>
+            <div class="detail-value">{{ empleadoDetalle?.empl_DireccionExacta }}</div>
+          </div>
+        </div>
       </div>
-
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-gender-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Sexo</div>
+            <div class="detail-value">{{ empleadoDetalle?.empl_Sexo }}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+    </div>
+  </div>
+
     
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
@@ -64,10 +114,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ empleadoDetalle.usua_Creacion || 'N/A' }}</span>
+          <span class="audit-user">{{ empleadoDetalle?.usua_Creacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date"></span>
+          <span class="audit-date">{{ formatearFecha(empleadoDetalle?.empl_FechaCreacion || null) }}</span>
         </div>
       </div>
       
@@ -86,13 +136,7 @@
     </div>
     </div>
     
-    <!-- Información adicional -->
-    <div class="additional-info">
-      <div class="info-item">
-        <label class="info-label">Número:</label>
-        <span class="info-value"></span>
-      </div>
-    </div>
+  
 
   </div>
 </div>

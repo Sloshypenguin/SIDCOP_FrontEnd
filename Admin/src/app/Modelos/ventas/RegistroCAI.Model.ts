@@ -14,6 +14,8 @@ export class RegistroCAI {
   regC_FechaInicialEmision: Date = new Date();
   regC_FechaFinalEmision: Date = new Date();
 
+  estado?: string = '';
+  secuencia?: number = 0;
 
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
