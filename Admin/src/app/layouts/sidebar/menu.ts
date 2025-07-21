@@ -30,6 +30,12 @@ export const MENU: MenuItem[] = [
                 link: '/acceso/usuarios',
                 parentId: 6
             },
+            {
+                id: 62,
+                label: 'MENUITEMS.ACCESO.LIST.ROLES',
+                link: '/acceso/roles',
+                parentId: 6
+            },
         ]
     },
     {
