@@ -43,7 +43,7 @@ import {
         style({
           height: '0',
           opacity: 0,
-          transform: 'scaleY(0.95)',
+          transform: 'scaleY(0.90)',
           overflow: 'hidden'
         }),
         animate(

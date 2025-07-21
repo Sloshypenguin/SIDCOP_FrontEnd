@@ -39,7 +39,7 @@
     <div *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
         <div class="row row-cols-xxl-5 g-4 mx-2 mb-4">
             <ng-container *ngFor="let data of usuariosFiltrados; trackBy: trackByUsuarioId">
-                <div class="col">
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
                     <div class="card card-empleado position-relative h-100">
                         <div class="card-header p-0 position-relative" style="height: 90px; background: #141a2f; border-top-left-radius: 1rem; border-top-right-radius: 1rem; display: flex; justify-content: center; align-items: flex-end;">
                             <div style="position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #d6b68a; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;"></div>
@@ -127,13 +127,11 @@
                             </h5>
 
                             <ul class="list-unstyled mb-4 mt-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
-                                <li class="d-flex justify-content-center align-items-center mb-2" style="gap: 4px;">
-                                    <span class="text-muted text-break">Usuario:</span>
-                                    <span>{{ data.usua_Usuario }}</span>
+                                <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
+                                    <span class="text-break" style="font-size: 0.8em;">-Usuario<p class="text-muted" style="font-size: 1.5em;">{{ data.usua_Usuario }}</p></span>
                                 </li>
                                 <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
-                                    <span class="text-muted text-break">Rol:</span>
-                                    <span>{{ data.role_Descripcion }}</span>
+                                    <span class="text-break" style="font-size: 0.8em;">-Rol<p class="text-muted" style="font-size: 1.5em;">RolDescripcion</p></span>
                                 </li>
                             </ul>
                         </div>
