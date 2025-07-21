@@ -12,6 +12,7 @@ import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -57,20 +58,7 @@ export class ListComponent implements OnInit {
   }
 
   // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
-  }
+
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
     console.log('Toggleando formulario de creación...');
@@ -103,6 +91,7 @@ export class ListComponent implements OnInit {
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -125,13 +114,17 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   PEEliminar: PuntoEmision | null = null;
 
-  constructor(public table: ReactiveTableService<PuntoEmision>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+constructor(public table: ReactiveTableService<PuntoEmision>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  )
+    {
     this.cargardatos();
-  }
+  }   
 
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
+
 
   // (navigateToCreate eliminado, lógica movida a crear)
 
