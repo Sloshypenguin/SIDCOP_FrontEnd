@@ -238,6 +238,7 @@ cancelarPantallaCodigo(): void {
     this.mostrarPantallaCodigo = true;
     this.nuevaContrasena = '';
     this.confirmarContrasena = '';
+    this.codigoIngresado = ['', '', '', '', '', ''];
   }
 
   confirmarNuevaContrasena(): void {
