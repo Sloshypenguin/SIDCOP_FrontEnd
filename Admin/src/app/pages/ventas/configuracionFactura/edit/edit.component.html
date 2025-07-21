@@ -166,7 +166,7 @@
             required>
             <option value="0" disabled>Seleccione Colonia</option>
             <option *ngFor="let col of Colonias" [value]="col.colo_Id">
-              {{ col.colo_Nombre }}
+              {{ col.colo_Descripcion }}
             </option>
           </select>
           <div class="text-danger mt-1" *ngIf="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni">
@@ -176,7 +176,7 @@
       </div>
 
       <!-- Logo -->
-      <div class="col-md-6">
+      <!-- <div class="col-md-6">
         <div class="mb-3">
           <label for="logo" class="form-label me-2">Logo</label>
           <span class="text-danger">*</span>
@@ -188,8 +188,24 @@
             <small>El campo Logo es requerido</small>
           </div>
         </div>
-      </div>
+      </div> -->
+ <div class="col-md-6 mb-3">
+    <label for="logo" class="form-label me-2">Logo</label>
+        <span class="text-danger">*</span>
+    <div class="d-flex align-items-center">
+      <img
+        [src]="configFactura.coFa_Logo" alt="Logo de la Empresa" class="rounded-circle"
+        style="width: 100px; height: 96px; object-fit: cover; border: 3px solid #d6b68a; background: #f5f5f5;"/>
 
+        <label for="inputImagen" style="position: left; bottom: 0; right: 10; background:
+       #fff; border-radius: 50%; border: 1px solid #d6b68a; width: 35px; height: 32px;
+        display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        
+        <i class="ri-add-line" style="font-size: 1.5rem; color: #d6b68a;"></i>
+        <input id="inputImagen" type="file" accept="image/*" (change)="onImagenSeleccionada($event)" style="display: none;" />
+      </label>
+    </div>
+  </div>
     </div>
   </div>
 
