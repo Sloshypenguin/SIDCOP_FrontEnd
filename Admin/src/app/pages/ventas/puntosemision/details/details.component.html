@@ -50,7 +50,7 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ PEDetalle.usuarioCreacion}}</span>
+          <span class="audit-user">{{ PEDetalle.usuarioCreacion || 'N/A'}}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date">{{ formatearFecha(PEDetalle.puEm_FechaCreacion) }}</span>
@@ -63,7 +63,7 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ PEDetalle.usua_Modificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ PEDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date">{{ formatearFecha(PEDetalle.puEm_FechaModificacion ?? null) }}</span>
