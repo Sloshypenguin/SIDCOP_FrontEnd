@@ -6,7 +6,8 @@
     "ACCESO": {
       "TEXT": "Acceso",
       "LIST": {
-        "USUARIOS": "Usuarios"
+        "USUARIOS": "Usuarios",
+        "ROLES": "Roles"
       }
     },
     "GENERAL": {
