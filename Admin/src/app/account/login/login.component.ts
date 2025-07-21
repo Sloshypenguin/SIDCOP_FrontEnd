@@ -43,8 +43,8 @@ export class LoginComponent {
      * Form Validatyion
      */
     this.loginForm = this.formBuilder.group({
-      email: ['admin', [Validators.required]], // Cambiado a nombre de usuario
-      password: ['123', [Validators.required]],
+      email: ['', [Validators.required]], // Campo de usuario
+      password: ['', [Validators.required]],
     });
   }
 
