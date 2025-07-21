@@ -54,50 +54,77 @@
           </div>
         </div>
 
-        <!-- Tabla -->
-        <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-                <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">ID</th>
-                <th class="gridjs-th">Código</th>
-                <th class="gridjs-th">Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                  <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                     <li *ngIf="accionPermitida('eliminar')"> 
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                     </li> 
-                       <li *ngIf="accionPermitida('detalle')"> 
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                       </li> 
-                    </ul>
-                  </div>
-                </td>
-                <td><span class="fw-semibold">{{ data.nCai_Id }}</span></td>
-                <td>{{ data.nCai_Codigo }}</td>
-                <td>{{ data.nCai_Descripcion }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Contenedor de tabla con radius -->
+        <div class="table-radius-container">
+          <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
+                  <th class="gridjs-th" (click)="table.sortBy('nCai_Id')" style="cursor:pointer;">
+                    <span class="table-header-flex">
+                      ID
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'nCai_Id' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'nCai_Id' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('nCai_Codigo')" style="cursor:pointer;">
+                    <span class="table-header-flex">
+                      Código
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'nCai_Codigo' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'nCai_Codigo' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('nCai_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Descripción
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'nCai_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'nCai_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="gridjs-th" *ngFor="let data of table.paginated$ | async; let i = index">
+                  <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
+                    <div class="dropdown-action-list">
+                      <button type="button"
+                        class="dropdown-toggle"
+                        [attr.aria-expanded]="false"
+                        (click)="floatingMenuService.open($event, data)">
+                        <span>Acciones</span>
+                        <i class="ri-settings-3-line"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td><span class="fw-semibold">{{ data.nCai_Id }}</span></td>
+                  <td>{{ data.nCai_Codigo }}</td>
+                  <td>{{ data.nCai_Descripcion }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Paginación -->
@@ -178,5 +205,31 @@
 
 <!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+
+<!-- Menú flotante para acciones -->
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenuService.data); floatingMenuService.close()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>
 
 <!-- end row -->
