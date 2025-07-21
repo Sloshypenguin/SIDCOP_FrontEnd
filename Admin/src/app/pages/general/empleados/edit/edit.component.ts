@@ -6,11 +6,12 @@ import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
 import { environment } from 'src/environments/environment';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule, DropzoneModule],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
@@ -28,6 +29,16 @@ export class EditComponent implements OnChanges {
     if (this.empleadoData) {
       this.empleado = { ...this.empleadoData };
       this.empleadoOriginal = this.empleado.empl_Apellidos || '';
+      // Recargar imagen si existe
+      if (this.empleado.empl_Imagen) {
+        this.uploadedFiles = [{
+          dataURL: this.empleado.empl_Imagen,
+          name: 'Imagen actual',
+          size: null
+        }];
+      } else {
+        this.uploadedFiles = [];
+      }
     }
 
       this.obtenerSucursales();
@@ -76,6 +87,16 @@ export class EditComponent implements OnChanges {
       this.empleadoOriginal = this.empleado.empl_Apellidos || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
+      // Recargar imagen si existe
+      if (this.empleado.empl_Imagen) {
+        this.uploadedFiles = [{
+          dataURL: this.empleado.empl_Imagen,
+          name: 'Imagen actual',
+          size: null
+        }];
+      } else {
+        this.uploadedFiles = [];
+      }
     }
   }
 
@@ -157,32 +178,44 @@ export class EditComponent implements OnChanges {
     this.guardar();
   }
 
-  private guardar(): void {
+  async guardar(): Promise<void> {
     this.mostrarErrores = true;
-
     const fechaInicial = new Date(this.empleado.empl_FechaNacimiento).toISOString().split('T')[0];
+
+    // Si hay un archivo local seleccionado en uploadedFiles, subirlo a Cloudinary
+    if (this.uploadedFiles.length > 0 && this.uploadedFiles[0].file) {
+      try {
+        const imageUrl = await this.uploadImageToCloudinary(this.uploadedFiles[0].file);
+        this.empleado.empl_Imagen = imageUrl;
+      } catch (error) {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al subir la imagen a Cloudinary.';
+        return; // No continuar si la imagen no se pudo subir
+      }
+    }
 
     if (this.empleado.empl_Nombres.trim()) {
       const empleadoActualizar = {
         empl_Id: this.empleado.empl_Id,
-          empl_DNI: this.empleado.empl_DNI,
-          empl_Codigo: this.empleado.empl_Codigo,
-          empl_Nombres: this.empleado.empl_Nombres,
-          empl_Apellidos: this.empleado.empl_Apellidos,
-          empl_Sexo: this.empleado.empl_Sexo,
-          empl_FechaNacimiento: fechaInicial,
-          empl_Correo: this.empleado.empl_Correo,
-          empl_Telefono: this.empleado.empl_Telefono,
-          sucu_Id: this.empleado.sucu_Id,
-          esCv_Id: this.empleado.esCv_Id,
-          carg_Id: this.empleado.carg_Id,
-          colo_Id: this.empleado.colo_Id,
-          empl_DireccionExacta: this.empleado.empl_DireccionExacta,
-          empl_Estado: true,
-          usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
-          empl_FechaCreacion: new Date().toISOString(),
-          usua_Modificacion: 1,
-          empl_FechaModificacion: new Date().toISOString(),
+        empl_DNI: this.empleado.empl_DNI,
+        empl_Codigo: this.empleado.empl_Codigo,
+        empl_Nombres: this.empleado.empl_Nombres,
+        empl_Apellidos: this.empleado.empl_Apellidos,
+        empl_Sexo: this.empleado.empl_Sexo,
+        empl_FechaNacimiento: fechaInicial,
+        empl_Correo: this.empleado.empl_Correo,
+        empl_Telefono: this.empleado.empl_Telefono,
+        sucu_Id: this.empleado.sucu_Id,
+        esCv_Id: this.empleado.esCv_Id,
+        carg_Id: this.empleado.carg_Id,
+        colo_Id: this.empleado.colo_Id,
+        empl_DireccionExacta: this.empleado.empl_DireccionExacta,
+        empl_Imagen: this.empleado.empl_Imagen,
+        empl_Estado: true,
+        usua_Creacion: environment.usua_Id, // variable global
+        empl_FechaCreacion: new Date().toISOString(),
+        usua_Modificacion: 1,
+        empl_FechaModificacion: new Date().toISOString(),
       };
 
       this.http.put<any>(`${environment.apiBaseUrl}/Empleado/Actualizar`, empleadoActualizar, {
@@ -288,4 +321,60 @@ export class EditComponent implements OnChanges {
         }
       });
     }
+
+
+    //Imagenes
+
+     //Crear imagenes
+
+     public dropzoneConfig: DropzoneConfigInterface = {
+      url: 'https://httpbin.org/post', // No subir a ningún endpoint automáticamente
+      clickable: true,
+      addRemoveLinks: true,
+      previewsContainer: false,
+      paramName: 'file',
+      maxFilesize: 50,
+      acceptedFiles: 'image/*',
+    };
+    
+    uploadedFiles: any[] = [];
+    
+    // File Upload
+    imageURL: any;
+
+    onFileSelected(event: any) {
+      const file = Array.isArray(event) ? event[0] : event;
+      if (!file) return;
+
+      // Previsualización local inmediata
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.uploadedFiles = [{ ...file, dataURL: e.target.result, name: file.name, file: file }];
+      };
+      reader.readAsDataURL(file);
+    }
+
+    
+
+      // Subida directa a Cloudinary
+      async uploadImageToCloudinary(file: File): Promise<string> {
+        const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload'; // demo es el valor de prueba
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'empleados'); // preset_prueba es el valor de prueba
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData
+        });
+        console.log(response);
+        const data = await response.json();
+        if (!data.secure_url) throw new Error('No se pudo obtener la URL de la imagen');
+        return data.secure_url;
+      }
+    
+      // File Remove
+      removeFile(event: any) {
+        this.uploadedFiles.splice(this.uploadedFiles.indexOf(event), 1);
+      }
 }
