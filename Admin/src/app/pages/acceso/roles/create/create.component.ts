@@ -131,7 +131,7 @@ export class CreateComponent {
               name: esquema.Esquema,
               type: 'esquema',
               selected: false,
-              expanded: false,
+              expanded: true,
               children: []
             };
             esquemaNode.children = esquema.Pantallas.map((pantalla: Pantalla) => {
@@ -166,11 +166,34 @@ export class CreateComponent {
 
   toggleSelection(item: TreeItem): void {
     item.selected = !item.selected;
+
     if (item.type === 'pantalla' || item.type === 'esquema') {
       this.updateChildrenSelection(item, item.selected);
     }
+
+    if (item.type === 'accion') {
+      const pantalla = item.parent;
+      const esquema = pantalla?.parent;
+
+      if (item.selected) {
+        if (pantalla) pantalla.selected = true;
+        if (esquema) esquema.selected = true;
+      } else {
+        // Si ninguna otra acción está seleccionada, desmarcar pantalla
+        if (pantalla && !pantalla.children?.some(child => child.selected)) {
+          pantalla.selected = false;
+          // Si ninguna otra pantalla está seleccionada, desmarcar esquema
+          if (esquema && !esquema.children?.some(p => p.selected)) {
+            esquema.selected = false;
+          }
+        }
+      }
+    }
+
     this.updateSelectedItems();
   }
+
+
 
   private updateChildrenSelection(parent: TreeItem, selected: boolean): void {
     if (parent.children) {
@@ -193,6 +216,23 @@ export class CreateComponent {
       if (item.children) acc.push(...this.getAllSelectedItems(item.children));
       return acc;
     }, []);
+  }
+
+  estanExpandidoTodos = true; // por defecto todo expandido
+
+  alternarDesplegables(): void {
+    this.estanExpandidoTodos = !this.estanExpandidoTodos;
+
+    const cambiarExpansion = (items: TreeItem[], expandir: boolean) => {
+      for (const item of items) {
+        item.expanded = expandir;
+        if (item.children) {
+          cambiarExpansion(item.children, expandir);
+        }
+      }
+    };
+
+    cambiarExpansion(this.treeData, this.estanExpandidoTodos);
   }
 
   guardar(): void {
@@ -256,7 +296,7 @@ export class CreateComponent {
             .filter(permiso => permiso !== null);
 
             permisos.forEach(permiso => {
-              this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
+              this.http.post(`${environment.apiBaseUrl}/Permisos/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
                   'Content-Type': 'application/json',
@@ -274,7 +314,7 @@ export class CreateComponent {
             // Enviar los permisos uno por uno
             permisos.forEach(permiso => {
               console.log('Permiso enviado:', permiso);
-              this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
+              this.http.post(`${environment.apiBaseUrl}/Permisos/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
                   'Content-Type': 'application/json',
