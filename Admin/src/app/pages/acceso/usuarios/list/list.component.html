@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
+        <div *ngIf="showCreateForm" [@fadeExpand]>
             <div class="mb-2 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
                 <div class="container-fluid flex-grow-1">
                     <app-create-usuario (onCancel)="cerrarFormulario()" (onSave)="guardarUsuario($event)"></app-create-usuario>
