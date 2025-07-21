@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
+import { Rol } from 'src/app/Modelos/acceso/roles.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
@@ -47,8 +47,8 @@ export class ListComponent implements OnInit {
      * BreadCrumb
      */
     this.breadCrumbItems = [
-      { label: 'General' },
-      { label: 'Estados Civiles', active: true }
+      { label: 'Acceso' },
+      { label: 'Roles', active: true }
     ];
 
     // OBTENER ACCIONES DISPONIBLES DEL USUARIO
@@ -64,29 +64,27 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(estadoCivil: EstadoCivil): void {
-    console.log('Abriendo formulario de edición para:', estadoCivil);
+  editar(rol: Rol): void {
     console.log('Datos específicos:', {
-      id: estadoCivil.esCv_Id,
-      descripcion: estadoCivil.esCv_Descripcion,
-      completo: estadoCivil
+      id: rol.role_Id,
+      descripcion: rol.role_Descripcion,
+      completo: rol
     });
-    this.estadoCivilEditando = { ...estadoCivil }; // Hacer copia profunda
+    this.rolEditando = { ...rol }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(estadoCivil: EstadoCivil): void {
-    console.log('Abriendo detalles para:', estadoCivil);
-    this.estadoCivilDetalle = { ...estadoCivil }; // Hacer copia profunda
+  detalles(rol: Rol): void {
+    this.rolDetalle = { ...rol }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
-   constructor(public table: ReactiveTableService<EstadoCivil>, 
+   constructor(public table: ReactiveTableService<Rol>, 
     private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute,
@@ -94,6 +92,7 @@ export class ListComponent implements OnInit {
   )
     {
     this.cargardatos();
+    this.cargarPantallas();
   }   
 
   activeActionRow: number | null = null;
@@ -103,8 +102,8 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  estadoCivilEditando: EstadoCivil | null = null;
-  estadoCivilDetalle: EstadoCivil | null = null;
+  rolEditando: Rol | null = null;
+  rolDetalle: Rol | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -116,7 +115,7 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  estadoCivilAEliminar: EstadoCivil | null = null;
+  rolAEliminar: Rol | null = null;
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -124,46 +123,41 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.estadoCivilEditando = null;
+    this.rolEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.estadoCivilDetalle = null;
+    this.rolDetalle = null;
   }
 
-  guardarEstadoCivil(estadoCivil: EstadoCivil): void {
-    console.log('Estado civil guardado exitosamente desde create component:', estadoCivil);
+  guardarRol(rol: Rol): void {
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarEstadoCivil(estadoCivil: EstadoCivil): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', estadoCivil);
+  actualizarRol(rol: Rol): void {
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(estadoCivil: EstadoCivil): void {
-    console.log('Solicitando confirmación para eliminar:', estadoCivil);
-    this.estadoCivilAEliminar = estadoCivil;
+  confirmarEliminar(rol: Rol): void {
+    this.rolAEliminar = rol;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.estadoCivilAEliminar = null;
+    this.rolAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.estadoCivilAEliminar) return;
-    
-    console.log('Eliminando estado civil:', this.estadoCivilAEliminar);
-    
-    this.http.post(`${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.estadoCivilAEliminar.esCv_Id}`, {}, {
+    if (!this.rolAEliminar) return;
+        
+    this.http.put(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -176,8 +170,7 @@ export class ListComponent implements OnInit {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Estado civil eliminado exitosamente');
-            this.mensajeExito = `Estado civil "${this.estadoCivilAEliminar!.esCv_Descripcion}" eliminado exitosamente`;
+            this.mensajeExito = `Rol "${this.rolAEliminar!.role_Descripcion}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -191,9 +184,9 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Rol está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el rol está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -206,7 +199,7 @@ export class ListComponent implements OnInit {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el rol.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -220,7 +213,7 @@ export class ListComponent implements OnInit {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el rol.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -247,7 +240,6 @@ export class ListComponent implements OnInit {
   private cargarAccionesUsuario(): void {
     // OBTENEMOS PERMISOSJSON DEL LOCALSTORAGE
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try {
@@ -256,10 +248,10 @@ export class ListComponent implements OnInit {
         let modulo = null;
         if (Array.isArray(permisos)) {
           // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES POR ID
-          modulo = permisos.find((m: any) => m.Pant_Id === 14);
+          modulo = permisos.find((m: any) => m.Pant_Id === 6);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
-          modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
+          modulo = permisos['Roles'] || permisos['roles'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
@@ -276,11 +268,36 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
-    this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
+    this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
       this.table.setData(data);
+    });
+  }
+
+  private cargarPantallas(): void {
+    this.http.get(`${environment.apiBaseUrl}/Roles/ListarPantallas`, {
+      headers: { 'x-api-key': environment.apiKey },
+      responseType: 'text' // <-- Recibe como texto
+    }).subscribe({
+      next: raw => {
+        try {
+          // Intenta arreglar el JSON agregando corchetes si es necesario
+          let data = raw.trim();
+          if (!data.startsWith('[')) {
+            data = `[${data}]`;
+          }
+          const parsed = JSON.parse(data);
+          console.log('Pantallas cargadas:', parsed);
+          // Aquí podrías hacer algo con los datos de las pantallas si es necesario
+        } catch (e) {
+          console.error('No se pudo parsear la respuesta de pantallas:', e, raw);
+        }
+      },
+      error: err => {
+        console.error('Error al cargar pantallas:', err);
+      }
     });
   }
 }
