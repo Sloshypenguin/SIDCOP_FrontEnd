@@ -296,7 +296,7 @@ export class CreateComponent {
             .filter(permiso => permiso !== null);
 
             permisos.forEach(permiso => {
-              this.http.post(`${environment.apiBaseUrl}/Permisos/Insertar`, permiso, {
+              this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
                   'Content-Type': 'application/json',
@@ -314,7 +314,7 @@ export class CreateComponent {
             // Enviar los permisos uno por uno
             permisos.forEach(permiso => {
               console.log('Permiso enviado:', permiso);
-              this.http.post(`${environment.apiBaseUrl}/Permisos/Insertar`, permiso, {
+              this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
                   'Content-Type': 'application/json',
