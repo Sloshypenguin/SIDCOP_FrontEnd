@@ -2,7 +2,6 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-
 export const environment = {
   production: false,
   defaultauth: 'fakebackend',
@@ -18,9 +17,8 @@ export const environment = {
   },
   apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
-  usua_Id: 1, //para cambiar cuando tengamos inicio de sesion
+  usua_Id: null, // Ahora se obtiene del usuario de la sesión actual
 };
-
 
 /*
  * For easier debugging in development mode, you can import the following file
