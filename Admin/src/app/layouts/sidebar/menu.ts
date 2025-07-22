@@ -205,6 +205,14 @@ export const MENU: MenuItem[] = [
                 link: '/logistica/bodegas',
                 parentId: 4,
                 icon: 'ri-truck-line'
+            },
+
+            {
+                id: 29,
+                label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
+                link: '/logistica/traslados',
+                parentId: 4,
+                icon: 'ri-truck-line'
             }
             // Puedes añadir más subitems aquí según sea necesario
         ]
