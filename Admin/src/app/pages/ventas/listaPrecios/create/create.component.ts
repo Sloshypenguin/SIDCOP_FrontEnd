@@ -44,6 +44,7 @@ export class CreateComponent {
   autoControl = new FormControl();
 
   productosLista: any[] = [];
+  canalesLista: any[] = [];
   isCollapsed = false;
 
   productoSeleccionado:  any;
@@ -96,6 +97,21 @@ export class CreateComponent {
     });
     
   }
+
+  cargarCanales(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Canal/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        this.canalesLista = data;
+        console.log('Canales listados:', data);
+        
+      },
+      
+      error: (error) => console.error('Error cargando canales:', error)
+    });
+    
+  }
   
     constructor(private http: HttpClient) {
 
@@ -106,6 +122,7 @@ export class CreateComponent {
     ];
 
     this.cargarProductos();
+    this.cargarCanales();
 
     }
 

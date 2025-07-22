@@ -14,7 +14,6 @@
 
       <div class="card-body">
         
-
         <!-- Botones de acción y buscador -->
         <div class="d-flex justify-content-between mb-3 flex-wrap">
           <button 
@@ -87,7 +86,7 @@
             [ngClass]="{ 'rounded-bottom-2': isCollapsed, 'rounded-bottom-0': !isCollapsed }"
             class="card-header text-white position-relative" style="min-height: 3rem; background: #141a2e"
             >
-              <span>Lista de Precios #</span>
+              <span>Lista de Precios #1</span>
               <button
                 class="btn btn-light btn-sm position-absolute end-0 top-0 m-2"
                 type="button"
@@ -121,7 +120,7 @@
                         class="form-control" 
                         [class.is-invalid]="!categoria.cate_Descripcion.trim() && mostrarErrores"
                         id="estadoCivilDescripcion"
-                        [(ngModel)]="categoria.cate_Descripcion"
+                        [(ngModel)]="productoSeleccionado"
                         placeholder="Ingrese la descripción del estado civil"
                         required>
                         <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -155,8 +154,20 @@
                     </div>
                 </div>
                 </div>
-              </div>
 
+                <div *ngFor="let canal of canalesLista" class="row">
+
+                  <div class="col-md-6">
+                    <div class="mb-3">
+
+                      <h5>canal: {{canal.cana_Descripcion}}</h5>
+
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
 
                 </div>
               </div>
