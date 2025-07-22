@@ -48,7 +48,7 @@
       <div class="codigo-btn-row" style="justify-content: center; width: 100%;margin-top: 10%;">
         <button type="button" class="btn btn-login" (click)="regresarConfirmar()">
           <i class="ri-arrow-left-line"></i>
-          <span class="btn-text">Regresar</span>
+          <span class="btn-text">Regresar</span> 
         </button>
         <button type="button" class="btn btn-login gold" (click)="confirmarNuevaContrasena()">
           <i class="ri-checkbox-circle-line"></i>
@@ -83,6 +83,7 @@
           (input)="onInputKeyUp($event, i)"
         />
       </ng-container>
+
     </div>
     <div class="codigo-btn-row">
       <button type="button" class="btn btn-login" (click)="cancelarPantallaCodigo()">
@@ -94,6 +95,12 @@
         <span class="btn-text">Confirmar</span>
       </button>
     </div>
+              <div class="login-forgot" *ngIf="mostrarPantallaCodigo">
+        <a (click)="reenviarcodigo()" [ngStyle]="{'cursor': reenviarDisabled ? 'not-allowed' : 'pointer', 'color': reenviarDisabled ? '#aaa' : ''}" [class.disabled]="reenviarDisabled">
+          Reenviar Código
+          <span *ngIf="reenviarDisabled"> ({{ tiempoRestante }}s)</span>
+        </a>
+      </div>
   </div>
 </div>
 <div class="login-card" *ngIf="!mostrarPantallaCodigo && !mostrarPantallaConfirmar">
