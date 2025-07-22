@@ -10,8 +10,16 @@ import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 import { CreateComponent as CreateUsuarioComponent } from '../create/create.component';
-import { EditComponent } from '../edit/edit.component';
+import { EditComponent as EditUsuarioComponent} from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { set } from 'lodash';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 @Component({
   selector: 'app-list',
@@ -24,11 +32,43 @@ import { DetailsComponent } from '../details/details.component';
     TableModule,
     PaginationModule,
     CreateUsuarioComponent,
-    EditComponent,
+    EditUsuarioComponent,
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrl: './list.component.scss',
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent {
   breadCrumbItems!: Array<{}>;
@@ -48,7 +88,7 @@ export class ListComponent {
     ];
 
     this.cargarAccionesUsuario();
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -96,6 +136,7 @@ export class ListComponent {
   usuarioDetalles: Usuario | null = null;
 
   //Propiedades para las alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -108,7 +149,7 @@ export class ListComponent {
 
 
   constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private route: ActivatedRoute){
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -130,13 +171,25 @@ export class ListComponent {
   }
 
   guardarUsuario(usuario: Usuario): void {
-    this.cargarDatos();
-    this.cerrarFormulario();
+    this.showCreateForm = false;
+    this.mensajeExito = `Usuario guardado exitosamente`;
+    this.mostrarAlertaExito = true;
+    setTimeout(() => {
+      this.mostrarAlertaExito = false;
+      this.mensajeExito = '';
+      this.cargarDatos(false);
+    }, 3000);
   }
 
   actualizarUsuario(usuario: Usuario): void {
-    this.cargarDatos();
-    this.cerrarFormularioEdicion();
+    this.showEditForm = false;
+    this.mensajeExito = `Usuario actualizado exitosamente`;
+    this.mostrarAlertaExito = true;
+    setTimeout(() => {
+      this.mostrarAlertaExito = false;
+      this.mensajeExito = '';
+      this.cargarDatos(false);
+    }, 3000);
   }
 
   confirmarEliminar(usuario: Usuario): void {
@@ -152,14 +205,79 @@ export class ListComponent {
 
   eliminar(): void {
     if(!this.usuarioEliminar) return;
-
-    this.http.post(`${environment.apiBaseUrl}/Usuarios/Eliminar/${this.usuarioEliminar.usua_Id}`, {},{
+    const usuarioEliminar: Usuario = {
+      secuencia: 0,
+      usua_Id: this.usuarioEliminar.usua_Id,
+      usua_Usuario: '',
+      usua_Clave: '',
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: environment.usua_Id,
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: environment.usua_Id,
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson:"",
+      role_Descripcion: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: '',
+    }
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Usuarios/CambiarEstado`, usuarioEliminar,{
       headers:{
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
+      next: (response: any) =>{
+        setTimeout(() =>{
+          this.mostrarOverlayCarga = false;
+          if(response.success && response.data){
+            if(response.data.code_Status === 1){
+              if(this.usuarioEliminar!.usua_Estado) {
+                this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" desactivado exitosamente`;
+                this.mostrarAlertaExito = true;
+              }
+              if(!this.usuarioEliminar!.usua_Estado) {
+                this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" activado exitosamente`;
+                this.mostrarAlertaExito = true;
+              }
 
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+
+              this.cargarDatos(false);
+              this.cancelarEliminar();
+            }else if (response.data.code_Status === -1){
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status;
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              this.cancelarEliminar();
+            }
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.message || 'Error inesperado al cambiar el estado al usuario.';
+
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+
+            this.cancelarEliminar();
+          }
+        },1000)
+      }
     })
   }
 
@@ -210,18 +328,22 @@ export class ListComponent {
     }
   }
 
-  private cargarDatos(): void {
+  private cargarDatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.usuarioGrid = data || [];
-      this.usuarios = this.usuarioGrid.slice(0, 10);
-      this.filtradorUsuarios();
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.usuarioGrid = data || [];
+        this.usuarios = this.usuarioGrid.slice(0, 12);
+        this.filtradorUsuarios();
+      },500);
     });
   }
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 12;
 
   get startIndex(): number {
     return this.usuarioGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;

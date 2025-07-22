@@ -1,11 +1,15 @@
 <app-breadcrumbs
-  [title]="'Registro CAI'"
-  [breadcrumbItems]="breadCrumbItems"
+  [title]="'Registros CAI'"
+  [breadcrumbItems]="[
+    { label: 'Ventas' },
+    { label: 'Registros CAI', active: true }
+  ]"
 >
   <img
-    class="breadcrumbs-icon ms-2 icon-breadcrumb"
-    src="assets/images/imagenes/Vector.svg"
-    alt="icono breadcrumb"
+    class="icon-breadcrumb"
+    style="width: 10vh; height: 10vh"
+    src="assets/images/svg/Vector.svg"
+    alt="breadcrumb icon"
   />
 </app-breadcrumbs>
 
@@ -18,6 +22,7 @@
           *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
         >
           <button
+            *ngIf="accionPermitida('crear')"
             type="button"
             class="btn btn-primary me-2 mb-2"
             (click)="crear()"
@@ -38,121 +43,526 @@
         </div>
 
         <!-- Collapse para el formulario de creación -->
-      <div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
-  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
-    <div class="container-fluid flex-grow-1">
-      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarRegistroCAI($event)"></app-create>
-    </div>
-  </div>
-</div>
-
-<div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
-  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
-    <div class="container-fluid flex-grow-1">
-      <app-edit 
-        [RegistroCaiData]="RegistroCAIEditando" 
-        (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarRegistroCAI($event)">
-      </app-edit>
-    </div>
-  </div>
-</div>
-
-<div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
-  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
-    <div class="container-fluid flex-grow-1">
-      <app-details 
-        [registroCaiData]="RegistroCAIDetalle" 
-        (onClose)="cerrarFormularioDetalles()">
-      </app-details>
-    </div>
-  </div>
-</div>
-
+        <div
+          class="collapse"
+          [ngClass]="{ show: showCreateForm }"
+          id="createFormCollapse"
+        >
+          <div
+            class="card card-body mb-3 d-flex flex-column"
+            style="min-height: 300px; padding: 2rem"
+          >
+            <div class="container-fluid flex-grow-1">
+              <app-create
+                (onCancel)="cerrarFormulario()"
+                (onSave)="guardarRegistroCAI($event)"
+              ></app-create>
+            </div>
+          </div>
+        </div>
 
         <div
-          class="table-responsive"
-          *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
+          class="collapse"
+          [ngClass]="{ show: showEditForm }"
+          id="editFormCollapse"
         >
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-                <th class="gridjs-th">Acciones</th>
-                <th class="gridjs-th">No.</th>
-                <th class="gridjs-th">Descripción</th>
-                <th class="gridjs-th">Sucursal</th>
-                <th class="gridjs-th">Punto de Emision</th>
-                <th class="gridjs-th">CAI</th>
-                <th class="gridjs-th">Rango Inicial</th>
-                <th class="gridjs-th">Rango Final</th>
-                <th class="gridjs-th">Fecha Inicial de Emision</th>
-                <th class="gridjs-th">Fecha Final de Emision</th>
-                <th class="gridjs-th">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative">
-                  <div class="dropdown-action-list">
-                    <button
-                      type="button"
-                      class="dropdown-toggle"
-                      [attr.aria-expanded]="activeActionRow === i"
-                      (click)="onActionMenuClick(i)"
-                    >
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul
-                      *ngIf="activeActionRow === i"
-                      class="dropdown-menu show"
-                    >
-                      <li *ngIf="showEdit">
-                        <button
-                          type="button"
-                          class="dropdown-action-btn"
-                          (click)="editar(data)"
-                        >
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="showDelete">
-                        <button
-                          type="button"
-                          class="dropdown-action-btn"
-                          (click)="confirmarEliminar(data)"
-                        >
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="showDetails">
-                        <button
-                          type="button"
-                          class="dropdown-action-btn"
-                          (click)="detalles(data)"
-                        >
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-                <td>
-                  <span class="fw-semibold">{{ data.regC_Id }}</span>
-                </td>
-                <td>{{ data.regC_Descripcion }}</td>
-                <td>{{ data.sucu_Descripcion }}</td>
-                <td>{{ data.puEm_Descripcion }}</td>
-                <td>{{ data.nCai_Descripcion }}</td>
-                <td>{{ data.regC_RangoInicial }}</td>
-                <td>{{ data.regC_RangoFinal }}</td>
-                <td>{{ data.regC_FechaInicialEmision }}</td>
-                <td>{{ data.regC_FechaFinalEmision }}</td>
-                <td>{{ data.regC_Estado }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div
+            class="card card-body mb-3 d-flex flex-column"
+            style="min-height: 300px; padding: 2rem"
+          >
+            <div class="container-fluid flex-grow-1">
+              <app-edit
+                [RegistroCaiData]="RegistroCAIEditando"
+                (onCancel)="cerrarFormularioEdicion()"
+                (onSave)="actualizarRegistroCAI($event)"
+              >
+              </app-edit>
+            </div>
+          </div>
         </div>
+
+        <div
+          class="collapse"
+          [ngClass]="{ show: showDetailsForm }"
+          id="detailsFormCollapse"
+        >
+          <div
+            class="card card-body mb-3 d-flex flex-column"
+            style="min-height: 400px; padding: 0.5rem"
+          >
+            <div class="container-fluid flex-grow-1">
+              <app-details
+                [registroCaiData]="RegistroCAIDetalle"
+                (onClose)="cerrarFormularioDetalles()"
+              >
+              </app-details>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-radius-container">
+          <div
+            class="table-responsive"
+            *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
+          >
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th
+                    class="gridjs-th"
+                    *ngIf="
+                      accionPermitida('editar') ||
+                      accionPermitida('eliminar') ||
+                      accionPermitida('detalle')
+                    "
+                  >
+                    Acciones
+                  </th>
+                  <!-- no es necesario ordenar todas la columnas-->
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('secuencia')"
+                    style="cursor: pointer"
+                  >
+                    <span class="table-header-flex">
+                      No.
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column">
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'secuencia' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'secuencia' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+
+                
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('puEm_Descripcion')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Descripción
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'puEm_Descripcion' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'puEm_Descripcion' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                   <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('sucu_Descripcion')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Sucursal
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'sucu_Descripcion' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'sucu_Descripcion' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                   <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('nCai_Descripcion')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      CAI
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'nCai_Descripcion' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'nCai_Descripcion' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                   <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('regC_RangoInicial')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Rango Inicial
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_RangoInicial' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_RangoInicial' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                   <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('regC_RangoFinal')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Rango Final
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_RangoFinal' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_RangoFinal' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                   <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('regC_FechaInicialEmision')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Fecha Inical de Emision
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_FechaInicialEmision' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_FechaInicialEmision' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                  
+                   <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('regC_FechaFinalEmision')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Fecha Final de Emision
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_FechaFinalEmision' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'regC_FechaFinalEmision' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('estado')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Estado
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'estado' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'estado' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr
+                  class="gridjs-th"
+                  *ngFor="let data of table.paginated$ | async; let i = index"
+                >
+                  <td
+                    class="position-relative"
+                    *ngIf="
+                      accionPermitida('editar') ||
+                      accionPermitida('eliminar') ||
+                      accionPermitida('detalle')
+                    "
+                  >
+                    <div class="dropdown-action-list">
+                      <button
+                        type="button"
+                        class="dropdown-toggle"
+                        [attr.aria-expanded]="false"
+                        (click)="floatingMenuService.open($event, data)"
+                      >
+                        <span>Acciones</span>
+                        <i class="ri-settings-3-line"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="fw-semibold">{{ data.secuencia }}</span>
+                  </td>
+                  <td>{{ data.regC_Descripcion }}</td>
+                  <td>{{ data.sucu_Descripcion }}</td>
+                  <td>{{ data.nCai_Descripcion }}</td>
+                  <td>{{ data.regC_RangoInicial }}</td>
+                  <td>{{ data.regC_RangoFinal }}</td>
+                  <td>{{ data.regC_FechaInicialEmision }}</td>
+                  <td>{{ data.regC_FechaFinalEmision }}</td>
+                  <td>{{ data.estado }}</td>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+
         <div
           class="row justify-content-md-between align-items-md-center"
           *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
