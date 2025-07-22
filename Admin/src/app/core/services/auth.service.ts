@@ -115,10 +115,29 @@ export class AuthenticationService {
   login(email: string, password: string) {
     this.store.dispatch(login({ email, password }));
 
-    // Crear el objeto de datos para la solicitud
+    // Crear el objeto de datos para la solicitud (enviar todo el objeto Usuario)
+    const now = new Date();
     const loginData = {
+      secuencia: 0,
+      usua_Id: 0,
       usua_Usuario: email,
+      correo: '',
       usua_Clave: password,
+      role_Id: 0,
+      role_Descripcion: '',
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: 0,
+      usua_FechaCreacion: now.toISOString(),
+      usua_Modificacion: 0,
+      usua_FechaModificacion: now.toISOString(),
+      usua_Estado: true,
+      permisosJson: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: ''
     };
 
     // Usar el mismo patrón que en Estados Civiles
