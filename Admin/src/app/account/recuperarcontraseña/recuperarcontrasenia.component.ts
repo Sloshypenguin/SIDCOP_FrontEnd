@@ -157,6 +157,7 @@ export class RecuperarcontraseniaComponent {
        return Math.floor(100000 + Math.random() * 900000).toString();
       }
     enviarcorreo(): void {
+
       this.codigoGenerado = this.generarCodigo();
       console.log('Código generado:', this.codigoGenerado);
       const payload = {
@@ -175,11 +176,14 @@ export class RecuperarcontraseniaComponent {
           if (response.mensaje && response.mensaje === 'Correo enviado exitosamente') {
             this.mostrarAlertaExito = true;
             this.mensajeExito = '¡Correo enviado exitosamente!';
-            this.mostrarPantallaCodigo = true;
+            if (!this.mostrarPantallaCodigo) {
+              this.mostrarPantallaCodigo = true;
+            }
             setTimeout(() => {
               this.mostrarAlertaExito = false;
               this.mensajeExito = '';
             }, 4000);
+            this.iniciarTemporizador(30); // 30 segundos
           } else {
             this.mostrarAlertaError = true;
             this.mensajeError = 'No se pudo enviar el correo.';
@@ -201,10 +205,11 @@ export class RecuperarcontraseniaComponent {
       });
     }
 
-  cancelarPantallaCodigo(): void {
-    this.mostrarPantallaCodigo = false;
-    this.codigoIngresado = ['', '', '', '', '', ''];
-  }
+cancelarPantallaCodigo(): void {
+  this.mostrarPantallaCodigo = false;
+  this.codigoIngresado = ['', '', '', '', '', ''];
+  this.limpiarTemporizador();
+}
 
   confirmarCodigo(): void {
     const codigoFinal = this.codigoIngresado.join('');
@@ -233,6 +238,7 @@ export class RecuperarcontraseniaComponent {
     this.mostrarPantallaCodigo = true;
     this.nuevaContrasena = '';
     this.confirmarContrasena = '';
+    this.codigoIngresado = ['', '', '', '', '', ''];
   }
 
   confirmarNuevaContrasena(): void {
@@ -314,4 +320,36 @@ export class RecuperarcontraseniaComponent {
       }
     });
   }
+
+  // temporizador
+
+  reenviarDisabled: boolean = false;
+tiempoRestante: number = 0;
+private intervalId: any;
+
+        iniciarTemporizador(segundos: number): void {
+        this.reenviarDisabled = true;
+        this.tiempoRestante = segundos;
+        this.intervalId = setInterval(() => {
+          this.tiempoRestante--;
+          if (this.tiempoRestante <= 0) {
+            this.reenviarDisabled = false;
+            clearInterval(this.intervalId);
+          }
+        }, 1000);
+      }
+
+      // Método para limpiar el temporizador
+      limpiarTemporizador(): void {
+        this.reenviarDisabled = false;
+        this.tiempoRestante = 0;
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+      }
+      reenviarcodigo(): void {
+  if (!this.reenviarDisabled) {
+    this.enviarcorreo();
+  }
+}
 }
