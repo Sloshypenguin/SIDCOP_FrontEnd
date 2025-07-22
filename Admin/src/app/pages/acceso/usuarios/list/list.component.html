@@ -104,8 +104,9 @@
                                         }
 
                                         <li *ngIf="accionPermitida('restablecer contraseña')">
-                                            <button class="dropdown-action-btn">Cambiar Clave
-                                                <i class="ri-refresh-line"></i></button>
+                                            <button class="dropdown-action-btn"
+                                            (click)="restablecer(data)">Cambiar Clave
+                                            <i class="ri-refresh-line"></i></button>
                                         </li>
                                         <li *ngIf="accionPermitida('detalle')">
                                             <button class="dropdown-action-btn" (click)="detalles(data)">Detalles
@@ -232,6 +233,53 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionRestablecer }" [style.display]="mostrarConfirmacionRestablecer ? 'block' : 'none'" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="text-center mt-3 mb-3">
+                        <h5 class="text-muted">Cambiar clave del usuario:</h5> <h6>{{usuarioRestablecer?.usua_Usuario}}</h6>
+                        <hr>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        <!-- Clave -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="usua_Clave" class="form-label">Contraseña</label>
+                                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                                <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="usuario.usua_Clave" [class.is-invalid]="!usuario.usua_Clave.trim() && mostrarErrores" placeholder="Ingrese la Contraseña" required />
+                                <div class="text-danger mt-1" *ngIf="!usuario.usua_Clave.trim() && mostrarErrores">
+                                    <small>El campo Contraseña es requerido</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirmar Clave -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="usua_Clave" class="form-label">Confirmar Contraseña</label>
+                                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                                <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="confirmaciondePassword" [class.is-invalid]="!confirmaciondePassword.trim() && mostrarErrores" placeholder="Ingrese la Confirmación" required />
+                                <div class="text-danger mt-1" *ngIf="!confirmaciondePassword.trim() && mostrarErrores">
+                                    <small>El campo Confirmar Contraseña requerido</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer custom-modal-footer">
+                        <button type="button" class="btn btn-primary gold" (click)="cancelarRestablecer()">
+                            <span class="btn-text">Cancelar</span>
+                            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="restablecerClave()">
+                            <span class="btn-text">Guardar</span>
+                            <span class="btn-icon"><i class="ri-save-line"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
     </div>
 </div>
