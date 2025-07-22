@@ -222,6 +222,13 @@ export const MENU: MenuItem[] = [
                 link: '/inventario/productos',
                 parentId: 3,
                 icon: 'ri-truck-line'
+            },
+             {
+                id: 28,
+                label: 'MENUITEMS.INVENTARIO.LIST.DESCUENTOS',
+                link: '/inventario/descuentos',
+                parentId: 3,
+                icon: 'ri-truck-line'
             }
             // Puedes añadir más subitems aquí según sea necesario
         ]

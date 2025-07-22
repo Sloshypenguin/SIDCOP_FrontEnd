@@ -31,7 +31,8 @@
       "LIST": {
         "CATEGORIAS": "Categorias",
         "SUBCATEGORIAS": "Subcategorias",
-        "PRODUCTOS": "Productos"
+        "PRODUCTOS": "Productos",
+        "DESCUENTOS": "Descuentos"
       }
     },
     "VENTAS": {
