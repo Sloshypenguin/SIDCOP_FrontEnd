@@ -1,6 +1,8 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+const usuarioId = localStorage.getItem('usuarioId');
+const idUsuario = usuarioId ? parseInt(usuarioId, 10) : 1; // Usa 1 como valor predeterminado si no hay ID
 
 export const environment = {
   production: false,
@@ -17,7 +19,7 @@ export const environment = {
   },
   apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
-  usua_Id: null, // Ahora se obtiene del usuario de la sesión actual
+  usua_Id: idUsuario, // Ahora se obtiene del usuario de la sesión actual
 };
 
 /*
