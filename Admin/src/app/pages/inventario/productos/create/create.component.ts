@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
+import { Producto } from 'src/app/Modelos/inventario/Producto.Model';
 
 @Component({
   selector: 'app-create',
@@ -30,32 +30,42 @@ export class CreateComponent {
   proveedores: any[] = [];
   impuestos: any[] = [];
 
-  usuario: Usuario = {
-    secuencia: 0,
-    usua_Id: 0,
-    usua_Usuario: '',
-    usua_Clave: '',
-    role_Id: 0,
-    usua_IdPersona: 0,
-    usua_EsVendedor: false,
-    usua_EsAdmin: false,
-    usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
+  producto: Producto = {
+    prod_Id: 0,
+    prod_Codigo: '',
+    prod_CodigoBarra: '',
+    prod_Descripcion: '',
+    prod_DescripcionCorta: '',
+    prod_Imagen: 'assets/images/users/32/agotado.png',
+    cate_Id: 0,
+    cate_Descripcion: '',
+    subc_Id: 0,
+    marc_Id: 0,
+    prov_Id: 0,
+    impu_Id: 0,
+    prod_PrecioUnitario: 0,
+    prod_CostoTotal: 0,
+    prod_PagaImpuesto: false,
+    prod_PromODesc: 0,
+    prod_EsPromo: false,
+    prod_Estado: true,
     usua_Creacion: 0,
-    usua_FechaCreacion: new Date(),
+    prod_FechaCreacion: new Date(),
     usua_Modificacion: 0,
-    usua_FechaModificacion: new Date(),
-    usua_Estado: true,
-    permisosJson: '',
-    role_Descripcion: '',
-    nombreCompleto: '',
+    prod_FechaModificacion: new Date(),
+    marc_Descripcion: '',
+    prov_NombreEmpresa: '',
+    subc_Descripcion: '',
+    impu_Descripcion: '',
+    secuencia: 0,
     code_Status: 0,
     message_Status: '',
   };
 
   constructor(private http: HttpClient) {
     this.cargarMarcas();
-    // this.cargarProveedores();
-    // this.cargarImpuestos();
+    this.cargarProveedores();
+    this.cargarImpuestos();
   }
 
   cargarMarcas() {
@@ -66,5 +76,80 @@ export class CreateComponent {
         console.error('Error al cargar las marcas:', error);
       }
     );
+  }
+
+  cargarProveedores() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Proveedor/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {this.proveedores = data;},
+      error => {
+        console.error('Error al cargar los proveedores:', error);
+      }
+    );
+  }
+
+  cargarImpuestos() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Impuestos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {this.impuestos = data;},
+      error => {
+        console.error('Error al cargar los impuestos:', error);
+      }
+    );
+  }
+
+  cancelar(): void {
+    this.mostrarErrores = false;
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+    this.producto = {
+      prod_Id: 0,
+      prod_Codigo: '',
+      prod_CodigoBarra: '',
+      prod_Descripcion: '',
+      prod_DescripcionCorta: '',
+      prod_Imagen: 'assets/images/users/32/agotado.png',
+      cate_Id: 0,
+      cate_Descripcion: '',
+      subc_Id: 0,
+      marc_Id: 0,
+      prov_Id: 0,
+      impu_Id: 0,
+      prod_PrecioUnitario: 0,
+      prod_CostoTotal: 0,
+      prod_PagaImpuesto: false,
+      prod_PromODesc: 0,
+      prod_EsPromo: false,
+      prod_Estado: true,
+      usua_Creacion: 0,
+      prod_FechaCreacion: new Date(),
+      usua_Modificacion: 0,
+      prod_FechaModificacion: new Date(),
+      marc_Descripcion: '',
+      prov_NombreEmpresa: '',
+      subc_Descripcion: '',
+      impu_Descripcion: '',
+      secuencia: 0,
+      code_Status: 0,
+      message_Status: '',
+    };
+    this.onCancel.emit();
+  }
+
+  cerrarAlerta(): void {
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+  }
+
+  guardar(): void {
+    this.mostrarErrores = true;
   }
 }
