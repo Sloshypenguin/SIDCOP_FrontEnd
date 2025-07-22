@@ -10,13 +10,16 @@ import { DescuentoPorEscala } from 'src/app/Modelos/inventario/DescuentoPorEscal
 import { environment } from 'src/environments/environment';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { CdkStepperModule } from '@angular/cdk/stepper';
+import { NgStepperModule } from 'angular-ng-stepper';
+import { ViewChild } from '@angular/core';
+import { CdkStepper } from '@angular/cdk/stepper';
 
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule,  NgxMaskDirective, NgSelectModule],
+  imports: [CommonModule, FormsModule, HttpClientModule,  NgxMaskDirective, NgSelectModule,CdkStepperModule,  NgStepperModule],
    providers: [provideNgxMask()],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
@@ -24,7 +27,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 export class CreateComponent  {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Descuento>();
-  
+    @ViewChild('cdkStepper') cdkStepper!: CdkStepper;
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -37,6 +40,8 @@ export class CreateComponent  {
   seleccionados: number[] = [];
   clientesAgrupados: { canal: string, clientes: any[] }[] = [];
 clientesSeleccionados: number[] = [];
+change(event: any) {
+  }
 
 get itemsDisponibles(): any[] {
   switch (this.seccionVisible) {
@@ -567,6 +572,49 @@ tieneAyudante: boolean = false;
       this.mostrarAlertaWarning = false;
       this.mensajeWarning = '';
     }, 4000);
+  }
+}
+
+validarPasoActual(): boolean {
+  switch (this.cdkStepper.selectedIndex) {
+    case 0: // Información general
+      return this.validarPasoInformacionGeneral();
+    case 1: // Aplica para
+      return this.seleccionados.length > 0;
+    case 2: // Clientes
+      return this.clientesSeleccionados.length > 0;
+    case 3: // Escalas
+      return this.validarEscalas();
+    default:
+      return false;
+  }
+}
+
+validarPasoInformacionGeneral(): boolean {
+  const d = this.descuento;
+
+  return !!d.desc_Descripcion?.trim() &&
+         d.desc_Tipo !== null &&
+         !!d.desc_FechaInicio &&
+         !!d.desc_FechaFin;
+}
+
+validarEscalas(): boolean {
+  return this.escalas.every(e =>
+    e.deEs_InicioEscala != null &&
+    e.deEs_FinEscala != null &&
+    e.deEs_Valor != null
+  );
+}
+
+irAlSiguientePaso() {
+  this.mostrarErrores = true;
+
+  if (this.validarPasoActual()) {
+    this.mostrarErrores = false;
+    this.cdkStepper.next();
+  } else {
+    // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
   }
 }
 }

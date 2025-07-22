@@ -29,6 +29,7 @@
     "@ngrx/store-devtools": "^18.0.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
+    "angular-ng-stepper": "^2.0.0",
     "angularx-flatpickr": "^8.1.0",
     "bootstrap": "5.3.3",
     "flatpickr": "^4.6.13",
