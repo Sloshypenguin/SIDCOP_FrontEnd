@@ -396,7 +396,7 @@ tieneAyudante: boolean = false;
       DescuentoGuardar.desc_Observaciones = this.descuento.desc_Observaciones;
     }
 
-    console.log('Guardando Vendedor:', DescuentoGuardar);
+    console.log('Guardando Vendedor:', DescuentoGuardar, this.descuentoDetalle, this.descuentoPorCliente, this.descuentoPorEscala);
 
     this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/Insertar`, DescuentoGuardar, {
       headers: {
@@ -417,6 +417,7 @@ tieneAyudante: boolean = false;
             this.mostrarAlertaError = false;
             this.mensajeError = '';
           }, 5000);
+          return;
           
         }
 
@@ -487,6 +488,8 @@ tieneAyudante: boolean = false;
                   this.mostrarAlertaError = false;
                   this.mensajeError = '';
                 }, 5000);
+                return;
+
                 
               }
               this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/InsertarDetalleCliente`, DescuentoPorClienteGuardar, {
@@ -507,6 +510,8 @@ tieneAyudante: boolean = false;
                       this.mostrarAlertaError = false;
                       this.mensajeError = '';
                     }, 5000);
+
+                    return;
                     
                   }
                   this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/InsertarDetalleEscala`, DescuentoPorEscalaGuardar, {
@@ -527,8 +532,23 @@ tieneAyudante: boolean = false;
                         this.mostrarAlertaError = false;
                         this.mensajeError = '';
                       }, 5000);
+                    return;
                       
                     }
+                    this.mensajeExito = `Descuento "${this.descuento.desc_Descripcion}" guardado exitosamente`;
+                    this.mostrarAlertaExito = true;
+                    this.mostrarErrores = false;
+                    
+                    // Ocultar la alerta después de 3 segundos
+                    setTimeout(() => {
+                      this.mostrarAlertaExito = false;
+                      this.onSave.emit(this.descuento);
+                      this.clientesSeleccionados = [];
+                      this.seleccionados = [];
+                      this.escalas = [];
+                      this.cancelar();
+                    }, 3000);
+
                   
 
 
@@ -553,7 +573,7 @@ tieneAyudante: boolean = false;
       error: (error) => {
         console.error('Error al guardar Vendedor:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al guardar el Vendedor. Por favor, intente nuevamente.';
+        this.mensajeError = 'Error al guardar el Descuento. Por favor, intente nuevamente.';
         this.mostrarAlertaExito = false;
 
         setTimeout(() => {
