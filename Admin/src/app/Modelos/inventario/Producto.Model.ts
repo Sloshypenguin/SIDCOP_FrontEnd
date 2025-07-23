@@ -2,9 +2,9 @@ export class Producto {
     prod_Id: number = 0;
     prod_Descripcion: string = '';
     prod_DescripcionCorta: string = '';
-    prod_Imagen?: string = '';
+    prod_Imagen: string = '';
     prod_Codigo: string = '';
-    prod_CodigoBarra: string = '';
+    prod_CodigoBarra?: string = '';
     cate_Id?: number = 0;
     cate_Descripcion?: string = '';
     subc_Id: number = 0;

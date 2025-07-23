@@ -151,13 +151,23 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
-    if (this.producto.prod_Codigo.trim())
+    if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id)
     {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
-      const productoGuardar{
-        
-      }
+      const productoGuardar = {
+        prod_Id: 0,
+        prod_Codigo: this.producto.prod_Codigo.trim(),
+        prod_CodigoBarra: this.producto.prod_CodigoBarra,
+        prod_Descripcion: this.producto.prod_Descripcion.trim(),
+        prod_DescripcionCorta: this.producto.prod_DescripcionCorta.trim(),
+        prod_imagen: this.producto.prod_Imagen,
+        subc_Id: this.producto.subc_Id,
+        marc_Id: this.producto.marc_Id,
+        prov_Id: this.producto.prov_Id,
+        impu_Id: this.producto.impu_Id,
+        secuencia: 0,
+      };
     }
   }
 }
