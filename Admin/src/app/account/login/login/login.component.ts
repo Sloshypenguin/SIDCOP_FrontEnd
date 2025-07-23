@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.service';
 import { login } from 'src/app/store/Authentication/authentication.actions';
-import { RecuperarcontraseniaComponent } from 'src/app/account/recuperarcontraseña/recuperarcontrasenia.component';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +16,6 @@ import { RecuperarcontraseniaComponent } from 'src/app/account/recuperarcontrase
 export class LoginComponent {
 
   // Login Form
-  showrecuperar=false;
   loginForm!: UntypedFormGroup;
   submitted = false;
   fieldTextType!: boolean;
@@ -26,6 +24,7 @@ export class LoginComponent {
   a: any = 10;
   b: any = 20;
   toast!: false;
+  showrecuperar: boolean = false; // Controla la visibilidad del componente de recuperar contraseña
 
   // set the current year
   year: number = new Date().getFullYear();
@@ -45,14 +44,11 @@ export class LoginComponent {
      * Form Validatyion
      */
     this.loginForm = this.formBuilder.group({
-      email: ['admin', [Validators.required]], // Cambiado a nombre de usuario
-      password: ['123', [Validators.required]],
+      email: ['', [Validators.required]], // Campo de usuario
+      password: ['', [Validators.required]],
     });
   }
-  volver() {
-    this.showrecuperar = false;
 
-  }
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
@@ -78,7 +74,7 @@ export class LoginComponent {
       },
       error: (error) => {
         this.error = error.message || 'Error al iniciar sesión';
-        console.error('Error de inicio de sesión:', error);
+
       }
     });
   }
@@ -88,5 +84,13 @@ export class LoginComponent {
    */
   toggleFieldTextType() {
     this.fieldTextType = !this.fieldTextType;
+  }
+
+  /**
+   * Método para volver desde el componente de recuperar contraseña
+   */
+  volver() {
+    // Ocultar el componente de recuperar contraseña y mostrar el formulario de login
+    this.showrecuperar = false;
   }
 }

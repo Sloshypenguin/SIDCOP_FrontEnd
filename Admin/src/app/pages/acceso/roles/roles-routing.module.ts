@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermisoGuard } from '../../../core/guards/permiso.guard';
 
 const routes: Routes = [
   {
@@ -16,8 +17,10 @@ const routes: Routes = [
       {
         path: 'list',
         loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
+        canActivate: [PermisoGuard],
         data: {
           title: 'Listado de Roles',
+          pantallaId: 6  // ID 6: Roles según la tabla de pantallas
         }
       },
     ]
