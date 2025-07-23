@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
+import { Vendedor } from 'src/app/Modelos/ventas/Vendedor.Model';
 import { environment } from 'src/environments/environment';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
