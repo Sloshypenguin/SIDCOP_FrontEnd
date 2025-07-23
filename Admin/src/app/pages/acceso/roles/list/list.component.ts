@@ -55,13 +55,13 @@ export class ListComponent implements OnInit {
     this.cargarAccionesUsuario();
     console.log('Acciones disponibles:', this.accionesDisponibles);
   }
-  // Métodos para los botones de acción principales (crear, editar, detalles)
+
   crear(): void {
     console.log('Toggleando formulario de creación...');
     this.showCreateForm = !this.showCreateForm;
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
+    this.showEditForm = false;
+    this.showDetailsForm = false;
+    this.activeActionRow = null;
   }
 
   editar(rol: Rol): void {
@@ -70,19 +70,19 @@ export class ListComponent implements OnInit {
       descripcion: rol.role_Descripcion,
       completo: rol
     });
-    this.rolEditando = { ...rol }; // Hacer copia profunda
+    this.rolEditando = { ...rol }; 
     this.showEditForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
+    this.showCreateForm = false; 
+    this.showDetailsForm = false;
+    this.activeActionRow = null; 
   }
 
   detalles(rol: Rol): void {
-    this.rolDetalle = { ...rol }; // Hacer copia profunda
+    this.rolDetalle = { ...rol };
     this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
+    this.showCreateForm = false; 
+    this.showEditForm = false; 
+    this.activeActionRow = null;
   }
    constructor(public table: ReactiveTableService<Rol>, 
     private http: HttpClient, 
@@ -99,13 +99,12 @@ export class ListComponent implements OnInit {
   showEdit = true;
   showDetails = true;
   showDelete = true;
-  showCreateForm = false; // Control del collapse
-  showEditForm = false; // Control del collapse de edición
-  showDetailsForm = false; // Control del collapse de detalles
+  showCreateForm = false; 
+  showEditForm = false; 
+  showDetailsForm = false;
   rolEditando: Rol | null = null;
   rolDetalle: Rol | null = null;
   
-  // Propiedades para alertas
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -113,7 +112,6 @@ export class ListComponent implements OnInit {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   
-  // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   rolAEliminar: Rol | null = null;
 
@@ -132,13 +130,11 @@ export class ListComponent implements OnInit {
   }
 
   guardarRol(rol: Rol): void {
-    // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
   actualizarRol(rol: Rol): void {
-    // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
@@ -146,7 +142,7 @@ export class ListComponent implements OnInit {
   confirmarEliminar(rol: Rol): void {
     this.rolAEliminar = rol;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null; // Cerrar menú de acciones
+    this.activeActionRow = null; 
   }
 
   cancelarEliminar(): void {
@@ -166,8 +162,7 @@ export class ListComponent implements OnInit {
       next: (response: any) => {
         console.log('Respuesta del servidor:', response);
         
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
+       if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             this.mensajeExito = `Rol "${this.rolAEliminar!.role_Descripcion}" eliminado exitosamente`;
