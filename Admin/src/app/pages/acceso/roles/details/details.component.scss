@@ -1,0 +1,90 @@
+.details-mini-card {
+  border: 1px solid #dee2e6;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+
+.details-mini-card button {
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.details-mini-card button i {
+  font-size: 1.5rem;
+}
+
+.acciones-list li {
+  color: #1a6ddb; /* Cambia este color a tu preferencia */
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.permiso-item {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.75rem;
+}
+.pantalla-titulo {
+  font-size: 1.1rem;
+  color: #4a4a4a;
+}
+
+.acciones-lista {
+  padding-left: 1rem;
+  margin-top: 0.4rem;
+}
+
+.accion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #1a73e8; /* azul destacado */
+  margin-bottom: 0.3rem;
+}
+
+.accion-icon {
+  color: #1a73e8;
+  font-size: 1rem;
+}
+
+.permisos-card {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.8rem;
+}
+
+.pantalla-titulo {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #b59e7f; /* Subrayado dorado */
+  display: inline-block;             /* Para que el underline se ajuste al texto */
+  padding-bottom: 0.25rem;
+}
+
+.acciones-card-container {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente las acciones */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.accion-chip {
+  background: #e3f2fd; /* azul muy suave */
+  color: #1a73e8;       /* azul destacado */
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  cursor: default;
+}
