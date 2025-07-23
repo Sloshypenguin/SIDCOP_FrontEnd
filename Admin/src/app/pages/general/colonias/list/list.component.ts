@@ -13,6 +13,7 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import {Colonias} from 'src/app/Modelos/general/Colonias.Model';
 import {Municipio} from 'src/app/Modelos/general/Municipios.Model';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 
 @Component({
@@ -117,7 +118,11 @@ export class ListComponent implements OnInit {
     });
   }
 
-  constructor(public table: ReactiveTableService<Colonias>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+  constructor(public table: ReactiveTableService<Colonias>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService) {}
 
   // Verificar si una acción está permitida
   accionPermitida(accion: string): boolean {

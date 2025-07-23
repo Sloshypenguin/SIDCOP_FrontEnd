@@ -13,6 +13,7 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
 import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -118,7 +119,11 @@ export class ListComponent implements OnInit {
     });
   }
 
-  constructor(public table: ReactiveTableService<Municipio>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+  constructor(public table: ReactiveTableService<Municipio>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService) {}
 
   // Verificar si una acción está permitida
   accionPermitida(accion: string): boolean {

@@ -12,6 +12,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -192,7 +193,12 @@ export class ListComponent implements OnInit {
     console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
-  constructor(public table: ReactiveTableService<Departamento>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+  constructor(public table: ReactiveTableService<Departamento>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  ) {}
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
