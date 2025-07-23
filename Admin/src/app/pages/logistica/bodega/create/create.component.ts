@@ -162,7 +162,6 @@ export class CreateComponent  {
       };
 
       console.log('Guardando bodega:', bodegaGuardar);
-      
       this.http.post<any>(`${environment.apiBaseUrl}/Bodega/Insertar`, bodegaGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
@@ -171,17 +170,19 @@ export class CreateComponent  {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Bodega guardado exitosamente:', response);
-          this.mensajeExito = `Bodega "${this.bodega.bode_Descripcion}" guardado exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
-          
-          // Ocultar la alerta después de 3 segundos
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
+          if(response.data.code_Status === 1) {
+            this.mostrarErrores = false;
             this.onSave.emit(this.bodega);
             this.cancelar();
-          }, 3000);
+          }else{
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al guardar la bodega, ' + response.data.message_Status;
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
           console.error('Error al guardar bodega:', error);

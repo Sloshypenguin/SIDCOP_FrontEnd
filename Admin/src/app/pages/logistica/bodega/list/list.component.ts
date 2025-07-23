@@ -20,6 +20,7 @@ import {
   transition,
   animate
 } from '@angular/animations';
+import { set } from 'lodash';
 //Importaciones de Animaciones
 
 @Component({
@@ -188,17 +189,31 @@ export class ListComponent implements OnInit {
   }
 
   guardarBodega(bodega: Bodega): void {
-    console.log('Bodega guardada exitosamente desde create component:', bodega);
-    // Recargar los datos de la tabla
-    this.cargardatos(false);
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Bodega guardada exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarBodega(bodega: Bodega): void {
-    console.log('Bodega actualizada exitosamente desde edit component:', bodega);
-    // Recargar los datos de la tabla
-    this.cargardatos(false);
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Bodega actualizada exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(bodega: Bodega): void {
@@ -217,7 +232,7 @@ export class ListComponent implements OnInit {
     if (!this.bodegaAEliminar) return;
     
     console.log('Eliminando bodega:', this.bodegaAEliminar);
-    
+    this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Bodega/Eliminar/${this.bodegaAEliminar.bode_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -225,66 +240,69 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Bodega eliminada exitosamente');
-            this.mensajeExito = `Bodega "${this.bodegaAEliminar!.bode_Descripcion}" eliminada exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          console.log('Respuesta del servidor:', response);
+          
+          // Verificar el código de estado en la respuesta
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              // Éxito: eliminado correctamente
+              console.log('Bodega eliminada exitosamente');
+              this.mensajeExito = `Bodega "${this.bodegaAEliminar!.bode_Descripcion}" eliminada exitosamente`;
+              this.mostrarAlertaExito = true;
 
-            this.cargardatos(false);
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('La bodega está siendo utilizada');
+              // Ocultar la alerta después de 3 segundos
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+
+
+              this.cargardatos(false);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === -1) {
+              //result: está siendo utilizado
+              console.log('La bodega está siendo utilizada');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: la bodega está siendo utilizada.';
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === 0) {
+              // Error general
+              console.log('Error general al eliminar');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar la bodega.';
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            }
+          } else {
+            // Respuesta inesperada
+            console.log('Respuesta inesperada del servidor');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la bodega está siendo utilizada.';
-            
+            this.mensajeError = response.message || 'Error inesperado al eliminar la bodega.';
+
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar la bodega.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
+
             // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar la bodega.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
+        }, 1000);
       },
     });
   }

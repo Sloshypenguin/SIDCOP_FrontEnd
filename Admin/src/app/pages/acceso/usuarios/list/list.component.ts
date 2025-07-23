@@ -198,25 +198,31 @@ export class ListComponent {
   }
 
   guardarUsuario(usuario: Usuario): void {
-    this.showCreateForm = false;
-    this.mensajeExito = `Usuario guardado exitosamente`;
-    this.mostrarAlertaExito = true;
+    this.mostrarOverlayCarga = true;
     setTimeout(() => {
-      this.mostrarAlertaExito = false;
-      this.mensajeExito = '';
       this.cargarDatos(false);
-    }, 3000);
+      this.showCreateForm = false;
+      this.mensajeExito = `Usuario guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    },1000);
   }
 
   actualizarUsuario(usuario: Usuario): void {
-    this.showEditForm = false;
-    this.mensajeExito = `Usuario actualizado exitosamente`;
-    this.mostrarAlertaExito = true;
+    this.mostrarOverlayCarga = true;
     setTimeout(() => {
-      this.mostrarAlertaExito = false;
-      this.mensajeExito = '';
       this.cargarDatos(false);
-    }, 3000);
+      this.showEditForm = false;
+      this.mensajeExito = `Usuario actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    },1000);
   }
 
   restablecer(usuario: Usuario): void{
