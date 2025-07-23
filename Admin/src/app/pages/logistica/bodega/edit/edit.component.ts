@@ -17,8 +17,8 @@ export class EditComponent implements OnChanges {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Bodega>();
 
- bodega: Bodega = {
-     bode_Id: 0,
+  bodega: Bodega = {
+    bode_Id: 0,
     bode_Descripcion: '',
     bode_Capacidad: 0,
     bode_Placa: '',
@@ -57,35 +57,35 @@ export class EditComponent implements OnChanges {
   }
 
 
-   sucursales: any[] = [];
-    registroCais: any[] = [];
-    vendedores: any[] = [];
-    modelos: any[] = [];
+  sucursales: any[] = [];
+  registroCais: any[] = [];
+  vendedores: any[] = [];
+  modelos: any[] = [];
 
 
- listarSucursales(): void {
+  listarSucursales(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.sucursales = data);
-    };
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe((data) => this.sucursales = data);
+  };
 
   listarRegistroCai(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.registroCais = data);
-    };
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe((data) => this.registroCais = data);
+  };
 
   listarVendedores(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.vendedores = data);
-    };
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe((data) => this.vendedores = data);
+  };
 
   listarModelos(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Modelo/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.modelos = data);
-    };
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe((data) => this.modelos = data);
+  };
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -115,41 +115,41 @@ export class EditComponent implements OnChanges {
     this.mostrarErrores = true;
 
     if (
-    !this.bodega.bode_Descripcion.trim() ||
-    !this.bodega.bode_VIN.trim() ||
-    !this.bodega.bode_Placa.trim() ||
-    !this.bodega.bode_TipoCamion.trim() ||
-    !this.bodega.bode_Capacidad ||
-    !this.bodega.sucu_Id ||
-    !this.bodega.vend_Id ||
-    !this.bodega.mode_Id ||
-    !this.bodega.regC_Id
-  ) {
-    this.mostrarAlertaWarning = true;
-    this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-    setTimeout(() => this.cerrarAlerta(), 4000);
-    return;
-  }
+      !this.bodega.bode_Descripcion.trim() ||
+      !this.bodega.bode_VIN.trim() ||
+      !this.bodega.bode_Placa.trim() ||
+      !this.bodega.bode_TipoCamion.trim() ||
+      !this.bodega.bode_Capacidad ||
+      !this.bodega.sucu_Id ||
+      !this.bodega.vend_Id ||
+      !this.bodega.mode_Id ||
+      !this.bodega.regC_Id
+    ) {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+      return;
+    }
 
-  // Detectar cambios en los campos principales
-  const cambios =
-    this.bodega.bode_Descripcion.trim() !== (this.bodegaData?.bode_Descripcion?.trim() ?? '') ||
-    this.bodega.bode_VIN.trim() !== (this.bodegaData?.bode_VIN?.trim() ?? '') ||
-    this.bodega.bode_Placa.trim() !== (this.bodegaData?.bode_Placa?.trim() ?? '') ||
-    this.bodega.bode_TipoCamion.trim() !== (this.bodegaData?.bode_TipoCamion?.trim() ?? '') ||
-    this.bodega.bode_Capacidad !== (this.bodegaData?.bode_Capacidad ?? 0) ||
-    this.bodega.sucu_Id !== (this.bodegaData?.sucu_Id ?? 0) ||
-    this.bodega.vend_Id !== (this.bodegaData?.vend_Id ?? 0) ||
-    this.bodega.mode_Id !== (this.bodegaData?.mode_Id ?? 0) ||
-    this.bodega.regC_Id !== (this.bodegaData?.regC_Id ?? 0);
+    // Detectar cambios en los campos principales
+    const cambios =
+      this.bodega.bode_Descripcion.trim() !== (this.bodegaData?.bode_Descripcion?.trim() ?? '') ||
+      this.bodega.bode_VIN.trim() !== (this.bodegaData?.bode_VIN?.trim() ?? '') ||
+      this.bodega.bode_Placa.trim() !== (this.bodegaData?.bode_Placa?.trim() ?? '') ||
+      this.bodega.bode_TipoCamion.trim() !== (this.bodegaData?.bode_TipoCamion?.trim() ?? '') ||
+      this.bodega.bode_Capacidad !== (this.bodegaData?.bode_Capacidad ?? 0) ||
+      this.bodega.sucu_Id !== (this.bodegaData?.sucu_Id ?? 0) ||
+      this.bodega.vend_Id !== (this.bodegaData?.vend_Id ?? 0) ||
+      this.bodega.mode_Id !== (this.bodegaData?.mode_Id ?? 0) ||
+      this.bodega.regC_Id !== (this.bodegaData?.regC_Id ?? 0);
 
-  if (cambios) {
-    this.mostrarConfirmacionEditar = true;
-  } else {
-    this.mostrarAlertaWarning = true;
-    this.mensajeWarning = 'No se han detectado cambios.';
-    setTimeout(() => this.cerrarAlerta(), 4000);
-  }
+    if (cambios) {
+      this.mostrarConfirmacionEditar = true;
+    } else {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'No se han detectado cambios.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+    }
   }
 
   cancelarEdicion(): void {
@@ -184,7 +184,6 @@ export class EditComponent implements OnChanges {
         usuarioCreacion: '',
         usuarioModificacion: ''
       };
-
       this.http.put<any>(`${environment.apiBaseUrl}/Bodega/Actualizar`, bodegaActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -193,15 +192,19 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `La bodega "${this.bodega.bode_Descripcion}" actualizado exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
-
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
+          if(response.data.code_Status ===1){
+            this.mostrarErrores = false;
             this.onSave.emit(this.bodega);
             this.cancelar();
-          }, 3000);
+          }else{
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al guardar la bodega, ' + response.data.message_Status;
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
           console.error('Error al actualizar la bodega:', error);
