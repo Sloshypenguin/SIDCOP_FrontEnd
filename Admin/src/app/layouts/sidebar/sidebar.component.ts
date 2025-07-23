@@ -1,16 +1,17 @@
-import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
 
 import { MenuItem } from './menu.model';
-import { MENU } from './menu';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { MenuService } from '../../core/services/menu.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
   menu: any;
   toggle: any = true;
   menuItems: MenuItem[] = [];
@@ -19,15 +20,31 @@ export class SidebarComponent {
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
   lastroute: any;
+  private menuSubscription: Subscription | null = null;
   
 
-  constructor(private router: Router, public translate: TranslateService) {
+  constructor(
+    private router: Router, 
+    public translate: TranslateService,
+    private menuService: MenuService
+  ) {
     translate.setDefaultLang('en');
   }
 
   ngOnInit(): void {
-    // Menu Items
-    this.menuItems = MENU;
+    // Cargar el menú filtrado según los permisos del usuario
+    const permisosJson = localStorage.getItem('permisosJson');
+    this.menuService.filtrarMenuPorPermisos(permisosJson);
+    
+    // Suscribirse a cambios en el menú
+    this.menuSubscription = this.menuService.menuItems$.subscribe(menuItems => {
+      this.menuItems = menuItems;
+      
+      // Inicializar el menú activo después de que se cargue
+      setTimeout(() => {
+        this.initActiveMenu();
+      }, 0);
+    });
 
     this.router.events.subscribe((event) => {
       if (document.documentElement.getAttribute('data-layout') == 'vertical' || document.documentElement.getAttribute('data-layout') == 'horizontal') {
@@ -37,6 +54,13 @@ export class SidebarComponent {
         }
       }
     });
+  }
+  
+  ngOnDestroy(): void {
+    // Cancelar la suscripción al destruir el componente
+    if (this.menuSubscription) {
+      this.menuSubscription.unsubscribe();
+    }
   }
 
   /***
