@@ -243,7 +243,7 @@ export class EditComponent implements OnChanges {
         this.permisosActuales = permisos;
         this.permisosDelRol = permisos.map(p => `${p.pant_Id}_${p.acci_Id}`);
         this.cargarPantallas();
-        this.hayCambiosPermisos = false; // Reset changes flag when loading permissions
+        this.hayCambiosPermisos = false; 
       },
       error: (err) => {
         console.error('Error al cargar permisos del rol:', err);
@@ -255,7 +255,8 @@ export class EditComponent implements OnChanges {
   toggleSelection(item: TreeItem): void {
     item.selected = !item.selected;
 
-    if (item.type === 'pantalla' || item.type === 'esquema') {
+    // Si selecciona un esquema o pantalla, propagar la selección a hijos
+    if (item.type === 'esquema' || item.type === 'pantalla') {
       this.updateChildrenSelection(item, item.selected);
     }
 
@@ -264,17 +265,44 @@ export class EditComponent implements OnChanges {
       const esquema = pantalla?.parent;
 
       if (item.selected) {
-        if (pantalla) pantalla.selected = true;
-        if (esquema) esquema.selected = true;
+        if (pantalla) {
+          pantalla.selected = true;
+          pantalla.expanded = true;
+        }
+        if (esquema) {
+          esquema.selected = true;
+          esquema.expanded = true;
+        }
       } else {
-        if (pantalla && !pantalla.children?.some(child => child.selected)) {
+        // Si ya no hay acciones seleccionadas en la pantalla, desmarcarla
+        if (pantalla && !pantalla.children?.some(acc => acc.selected)) {
           pantalla.selected = false;
-          if (esquema && !esquema.children?.some(p => p.selected)) {
+          // Si tampoco hay pantallas seleccionadas en el esquema, desmarcarlo
+          if (esquema && !esquema.children?.some(pant => pant.selected)) {
             esquema.selected = false;
           }
         }
       }
     }
+
+    // Validar hacia arriba en caso de que se desmarque una pantalla
+    if (item.type === 'pantalla') {
+      const esquema = item.parent;
+
+      if (item.selected) {
+        if (esquema) {
+          esquema.selected = true;
+          esquema.expanded = true;
+        }
+      } else {
+        // Si ninguna pantalla está seleccionada dentro del esquema, lo desmarcamos
+        if (esquema && !esquema.children?.some(p => p.selected)) {
+          esquema.selected = false;
+        }
+      }
+    }
+
+    // Validar hacia arriba si desmarcas un esquema no hace falta, ya se cubre
 
     this.updateSelectedItems();
   }
@@ -283,6 +311,7 @@ export class EditComponent implements OnChanges {
     if (parent.children) {
       for (const child of parent.children) {
         child.selected = selected;
+        child.expanded = selected; // expandir al seleccionar
         if (child.children) {
           this.updateChildrenSelection(child, selected);
         }

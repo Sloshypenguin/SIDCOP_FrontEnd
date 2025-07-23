@@ -53,6 +53,7 @@ export class DetailsComponent implements OnChanges {
   }
 
   cargarDetalles(data: Rol): void {
+
     this.cargando = true;
     this.mostrarAlertaError = false;
 
