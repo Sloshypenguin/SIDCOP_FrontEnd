@@ -252,7 +252,8 @@ export class CreateComponent {
       numero: '',
       role_FechaModificacion: new Date().toISOString(),
       usuarioCreacion: '',
-      usuarioModificacion: ''
+      usuarioModificacion: '',
+      role_Estado: true
     };
 
     this.http.post<Rol>(`${environment.apiBaseUrl}/Roles/Insertar`, rolInsertar, {
