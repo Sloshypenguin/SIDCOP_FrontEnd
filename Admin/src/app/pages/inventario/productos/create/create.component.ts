@@ -151,5 +151,13 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
+    if (this.producto.prod_Codigo.trim())
+    {
+      this.mostrarAlertaWarning = false;
+      this.mostrarAlertaError = false;
+      const productoGuardar{
+        
+      }
+    }
   }
 }
