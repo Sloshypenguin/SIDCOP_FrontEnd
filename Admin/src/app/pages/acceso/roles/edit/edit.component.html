@@ -54,9 +54,8 @@
     <div class="tree-container mb-3 flex-grow-1" style="overflow-y: auto;">
       <div class="row justify-content-lg-end mb-2">
         <div class="col-sm-2">
-          <button class="btn btn-sm btn-outline-dark" (click)="alternarDesplegables()">
-            <i [class.ri-folder-reduce-line]="hayExpandido" 
-              [class.ri-folder-add-line]="!hayExpandido"></i>
+          <button type="button" class="btn btn-sm btn-outline-dark" (click)="alternarDesplegables()">
+            <i [class.ri-folder-reduce-line]="hayExpandido" [class.ri-folder-add-line]="!hayExpandido"></i> 
             {{ hayExpandido ? 'Contraer Todo' : 'Expandir Todo' }}
           </button>
         </div>
