@@ -25,49 +25,46 @@
       <div class="details-title">Detalles de Configuración de Factura</div>
       <div class="details-id-row">
 
-        <div class="details-id">
+        <div class="row">
           <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Id || 'N/A' }}</div>
+          <div class="details-id-value"  style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_Id || 'N/A' }}</div>
         </div>
-
-        <div class="details-id">
+          <div class="row">
           <div class="details-id-label">Nombre Empresa</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_NombreEmpresa || 'N/A' }}</div>
+          <div class="details-id-value"  style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_NombreEmpresa || 'N/A' }}</div>
         </div>
 
-        <div class="details-id">
+          <div class="row">
           <div class="details-id-label">Dirección</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_DireccionEmpresa || 'N/A' }}</div>
+          <div class="details-id-value"  style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_DireccionEmpresa || 'N/A' }}</div>
         </div>
 
-        <div class="details-id">
+           <div class="row">
           <div class="details-id-label">RTN</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_RTN || 'N/A' }}</div>
+          <div class="details-id-value" style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_RTN || 'N/A' }}</div>
         </div>
-
-        <div class="details-id">
+   <div class="row">
           <div class="details-id-label">Correo</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Correo || 'N/A' }}</div>
+          <div class="details-id-value"  style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_Correo || 'N/A' }}</div>
         </div>
 
-        <div class="details-id">
+       <div class="row">
           <div class="details-id-label">Teléfono 1</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Telefono1 || 'N/A' }}</div>
+          <div class="details-id-value" style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_Telefono1 || 'N/A' }}</div>
         </div>
-
-        <div class="details-id">
+   <div class="row">
           <div class="details-id-label">Teléfono 2</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.coFa_Telefono2 || 'N/A' }}</div>
+          <div class="details-id-value"  style="font-size: 100%;">{{ configuracionFacturaDetalle.coFa_Telefono2 || 'N/A' }}</div>
         </div>
 
-        <div class="details-id">
+           <div class="row">
           <div class="details-id-label">Colonia</div>
-          <div class="details-id-value">{{ configuracionFacturaDetalle.colo_Descripcion || 'N/A' }}</div>
+          <div class="details-id-value" style="font-size: 100%;">{{ configuracionFacturaDetalle.colo_Descripcion || 'N/A' }}</div>
         </div>
 
-        <div class="details-id">
+          <div class="row">
           <div class="details-id-label">Logo</div>
-          <div class="details-id-value">
+          <div class="details-id-value" style="font-size: 100%;">
             <img *ngIf="configuracionFacturaDetalle.coFa_Logo" [src]="configuracionFacturaDetalle.coFa_Logo" alt="Logo" width="100" />
             <span *ngIf="!configuracionFacturaDetalle.coFa_Logo">N/A</span>
           </div>
