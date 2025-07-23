@@ -1,1 +1,41 @@
-<p>details works!</p>
+<div class="details-container">
+    <div class="alert-container">
+        <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+            <strong>¡Error!</strong> {{ mensajeError }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="details-header-button">
+        <button type="button" class="btn btn-primary" (click)="cerrar()">
+            <span class="btn-text">Regresar</span>
+            <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+        </button>
+    </div>
+
+    <div *ngIf="!cargando && usuarioDetalle" class="details-content">
+        <div class="details-header">
+            <div class="details-title">Detalles del Usuario</div>
+            <div class="details-id-row">
+                <div class="details-id">
+                    <div class="details-id-label">Usuario</div>
+                    <div class="details-id-value">{{ usuarioDetalle.usua_Usuario }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Rol</div>
+                    <div class="details-id-value">{{ usuarioDetalle.role_Descripcion }}</div>
+                </div>
+                @if(usuarioDetalle.usua_EsVendedor){
+                    <div class="details-id">
+                        <div class="details-id-label">Vendedor</div>
+                        <div class="details-id-value">{{ usuarioDetalle.nombreCompleto }}</div>
+                    </div>
+                }
+                @else if(!usuarioData?.usua_EsVendedor){
+
+                }
+            </div>
+        </div>
+    </div>
+</div>

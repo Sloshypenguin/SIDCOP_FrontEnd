@@ -223,26 +223,29 @@
 // Header section
 
 .details-header {
-  background:#f8f9fa;
-  padding: 2rem;
   text-align: center;
-  border-radius: 12px;
   margin: 1rem 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #dee2e6;
 }
+
 .details-id-row {
   display: grid;
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(28%, 1fr));
+  gap: 2em;
   justify-content: center;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   align-items: start;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 .details-id {
-  min-width: 120px;
-  text-align: center;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #e8eaed;
+  width: 100%;
+  max-width: 350px;
 }
+
 
 @media (min-width: 600px) {
   .details-id-row {
@@ -257,30 +260,8 @@
 .details-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #D5B58A;
-  margin-bottom: 0.5rem;
-}
-
-.details-id {
-
-  background: #f7f8fa;
-  padding: 18px 22px 14px 22px;
-  border-radius: 12px;
-  border: 1px solid #e3e6ec;
-  margin-bottom: 0.5rem;
-  text-align: left;
-  box-shadow: 0 1px 2px rgba(44,44,44,0.03);
-  font-weight: 400;
-  display: inline-block;
-  min-width: 180px;
-  max-width: 240px;
-
-
-
-
-
-
-
+  color: #97744D;
+  margin-bottom: 1.5rem;
 }
 
 .details-id-label {
@@ -288,6 +269,7 @@
   color: #6c757d;
   font-weight: 500;
   margin-bottom: 0.2rem;
+  text-align: center;
 }
 
 .details-id-value {
@@ -295,9 +277,7 @@
   color: #2c3e50;
   font-weight: 600;
   margin-bottom: 0;
-
-
-
+  text-align: center;
 }
 
 
