@@ -22,78 +22,85 @@
 <!-- Header con descripción -->
 <div class="details-header">
   <div class="details-title">Detalles de Sucursal</div>
-  <div class="details-id-row">
-    <div class="details-id">
-      <div class="details-id-label">Código</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Id || 'N/A' }}</div>
+  <div class="row">
+    <div class="col-md-4">
+      <dl>
+        <dt>Código</dt>
+        <dd>{{ sucursalDetalle.sucu_Id || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Descripción</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Descripcion || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Descripción</dt>
+        <dd>{{ sucursalDetalle.sucu_Descripcion || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Departamento</div>
-      <div class="details-id-value">{{ sucursalDetalle.depa_Descripcion || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Departamento</dt>
+        <dd>{{ sucursalDetalle.depa_Descripcion || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Municipio</div>
-      <div class="details-id-value">{{ sucursalDetalle.muni_Descripcion || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Municipio</dt>
+        <dd>{{ sucursalDetalle.muni_Descripcion || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Colonia</div>
-      <div class="details-id-value">{{ sucursalDetalle.colo_Descripcion || 'N/A' }}</div>
-    </div>  
-    <div class="details-id">
-      <div class="details-id-label">Dirección Exacta</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_DireccionExacta || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Colonia</dt>
+        <dd>{{ sucursalDetalle.colo_Descripcion || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Teléfono 1</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono1 || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Dirección Exacta</dt>
+        <dd>{{ sucursalDetalle.sucu_DireccionExacta || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Teléfono 2</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono2 || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Teléfono 1</dt>
+        <dd>{{ sucursalDetalle.sucu_Telefono1 || 'N/A' }}</dd>
+      </dl>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Correo</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Correo || 'N/A' }}</div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Teléfono 2</dt>
+        <dd>{{ sucursalDetalle.sucu_Telefono2 || 'N/A' }}</dd>
+      </dl>
+    </div>
+    <div class="col-md-4">
+      <dl>
+        <dt>Correo</dt>
+        <dd>{{ sucursalDetalle.sucu_Correo || 'N/A' }}</dd>
+      </dl>
     </div>
   </div>
 </div>
 
     <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
-    <!-- Tabla de auditoría -->
-    <div class="audit-table-container">
-      <div class="audit-table">
-        <div class="audit-header">
-          <div class="audit-col">Acción</div>
-          <div class="audit-col">Usuario</div>
-          <div class="audit-col">Fecha</div>
+    <!-- Historial de acciones con formato dl/dt/dd -->
+    <div class="audit-container">
+      <div class="row">
+        <!-- Información de creación -->
+        <div class="col-md-6">
+          <dl class="audit-item">
+            <dt>Creador</dt>
+            <dd>{{ sucursalDetalle.usuarioCreacion }}</dd>
+            <dt>Fecha de creación</dt>
+            <dd>{{ formatearFecha(sucursalDetalle.sucu_FechaCreacion) }}</dd>
+          </dl>
         </div>
-        <!-- Fila de creación -->
-        <div class="audit-row">
-          <div class="audit-col">
-            <span class="audit-action">Creador</span>
-          </div>
-          <div class="audit-col">
-            <span class="audit-user">{{ sucursalDetalle.usuarioCreacion }}</span>
-          </div>
-          <div class="audit-col">
-            <span class="audit-date">{{ formatearFecha(sucursalDetalle.sucu_FechaCreacion) }}</span>
-          </div>
-        </div>
-        <!-- Fila de modificación -->
-        <div class="audit-row">
-          <div class="audit-col">
-            <span class="audit-action">Modificación</span>
-          </div>
-          <div class="audit-col">
-            <span class="audit-user">{{ sucursalDetalle.usuarioModificacion || 'N/A' }}</span>
-          </div>
-          <div class="audit-col">
-            <span class="audit-date">{{ formatearFecha(sucursalDetalle.sucu_FechaModificacion ?? null) }}</span>
-          </div>
+        <!-- Información de modificación -->
+        <div class="col-md-6">
+          <dl class="audit-item">
+            <dt>Modificado por</dt>
+            <dd>{{ sucursalDetalle.usuarioModificacion || 'N/A' }}</dd>
+            <dt>Fecha de modificación</dt>
+            <dd>{{ formatearFecha(sucursalDetalle.sucu_FechaModificacion ?? null) }}</dd>
+          </dl>
         </div>
       </div>
     </div>

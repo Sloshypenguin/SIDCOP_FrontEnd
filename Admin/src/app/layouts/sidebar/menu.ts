@@ -17,6 +17,18 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2
             },
+            {
+                id: -1, // ID negativo para siempre ser visible
+                label: 'Depuración de Permisos',
+                link: '/dashboards/permisos-debug',
+                parentId: 2
+            },
+            {
+                id: -2, // ID negativo para siempre ser visible
+                label: 'Ejemplo de Permisos',
+                link: '/dashboards/permisos-ejemplo',
+                parentId: 2
+            },
         ]
     },
     {
