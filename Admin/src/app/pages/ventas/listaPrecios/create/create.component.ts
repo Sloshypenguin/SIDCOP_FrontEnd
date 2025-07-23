@@ -21,6 +21,7 @@ import { map, startWith } from 'rxjs';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 @Component({
   selector: 'app-create',
@@ -33,7 +34,8 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
       PaginationModule,
       ReactiveFormsModule,
       NgSelectModule,
-      CollapseModule
+      CollapseModule,
+      AccordionModule
       
     ],
   templateUrl: './create.component.html',
@@ -44,10 +46,14 @@ export class CreateComponent {
   autoControl = new FormControl();
 
   productosLista: any[] = [];
+  clientesLista: any[] = [];
   canalesLista: any[] = [];
   isCollapsed = false;
 
   productoSeleccionado:  any;
+
+  canalCollapseStates: boolean[] = [];
+
   
   
     estadoCivilOriginal = '';
@@ -98,12 +104,46 @@ export class CreateComponent {
     
   }
 
+  cargarClientes(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        // this.clientesLista = data;
+        console.log('clientes cargados:', data);
+        
+        this.clientesLista = data.map((cliente: any) => ({
+          ...cliente,
+          checked: false
+        }));
+      },
+      
+      error: (error) => console.error('Error cargando clientes:', error)
+    });
+    
+  }
+
   cargarCanales(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Canal/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
-        this.canalesLista = data;
+        // this.canalesLista = data;
+
+
+        this.canalesLista = data.map((canal: any) => ({
+        ...canal,
+        checked: false,
+        indeterminate: false
+        // children: (this.clientesLista || []).map((child: any) => ({
+        //   ...child,
+        //   checked: false
+        // }))
+      }));
+
+      // Initialize collapse states
+      this.canalCollapseStates = this.canalesLista.map(() => false);
+
         console.log('Canales listados:', data);
         
       },
@@ -112,6 +152,34 @@ export class CreateComponent {
     });
     
   }
+
+  getClientesPorCanal(canalId: number) {
+  return this.clientesLista.filter(c => c.cana_Id === canalId);
+}
+
+  toggleParentCheckbox(canal: any, event: any) {
+  const checked = event.target.checked;
+  canal.checked = checked;
+  canal.indeterminate = false;
+  
+  // Update all clients that belong to this canal
+  const clientesDelCanal = this.getClientesPorCanal(canal.cana_Id);
+  clientesDelCanal.forEach((cliente: any) => cliente.checked = checked);
+}
+
+  onChildCheckboxChange(canal: any) {
+  const clientesDelCanal = this.getClientesPorCanal(canal.cana_Id);
+  const allChecked = clientesDelCanal.every((cliente: any) => cliente.checked);
+  const noneChecked = clientesDelCanal.every((cliente: any) => !cliente.checked);
+  canal.checked = allChecked;
+  canal.indeterminate = !allChecked && !noneChecked;
+}
+
+  isIndeterminate(canal: any): boolean {
+  const clientesDelCanal = this.getClientesPorCanal(canal.cana_Id);
+  const checkedCount = clientesDelCanal.filter((cliente: any) => cliente.checked).length;
+  return checkedCount > 0 && checkedCount < clientesDelCanal.length;
+}
   
     constructor(private http: HttpClient) {
 
@@ -121,8 +189,11 @@ export class CreateComponent {
 
     ];
 
+    this.cargarClientes();
+
     this.cargarProductos();
     this.cargarCanales();
+    
 
     }
 

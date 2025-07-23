@@ -121,7 +121,7 @@
                         [class.is-invalid]="!categoria.cate_Descripcion.trim() && mostrarErrores"
                         id="estadoCivilDescripcion"
                         [(ngModel)]="productoSeleccionado"
-                        placeholder="Ingrese la descripción del estado civil"
+                        placeholder="Ingrese el precio de contado"
                         required>
                         <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
                     </div>
@@ -144,7 +144,7 @@
                         [class.is-invalid]="!categoria.cate_Descripcion.trim() && mostrarErrores"
                         id="estadoCivilDescripcion"
                         [(ngModel)]="categoria.cate_Descripcion"
-                        placeholder="Ingrese la descripción del estado civil"
+                        placeholder="Ingrese el precio de crédito"
                         required>
                         <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
                     </div>
@@ -155,17 +155,61 @@
                 </div>
                 </div>
 
-                <div *ngFor="let canal of canalesLista" class="row">
+                <div *ngFor="let canal of canalesLista; let i = index" class="mb-2">
+                  <div class="card border-primary mb-2" [ngClass]="{ 'border-0': canal.open }">
+                  <div
+                    class="card-header d-flex align-items-center justify-content-between"
+                    style="cursor:pointer;"
+                    (click)="canal.open = !canal.open"
+                    
+                  >
+                    <div (click)="$event.stopPropagation()">
+                      <input type="checkbox"
+                            [checked]="canal.checked"
+                            [indeterminate]="isIndeterminate(canal)"
+                            (change)="toggleParentCheckbox(canal, $event)">
+                      <span class="ms-2">{{ canal.cana_Descripcion }}</span>
+                    </div>
+                    <i
+                      [ngClass]="{
+                        'ri-arrow-up-s-line': canal.open,
+                        'ri-arrow-down-s-line': !canal.open
+                      }"
+                      class="fs-5"
+                    ></i>
+                  </div>
 
-                  <div class="col-md-6">
-                    <div class="mb-3">
-
-                      <h5>canal: {{canal.cana_Descripcion}}</h5>
-
+                  <div [collapse]="!canal.open">
+                    <div class="card-body">
+                      <div class="row">
+                        <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6">
+                          <div class="form-check">
+                            <input type="checkbox"
+                                  [(ngModel)]="cliente.checked"
+                                  (change)="onChildCheckboxChange(canal)">
+                            <span class="ms-2">{{ cliente.clie_Nombres + ' ' + cliente.clie_Apellidos }}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
+
+
+
+                  </div>
                 </div>
+                
+
+                
+
+
+
+
+
+
+
+
 
               </div>
 
@@ -174,24 +218,6 @@
             </div>
           </div>
         </div>
-
-        <!-- <button class="btn btn-primary" type="button" (click)="isCollapsed = !isCollapsed">
-          Toggle
-        </button>
-        <div [collapse]="isCollapsed">
-          <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
-            <div class="container-fluid">
-
-              
-
-              
-
-              
-            
-        
-            </div>
-          </div>
-        </div> -->
         
 
 
