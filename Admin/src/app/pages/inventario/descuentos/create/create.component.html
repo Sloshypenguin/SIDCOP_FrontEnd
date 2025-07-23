@@ -1,0 +1,340 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <!-- Título del componente -->
+  <h5 class="card-title mb-4">Crear Nueva descuento</h5>
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de advertencia -->
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <div class="flex-grow-1">
+    <ng-stepper #cdkStepper [linear]="true" (selectionChange)="change($event)" class="step-arrow-nav wizard">
+      <cdk-step [optional]="false" >
+        <ng-template cdkStepLabel class="wizard-nav">
+          <button class="nav-link done" id="steparrow-gen-info-tab" data-bs-toggle="pill" type="button" aria-readonly="true" disabled="true">Informacion General</button>
+        </ng-template>
+        @if (cdkStepper.selectedIndex === 0) {
+            <div class="row">
+            <div class="col-md-6">
+              <label  class="form-label">Descripcion<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [class.is-invalid]="!descuento.desc_Descripcion.trim() && mostrarErrores"
+                    id="descuentoCodigo"
+                    [(ngModel)]="descuento.desc_Descripcion"
+                    placeholder="Ingrese la descripcion del descuento"
+                    required>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!descuento.desc_Descripcion.trim() && mostrarErrores">
+                  <small>La descripcion es requerida</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Tipo<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <select 
+                      id="tipodescuento" 
+                      name="tipodescuento" 
+                      class="form-select"
+                      [class.is-invalid]="descuento.desc_Tipo == null"
+                      [(ngModel)]="descuento.desc_Tipo"
+                      required>
+                          <option value="" disabled selected>Seleccione una opción</option>
+                          <option value=true  selected>Monto Fijo</option>
+                          <option value=false  selected>Porcentaje</option>
+                          
+                  </select>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="descuento.desc_Tipo == null && mostrarErrores">
+                  <small>El campo tipo de descuento es requerido</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Fecha Inicio<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <input 
+                    type="Date" 
+                    class="form-control" 
+                    [class.is-invalid]="!descuento.desc_FechaInicio && mostrarErrores"
+                    id="desc_FechaInicio"
+                    [(ngModel)]="descuento.desc_FechaInicio"
+                    placeholder="Ingrese la Fecha Inicio del descuento"
+                    required>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!descuento.desc_FechaInicio && mostrarErrores">
+                  <small>La Fecha inicio es requerida</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Fecha Fin<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <input 
+                    type="Date" 
+                    class="form-control" 
+                    [class.is-invalid]="!descuento.desc_FechaFin && mostrarErrores"
+                    id="desc_FechaFin"
+                    [(ngModel)]="descuento.desc_FechaFin"
+                    placeholder="Ingrese la Fecha Fin del descuento"
+                    required>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!descuento.desc_FechaFin && mostrarErrores">
+                  <small>La Fecha fin es requerida</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Observaciones</label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                  
+                    id="desc_Observaciones"
+                    [(ngModel)]="descuento.desc_Observaciones"
+                    placeholder="Ingrese observaciones del descuento"
+                    >
+                  
+                </div>
+              
+              </div>
+            </div>
+          </div>
+
+        }
+        <div class="d-flex align-items-start gap-3 mt-4">
+           <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
+            nexttab" data-nexttab="steparrow-description-info-tab" >
+             <span class="btn-text">Siguiente</span>
+            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+          </button>
+        </div>
+        </cdk-step>
+        <cdk-step [optional]="false">
+          <ng-template cdkStepLabel>
+            <button class="nav-link" id="steparrow-description-info-tab" type="button" aria-readonly="true" disabled>Aplica para</button>
+          </ng-template>
+        @if (cdkStepper.selectedIndex === 1) {
+             <div class="row">
+
+              <div class="col-md-12">
+              <label  class="form-label">Aplicar a:</label>
+              <div class="mb-3">
+                <div class="row">
+                <div class="col-md-3">
+                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('productos')">Productos</button>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('categorias')">Categoría</button>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('subcategorias')">Subcategoría</button>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('marcas')">Marca</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listado dinámico -->
+      <div *ngIf="seccionVisible" class="mt-4 col-md-12">
+        <h5 class="text-capitalize">{{ seccionVisible }}</h5>
+        
+        <!-- Buscador -->
+        <input type="text" class="form-control mb-2" [(ngModel)]="filtro" placeholder="Buscar..." />
+
+        <!-- Seleccionar todo -->
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" [checked]="todosSeleccionados()" (change)="seleccionarTodos($event)" />
+          <label class="form-check-label">Seleccionar todos</label>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3" *ngFor="let item of getItemsFiltrados()">
+            <div class="form-check">
+              <input type="checkbox"
+                    class="form-check-input"
+                    [id]="'check-' + getId(item)"
+                    [checked]="seleccionados.includes(getId(item))"
+                    (change)="alternarSeleccion(getId(item))" />
+              <label class="form-check-label" [for]="'check-' + getId(item)">
+                {{ getNombre(item) }}
+              </label>
+            </div>
+          </div>
+        </div>
+              
+              </div>
+            </div>
+          </div>
+        }
+          <div class="d-flex align-items-start gap-3 mt-4">
+            <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
+              <span class="btn-text">Regresar</span>
+            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
+              
+            </button>
+            <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
+            nexttab" data-nexttab="steparrow-description-info-tab" >
+             <span class="btn-text">Siguiente</span>
+            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+          </button>
+          </div>
+        </cdk-step>
+
+        <cdk-step [optional]="false">
+          <ng-template cdkStepLabel>
+            <button class="nav-link" id="steparrow-descripcion-info-tab" type="button" aria-readonly="true" disabled>Clientes</button>
+          </ng-template>
+          @if (cdkStepper.selectedIndex === 2) {
+              <div class="row">
+                <div class="col-md-12">
+                  <label  class="form-label">Aplicar para:</label>
+                  <div class="mb-3">
+                    <div *ngFor="let grupo of clientesAgrupados">
+            <!-- Checkbox principal por canal -->
+                      <div class="form-check canal-checkbox mb-2">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          [id]="'canal-' + grupo.canal"
+                          [checked]="estanTodosSeleccionados(grupo)"
+                          (change)="seleccionarTodosClientes(grupo, $any($event.target).checked)"
+                        />
+                        <label class="form-check-label fw-bold" [for]="'canal-' + grupo.canal">
+                          {{ grupo.canal }}
+                        </label>
+                      </div>
+            <!-- Checkboxes de clientes -->
+                      <div class="d-flex flex-wrap gap-3 mb-4">
+                        <div
+                          class="form-check me-3"
+                          *ngFor="let cliente of getClientesFiltrados(grupo)"
+                        >
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            [id]="'cliente-' + cliente.clie_Id"
+                            [checked]="clientesSeleccionados.includes(cliente.clie_Id)"
+                            (change)="alternarCliente(cliente.clie_Id, $any($event.target).checked)"
+                          />
+                          <label class="form-check-label" [for]="'cliente-' + cliente.clie_Id">
+                            {{ cliente.clie_NombreNegocio }}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+          }
+            <div class="d-flex align-items-start gap-3 mt-4">
+            <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
+              <span class="btn-text">Regresar</span>
+            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
+              
+            </button>
+             <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
+            nexttab" data-nexttab="steparrow-description-info-tab" >
+             <span class="btn-text">Siguiente</span>
+            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+          </button>
+            </div>
+          </cdk-step>
+          <cdk-step [optional]="false">
+            <ng-template cdkStepLabel>
+                <button class="nav-link"  type="button" aria-readonly="true" disabled>Escala</button>
+            </ng-template>
+            @if (cdkStepper.selectedIndex === 3) {
+                <div *ngFor="let escala of escalas; let i = index" class="row align-items-end mb-3">
+
+                <div class="col-md-4">
+                  <label class="form-label">Inicio Escala<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [(ngModel)]="escala.deEs_InicioEscala" name="inicio{{i}}" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Fin Escala<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [(ngModel)]="escala.deEs_FinEscala" name="fin{{i}}" required>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Valor<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [(ngModel)]="escala.deEs_Valor" name="valor{{i}}" required>
+                </div>
+
+                <div class="col-md-1">
+                  <button type="button" class="btn btn-danger" (click)="eliminarEscala(i)" *ngIf="escalas.length > 1">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="mb-3">
+                <button  type="button" class="btn btn-primary me-2 mb-2" (click)="agregarEscala()">
+                          <span class="btn-text">Agregar Escala</span>
+                          <span class="btn-icon"><i class="ri-add-line"></i></span>
+                        </button>
+              </div>
+    
+            }
+            <div class="d-flex align-items-start gap-3 mt-4">
+             <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
+              <span class="btn-text">Regresar</span>
+            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
+              
+            </button>
+             <button type="button" class="btn btn-primary right ms-auto nexttab
+                nexttab" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+            </div>
+            </cdk-step>
+          </ng-stepper>
+    
+  
+
