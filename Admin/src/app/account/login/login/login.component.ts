@@ -24,6 +24,7 @@ export class LoginComponent {
   a: any = 10;
   b: any = 20;
   toast!: false;
+  showrecuperar: boolean = false; // Controla la visibilidad del componente de recuperar contraseña
 
   // set the current year
   year: number = new Date().getFullYear();
@@ -83,5 +84,13 @@ export class LoginComponent {
    */
   toggleFieldTextType() {
     this.fieldTextType = !this.fieldTextType;
+  }
+
+  /**
+   * Método para volver desde el componente de recuperar contraseña
+   */
+  volver() {
+    // Ocultar el componente de recuperar contraseña y mostrar el formulario de login
+    this.showrecuperar = false;
   }
 }
