@@ -55,3 +55,36 @@
   color: #1a73e8;
   font-size: 1rem;
 }
+
+.permisos-card {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.8rem;
+}
+
+.pantalla-titulo {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #b59e7f; /* Subrayado dorado */
+  display: inline-block;             /* Para que el underline se ajuste al texto */
+  padding-bottom: 0.25rem;
+}
+
+.acciones-card-container {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente las acciones */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.accion-chip {
+  background: #e3f2fd; /* azul muy suave */
+  color: #1a73e8;       /* azul destacado */
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  cursor: default;
+}
