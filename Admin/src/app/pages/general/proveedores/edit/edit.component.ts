@@ -10,7 +10,7 @@ import { provideRouter } from '@angular/router';
   selector: 'app-edit',
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
-  templateUrl: './edit.component.html',
+  templateUrl:'./edit.component.html',
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
