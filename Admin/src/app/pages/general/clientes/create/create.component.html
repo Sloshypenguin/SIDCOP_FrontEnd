@@ -151,30 +151,13 @@
         <div class="mb-3">
           <label class="form-label d-block">Sexo <span class="text-danger">*</span></label>
           <div class="sexo-toggle d-flex">
-            <label
-              class="sexo-option me-2"
-              [class.selected]="cliente.clie_Sexo === 'M'"
-            >
-              <input
-                type="radio"
-                name="sexo"
-                value="M"
-                [(ngModel)]="cliente.clie_Sexo"
-                required
-              />
+            <label class="sexo-option me-2" [class.selected]="cliente.clie_Sexo === 'M'">
+              <input type="radio" name="sexo" value="M" [(ngModel)]="cliente.clie_Sexo" required />
               <i class="ri-men-line sexo-icon"></i>
               <span>Masculino</span>
             </label>
-            <label
-              class="sexo-option"
-              [class.selected]="cliente.clie_Sexo === 'F'"
-            >
-              <input
-                type="radio"
-                name="sexo"
-                value="F"
-                [(ngModel)]="cliente.clie_Sexo"
-              />
+            <label class="sexo-option" [class.selected]="cliente.clie_Sexo === 'F'">
+              <input type="radio" name="sexo" value="F" [(ngModel)]="cliente.clie_Sexo" />
               <i class="ri-women-line sexo-icon"></i>
               <span>Femenino</span>
             </label>
@@ -283,22 +266,5 @@
         </div>
       </div>
     </div>
-
-    <!-- Botones -->
-    <div class="mt-auto pt-3">
-      <div class="row">
-        <div class="col-12">
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-primary gold" (click)="cancelar()">
-              <span class="btn-text">Cancelar</span>
-              <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
-            </button>
-            <button type="button" class="btn btn-primary" (click)="guardar()">
-              <span class="btn-text">Guardar</span>
-              <span class="btn-icon"><i class="ri-save-line"></i></span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
+</div>
