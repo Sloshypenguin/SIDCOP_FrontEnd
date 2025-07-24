@@ -3,6 +3,7 @@ export class Cliente{
     clie_Id: number = 0;
     clie_Codigo: string = '';
     clie_Nacionalidad: string = '';
+    pais_Descripcion: string = '';
     clie_DNI: string = '';
     clie_RTN: string = '';
     clie_Nombres: string = '';

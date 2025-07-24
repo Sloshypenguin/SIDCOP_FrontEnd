@@ -28,12 +28,15 @@ export class CreateComponent {
 
   activeTab = 1;
 
+  nacionalidades: any[] = [];
+
   constructor(private http: HttpClient) {}
 
   cliente: Cliente = {
     clie_Id: 0,
     clie_Codigo: '',
     clie_Nacionalidad: '',
+    pais_Descripcion: '',
     clie_DNI: '',
     clie_RTN: '',
     clie_Nombres: '',
@@ -83,6 +86,7 @@ export class CreateComponent {
       clie_Id: 0,
       clie_Codigo: '',
       clie_Nacionalidad: '',
+      pais_Descripcion: '',
       clie_DNI: '',
       clie_RTN: '',
       clie_Nombres: '',
@@ -155,6 +159,7 @@ export class CreateComponent {
       const clienteGuardar = {
         clie_Id: 0,
         clie_Codigo: this.cliente.clie_Codigo.trim(),
+        clie_Nacionalidad: this.cliente.clie_Nacionalidad,
         clie_DNI: dniMask,
         clie_RTN: this.cliente.clie_RTN.trim(),
         clie_Nombres: this.cliente.clie_Nombres.trim(),
@@ -165,6 +170,7 @@ export class CreateComponent {
         clie_Correo: this.cliente.clie_Correo.trim(),
         clie_Sexo: this.cliente.clie_Sexo,
         clie_FechaNacimiento: this.cliente.clie_FechaNacimiento,
+        tiVi_Id: this.cliente.tiVi_Id,
         cana_Id: this.cliente.cana_Id,
         cana_Descripcion: '',
         esCv_Id: this.cliente.esCv_Id,

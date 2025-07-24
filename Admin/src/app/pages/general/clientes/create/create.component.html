@@ -28,17 +28,22 @@
     <ul class="nav nav-tabs mb-3" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link" [class.active]="activeTab === 1" (click)="activeTab = 1" type="button" role="tab">
-          Datos Generales
+          Datos Personales
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2" type="button" role="tab">
-          Información Comercial
+          Política
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3" type="button" role="tab">
-          Observaciones
+          Direcciones
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 4" (click)="activeTab = 3" type="button" role="tab">
+          Avales
         </button>
       </li>
     </ul>
@@ -64,6 +69,21 @@
             </div>
           </div>
         </div>
+
+        <!-- Nacionalidad -->
+        <div class="col-md-6">
+        <div class="mb-3">
+          <label for="clie_Nacionalidad" class="form-label">País de Nacimiento</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad" [class.is-invalid]="!cliente.clie_Nacionalidad && mostrarErrores" required>
+            <option value=0 disabled selected>Seleccione un país</option>
+            <option *ngFor="let nacionalidad of nacionalidades" [value]="nacionalidad.clie_Nacionalidad">{{ nacionalidad.pais_Descripcion }}</option>
+          </select>
+          <div class="text-danger mt-1" *ngIf="!cliente.clie_Nacionalidad && mostrarErrores">
+            <small>El campo País de Nacimiento es requerido</small>
+          </div>
+        </div>
+      </div>
 
         <!-- DNI -->
         <div class="col-md-6">

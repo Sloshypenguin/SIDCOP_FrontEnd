@@ -214,6 +214,7 @@ export class ListComponent {
           clie_Id: this.clienteAEliminar.clie_Id,
           clie_Codigo: '',
           clie_Nacionalidad: '',
+          pais_Descripcion: '',
           clie_DNI: '',
           clie_RTN: '',
           clie_Nombres: '',
