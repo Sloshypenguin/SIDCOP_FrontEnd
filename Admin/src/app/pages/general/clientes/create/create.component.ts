@@ -29,8 +29,49 @@ export class CreateComponent {
   activeTab = 1;
 
   nacionalidades: any[] = [];
+  paises: any[] = [];
+  tiposDeVivienda: any[] = [];
+  estadosCiviles: any[] = [];
+  canales: any[] = [];
+  rutas: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.cargarPaises();
+    this.cargarTiposDeVivienda();
+    this.cargarEstadosCiviles();
+    this.cargarCanales();
+    this.cargarRutas();
+  }
+
+  cargarPaises() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Pais/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.paises = data);
+  }
+
+  cargarTiposDeVivienda() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/TipoDeVivienda/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.paises = data);
+  }
+
+  cargarEstadosCiviles() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.estadosCiviles = data);
+  }
+
+  cargarCanales() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Canal/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.canales = data);
+  }
+
+  cargarRutas() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Rutas/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.rutas = data);
+  }
 
   cliente: Cliente = {
     clie_Id: 0,
