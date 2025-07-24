@@ -60,7 +60,7 @@
   <!-- Mostrar listado solo si no se está creando, editando o viendo detalles -->
   <div *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
     <div class="row row-cols-xxl-5 g-4 mx-2 mb-4">
-      <ng-container *ngFor="let cliente of instructors; trackBy: trackByClienteId">
+      <ng-container *ngFor="let cliente of clientes; trackBy: trackByClienteId">
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 mx-auto">
           <div class="card card-empleado position-relative h-100">
             <div class="card-header p-0 position-relative header-bg" [ngStyle]="{ 'background-image': 'url(' + (cliente.clie_ImagenDelNegocio || 'assets/images/imagenes/full-logo.png') + ')' }">
@@ -164,10 +164,10 @@
           <div class="modal-footer custom-modal-footer">
             <button type="button" class="btn btn-primary gray btn-sm btn-minw-5" (click)="cancelarEliminar()"><span
                 class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
-            <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
+            <!-- <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
               <span class="btn-text">Si</span>
               <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
-            </button>
+            </button> -->
           </div>
         </div>
       </div>

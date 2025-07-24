@@ -51,7 +51,7 @@ import {
 
     CreateComponent,
     DetailsComponent,
-    EditComponent
+    // EditComponent
   ],
   animations: [
     trigger('fadeExpand', [
@@ -90,6 +90,9 @@ import {
 // Grid Component
 
 export class ListComponent {
+  busqueda: string = '';
+  clientesFiltrados: any[] = [];
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -101,6 +104,7 @@ export class ListComponent {
 
   // Propiedades para alertas
   mostrarAlertaExito = false;
+  mostrarOverlayCarga = false;
   mensajeExito = '';
   mostrarAlertaError = false;
   mensajeError = '';
@@ -130,6 +134,8 @@ export class ListComponent {
     }
   }
 
+  clienteGrid: any = [];
+  clientes: any = [];
 
   term: any;
   // bread crumb items
@@ -172,19 +178,158 @@ export class ListComponent {
       status: ['', [Validators.required]],
       img: ['']
     });
-    this.cargardatos();
+    this.cargarDatos(true);
     document.getElementById('elmLoader')?.classList.add('d-none');
   }
 
-  private cargardatos(): void {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.instructorGrid = data || [];
-      this.instructors = cloneDeep(this.instructorGrid.slice(0, 10));
-      this.isLoading = false;
-    });
+
+  crear(): void {
+      this.showCreateForm = !this.showCreateForm;
+      this.showEditForm = false;
+      this.showDetailsForm = false;
+      this.activeActionRow = null;
+    }
+  
+    editar(cliente: Cliente): void {
+      this.clienteEditando = { ...cliente };
+      this.showEditForm = true;
+      this.showCreateForm = false;
+      this.showDetailsForm = false;
+      this.activeActionRow = null;
+    }
+  
+    detalles(cliente: Cliente): void {
+      this.clienteDetalle = { ...cliente };
+      this.showDetailsForm = true;
+      this.showCreateForm = false;
+      this.showEditForm = false;
+      this.activeActionRow = null;
+    }
+
+    eliminar(): void {
+        if(!this.clienteAEliminar) return;
+        const clienteAEliminar: Cliente = {
+          secuencia: 0,
+          clie_Id: this.clienteAEliminar.clie_Id,
+          clie_Codigo: '',
+          clie_Nacionalidad: '',
+          clie_DNI: '',
+          clie_RTN: '',
+          clie_Nombres: '',
+          clie_Apellidos: '',
+          clie_NombreNegocio: '',
+          clie_ImagenDelNegocio: '',
+          clie_Telefono: '',
+          clie_Correo: '',
+          clie_Sexo: '',
+          clie_FechaNacimiento: new Date(),
+          tiVi_Id: 0,
+          tiVi_Descripcion: '',
+          cana_Id: 0,
+          cana_Descripcion: '',
+          esCv_Id: 0,
+          esCv_Descripcion: '',
+          ruta_Id: 0,
+          ruta_Descripcion: '',
+          clie_LimiteCredito: 0,
+          clie_DiasCredito: 0,
+          clie_Saldo: 0,
+          clie_Vencido: true,
+          clie_Observaciones:  '',
+          clie_ObservacionRetiro: '',
+          clie_Confirmacion: true,
+          clie_Estado: true,
+          usua_Creacion: environment.usua_Id,
+          clie_FechaCreacion: new Date(),
+          usua_Modificacion: environment.usua_Id,
+          clie_FechaModificacion: new Date(),
+
+          usuaC_Nombre: '',
+          usuaM_Nombre: '',
+          code_Status: 0,
+          message_Status: '',
+        }
+        this.mostrarOverlayCarga = true;
+        this.http.post(`${environment.apiBaseUrl}/Cliente/CambiarEstado`, clienteAEliminar,{
+          headers:{
+            'X-Api-Key': environment.apiKey,
+            'accept': '*/*'
+          }
+        }).subscribe({
+          next: (response: any) =>{
+            setTimeout(() =>{
+              this.mostrarOverlayCarga = false;
+              if(response.success && response.data){
+                if(response.data.code_Status === 1){
+                  if(this.clienteAEliminar!.clie_Estado) {
+                    this.mensajeExito = `Cliente "${this.clienteAEliminar!.clie_Nombres}" desactivado exitosamente`;
+                    this.mostrarAlertaExito = true;
+                  }
+                  if(!this.clienteAEliminar!.clie_Estado) {
+                    this.mensajeExito = `Cliente "${this.clienteAEliminar!.clie_Nombres}" activado exitosamente`;
+                    this.mostrarAlertaExito = true;
+                  }
+    
+                  setTimeout(() => {
+                    this.mostrarAlertaExito = false;
+                    this.mensajeExito = '';
+                  }, 3000);
+    
+                  this.cargarDatos(false);
+                  this.cancelarEliminar();
+                }else if (response.data.code_Status === -1){
+                  this.mostrarAlertaError = true;
+                  this.mensajeError = response.data.message_Status;
+    
+                  setTimeout(() => {
+                    this.mostrarAlertaError = false;
+                    this.mensajeError = '';
+                  }, 5000);
+    
+                  this.cancelarEliminar();
+                }
+              } else {
+                this.mostrarAlertaError = true;
+                this.mensajeError = response.message || 'Error inesperado al cambiar el estado al cliente.';
+    
+                setTimeout(() => {
+                  this.mostrarAlertaError = false;
+                  this.mensajeError = '';
+                }, 5000);
+    
+                this.cancelarEliminar();
+              }
+            },1000)
+          }
+        })
+      }
+
+  filtradorClientes(): void {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) {
+      this.clientesFiltrados = this.clientes;
+    } else {
+      this.clientesFiltrados = this.clientes.filter((cliente: any) =>
+        (cliente.clie_Codigo || '').toLowerCase().includes(termino) ||
+        (cliente.clie_Nombres || '').toLowerCase().includes(termino) ||
+        (cliente.cana_Descripcion || '').toLowerCase().includes(termino)
+      );
+    }
   }
+
+  private cargarDatos(state: boolean): void {
+      this.mostrarOverlayCarga = state;
+      this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe(data => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          this.clienteGrid = data || [];
+          this.clientes = this.clienteGrid.slice(0, 12);
+          this.filtradorClientes();
+        },500);
+      });
+    }
 
   currentPage: number = 1;
   itemsPerPage: number = 10;
@@ -200,7 +345,7 @@ export class ListComponent {
   }
 
   trackByClienteId(index: number, item: any): any {
-    return item.usua_Id;
+    return item.clie_Id;
   }
   onImgError(event: Event) {
     const target = event.target as HTMLImageElement;
@@ -299,13 +444,13 @@ export class ListComponent {
 
 
   // Métodos para los botones de acción principales (crear, editar, detalles)
-  crear(): void {
-    console.log('Toggleando formulario de creación...');
-    this.showCreateForm = !this.showCreateForm;
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
+  // crear(): void {
+  //   console.log('Toggleando formulario de creación...');
+  //   this.showCreateForm = !this.showCreateForm;
+  //   this.showEditForm = false; // Cerrar edit si está abierto
+  //   this.showDetailsForm = false; // Cerrar details si está abierto
+  //   this.activeActionRow = null; // Cerrar menú de acciones
+  // }
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -317,12 +462,10 @@ export class ListComponent {
   }
 
 
-
-
   guardarCliente(cliente: Cliente): void {
     console.log('Cliente guardado exitosamente desde create component:', cliente);
     // Recargar los datos de la tabla
-    this.cargardatos();
+    this.cargarDatos(false);
     this.cerrarFormulario();
   }
 
@@ -338,93 +481,93 @@ export class ListComponent {
     this.clienteAEliminar = null;
   }
 
-  eliminar(): void {
-    if (!this.clienteAEliminar) return;
+  // eliminar(): void {
+  //   if (!this.clienteAEliminar) return;
 
-    console.log('Eliminando cliente:', this.clienteAEliminar);
+  //   console.log('Eliminando cliente:', this.clienteAEliminar);
 
-    this.http.post(`${environment.apiBaseUrl}/Cliente/Eliminar/${this.clienteAEliminar.clie_Id}`, {}, {
-      headers: {
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
+  //   this.http.post(`${environment.apiBaseUrl}/Cliente/Eliminar/${this.clienteAEliminar.clie_Id}`, {}, {
+  //     headers: {
+  //       'X-Api-Key': environment.apiKey,
+  //       'accept': '*/*'
+  //     }
+  //   }).subscribe({
+  //     next: (response: any) => {
+  //       console.log('Respuesta del servidor:', response);
 
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Cliente eliminado exitosamente');
-            this.mensajeExito = `Cliente "${this.clienteAEliminar!.clie_Nombres}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
+  //       // Verificar el código de estado en la respuesta
+  //       if (response.success && response.data) {
+  //         if (response.data.code_Status === 1) {
+  //           // Éxito: eliminado correctamente
+  //           console.log('Cliente eliminado exitosamente');
+  //           this.mensajeExito = `Cliente "${this.clienteAEliminar!.clie_Nombres}" eliminado exitosamente`;
+  //           this.mostrarAlertaExito = true;
 
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
+  //           // Ocultar la alerta después de 3 segundos
+  //           setTimeout(() => {
+  //             this.mostrarAlertaExito = false;
+  //             this.mensajeExito = '';
+  //           }, 3000);
 
 
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('El cliente está siendo utilizado');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el cliente está siendo utilizado.';
+  //           this.cargarDatos();
+  //           this.cancelarEliminar();
+  //         } else if (response.data.code_Status === -1) {
+  //           //result: está siendo utilizado
+  //           console.log('El cliente está siendo utilizado');
+  //           this.mostrarAlertaError = true;
+  //           this.mensajeError = response.data.message_Status || 'No se puede eliminar: el cliente está siendo utilizado.';
 
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
+  //           setTimeout(() => {
+  //             this.mostrarAlertaError = false;
+  //             this.mensajeError = '';
+  //           }, 5000);
 
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el cliente.';
+  //           // Cerrar el modal de confirmación
+  //           this.cancelarEliminar();
+  //         } else if (response.data.code_Status === 0) {
+  //           // Error general
+  //           console.log('Error general al eliminar');
+  //           this.mostrarAlertaError = true;
+  //           this.mensajeError = response.data.message_Status || 'Error al eliminar el cliente.';
 
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
+  //           setTimeout(() => {
+  //             this.mostrarAlertaError = false;
+  //             this.mensajeError = '';
+  //           }, 5000);
 
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el cliente.';
+  //           // Cerrar el modal de confirmación
+  //           this.cancelarEliminar();
+  //         }
+  //       } else {
+  //         // Respuesta inesperada
+  //         console.log('Respuesta inesperada del servidor');
+  //         this.mostrarAlertaError = true;
+  //         this.mensajeError = response.message || 'Error inesperado al eliminar el cliente.';
 
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
+  //         setTimeout(() => {
+  //           this.mostrarAlertaError = false;
+  //           this.mensajeError = '';
+  //         }, 5000);
 
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
-      },
-    });
-  }
+  //         // Cerrar el modal de confirmación
+  //         this.cancelarEliminar();
+  //       }
+  //     },
+  //   });
+  // }
 
 
 
   //Detailss
-  detalles(cliente: Cliente): void {
-    console.log('Abriendo detalles para:', cliente);
-    this.clienteDetalle = { ...cliente }; // Hacer copia profunda
-    this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
+  // detalles(cliente: Cliente): void {
+  //   console.log('Abriendo detalles para:', cliente);
+  //   this.clienteDetalle = { ...cliente }; // Hacer copia profunda
+  //   this.showDetailsForm = true;
+  //   this.showCreateForm = false; // Cerrar create si está abierto
+  //   this.showEditForm = false; // Cerrar edit si está abierto
+  //   this.activeActionRow = null; // Cerrar menú de acciones
+  // }
 
 
 
@@ -468,7 +611,7 @@ export class ListComponent {
   actualizarCliente(cliente: Cliente): void {
     console.log('Cliente actualizado exitosamente desde edit component:', cliente);
     // Recargar los datos de la tabla
-    this.cargardatos();
+    this.cargarDatos(false);
     this.cerrarFormularioEdicion();
   }
 

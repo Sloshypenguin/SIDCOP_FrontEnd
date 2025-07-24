@@ -37,11 +37,13 @@ export class Cliente{
     clie_FechaModificacion?: Date;
     clie_Estado: boolean = true;
 
+    usuaC_Nombre: string = '';
+    usuaM_Nombre: string = '';
     secuencia: number = 0;
     code_Status: number = 0;
     message_Status: string = '';
-    usuarioCreacion: string = '';
-    usuarioModificacion: string = '';
+    // usuarioCreacion: string = '';
+    // usuarioModificacion: string = '';
     
     constructor(init?: Partial<Cliente>) {
     Object.assign(this, init);

@@ -40,7 +40,7 @@ export class CreateComponent {
     clie_ImagenDelNegocio: '',
     clie_Telefono:  '',
     clie_Correo: '',
-    clie_Sexo: 'M',
+    clie_Sexo: '',
     clie_FechaNacimiento: new Date(),
     tiVi_Id: 0,
     tiVi_Descripcion:  '',
@@ -65,8 +65,8 @@ export class CreateComponent {
     clie_FechaModificacion: new Date(),
     code_Status: 0,
     message_Status: '',
-    usuarioCreacion: '',
-    usuarioModificacion: ''
+    usuaC_Nombre: '',
+    usuaM_Nombre: ''
   };
 
   cancelar(): void {
@@ -114,8 +114,8 @@ export class CreateComponent {
       clie_FechaModificacion: new Date(),
       code_Status: 0,
       message_Status: '',
-      usuarioCreacion: '',
-      usuarioModificacion: ''
+      usuaC_Nombre: '',
+      usuaM_Nombre: '',
     };
     this.onCancel.emit();
   }
@@ -180,8 +180,8 @@ export class CreateComponent {
         usua_Modificacion: 0,
         numero: "", 
         clie_FechaModificacion: new Date().toISOString(),
-        usuarioCreacion: "", 
-        usuarioModificacion: "" 
+        usuaC_Nombre: '',
+        usuaM_Nombre: ''
       };
 
       console.log('Guardando Cliente:', clienteGuardar);
