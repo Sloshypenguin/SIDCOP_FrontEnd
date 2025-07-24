@@ -19,7 +19,6 @@ export class EditComponent implements OnChanges{
   @Output() onSave = new EventEmitter<Usuario>();
 
   usuarioOriginal = '';
-  mostrarOverlayCarga = false;
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -139,7 +138,6 @@ export class EditComponent implements OnChanges{
         code_Status: 0,
         message_Status: '',
       };
-      this.mostrarOverlayCarga = true;
       this.http.put<any>(`${environment.apiBaseUrl}/Usuarios/Actualizar`, usuarioGuardar,{
         headers:{
           'X-Api-Key': environment.apiKey,
@@ -148,22 +146,19 @@ export class EditComponent implements OnChanges{
         }
       }).subscribe({
         next: (response) =>{
-          setTimeout(()=>{
-            this.mostrarOverlayCarga = false;
-            if (response.data.code_Status === 1) {
-              this.mostrarErrores = false;
-              this.onSave.emit(this.usuario);
-              this.cancelar();
-            } else {
-              this.mostrarAlertaError = true;
-              this.mensajeError = 'Error al actualizar el usuario, ' + response.data.message_Status;
-              this.mostrarAlertaExito = false;
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-            }
-          })
+          if (response.data.code_Status === 1) {
+            this.mostrarErrores = false;
+            this.onSave.emit(this.usuario);
+            this.cancelar();
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al actualizar el usuario, ' + response.data.message_Status;
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
           console.error('Error al actualizar usuario:', error);

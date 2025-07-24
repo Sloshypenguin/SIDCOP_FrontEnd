@@ -16,7 +16,6 @@ export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<any>();
 
-  mostrarOverlayCarga = false;
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -143,7 +142,6 @@ export class CreateComponent {
         code_Status: 0,
         message_Status: '',
       };
-      this.mostrarOverlayCarga = true;
       this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/Insertar`, usuarioGuardar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -152,22 +150,19 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          setTimeout(() => {
-            this.mostrarOverlayCarga = false;
-            if (response.data.code_Status === 1) {
-              this.mostrarErrores = false;
-              this.onSave.emit(this.usuario);
-              this.cancelar();
-            } else {
-              this.mostrarAlertaError = true;
-              this.mensajeError = 'Error al guardar el usuario, ' + response.data.message_Status;
-              this.mostrarAlertaExito = false;
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-            }
-          }, 1000);
+          if (response.data.code_Status === 1) {
+            this.mostrarErrores = false;
+            this.onSave.emit(this.usuario);
+            this.cancelar();
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al guardar el usuario, ' + response.data.message_Status;
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
           this.mostrarAlertaError = true;

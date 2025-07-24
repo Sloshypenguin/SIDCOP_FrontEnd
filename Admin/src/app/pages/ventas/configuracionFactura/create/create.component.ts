@@ -88,14 +88,31 @@ export class CreateComponent {
     console.log("Colonias cargadas:", this.Colonias);
   }
 
-  onImageSelected(event: any): void {
-    const archivo = event.target.files[0];
-    if (archivo) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.configFactura.coFa_Logo = reader.result as string;
-      };
-      reader.readAsDataURL(archivo);
+  onImagenSeleccionada(event: any) {
+    // Obtenemos el archivo seleccionado desde el input tipo file
+    const file = event.target.files[0];
+
+    if (file) {
+      // para enviar la imagen a Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'configuracion_empresa');
+      //Subidas usuarios Carpeta identificadora en Cloudinary
+      //dbt7mxrwk es el nombre de la cuenta de Cloudinary
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
+
+      
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.configFactura.coFa_Logo = data.secure_url;
+      })
+      .catch(error => {
+        console.error('Error al subir la imagen a Cloudinary:', error);
+      });
     }
   }
 
