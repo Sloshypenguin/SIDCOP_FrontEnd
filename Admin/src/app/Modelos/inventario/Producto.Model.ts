@@ -13,9 +13,9 @@ export class Producto {
     impu_Id?: number = 0;
     prod_PrecioUnitario: number = 0;
     prod_CostoTotal: number = 0;
-    prod_PagaImpuesto: boolean = false;
+    prod_PagaImpuesto: string = "";
     prod_PromODesc: number = 0;
-    prod_EsPromo: boolean = false;
+    prod_EsPromo: string = "";
     prod_Estado: boolean = true;
     usua_Creacion: number = 0;
     prod_FechaCreacion: Date = new Date();

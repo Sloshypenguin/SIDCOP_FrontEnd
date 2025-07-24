@@ -45,9 +45,9 @@ export class CreateComponent {
     impu_Id: 0,
     prod_PrecioUnitario: 0,
     prod_CostoTotal: 0,
-    prod_PagaImpuesto: false,
+    prod_PagaImpuesto: "",
     prod_PromODesc: 0,
-    prod_EsPromo: false,
+    prod_EsPromo: "",
     prod_Estado: true,
     usua_Creacion: 0,
     prod_FechaCreacion: new Date(),
@@ -121,9 +121,9 @@ export class CreateComponent {
       impu_Id: 0,
       prod_PrecioUnitario: 0,
       prod_CostoTotal: 0,
-      prod_PagaImpuesto: false,
+      prod_PagaImpuesto: "",
       prod_PromODesc: 0,
-      prod_EsPromo: false,
+      prod_EsPromo: "",
       prod_Estado: true,
       usua_Creacion: 0,
       prod_FechaCreacion: new Date(),
@@ -151,7 +151,8 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
-    if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id)
+    if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id
+      && this.producto.prod_PrecioUnitario.toFixed(2) && this.producto.prod_CostoTotal.toFixed(2) && this.producto.prod_PagaImpuesto.trim())
     {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
@@ -166,8 +167,31 @@ export class CreateComponent {
         marc_Id: this.producto.marc_Id,
         prov_Id: this.producto.prov_Id,
         impu_Id: this.producto.impu_Id,
+        prod_PrecioUnitario: this.producto.prod_PrecioUnitario,
+        prod_CostoTotal: this.producto.prod_CostoTotal,
+        prod_PagaImpuesto: this.producto.prod_PagaImpuesto,
+        prod_PromODesc: this.producto.prod_PromODesc,
+        prod_EsPromo: this.producto.prod_EsPromo,
+        prod_Estado: true,
+        usua_Creacion: environment.usua_Id,
+        prod_FechaCreacion: new Date().toISOString(),
         secuencia: 0,
       };
+      this.http.post<any>(`${environment.apiBaseUrl}/Producto/Guardar`, productoGuardar, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe(
+        response => {
+          this.mostrarAlertaExito = true;
+          this.mensajeExito = 'Producto guardado exitosamente.';
+          this.onSave.emit(response);
+          this.cancelar();
+        },
+        error => {
+          console.error('Error al guardar el producto:', error);
+          this.mostrarAlertaError = true;
+          this.mensajeError = 'Error al guardar el producto. Intente nuevamente.';
+        }
+      );
     }
   }
 }
