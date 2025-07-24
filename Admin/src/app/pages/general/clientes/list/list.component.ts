@@ -48,10 +48,8 @@ import {
     SimplebarAngularModule,
     DropzoneModule,
     BreadcrumbsComponent,
-
     CreateComponent,
     DetailsComponent,
-    // EditComponent
   ],
   animations: [
     trigger('fadeExpand', [
@@ -93,6 +91,7 @@ export class ListComponent {
   busqueda: string = '';
   clientesFiltrados: any[] = [];
 
+  listadoClientesSinConfirmar = false;
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -137,6 +136,9 @@ export class ListComponent {
   clienteGrid: any = [];
   clientes: any = [];
 
+  clienteSinConfirmarGrid: any = [];
+  clientesSinConfirmar: any = [];
+
   term: any;
   // bread crumb items
   breadCrumbItems!: Array<{}>;
@@ -147,8 +149,6 @@ export class ListComponent {
   GridForm!: UntypedFormGroup;
   submitted = false;
   masterSelected: boolean = false;
-  instructorGrid: any = [];
-  instructors: any = [];
   @ViewChild('addInstructor', { static: false }) addInstructor?: ModalDirective;
   @ViewChild('deleteRecordModal', { static: false }) deleteRecordModal?: ModalDirective;
   editData: any = null;
@@ -179,6 +179,7 @@ export class ListComponent {
       img: ['']
     });
     this.cargarDatos(true);
+    this.cargarDatosSinConfirmar(false);
     document.getElementById('elmLoader')?.classList.add('d-none');
   }
 
@@ -318,30 +319,49 @@ export class ListComponent {
   }
 
   private cargarDatos(state: boolean): void {
-      this.mostrarOverlayCarga = state;
-      this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe(data => {
-        setTimeout(() => {
-          this.mostrarOverlayCarga = false;
-          this.clienteGrid = data || [];
-          this.clientes = this.clienteGrid.slice(0, 12);
-          this.filtradorClientes();
-        },500);
-      });
-    }
+    this.mostrarOverlayCarga = state;
+    this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.clienteGrid = data || [];
+        this.clientes = this.clienteGrid.slice(0, 10);
+        this.filtradorClientes();
+      },500);
+    });
+  }
+
+  abrirListado(){
+    this.listadoClientesSinConfirmar = true;
+  }
+
+  notificacionesSinConfirmar: number = 0;
+  private cargarDatosSinConfirmar(state: boolean): void {
+    this.mostrarOverlayCarga = state;
+    this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/ListarSinConfirmacion`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.clienteSinConfirmarGrid = data || [];
+        this.clientesSinConfirmar = this.clienteSinConfirmarGrid.slice(0, 10);
+        this.notificacionesSinConfirmar = this.clienteSinConfirmarGrid.length;
+      },500);
+    });
+  }
 
   currentPage: number = 1;
   itemsPerPage: number = 10;
 
   get startIndex(): number {
-    return this.instructorGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
+    return this.clienteGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
   }
 
   get endIndex(): number {
-    if (!this.instructorGrid?.length) return 0;
+    if (!this.clienteGrid?.length) return 0;
     const end = this.currentPage * this.itemsPerPage;
-    return end > this.instructorGrid.length ? this.instructorGrid.length : end;
+    return end > this.clienteGrid.length ? this.clienteGrid.length : end;
   }
 
   trackByClienteId(index: number, item: any): any {
@@ -385,10 +405,10 @@ export class ListComponent {
     const modalbtn = document.getElementById('add-btn') as HTMLAreaElement;
     if (modalbtn) modalbtn.innerHTML = 'Update';
     // Si id es índice
-    this.editData = this.instructors[id];
+    this.editData = this.clientes[id];
     if (this.editData) {
       this.uploadedFiles.push({ 'dataURL': this.editData.img, 'name': this.editData.img_alt, 'size': 1024 });
-      this.GridForm.patchValue(this.instructors[id]);
+      this.GridForm.patchValue(this.clientes[id]);
     }
   }
 
@@ -407,9 +427,9 @@ export class ListComponent {
   // filterdata
   filterdata() {
     if (this.term) {
-      this.instructors = this.instructorGrid.filter((el: any) => el.name?.toLowerCase().includes(this.term.toLowerCase()));
+      this.clientes = this.clienteGrid.filter((el: any) => el.name?.toLowerCase().includes(this.term.toLowerCase()));
     } else {
-      this.instructors = this.instructorGrid.slice(0, 10);
+      this.clientes = this.clienteGrid.slice(0, 10);
     }
     // noResultElement
     this.updateNoResultDisplay();
@@ -420,7 +440,7 @@ export class ListComponent {
     const noResultElement = document.querySelector('.noresult') as HTMLElement;
     const paginationElement = document.getElementById('pagination-element') as HTMLElement;
     if (noResultElement && paginationElement) {
-      if (this.term && this.instructors.length === 0) {
+      if (this.term && this.clientes.length === 0) {
         noResultElement.style.display = 'block';
         paginationElement.classList.add('d-none');
       } else {
@@ -432,9 +452,11 @@ export class ListComponent {
 
   // Page Changed
   pageChanged(event: any): void {
+    this.currentPage = event.page;
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
-    this.instructors = this.instructorGrid.slice(startItem, endItem);
+    this.clientes = this.clienteGrid.slice(startItem, endItem);
+    this.filtradorClientes();
   }
 
   // Abre/cierra el menú de acciones para la fila seleccionada
@@ -464,7 +486,6 @@ export class ListComponent {
 
   guardarCliente(cliente: Cliente): void {
     console.log('Cliente guardado exitosamente desde create component:', cliente);
-    // Recargar los datos de la tabla
     this.cargarDatos(false);
     this.cerrarFormulario();
   }
@@ -610,7 +631,6 @@ export class ListComponent {
 
   actualizarCliente(cliente: Cliente): void {
     console.log('Cliente actualizado exitosamente desde edit component:', cliente);
-    // Recargar los datos de la tabla
     this.cargarDatos(false);
     this.cerrarFormularioEdicion();
   }
