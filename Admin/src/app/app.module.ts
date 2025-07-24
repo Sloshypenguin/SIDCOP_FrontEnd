@@ -37,18 +37,19 @@ import { initFirebaseBackend } from './authUtils';
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
-if (environment.defaultauth === 'firebase') {
-  initFirebaseBackend(environment.firebaseConfig);
-} else {
+// Desactivamos la inicialización de Firebase para evitar errores de API key
+// if (environment.defaultauth === 'firebase') {
+//   initFirebaseBackend(environment.firebaseConfig);
+// } else {
   fakebackendInterceptor;
-}
+// }
 
 @NgModule({ declarations: [
         AppComponent,
         AuthlayoutComponent
     ],
     bootstrap: [AppComponent], imports: [TranslateModule.forRoot({
-            defaultLanguage: 'en',
+            defaultLanguage: 'es',
             loader: {
                 provide: TranslateLoader,
                 useFactory: (createTranslateLoader),

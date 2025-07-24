@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -152,7 +153,7 @@ export class CreateComponent  {
         bode_Placa: this.bodega.bode_Placa.trim(),
         bode_TipoCamion: this.bodega.bode_TipoCamion.trim(),
         bode_Capacidad: this.bodega.bode_Capacidad,
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         bode_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 

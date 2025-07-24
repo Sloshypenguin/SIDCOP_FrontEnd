@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
 
 
@@ -132,7 +133,7 @@ export class EditComponent implements OnChanges {
         cate: '',
         usua_Creacion: this.subcategoria.usua_Creacion,
         subc_FechaCreacion: this.subcategoria.subc_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         subc_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: ''

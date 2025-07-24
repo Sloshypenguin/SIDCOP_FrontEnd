@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -178,7 +179,7 @@ export class EditComponent implements OnChanges {
         bode_Capacidad: this.bodega.bode_Capacidad,
         usua_Creacion: this.bodega.usua_Creacion,
         bode_FechaCreacion: this.bodega.bode_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         numero: this.bodega.secuencia || '',
         bode_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

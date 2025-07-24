@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Marcas  } from 'src/app/Modelos/general/Marcas.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -84,7 +85,7 @@ export class CreateComponent {
       const marcaGuardar = {
         marc_Id: 0,
         marc_Descripcion: this.marca.marc_Descripcion.trim(),
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         marc_FechaCreacion: new Date(),
         usua_Modificacion: 0,
         numero: "", 
