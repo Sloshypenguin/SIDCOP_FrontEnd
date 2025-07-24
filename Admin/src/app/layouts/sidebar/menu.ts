@@ -196,6 +196,13 @@ export const MENU: MenuItem[] = [
                 parentId: 5,
                 icon: 'ri-group-line'
             },
+              {
+                id: 38,
+                label: 'MENUITEMS.VENTAS.LIST.PEDIDOS',
+                link: '/ventas/pedidos',
+                parentId: 5,
+                icon: 'ri-group-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },
