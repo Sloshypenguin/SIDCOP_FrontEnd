@@ -5,7 +5,8 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
@@ -275,9 +276,9 @@ export class ListComponent {
       usua_EsVendedor: false,
       usua_EsAdmin: false,
       usua_Imagen: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       usua_FechaCreacion: new Date(),
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       usua_FechaModificacion: new Date(),
       usua_Estado: true,
       permisosJson:"",
@@ -339,9 +340,9 @@ export class ListComponent {
       usua_EsVendedor: false,
       usua_EsAdmin: false,
       usua_Imagen: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       usua_FechaCreacion: new Date(),
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       usua_FechaModificacion: new Date(),
       usua_Estado: true,
       permisosJson:"",

@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 interface Permiso {
   perm_Id: number;
@@ -68,9 +69,9 @@ export class DetailsComponent implements OnChanges {
       pant_Descripcion: '',
       acci_Id: 0,
       acci_Descripcion: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       perm_FechaCreacion: new Date().toISOString(),
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       perm_FechaModificacion: new Date().toISOString()
     };
 
