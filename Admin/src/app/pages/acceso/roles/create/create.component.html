@@ -55,9 +55,9 @@
           <div class="row justify-content-lg-end">
             <div class="col-sm-2">
               <button class="btn btn-sm btn-outline-dark" (click)="alternarDesplegables()">
-                <i [class.ri-folder-reduce-line]="estanExpandidoTodos" 
-                  [class.ri-folder-add-line]="!estanExpandidoTodos"></i>
-                {{ estanExpandidoTodos ? 'Contraer Todo' : 'Expandir Todo' }}
+                <i [class.ri-folder-reduce-line]="hayExpandido" 
+                  [class.ri-folder-add-line]="!hayExpandido"></i>
+                {{ hayExpandido ? 'Contraer Todo' : 'Expandir Todo' }}
               </button>
             </div>
           </div>

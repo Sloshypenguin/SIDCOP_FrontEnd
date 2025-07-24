@@ -244,10 +244,14 @@ export class CreateComponent {
     }, []);
   }
   
-  estanExpandidoTodos = true; // por defecto todo expandido
+  get hayExpandido(): boolean {
+    return this.treeData.some(esquema => esquema.expanded || (esquema.children ? esquema.children.some(pantalla => pantalla.expanded) : false));
+  }
+
+  // estanExpandidoTodos = true; // por defecto todo expandido
 
   alternarDesplegables(): void {
-    this.estanExpandidoTodos = !this.estanExpandidoTodos;
+    const expandir = !this.hayExpandido;
 
     const cambiarExpansion = (items: TreeItem[], expandir: boolean) => {
       for (const item of items) {
@@ -255,11 +259,10 @@ export class CreateComponent {
         if (item.children) {
           cambiarExpansion(item.children, expandir);
         }
-      }
-    };
+      } 
+    }
 
-    cambiarExpansion(this.treeData, this.estanExpandidoTodos);
-
+    cambiarExpansion(this.treeData, expandir);
   }
 
   guardar(): void {
