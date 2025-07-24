@@ -11,6 +11,18 @@
   <div class="login-overlay"></div>
   <div class="login-card">
     <h2 class="login-title">Inicio de sesión</h2>
+    
+    <!-- Alerts para mensajes de la API -->
+    <div *ngIf="showAlert && alertType === 'success'" class="alert alert-success" role="alert">
+      {{ alertMessage }}
+    </div>
+    <div *ngIf="showAlert && alertType === 'danger'" class="alert alert-danger" role="alert">
+      {{ alertMessage }}
+    </div>
+    <div *ngIf="showAlert && alertType === 'warning'" class="alert alert-warning" role="alert">
+      {{ alertMessage }}
+    </div>
+    
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <div class="login-input-group">
         <label for="username" class="login-label">Usuario</label>
@@ -30,9 +42,11 @@
           </button>
         </div>
       </div>
-      <button type="submit" class="btn btn-login">
-        <span class="btn-text">INGRESAR</span>
-        <i class="ri-login-box-line"></i>
+      <button type="submit" class="btn btn-login" [disabled]="isLoading">
+        <span class="btn-text" *ngIf="!isLoading">INGRESAR</span>
+        <span class="btn-text" *ngIf="isLoading">CARGANDO...</span>
+        <i class="ri-login-box-line" *ngIf="!isLoading"></i>
+        <i class="ri-loader-4-line animate-spin" *ngIf="isLoading"></i>
       </button>
       
       <div class="login-forgot">

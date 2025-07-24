@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 interface Marca {
   maVe_Id: number;
@@ -157,7 +158,7 @@ export class EditComponent implements OnInit, OnChanges {
         mode_Descripcion: this.modelo.mode_Descripcion.trim(),
         usua_Creacion: this.modelo.usua_Creacion,
         mode_FechaCreacion: this.modelo.mode_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(), // Obtener ID de usuario de manera segura
         mode_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: '',
