@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 
 interface TreeItem {
@@ -276,7 +277,7 @@ export class CreateComponent {
     const rolInsertar = {
       role_Id: 0,
       role_Descripcion: this.rol.role_Descripcion.trim(),
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       role_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       numero: '',
@@ -320,7 +321,7 @@ export class CreateComponent {
               return {
                 acPa_Id: acPa.AcPa_Id,
                 role_Id: ultimoRol.role_Id,
-                usua_Creacion: environment.usua_Id,
+                usua_Creacion: getUserId(),
                 perm_FechaCreacion: new Date().toISOString()
               };
             })
