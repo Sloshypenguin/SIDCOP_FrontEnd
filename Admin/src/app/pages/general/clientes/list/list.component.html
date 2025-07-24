@@ -7,7 +7,7 @@
 
 <div class="card">
   <div class="card-body">
-    <div class="row align-items-center g-2" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+    <div class="row align-items-center g-2" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm && !listadoClientesSinConfirmar">
       <div class="row align-items-center g-2">
         <div class="col-lg-3 me-auto">
           <button type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
@@ -27,6 +27,29 @@
                 style="position: absolute; right: 18px; top: 40%; transform: translateY(-90%); font-size: 0.7em;">
             {{ notificacionesSinConfirmar }}
           </span>
+        </div>
+        <div class="col-2 ms-auto position-relative">
+            <input
+                type="text"
+                class="form-control ps-5"
+                placeholder="Buscar..."
+                [(ngModel)]="busqueda"
+                (ngModelChange)="filtradorClientes()"
+            />
+            <i class="ri-search-line search-icon" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="row align-items-center g-2" *ngIf="listadoClientesSinConfirmar" [@fadeExpand]>
+      <div class="row align-items-center g-2">
+        <div class="col-9" style="display: flex; align-items: center;">
+          <i class="ri-shield-user-fill text-muted" style="font-size: 1.9em; margin-right: 10px;"></i>
+          <h4 class="text-muted" style="padding-top: 5px;">Clientes sin confirmar</h4>
+        </div>
+        <div class="col-1">
+          <i id="campanita" class="ri-arrow-down-s-line" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #141a2f; font-size: 2em;"
+          (click)="cerrarListado()"></i>
         </div>
         <div class="col-2 ms-auto position-relative">
             <input
@@ -116,7 +139,7 @@
             </div>
 
             <div class="card-body pt-5 mt-2 px-3 text-center">
-              <span class="badge fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem; background-color: #E7F3FF; color: #0B3E74;">
+              <span class="badge fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem; background-color: #ffe7e7; color: #740b0b;">
                 <i class="ri-user-3-fill" style="font-size: 0.6rem;"></i>
                 {{ cliente.clie_Codigo }}
               </span>
@@ -144,7 +167,22 @@
         </div>
       </ng-container>
     </div>
+    <div class="row align-items-center mb-3 mx-2" id="pagination-element">
+        <div class="col-sm">
+            <div class="text-sm-start">
+                Mostrando del <span>{{startIndex}}</span> - <span>{{endIndex}}</span> de <span>{{clienteGrid?.length}}</span> registros
+            </div>
+        </div>
+        <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
+            <pagination 
+                [totalItems]="clienteGrid?.length" 
+                [itemsPerPage]="itemsPerPage" 
+                (pageChanged)="pageChanged($event)">
+            </pagination>
+        </div>
+    </div>
   </div>
+
   <!-- Mostrar listado solo si no se está creando, editando o viendo detalles -->
   <div *ngIf="!showCreateForm && !showEditForm && !showDetailsForm && !listadoClientesSinConfirmar">
     <div class="row row-cols-xxl-5 g-4 mx-2 mb-4">

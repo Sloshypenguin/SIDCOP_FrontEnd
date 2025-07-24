@@ -136,9 +136,6 @@ export class ListComponent {
   clienteGrid: any = [];
   clientes: any = [];
 
-  clienteSinConfirmarGrid: any = [];
-  clientesSinConfirmar: any = [];
-
   term: any;
   // bread crumb items
   breadCrumbItems!: Array<{}>;
@@ -179,7 +176,7 @@ export class ListComponent {
       img: ['']
     });
     this.cargarDatos(true);
-    this.cargarDatosSinConfirmar(false);
+    this.contador();
     document.getElementById('elmLoader')?.classList.add('d-none');
   }
 
@@ -320,6 +317,8 @@ export class ListComponent {
   }
 
   private cargarDatos(state: boolean): void {
+    this.clienteGrid = [];
+    this.clientes = [];
     this.mostrarOverlayCarga = state;
     this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
@@ -335,19 +334,36 @@ export class ListComponent {
 
   abrirListado(){
     this.listadoClientesSinConfirmar = true;
+    this.cargarDatosSinConfirmar(false);
+  }
+
+  cerrarListado(){
+    this.listadoClientesSinConfirmar = false;
+    this.cargarDatos(false);
   }
 
   notificacionesSinConfirmar: number = 0;
+  private contador(): void {
+    this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/ListarSinConfirmacion`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.notificacionesSinConfirmar = data.length;
+    });
+  }
+
+
   private cargarDatosSinConfirmar(state: boolean): void {
+    this.clienteGrid = [];
+    this.clientes = [];
     this.mostrarOverlayCarga = state;
     this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/ListarSinConfirmacion`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       setTimeout(() => {
         this.mostrarOverlayCarga = false;
-        this.clienteSinConfirmarGrid = data || [];
-        this.clientesSinConfirmar = this.clienteSinConfirmarGrid.slice(0, 10);
-        this.notificacionesSinConfirmar = this.clienteSinConfirmarGrid.length;
+        this.clienteGrid = data || [];
+        this.clientes = this.clienteGrid.slice(0, 10);
+        this.filtradorClientes();
       },500);
     });
   }
