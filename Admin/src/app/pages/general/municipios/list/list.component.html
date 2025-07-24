@@ -62,8 +62,34 @@
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles')">Acciones</th>
-                <th class="gridjs-th">Codigo</th>
-                <th class="gridjs-th">Descripción</th>
+                <th class="gridjs-th" (click)="table.sortBy('muni_Codigo')" style="cursor:pointer;">
+                  <span class="table-header-flex">
+                    Codigo
+                    <!-- iconos para ordenar -->
+                    <span style="display: flex; flex-direction: column;">
+                     <i class="ri-arrow-up-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'muni_Codigo' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    <i class="ri-arrow-down-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'muni_Codigo' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    </span>
+                  </span>
+                </th>
+                <th class="gridjs-th" (click)="table.sortBy('muni_Descripcion')" style="cursor:pointer;">
+                  <span class="table-header-flex">
+                    Descripción
+                    <!-- iconos para ordenar -->
+                    <span style="display: flex; flex-direction: column;">
+                     <i class="ri-arrow-up-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'muni_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    <i class="ri-arrow-down-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'muni_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    </span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>

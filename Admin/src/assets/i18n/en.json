@@ -6,7 +6,8 @@
     "ACCESO": {
       "TEXT": "Acceso",
       "LIST": {
-        "USUARIOS": "Usuarios"
+        "USUARIOS": "Usuarios",
+        "ROLES": "Roles"
       }
     },
     "GENERAL": {
@@ -49,7 +50,8 @@
     "LOGISTICA": {
       "TEXT": "Logistica",
       "LIST": {
-        "BODEGAS": "Bodegas"
+        "BODEGAS": "Bodegas",
+        "TRASLADOS": "Traslados"
       }
     },
     "DASHBOARD": {

@@ -10,6 +10,7 @@ import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
 import { EditComponent } from '../edit/edit.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 
 @Component({
@@ -59,38 +60,30 @@ export class ListComponent implements OnInit {
   }
 
   crear(): void {
-    this.showCreateForm = !this.showCreateForm;
+
     this.showEditForm = false;
-    this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
   editar(impuesto: Impuestos ): void {
     this.impuestoEditando = { ...impuesto };
     this.showEditForm = true;
-    this.showCreateForm = false;
-    this.showDetailsForm = false;
+
     this.activeActionRow = null;
   }
 
 
   activeActionRow: number | null = null;
   showEdit = true;
-  showDetails = true;
-  showDelete = true;
-  showCreateForm = false;
   showEditForm = false;
   showDetailsForm = false;
   impuestoEditando: Impuestos | null = null;
-
-
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
-
   mostrarConfirmacionEliminar = false;
   impuestoAEliminar: Impuestos | null = null;
 
@@ -98,17 +91,14 @@ export class ListComponent implements OnInit {
     public table: ReactiveTableService<Impuestos>,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {
     this.cargardatos();
   }
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
-
-  cerrarFormulario(): void {
-    this.showCreateForm = false;
   }
 
   cerrarFormularioEdicion(): void {
@@ -118,11 +108,7 @@ export class ListComponent implements OnInit {
 
 
 
-  guardarImpuesto(impuesto: Impuestos): void {
-    console.log('Impuesto guardado exitosamente desde create component:', impuesto);
-    this.cargardatos();
-    this.cerrarFormulario();
-  }
+ 
 
   actualizarImpuesto(impuesto: Impuestos): void {
     console.log('Impuesto actualizado exitosamente desde edit component:', impuesto);

@@ -151,14 +151,9 @@ export class CreateComponent {
       }).subscribe({
         next: (response) => {
           if (response.data.code_Status === 1) {
-            this.mensajeExito = `Usuario "${this.usuario.usua_Usuario}" guardado exitosamente`;
-            this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.onSave.emit(this.usuario);
-              this.cancelar();
-            }, 3000);
+            this.onSave.emit(this.usuario);
+            this.cancelar();
           } else {
             this.mostrarAlertaError = true;
             this.mensajeError = 'Error al guardar el usuario, ' + response.data.message_Status;
@@ -202,7 +197,7 @@ export class CreateComponent {
       formData.append('upload_preset', 'subidas_usuarios');
       //Subidas usuarios Carpeta identificadora en Cloudinary
       //dwiprwtmo es el nombre de la cuenta de Cloudinary
-      const url = 'https://api.cloudinary.com/v1_1/dwiprwtmo/upload';
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
 
       
       fetch(url, {
