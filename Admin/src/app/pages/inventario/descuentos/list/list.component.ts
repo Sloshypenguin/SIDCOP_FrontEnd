@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
@@ -52,8 +51,8 @@ export class ListComponent implements OnInit {
 
    ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: 'Ventas' },
-      { label: 'Vendedores', active: true }
+      { label: 'Inventario' },
+      { label: 'Descuentos', active: true }
     ];
 
      this.cargarAccionesUsuario();
@@ -68,22 +67,22 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(vendedor: Vendedor): void {
-    console.log('Abriendo formulario de edición para:', vendedor);
+  editar(descuento: Descuento): void {
+    console.log('Abriendo formulario de edición para:', descuento);
     console.log('Datos específicos:', {
-      id: vendedor.vend_Id,
-      completo: vendedor
+      id: descuento.desc_Id,
+      completo: descuento
     });
-    this.vendedorEditando = { ...vendedor }; // Hacer copia profunda
+    this.descuentoEditando = { ...descuento }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(vendedor: Vendedor): void {
-    console.log('Abriendo detalles para:', vendedor);
-    this.vendedorDetalle = { ...vendedor }; // Hacer copia profunda
+  detalles(descuento: Descuento): void {
+    console.log('Abriendo detalles para:', descuento);
+    this.descuentoDetalle = { ...descuento }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -96,8 +95,8 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  vendedorEditando: Vendedor | null = null;
-  vendedorDetalle: Vendedor | null = null;
+  descuentoEditando: Descuento | null = null;
+  descuentoDetalle: Descuento | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -109,9 +108,9 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  vendedorEliminar: Vendedor | null = null;
+  descuentoEliminar: Descuento | null = null;
 
-  constructor(public table: ReactiveTableService<Vendedor>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
+  constructor(public table: ReactiveTableService<Descuento>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
     this.cargardatos();
 
   }
@@ -137,46 +136,46 @@ export class ListComponent implements OnInit {
 
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.vendedorEditando = null;
+    this.descuentoEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.vendedorDetalle = null;
+    this.descuentoDetalle = null;
   }
 
   guardarVendedor(descuento: Descuento): void {
-    console.log('Vendedor guardado exitosamente desde create component:', descuento);
+    console.log('Descuento guardado exitosamente desde create component:', descuento);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarVendedor(vendedor: Vendedor): void {
-    console.log('Vendedor actualizado exitosamente desde edit component:', vendedor);
+  actualizarDescuento(descuento: Descuento): void {
+    console.log('Descuento actualizado exitosamente desde edit component:', descuento);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(vendedor: Vendedor): void {
-    console.log('Solicitando confirmación para eliminar:', vendedor);
-    this.vendedorEliminar = vendedor;
+  confirmarEliminar(descuento: Descuento): void {
+    console.log('Solicitando confirmación para eliminar:', descuento);
+    this.descuentoEliminar = descuento;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.vendedorEliminar = null;
+    this.descuentoEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.vendedorEliminar) return;
+    if (!this.descuentoEliminar) return;
     
-    console.log('Eliminando Vendedor:', this.vendedorEliminar);
+    console.log('Eliminando Descuento:', this.descuentoEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Vendedores/Eliminar/${this.vendedorEliminar.vend_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Vendedores/Eliminar/${this.descuentoEliminar.desc_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -189,8 +188,8 @@ export class ListComponent implements OnInit {
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Vendedor eliminada exitosamente');
-            this.mensajeExito = `Vendedor "${this.vendedorEliminar!.vend_Nombres}" eliminada exitosamente`;
+            console.log('Descuento eliminada exitosamente');
+            this.mensajeExito = `Descuento "${this.descuentoEliminar!.desc_Descripcion}" eliminada exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -204,9 +203,9 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('el Vendedor está siendo utilizada');
+            console.log('el Descuento está siendo utilizada');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la Vendedor está siendo utilizada.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la Descuento está siendo utilizada.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -219,7 +218,7 @@ export class ListComponent implements OnInit {
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el Vendedor.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el Descuento.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -233,7 +232,7 @@ export class ListComponent implements OnInit {
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar la Vendedor.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar la Descuento.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -271,7 +270,7 @@ export class ListComponent implements OnInit {
           modulo = permisos.find((m: any) => m.Pant_Id === 28);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
-          modulo = permisos['Vendedors'] || permisos['Vendedors'] || null;
+          modulo = permisos[' '] || permisos['Descuento'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // Extraer solo el nombre de la acción
@@ -286,7 +285,7 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
-    this.http.get<Vendedor[]>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
+    this.http.get<Descuento[]>(`${environment.apiBaseUrl}/Descuentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);

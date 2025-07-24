@@ -10,7 +10,7 @@ import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() vendedorData: Vendedor | null = null;
+  @Input() descuentoData: Vendedor | null = null;
   @Output() onClose = new EventEmitter<void>();
 
   vendedorDetalle: Vendedor | null = null;
@@ -20,8 +20,8 @@ export class DetailsComponent implements OnChanges {
   mensajeError = '';
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['vendedorData'] && changes['vendedorData'].currentValue) {
-      this.cargarDetallesSimulado(changes['vendedorData'].currentValue);
+    if (changes['descuentoData'] && changes['descuentoData'].currentValue) {
+      this.cargarDetallesSimulado(changes['descuentoData'].currentValue);
     }
   }
 

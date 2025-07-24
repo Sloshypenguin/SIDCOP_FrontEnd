@@ -161,17 +161,17 @@
               <label  class="form-label">Aplicar a:</label>
               <div class="mb-3">
                 <div class="row">
-                <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('productos')">Productos</button>
+                <div class="application-tabs col-md-3">
+                  <button class="tab-button tab-button--productos w-100" [class.active]="tabActiva === 'productos'" data-tab="productos" (click)="mostrarSeccion('productos')">Productos</button>
                 </div>
                 <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('categorias')">Categoría</button>
+                  <button class="tab-button tab-button--categorias w-100" [class.active]="tabActiva === 'categorias'" data-tab="categorias" (click)="mostrarSeccion('categorias')">Categoría</button>
                 </div>
                 <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('subcategorias')">Subcategoría</button>
+                  <button class="tab-button tab-button--subcategorias w-100" [class.active]="tabActiva === 'subcategorias'" data-tab="subcategorias" (click)="mostrarSeccion('subcategorias')">Subcategoría</button>
                 </div>
                 <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('marcas')">Marca</button>
+                  <button class="tab-button tab-button--marcas w-100" [class.active]="tabActiva === 'marcas'" data-tab="marcas" (click)="mostrarSeccion('marcas')">Marcas</button>
                 </div>
               </div>
             </div>

@@ -16,6 +16,7 @@ import { ViewChild } from '@angular/core';
 import { CdkStepper } from '@angular/cdk/stepper';
 
 
+
 @Component({
   selector: 'app-create',
   standalone: true,
@@ -24,10 +25,14 @@ import { CdkStepper } from '@angular/cdk/stepper';
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
 })
-export class CreateComponent  {
+export class CreateComponent   {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Descuento>();
     @ViewChild('cdkStepper') cdkStepper!: CdkStepper;
+
+    tabActiva: string = 'productos';
+
+
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -74,6 +79,7 @@ mostrarSeccion(seccion: string) {
   this.filtro = '';
   this.seleccionados = []; // Limpiar al cambiar sección
   this.descuentoDetalle.idReferencias = []; // También limpiar la propiedad relacionada
+  this.tabActiva = seccion;
 
   switch (seccion) {
     case 'productos':
@@ -637,4 +643,7 @@ irAlSiguientePaso() {
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
   }
 }
+
+
+
 }

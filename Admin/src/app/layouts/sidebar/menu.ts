@@ -224,7 +224,7 @@ export const MENU: MenuItem[] = [
                 icon: 'ri-truck-line'
             },
              {
-                id: 28,
+                id: 22,
                 label: 'MENUITEMS.INVENTARIO.LIST.DESCUENTOS',
                 link: '/inventario/descuentos',
                 parentId: 3,

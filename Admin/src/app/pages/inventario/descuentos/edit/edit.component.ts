@@ -16,7 +16,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
-  @Input() vendedorData: Vendedor | null = null;
+  @Input()descuentoData: Vendedor | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Vendedor>();
 
@@ -170,8 +170,8 @@ tieneAyudante: boolean = false;
  
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['vendedorData'] && changes['vendedorData'].currentValue) {
-      this.vendedor = { ...changes['vendedorData'].currentValue };
+    if (changes['descuentoData'] && changes['descuentoData'].currentValue) {
+      this.vendedor = { ...changes['descuentoData'].currentValue };
       this.vendedorOriginal = this.vendedor.vend_Codigo || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
@@ -218,20 +218,20 @@ tieneAyudante: boolean = false;
 
   // Detectar cambios en los campos principales
   const cambios =
-    this.vendedor.vend_Codigo.trim() !== (this.vendedorData?.vend_Codigo?.trim() ?? '') ||
-  this.vendedor.vend_DNI.trim() !== (this.vendedorData?.vend_DNI?.trim() ?? '') ||
-  this.vendedor.vend_Nombres.trim() !== (this.vendedorData?.vend_Nombres?.trim() ?? '') ||
-  this.vendedor.vend_Apellidos.trim() !== (this.vendedorData?.vend_Apellidos?.trim() ?? '') ||
-  this.vendedor.vend_Telefono.trim() !== (this.vendedorData?.vend_Telefono?.trim() ?? '') ||
-  this.vendedor.vend_Correo.trim() !== (this.vendedorData?.vend_Correo?.trim() ?? '') ||
-  this.vendedor.vend_Sexo !== (this.vendedorData?.vend_Sexo ?? '') ||
-  this.vendedor.vend_DireccionExacta.trim() !== (this.vendedorData?.vend_DireccionExacta?.trim() ?? '') ||
-  this.vendedor.sucu_Id !== (this.vendedorData?.sucu_Id ?? 0) ||
-  this.vendedor.colo_Id !== (this.vendedorData?.colo_Id ?? 0) ||
-  this.vendedor.vend_Tipo.trim() !== (this.vendedorData?.vend_Tipo?.trim() ?? '') ||
-  this.vendedor.vend_Supervisor !== (this.vendedorData?.vend_Supervisor ?? 0) ||
-  (this.tieneAyudante && this.vendedor.vend_Ayudante !== (this.vendedorData?.vend_Ayudante ?? 0)) ||
-  this.vendedor.vend_EsExterno !== (this.vendedorData?.vend_EsExterno ?? false);
+    this.vendedor.vend_Codigo.trim() !== (this.descuentoData?.vend_Codigo?.trim() ?? '') ||
+  this.vendedor.vend_DNI.trim() !== (this.descuentoData?.vend_DNI?.trim() ?? '') ||
+  this.vendedor.vend_Nombres.trim() !== (this.descuentoData?.vend_Nombres?.trim() ?? '') ||
+  this.vendedor.vend_Apellidos.trim() !== (this.descuentoData?.vend_Apellidos?.trim() ?? '') ||
+  this.vendedor.vend_Telefono.trim() !== (this.descuentoData?.vend_Telefono?.trim() ?? '') ||
+  this.vendedor.vend_Correo.trim() !== (this.descuentoData?.vend_Correo?.trim() ?? '') ||
+  this.vendedor.vend_Sexo !== (this.descuentoData?.vend_Sexo ?? '') ||
+  this.vendedor.vend_DireccionExacta.trim() !== (this.descuentoData?.vend_DireccionExacta?.trim() ?? '') ||
+  this.vendedor.sucu_Id !== (this.descuentoData?.sucu_Id ?? 0) ||
+  this.vendedor.colo_Id !== (this.descuentoData?.colo_Id ?? 0) ||
+  this.vendedor.vend_Tipo.trim() !== (this.descuentoData?.vend_Tipo?.trim() ?? '') ||
+  this.vendedor.vend_Supervisor !== (this.descuentoData?.vend_Supervisor ?? 0) ||
+  (this.tieneAyudante && this.vendedor.vend_Ayudante !== (this.descuentoData?.vend_Ayudante ?? 0)) ||
+  this.vendedor.vend_EsExterno !== (this.descuentoData?.vend_EsExterno ?? false);
 
   if (cambios) {
     this.mostrarConfirmacionEditar = true;

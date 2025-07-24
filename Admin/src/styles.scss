@@ -1159,3 +1159,11 @@ td.position-relative, .gridjs-td {
     opacity: 0;
   }
 }
+
+
+.step:after,
+.step[_ngcontent-ng-c124550483]:after {
+  display: none !important;
+  background: none !important;
+}
+

@@ -16,6 +16,7 @@ export class Descuento{
   usuarioModificacion: string = '';
   code_Status: number = 0;
   message_Status: string ='';
+  secuencia?: string ='';
 
   constructor(init?: Partial<Descuento>) {
     Object.assign(this, init);
