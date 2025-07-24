@@ -77,6 +77,29 @@ export class ListComponent {
   busqueda: string = '';
   usuariosFiltrados: any[] = [];
 
+  confirmaciondePassword: string = '';
+  usuario: Usuario = {
+    secuencia: 0,
+    usua_Id: 0,
+    usua_Usuario: '',
+    usua_Clave: '',
+    role_Id: 0,
+    usua_IdPersona: 0,
+    usua_EsVendedor: false,
+    usua_EsAdmin: false,
+    usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
+    usua_Creacion: 0,
+    usua_FechaCreacion: new Date(),
+    usua_Modificacion: 0,
+    usua_FechaModificacion: new Date(),
+    usua_Estado: true,
+    permisosJson: '',
+    role_Descripcion: '',
+    nombreCompleto: '',
+    code_Status: 0,
+    message_Status: '',
+  };
+
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
@@ -136,6 +159,7 @@ export class ListComponent {
   usuarioDetalles: Usuario | null = null;
 
   //Propiedades para las alertas
+  mostrarErrores = false;
   mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -146,6 +170,9 @@ export class ListComponent {
 
   mostrarConfirmacionEliminar = false;
   usuarioEliminar: Usuario | null = null;
+
+  mostrarConfirmacionRestablecer = false;
+  usuarioRestablecer: Usuario | null = null;
 
 
   constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private route: ActivatedRoute){
@@ -171,25 +198,45 @@ export class ListComponent {
   }
 
   guardarUsuario(usuario: Usuario): void {
-    this.showCreateForm = false;
-    this.mensajeExito = `Usuario guardado exitosamente`;
-    this.mostrarAlertaExito = true;
+    this.mostrarOverlayCarga = true;
     setTimeout(() => {
-      this.mostrarAlertaExito = false;
-      this.mensajeExito = '';
       this.cargarDatos(false);
-    }, 3000);
+      this.showCreateForm = false;
+      this.mensajeExito = `Usuario guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    },1000);
   }
 
   actualizarUsuario(usuario: Usuario): void {
-    this.showEditForm = false;
-    this.mensajeExito = `Usuario actualizado exitosamente`;
-    this.mostrarAlertaExito = true;
+    this.mostrarOverlayCarga = true;
     setTimeout(() => {
-      this.mostrarAlertaExito = false;
-      this.mensajeExito = '';
       this.cargarDatos(false);
-    }, 3000);
+      this.showEditForm = false;
+      this.mensajeExito = `Usuario actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    },1000);
+  }
+
+  restablecer(usuario: Usuario): void{
+    this.usuarioRestablecer = usuario;
+    this.mostrarConfirmacionRestablecer = true;
+    this.activeActionRow = null;
+  }
+  
+  cancelarRestablecer(): void {
+    this.mostrarConfirmacionRestablecer = false;
+    this.usuarioRestablecer = null;
+    this.confirmaciondePassword = '';
+    this.usuario.usua_Clave = '';
+    this.mostrarErrores = false;
   }
 
   confirmarEliminar(usuario: Usuario): void {
@@ -201,6 +248,83 @@ export class ListComponent {
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
     this.usuarioEliminar = null;
+  }
+
+  restablecerClave(): void {
+    if(!this.usuarioRestablecer) return
+    this.mostrarErrores = true;
+    if (!this.usuario.usua_Clave.trim() || !this.confirmaciondePassword.trim()) {
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Debe ingresar y confirmar la nueva contraseña.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+      return;
+    }
+    if (this.usuario.usua_Clave !== this.confirmaciondePassword) {
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Las contraseñas no coinciden.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+      return;
+    }
+    const usuarioRestablecer: Usuario = {
+      secuencia: 0,
+      usua_Id: this.usuarioRestablecer.usua_Id,
+      usua_Usuario: '',
+      usua_Clave: this.confirmaciondePassword.trim(),
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: environment.usua_Id,
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: environment.usua_Id,
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson:"",
+      role_Descripcion: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: '',
+    };
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Usuarios/RestablecerClave`, usuarioRestablecer, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              this.mensajeExito = `Clave del usuario restablecida exitosamente`;
+              this.mostrarAlertaExito = true;
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+              this.cargarDatos(false);
+            } else if (response.data.code_Status === -1) {
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status;
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            }
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.message || 'Error inesperado al restablecer la clave del usuario.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
+          this.cancelarRestablecer();
+        }, 1000);
+      }
+    });
   }
 
   eliminar(): void {
