@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
 
 @Component({
@@ -40,7 +41,7 @@ export class CreateComponent implements OnInit {
     sucu_Telefono1: '',
     sucu_Telefono2: '',
     sucu_Correo: '',
-    usua_Creacion: environment.usua_Id,
+    usua_Creacion: getUserId(),
     sucu_FechaCreacion: new Date(),
     sucu_Estado: true
   };
@@ -114,7 +115,7 @@ export class CreateComponent implements OnInit {
       sucu_Telefono1: '',
       sucu_Telefono2: '',
       sucu_Correo: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       sucu_FechaCreacion: new Date(),
       sucu_Estado: true
     };
@@ -149,7 +150,7 @@ export class CreateComponent implements OnInit {
 
       const sucursalGuardar = {
         ...this.sucursal,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         sucu_FechaCreacion: new Date().toISOString()
       };
 

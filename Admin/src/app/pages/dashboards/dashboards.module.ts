@@ -1,5 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Routing
@@ -11,6 +11,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 // Components
 import { IndexComponent } from './index/index.component';
 import { LocalstorageDebugComponent } from './index/localstorage-debug.component';
+import { PermisosDebugComponent } from './permisos-debug/permisos-debug.component';
+import { PermisosEjemploComponent } from './permisos-ejemplo/permisos-ejemplo.component';
 
 // UI y librerías
 import { SimplebarAngularModule } from 'simplebar-angular';
@@ -24,7 +26,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
-
+  declarations: [
+    IndexComponent
+  ],
   imports: [
     CommonModule,
     DashboardsRoutingModule,
@@ -39,7 +43,14 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     PaginationModule.forRoot(),
     ProgressbarModule.forRoot(),
     ModalModule.forRoot(),
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    // Importar componentes standalone
+    LocalstorageDebugComponent,
+    PermisosDebugComponent,
+    PermisosEjemploComponent
+  ],
+  providers: [
+    DatePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
