@@ -24,11 +24,6 @@ export class PermisoGuard {
       return true;
     }
     
-    // Permitir siempre acceso a rutas de depuración
-    if (state.url.includes('/dashboards/permisos-debug') || 
-        state.url.includes('/dashboards/permisos-ejemplo')) {
-      return true;
-    }
     
     // Obtener el ID de pantalla requerido de los datos de la ruta
     // Primero intentamos obtenerlo de la ruta actual
