@@ -25,6 +25,7 @@ export class CreateComponent {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
+  mostrarMapa = false;
 
   activeTab = 1;
 
@@ -117,6 +118,10 @@ export class CreateComponent {
     usuaM_Nombre: ''
   };
 
+  crear(): void {
+    this.mostrarMapa = true;
+  }
+  
   cancelar(): void {
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
