@@ -13,6 +13,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditConfigFacturaComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+ import { trigger,  state,  style,  transition,  animate} from '@angular/animations';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -28,7 +29,40 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+ 
+animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
@@ -114,63 +148,67 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
       'X-Api-Key': environment.apiKey,
       'accept': '*/*'
     }
-  }).subscribe({
-    next: (response: any) => {
-      console.log('Respuesta del servidor:', response);
-
-      const resultado = response.data;
-
-      if (resultado.code_Status === 1) {
-        // Éxito: eliminado correctamente
-        console.log('Configuración eliminada exitosamente');
-        this.mensajeExito = `Configuración "${this.configuracionAEliminar!.coFa_NombreEmpresa}" eliminada exitosamente`;
-        this.mostrarAlertaExito = true;
-
+   }).subscribe({
+      next: (response: any) => {
         setTimeout(() => {
-          this.mostrarAlertaExito = false;
-          this.mensajeExito = '';
-        }, 3000);
+          this.mostrarOverlayCarga = false;
+          console.log('Respuesta del servidor:', response);
+          const resultado = response.data;
 
-        this.cargardatos();
-        this.cancelarEliminar();
-      } else if (resultado.code_Status === -1) {
-        // Está siendo utilizada
-        console.log('La configuración de factura está siendo utilizada');
-        this.mostrarAlertaError = true;
-        this.mensajeError = resultado.message_Status || 'No se puede eliminar: la configuración de factura está siendo utilizada.';
+          if (resultado.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Configuración eliminada exitosamente');
+            this.mensajeExito = `Configuración "${this.configuracionAEliminar!.coFa_NombreEmpresa}" eliminada exitosamente`;
+            this.mostrarAlertaExito = true;
 
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
+            setTimeout(() => {
+            
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
 
-        this.cancelarEliminar();
-      } else if (resultado.code_Status === 0) {
-        // Error general
-        console.log('Error general al eliminar');
-        this.mostrarAlertaError = true;
-        this.mensajeError = resultado.message_Status || 'Error al eliminar la configuración de factura.';
+            this.cargardatos(true);
+            this.cancelarEliminar();
+          } else if (resultado.code_Status === -1) {
+            // Está siendo utilizada
+            console.log('La configuración de factura está siendo utilizada');
+            this.mostrarAlertaError = true;
+            this.mensajeError = resultado.message_Status || 'No se puede eliminar: la configuración de factura está siendo utilizada.';
 
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
 
-        this.cancelarEliminar();
-      } else {
-        // Código de estado inesperado
-        console.log('Código de estado inesperado:', resultado.code_Status);
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Código de estado inesperado en la respuesta del servidor.';
+            this.cancelarEliminar();
+          } else if (resultado.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
+            this.mostrarAlertaError = true;
+            this.mensajeError = resultado.message_Status || 'Error al eliminar la configuración de factura.';
 
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
 
-        this.cancelarEliminar();
-      }
-    },
+            this.cancelarEliminar();
+          } else {
+            // Código de estado inesperado
+            console.log('Código de estado inesperado:', resultado.code_Status);
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Código de estado inesperado en la respuesta del servidor.';
+
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+
+            this.cancelarEliminar();
+          }
+        }, 500);
+      },
+     
     error: (error) => {
       console.error('Error al eliminar:', error);
       this.mostrarAlertaError = true;
@@ -193,21 +231,23 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
   }
   guardarConfiguracioFactura(ConfiguracioFactura: ConfiguracionFactura): void {
     console.log('ConfiguracioFactura guardado exitosamente desde create component:', ConfiguracioFactura);
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormulario();
   }
 
   actualizarConfiguracioFactura(ConfiguracioFactura: ConfiguracionFactura): void {
     console.log('ConfiguracioFactura actualizado exitosamente desde edit component:', ConfiguracioFactura);
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
   }
 
   cerrarFormulario(): void {
+     
     this.showCreateForm = false;
   }
 
   cerrarFormularioEdicion(): void {
+
     this.showEditForm = false;
     this.ConfiguracioFacturaEditando = null;
   }
@@ -230,13 +270,19 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  private cargardatos(): void {
-    this.http.get<ConfiguracionFactura[]>(`${environment.apiBaseUrl}/ConfiguracionFactura/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
-    });
-  }
+
+
+  private cargardatos(state: boolean): void {
+      this.mostrarOverlayCarga = state;
+      this.http.get<ConfiguracionFactura[]>(`${environment.apiBaseUrl}/ConfiguracionFactura/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe(data => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          this.table.setData(data);
+        },500);
+      });
+    }
 
   constructor(
     public table: ReactiveTableService<ConfiguracionFactura>,
@@ -245,7 +291,7 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   ) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
 
   activeActionRow: number | null = null;
@@ -267,7 +313,7 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-
+  mostrarOverlayCarga = false;
 
   // Método para cargar las acciones disponibles del usuario
   private cargarAccionesUsuario(): void {

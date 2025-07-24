@@ -274,7 +274,8 @@ export class ListComponent implements OnInit {
 
               // Cerrar el modal de confirmación
               this.cancelarEliminar();
-            } else if (response.data.code_Status === 0) {
+            } else if (response.data.code_Status === 0) 
+            {
               // Error general
               console.log('Error general al eliminar');
               this.mostrarAlertaError = true;
