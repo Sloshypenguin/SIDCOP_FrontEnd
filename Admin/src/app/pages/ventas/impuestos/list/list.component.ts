@@ -12,7 +12,7 @@ import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
 import { EditComponent } from '../edit/edit.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
-
+ import { trigger,  state,  style,  transition,  animate} from '@angular/animations';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -26,8 +26,43 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     EditComponent,
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+
+animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
+
+
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
   accionesDisponibles: string[] = [];
@@ -86,6 +121,7 @@ export class ListComponent implements OnInit {
   mensajeWarning = '';
   mostrarConfirmacionEliminar = false;
   impuestoAEliminar: Impuestos | null = null;
+  mostrarOverlayCarga = false;
 
   constructor(
     public table: ReactiveTableService<Impuestos>,
@@ -94,7 +130,7 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   ) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -107,12 +143,9 @@ export class ListComponent implements OnInit {
   }
 
 
-
- 
-
   actualizarImpuesto(impuesto: Impuestos): void {
     console.log('Impuesto actualizado exitosamente desde edit component:', impuesto);
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
   }
 
@@ -151,11 +184,15 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+      this.mostrarOverlayCarga = state;
     this.http.get<Impuestos[]>(`${environment.apiBaseUrl}/Impuestos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
-    });
+     }).subscribe(data => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          this.table.setData(data);
+        },500);
+      });
   }
 }

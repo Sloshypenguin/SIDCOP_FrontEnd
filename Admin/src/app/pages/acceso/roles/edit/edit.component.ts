@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 interface Permiso {
   perm_Id: number;
@@ -230,9 +231,9 @@ export class EditComponent implements OnChanges {
       pant_Descripcion: '',
       acci_Id: 0,
       acci_Descripcion: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       perm_FechaCreacion: new Date().toISOString(),
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       perm_FechaModificacion: new Date().toISOString()
     };
 
@@ -243,7 +244,7 @@ export class EditComponent implements OnChanges {
         this.permisosActuales = permisos;
         this.permisosDelRol = permisos.map(p => `${p.pant_Id}_${p.acci_Id}`);
         this.cargarPantallas();
-        this.hayCambiosPermisos = false; // Reset changes flag when loading permissions
+        this.hayCambiosPermisos = false; 
       },
       error: (err) => {
         console.error('Error al cargar permisos del rol:', err);
@@ -255,7 +256,8 @@ export class EditComponent implements OnChanges {
   toggleSelection(item: TreeItem): void {
     item.selected = !item.selected;
 
-    if (item.type === 'pantalla' || item.type === 'esquema') {
+    // Si selecciona un esquema o pantalla, propagar la selección a hijos
+    if (item.type === 'esquema' || item.type === 'pantalla') {
       this.updateChildrenSelection(item, item.selected);
     }
 
@@ -264,17 +266,44 @@ export class EditComponent implements OnChanges {
       const esquema = pantalla?.parent;
 
       if (item.selected) {
-        if (pantalla) pantalla.selected = true;
-        if (esquema) esquema.selected = true;
+        if (pantalla) {
+          pantalla.selected = true;
+          pantalla.expanded = true;
+        }
+        if (esquema) {
+          esquema.selected = true;
+          esquema.expanded = true;
+        }
       } else {
-        if (pantalla && !pantalla.children?.some(child => child.selected)) {
+        // Si ya no hay acciones seleccionadas en la pantalla, desmarcarla
+        if (pantalla && !pantalla.children?.some(acc => acc.selected)) {
           pantalla.selected = false;
-          if (esquema && !esquema.children?.some(p => p.selected)) {
+          // Si tampoco hay pantallas seleccionadas en el esquema, desmarcarlo
+          if (esquema && !esquema.children?.some(pant => pant.selected)) {
             esquema.selected = false;
           }
         }
       }
     }
+
+    // Validar hacia arriba en caso de que se desmarque una pantalla
+    if (item.type === 'pantalla') {
+      const esquema = item.parent;
+
+      if (item.selected) {
+        if (esquema) {
+          esquema.selected = true;
+          esquema.expanded = true;
+        }
+      } else {
+        // Si ninguna pantalla está seleccionada dentro del esquema, lo desmarcamos
+        if (esquema && !esquema.children?.some(p => p.selected)) {
+          esquema.selected = false;
+        }
+      }
+    }
+
+    // Validar hacia arriba si desmarcas un esquema no hace falta, ya se cubre
 
     this.updateSelectedItems();
   }
@@ -283,6 +312,7 @@ export class EditComponent implements OnChanges {
     if (parent.children) {
       for (const child of parent.children) {
         child.selected = selected;
+        child.expanded = selected; // expandir al seleccionar
         if (child.children) {
           this.updateChildrenSelection(child, selected);
         }
@@ -302,10 +332,14 @@ export class EditComponent implements OnChanges {
     }, []);
   }
 
-  estanExpandidoTodos = true;
+  get hayExpandido(): boolean {
+    return this.treeData.some(esquema => esquema.expanded || (esquema.children ? esquema.children.some(pantalla => pantalla.expanded) : false));
+  }
+
+  // estanExpandidoTodos = true; // por defecto todo expandido
 
   alternarDesplegables(): void {
-    this.estanExpandidoTodos = !this.estanExpandidoTodos;
+    const expandir = !this.hayExpandido;
 
     const cambiarExpansion = (items: TreeItem[], expandir: boolean) => {
       for (const item of items) {
@@ -313,10 +347,10 @@ export class EditComponent implements OnChanges {
         if (item.children) {
           cambiarExpansion(item.children, expandir);
         }
-      }
-    };
+      } 
+    }
 
-    cambiarExpansion(this.treeData, this.estanExpandidoTodos);
+    cambiarExpansion(this.treeData, expandir);
   }
 
   validarEdicion(): void {
@@ -377,7 +411,7 @@ export class EditComponent implements OnChanges {
         return {
           acPa_Id: acPa.AcPa_Id,
           role_Id: this.rol.role_Id,
-          usua_Creacion: environment.usua_Id,
+          usua_Creacion: getUserId(),
           perm_FechaCreacion: new Date().toISOString()
         };
       })
@@ -399,7 +433,7 @@ export class EditComponent implements OnChanges {
       role_Descripcion: this.rol.role_Descripcion.trim(),
       usua_Creacion: this.rol.usua_Creacion,
       role_FechaCreacion: this.rol.role_FechaCreacion,
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       numero: this.rol.secuencia || '',
       role_FechaModificacion: new Date().toISOString(),
       usuarioCreacion: '',
@@ -440,9 +474,9 @@ export class EditComponent implements OnChanges {
         const promesasEliminar = permisosAEliminar.map(pEliminar => {
           const permisoEliminar: PermisoEliminar = {
             perm_Id: pEliminar.perm_Id,
-            usua_Creacion: environment.usua_Id,
+            usua_Creacion: getUserId(),
             perm_FechaCreacion: new Date().toISOString(),
-            usua_Modificacion: environment.usua_Id,
+            usua_Modificacion: getUserId(),
             perm_FechaModificacion: new Date().toISOString()
           };
           return this.http.post(`${environment.apiBaseUrl}/Eliminar`, permisoEliminar, {
@@ -458,7 +492,7 @@ export class EditComponent implements OnChanges {
           const permisoInsertar: PermisoInsertar = {
             acPa_Id: pInsertar.acPa_Id,
             role_Id: pInsertar.role_Id,
-            usua_Creacion: environment.usua_Id,
+            usua_Creacion: getUserId(),
             perm_FechaCreacion: new Date().toISOString()
           };
           return this.http.post(`${environment.apiBaseUrl}/Insertar`, permisoInsertar, {
