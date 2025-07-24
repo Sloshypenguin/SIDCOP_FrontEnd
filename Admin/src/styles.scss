@@ -262,6 +262,7 @@
 }
 
 .details-id {
+
   background: #f7f8fa;
   padding: 18px 22px 14px 22px;
   border-radius: 12px;
@@ -273,6 +274,13 @@
   display: inline-block;
   min-width: 180px;
   max-width: 240px;
+
+
+
+
+
+
+
 }
 
 .details-id-label {
@@ -287,7 +295,27 @@
   color: #2c3e50;
   font-weight: 600;
   margin-bottom: 0;
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Header button section
@@ -345,6 +373,7 @@
   
   &:hover {
     background: #e9ecef;
+
   }
   
   .audit-col {
@@ -361,6 +390,11 @@
       flex: 1.2;
     }
   }
+
+
+
+
+
 }
 
 .audit-action {
@@ -371,7 +405,10 @@
 .audit-user {
   font-weight: 600;
   color: #2c3e50;
+
+
 }
+
 
 .audit-date {
   color: #6c757d;
