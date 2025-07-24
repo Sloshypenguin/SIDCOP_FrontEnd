@@ -46,7 +46,9 @@ export class CreateComponent {
   cargarPaises() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Pais/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => this.paises = data);
+    }).subscribe(
+      data => this.paises = data,
+    );
   }
 
   cargarTiposDeVivienda() {

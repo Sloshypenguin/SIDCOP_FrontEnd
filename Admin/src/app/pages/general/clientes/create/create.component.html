@@ -77,7 +77,7 @@
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad" [class.is-invalid]="!cliente.clie_Nacionalidad && mostrarErrores" required>
             <option value=0 disabled selected>Seleccione un país</option>
-            <option *ngFor="let nacionalidad of nacionalidades" [value]="nacionalidad.clie_Nacionalidad">{{ nacionalidad.pais_Descripcion }}</option>
+            <option *ngFor="let nacionalidad of paises" [value]="nacionalidad.clie_Nacionalidad">{{ nacionalidad.pais_Descripcion }}</option>
           </select>
           <div class="text-danger mt-1" *ngIf="!cliente.clie_Nacionalidad && mostrarErrores">
             <small>El campo País de Nacimiento es requerido</small>
