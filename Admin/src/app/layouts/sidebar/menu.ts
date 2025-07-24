@@ -123,6 +123,13 @@ export const MENU: MenuItem[] = [
                 icon: 'ri-building-2-line'
             },
             {
+                id: 10,
+                label: 'MENUITEMS.GENERAL.LIST.CLIENTES',
+                link: '/general/clientes',
+                parentId: 2,
+                icon: 'ri-building-2-line'
+            },
+            {
                 id: 9,
                 label: 'MENUITEMS.GENERAL.LIST.CARGOS',
                 link: '/general/cargos',
@@ -182,13 +189,6 @@ export const MENU: MenuItem[] = [
                 label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
                 link: '/ventas/puntosemision',
                 parentId: 5,
-                icon: 'ri-group-line'
-            },
-            {
-                id: 33,
-                label: 'MENUITEMS.GENERAL.LIST.CLIENTES',
-                link: '/general/clientes',
-                parentId: 3,
                 icon: 'ri-group-line'
             },
             // Puedes añadir más subitems aquí según sea necesario

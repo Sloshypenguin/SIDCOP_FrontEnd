@@ -1,63 +1,82 @@
-import { Component, OnInit, TrackByFunction } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { Component, ViewChild } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { ModalModule, ModalDirective } from 'ngx-bootstrap/modal';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
-import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { RatingModule } from 'ngx-bootstrap/rating';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { SimplebarAngularModule } from 'simplebar-angular';
+import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { HttpClient } from '@angular/common/http';
+import { cloneDeep } from 'lodash';
+import { environment } from 'src/environments/environment';
+import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
+
 import { CreateComponent } from '../create/create.component';
-// import { EditComponent } from '../edit/edit.component';
-// import { DetailsComponent } from '../details/details.component';
+import { DetailsComponent } from '../details/details.component';
+import { EditComponent } from '../edit/edit.component';
 
 @Component({
-  selector: 'app-list',
   standalone: true,
+  selector: 'app-grid',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
+  providers: [DecimalPipe],
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
-    BreadcrumbsComponent,
-    TableModule,
+    ReactiveFormsModule,
+    ModalModule,
     PaginationModule,
-    CreateComponent
-    // EditComponent,
-    // DetailsComponent
-  ],
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+    BsDropdownModule,
+    TabsModule,
+    RatingModule,
+    NgSelectModule,
+    FlatpickrModule,
+    SimplebarAngularModule,
+    DropzoneModule,
+    BreadcrumbsComponent,
+
+    CreateComponent,
+    DetailsComponent,
+    EditComponent
+
+  ]
 })
-export class ListComponent implements OnInit {
-  // bread crumb items
-  breadCrumbItems!: Array<{}>;
 
-    // Acciones disponibles para el usuario en esta pantalla
-  accionesDisponibles: string[] = [];
+// Grid Component
 
-  // Método robusto para validar si una acción está permitida
-  accionPermitida(accion: string): boolean {
-    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
-  }
+export class ListComponent {
+  activeActionRow: number | null = null;
+  showEdit = true;
+  showDetails = true;
+  showDelete = true;
+  showCreateForm = false; // Control del collapse
+  showEditForm = false; // Control del collapse de edición
+  showDetailsForm = false; // Control del collapse de detalles
+  isLoading = true;
 
-  ngOnInit(): void {
-    /**
-     * BreadCrumb
-     */
-    this.breadCrumbItems = [
-      { label: 'General' },
-      { label: 'Clientes', active: true }
-    ];
+  // Propiedades para alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  
 
-    // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
-    this.cargarAccionesUsuario();
-    console.log('Acciones disponibles:', this.accionesDisponibles);
-    
-  }
+  clienteDetalle: Cliente | null = null;
+  clienteEditando: Cliente | null = null;
 
-  // Cierra el dropdown si se hace click fuera
+  // Propiedades para confirmación de eliminación
+    mostrarConfirmacionEliminar = false;
+    clienteAEliminar: Cliente | null = null;
+
   onDocumentClick(event: MouseEvent, rowIndex: number) {
     const target = event.target as HTMLElement;
     // Busca el dropdown abierto
@@ -72,6 +91,153 @@ export class ListComponent implements OnInit {
       this.activeActionRow = null;
     }
   }
+
+
+  term: any;
+  // bread crumb items
+  breadCrumbItems!: Array<{}>;
+  instuctoractivity: any;
+  files: File[] = [];
+  deleteID: any;
+
+  GridForm!: UntypedFormGroup;
+  submitted = false;
+  masterSelected: boolean = false;
+  instructorGrid: any = [];
+  instructors: any = [];
+  @ViewChild('addInstructor', { static: false }) addInstructor?: ModalDirective;
+  @ViewChild('deleteRecordModal', { static: false }) deleteRecordModal?: ModalDirective;
+  editData: any = null;
+
+  constructor(private formBuilder: UntypedFormBuilder, private http: HttpClient) {}
+
+  ngOnInit(): void {
+    /**
+     * BreadCrumb
+     */
+    this.breadCrumbItems = [
+      { label: 'Instructors', active: true },
+      { label: 'Grid View', active: true }
+    ];
+
+    /**
+     * Form Validation
+     */
+    this.GridForm = this.formBuilder.group({
+      id: [''],
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required]],
+      total_course: ['', [Validators.required]],
+      experience: ['', [Validators.required]],
+      students: ['', [Validators.required]],
+      contact: ['', [Validators.required]],
+      status: ['', [Validators.required]],
+      img: ['']
+    });
+    this.cargardatos();
+    document.getElementById('elmLoader')?.classList.add('d-none');
+  }
+
+  private cargardatos(): void {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.instructorGrid = data || [];
+      this.instructors = cloneDeep(this.instructorGrid.slice(0, 10));
+      this.isLoading = false;
+    });
+  }
+
+  // File Upload
+  public dropzoneConfig: DropzoneConfigInterface = {
+    clickable: true,
+    addRemoveLinks: true,
+    previewsContainer: false,
+  };
+
+  uploadedFiles: any[] = [];
+
+  // File Upload
+  imageURL: any;
+  onUploadSuccess(event: any) {
+    setTimeout(() => {
+      this.uploadedFiles.push(event[0]);
+      this.GridForm.controls['img'].setValue(event[0].dataURL);
+    }, 0);
+  }
+
+  // File Remove
+  removeFile(event: any) {
+    this.uploadedFiles.splice(this.uploadedFiles.indexOf(event), 1);
+  }
+
+  // Edit Data
+  editList(id: any) {
+    this.uploadedFiles = [];
+    this.addInstructor?.show();
+    const modaltitle = document.querySelector('.modal-title') as HTMLAreaElement;
+    if (modaltitle) modaltitle.innerHTML = 'Edit Product';
+    const modalbtn = document.getElementById('add-btn') as HTMLAreaElement;
+    if (modalbtn) modalbtn.innerHTML = 'Update';
+    // Si id es índice
+    this.editData = this.instructors[id];
+    if (this.editData) {
+      this.uploadedFiles.push({ 'dataURL': this.editData.img, 'name': this.editData.img_alt, 'size': 1024 });
+      this.GridForm.patchValue(this.instructors[id]);
+    }
+  }
+
+  
+
+  // Delete Product
+  removeItem(id: any) {
+    this.deleteID = id;
+    this.deleteRecordModal?.show();
+  }
+
+  confirmDelete() {
+    this.deleteRecordModal?.hide();
+  }
+
+  // filterdata
+  filterdata() {
+    if (this.term) {
+      this.instructors = this.instructorGrid.filter((el: any) => el.name?.toLowerCase().includes(this.term.toLowerCase()));
+    } else {
+      this.instructors = this.instructorGrid.slice(0, 10);
+    }
+    // noResultElement
+    this.updateNoResultDisplay();
+  }
+
+  // no result 
+  updateNoResultDisplay() {
+    const noResultElement = document.querySelector('.noresult') as HTMLElement;
+    const paginationElement = document.getElementById('pagination-element') as HTMLElement;
+    if (noResultElement && paginationElement) {
+      if (this.term && this.instructors.length === 0) {
+        noResultElement.style.display = 'block';
+        paginationElement.classList.add('d-none');
+      } else {
+        noResultElement.style.display = 'none';
+        paginationElement.classList.remove('d-none');
+      }
+    }
+  }
+
+  // Page Changed
+  pageChanged(event: any): void {
+    const startItem = (event.page - 1) * event.itemsPerPage;
+    const endItem = event.page * event.itemsPerPage;
+    this.instructors = this.instructorGrid.slice(startItem, endItem);
+  }
+
+  // Abre/cierra el menú de acciones para la fila seleccionada
+  onActionMenuClick(rowIndex: number) {
+    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  }
+
+
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
     console.log('Toggleando formulario de creación...');
@@ -81,69 +247,8 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(cliente: Cliente): void {
-    console.log('Abriendo formulario de edición para:', cliente);
-    console.log('Datos específicos:', {
-      id: cliente.clie_Id,
-      descripcion: cliente.clie_Nombres,
-      completo: cliente
-    });
-    this.clienteEditando = { ...cliente }; // Hacer copia profunda
-    this.showEditForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-
-  detalles(cliente: Cliente): void {
-    console.log('Abriendo detalles para:', cliente);
-    this.clienteDetalle = { ...cliente }; // Hacer copia profunda
-    this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-  activeActionRow: number | null = null;
-  showEdit = true;
-  showDetails = true;
-  showDelete = true;
-  showCreateForm = false; // Control del collapse
-  showEditForm = false; // Control del collapse de edición
-  showDetailsForm = false; // Control del collapse de detalles
-  clienteEditando: Cliente | null = null;
-  clienteDetalle: Cliente | null = null;
-  
-  // Propiedades para alertas
-  mostrarAlertaExito = false;
-  mensajeExito = '';
-  mostrarAlertaError = false;
-  mensajeError = '';
-  mostrarAlertaWarning = false;
-  mensajeWarning = '';
-  
-  // Propiedades para confirmación de eliminación
-  mostrarConfirmacionEliminar = false;
-  clienteAEliminar: Cliente | null = null;
-
-  constructor(public table: ReactiveTableService<Cliente>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
-  }
-
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
-
-  // (navigateToCreate eliminado, lógica movida a crear)
-
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
-
   cerrarFormulario(): void {
     this.showCreateForm = false;
-  }
-
-  cerrarFormularioEdicion(): void {
-    this.showEditForm = false;
-    this.clienteEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
@@ -151,18 +256,14 @@ export class ListComponent implements OnInit {
     this.clienteDetalle = null;
   }
 
+
+
+
   guardarCliente(cliente: Cliente): void {
     console.log('Cliente guardado exitosamente desde create component:', cliente);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
-  }
-
-  actualizarCliente(cliente: Cliente): void {
-    console.log('Cliente actualizado exitosamente desde edit component:', cliente);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
   }
 
   confirmarEliminar(cliente: Cliente): void {
@@ -182,7 +283,7 @@ export class ListComponent implements OnInit {
     
     console.log('Eliminando cliente:', this.clienteAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Clientes/Eliminar/${this.clienteAEliminar.esCv_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Cliente/Eliminar/${this.clienteAEliminar.clie_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -210,7 +311,7 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Cliente está siendo utilizado');
+            console.log('El cliente está siendo utilizado');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'No se puede eliminar: el cliente está siendo utilizado.';
             
@@ -253,50 +354,66 @@ export class ListComponent implements OnInit {
     });
   }
 
-  cerrarAlerta(): void {
-    this.mostrarAlertaExito = false;
-    this.mensajeExito = '';
-    this.mostrarAlertaError = false;
-    this.mensajeError = '';
-    this.mostrarAlertaWarning = false;
-    this.mensajeWarning = '';
-  }
 
-  private cargarAccionesUsuario(): void {
-    // Obtener permisosJson del localStorage
-    const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
-    let accionesArray: string[] = [];
-    if (permisosRaw) {
-      try {
-        const permisos = JSON.parse(permisosRaw);
-        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
-        let modulo = null;
-        if (Array.isArray(permisos)) {
-          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
-          modulo = permisos.find((m: any) => m.Pant_Id === 14);
-        } else if (typeof permisos === 'object' && permisos !== null) {
-          // Si es objeto, buscar por clave
-          modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
-        }
-        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
-          // Extraer solo el nombre de la acción
-          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
-        }
-      } catch (e) {
-        console.error('Error al parsear permisosJson:', e);
-      }
+
+  //Detailss
+  detalles(cliente: Cliente): void {
+      console.log('Abriendo detalles para:', cliente);
+      this.clienteDetalle = { ...cliente }; // Hacer copia profunda
+      this.showDetailsForm = true;
+      this.showCreateForm = false; // Cerrar create si está abierto
+      this.showEditForm = false; // Cerrar edit si está abierto
+      this.activeActionRow = null; // Cerrar menú de acciones
     }
-    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
-    console.log('Acciones finales:', this.accionesDisponibles);
-  }
 
-  private cargardatos(): void {
-    this.http.get<Cliente[]>(`${environment.apiBaseUrl}/Cliente/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
-    });
-  }
+
+
+
+    // editar(cliente: Cliente): void {
+    //   console.log('Abriendo formulario de edición para:', cliente);
+    //   // Crear una copia profunda asegurando que todos los campos estén presentes y sin sobrescribir
+    //   this.clienteEditando = {
+    //     clie_Id: cliente.clie_Id ?? undefined,
+    //     clie_Codigo: cliente.clie_Codigo || '',
+    //     clie_DNI: cliente.clie_DNI || '',
+    //     clie_RTN: cliente.clie_RTN || '',
+    //     clie_Nombres: cliente.clie_Nombres || '',
+    //     clie_Apellidos: cliente.clie_Apellidos || '',
+    //     clie_NombreNegocio: cliente.clie_NombreNegocio || '',
+    //     clie_ImagenDelNegocio: cliente.clie_ImagenDelNegocio || '',
+    //     clie_Telefono: cliente.clie_Telefono || '',
+    //     clie_Correo: cliente.clie_Correo || '',
+    //     clie_Sexo: cliente.clie_Sexo || '',
+    //     clie_FechaNacimiento: cliente.clie_FechaNacimiento ? new Date(cliente.clie_FechaNacimiento) : new Date(),
+    //     cana_Id: cliente.cana_Id ?? undefined,
+    //     esCv_Id: cliente.esCv_Id ?? undefined,
+    //     ruta_Id: cliente.ruta_Id ?? undefined,
+    //     clie_LimiteCredito: cliente.clie_LimiteCredito ?? 0,
+    //     clie_DiasCredito: cliente.clie_DiasCredito ?? 0,
+    //     clie_Saldo: cliente.clie_Saldo ?? 0,
+    //     clie_Vencido: cliente.clie_Estado ?? 1,
+    //     clie_Observaciones: cliente.clie_Observaciones || '',
+    //     clie_ObservacionRetiro: cliente.clie_ObservacionRetiro || '',
+    //     clie_Confirmacion: cliente.clie_Confirmacion ?? 1,
+    //     clie_Estado: cliente.clie_Estado ?? 1,
+    //     usua_Creacion: cliente.usua_Creacion ?? 0,
+    //     clie_FechaCreacion: cliente.clie_FechaCreacion ? new Date(cliente.clie_FechaCreacion) : new Date(),
+    //   };
+    //   this.showEditForm = true;
+    //   this.showCreateForm = false; // Cerrar create si está abierto
+    //   this.showDetailsForm = false; // Cerrar details si está abierto
+    //   this.activeActionRow = null; // Cerrar menú de acciones
+    // }
+
+    actualizarCliente(cliente: Cliente): void {
+      console.log('Cliente actualizado exitosamente desde edit component:', cliente);
+      // Recargar los datos de la tabla
+      this.cargardatos();
+      this.cerrarFormularioEdicion();
+    }
+
+    cerrarFormularioEdicion(): void {
+      this.showEditForm = false;
+      this.clienteEditando = null;
+    }
 }
