@@ -26,6 +26,8 @@ export class CreateComponent {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
+  activeTab = 1;
+
   constructor(private http: HttpClient) {}
 
   cliente: Cliente = {

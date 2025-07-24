@@ -25,246 +25,269 @@
   </div>
 
   <div class="flex-grow-1">
-    <div class="row">
-      <!-- Código -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteCodigo" class="form-label">Código<span class="text-danger">*</span></label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Codigo.trim() && mostrarErrores"
-              id="clienteCodigo" [(ngModel)]="cliente.clie_Codigo" placeholder="Ingrese el código del cliente"
-              required />
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!cliente.clie_Codigo.trim() && mostrarErrores">
-            <small>El campo Código del Cliente es requerido</small>
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 1" (click)="activeTab = 1" type="button" role="tab">
+          Datos Generales
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2" type="button" role="tab">
+          Información Comercial
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3" type="button" role="tab">
+          Observaciones
+        </button>
+      </li>
+    </ul>
+
+    <div *ngIf="activeTab === 1">
+      <div class="row">
+      </div>
+    </div>
+    <div *ngIf="activeTab === 2">
+      <div class="row mx-lg-4">
+        <!-- Código -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteCodigo" class="form-label">Código<span class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Codigo.trim() && mostrarErrores"
+                id="clienteCodigo" [(ngModel)]="cliente.clie_Codigo" placeholder="Ingrese el código del cliente"
+                required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Codigo.trim() && mostrarErrores">
+              <small>El campo Código del Cliente es requerido</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- DNI -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteDNI" class="form-label">Identidad</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteDNI" [(ngModel)]="cliente.clie_DNI"
-              placeholder="Ingrese el DNI del cliente" mask="0000-0000-00000" />
+        <!-- DNI -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteDNI" class="form-label">Identidad</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteDNI" [(ngModel)]="cliente.clie_DNI"
+                placeholder="Ingrese el DNI del cliente" mask="0000-0000-00000" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- RTN -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteRTN" class="form-label">RTN</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteRTN" [(ngModel)]="cliente.clie_RTN"
-              placeholder="Ingrese el RTN del cliente" />
+        <!-- RTN -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteRTN" class="form-label">RTN</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteRTN" [(ngModel)]="cliente.clie_RTN"
+                placeholder="Ingrese el RTN del cliente" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Nombres -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteNombres" class="form-label">Nombres</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
-              placeholder="Ingrese el nombre del cliente" />
+        <!-- Nombres -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteNombres" class="form-label">Nombres</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
+                placeholder="Ingrese el nombre del cliente" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Apellidos -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteApellidos" class="form-label">Apellidos</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
-              placeholder="Ingrese los apellidos del cliente" />
+        <!-- Apellidos -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteApellidos" class="form-label">Apellidos</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
+                placeholder="Ingrese los apellidos del cliente" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Nombre del negocio -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteNombreNegocio" class="form-label">Nombre del Negocio<span
-              class="text-danger">*</span></label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control"
-              [class.is-invalid]="!cliente.clie_NombreNegocio.trim() && mostrarErrores" id="clienteNegocio"
-              [(ngModel)]="cliente.clie_NombreNegocio" placeholder="Ingrese el nombre del negocio" required />
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!cliente.clie_NombreNegocio.trim() && mostrarErrores">
-            <small>El campo Nombre del Negocio del Cliente es requerido</small>
+        <!-- Nombre del negocio -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteNombreNegocio" class="form-label">Nombre del Negocio<span
+                class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control"
+                [class.is-invalid]="!cliente.clie_NombreNegocio.trim() && mostrarErrores" id="clienteNegocio"
+                [(ngModel)]="cliente.clie_NombreNegocio" placeholder="Ingrese el nombre del negocio" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_NombreNegocio.trim() && mostrarErrores">
+              <small>El campo Nombre del Negocio del Cliente es requerido</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Imagen del negocio -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteImagenNegocio" class="form-label">Imagen<span class="text-danger">*</span></label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control"
-              [class.is-invalid]="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores" id="clienteImagenNegocio"
-              [(ngModel)]="cliente.clie_ImagenDelNegocio" placeholder="Ingrese una imagen" required />
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores">
-            <small>El campo Imagen es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- Teléfono -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Telefono.trim() && mostrarErrores"
-              id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono" placeholder="Ingrese el teléfono del cliente"
-              mask="0000-0000" required />
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!cliente.clie_Telefono.trim() && mostrarErrores">
-            <small>El campo Teléfono del Cliente es requerido</small>
+        <!-- Imagen del negocio -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteImagenNegocio" class="form-label">Imagen<span class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control"
+                [class.is-invalid]="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores" id="clienteImagenNegocio"
+                [(ngModel)]="cliente.clie_ImagenDelNegocio" placeholder="Ingrese una imagen" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores">
+              <small>El campo Imagen es requerido</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Correo -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteCorreo" class="form-label">Correo</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteCorreo" [(ngModel)]="cliente.clie_Correo"
-              placeholder="Ingrese el correo del cliente" />
+        <!-- Teléfono -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Telefono.trim() && mostrarErrores"
+                id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono" placeholder="Ingrese el teléfono del cliente"
+                mask="0000-0000" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Telefono.trim() && mostrarErrores">
+              <small>El campo Teléfono del Cliente es requerido</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sexo ***** -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label class="form-label d-block">Sexo <span class="text-danger">*</span></label>
-          <div class="sexo-toggle d-flex">
-            <label class="sexo-option me-2" [class.selected]="cliente.clie_Sexo === 'M'">
-              <input type="radio" name="sexo" value="M" [(ngModel)]="cliente.clie_Sexo" required />
-              <i class="ri-men-line sexo-icon"></i>
-              <span>Masculino</span>
-            </label>
-            <label class="sexo-option" [class.selected]="cliente.clie_Sexo === 'F'">
-              <input type="radio" name="sexo" value="F" [(ngModel)]="cliente.clie_Sexo" />
-              <i class="ri-women-line sexo-icon"></i>
-              <span>Femenino</span>
-            </label>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!cliente.clie_Sexo && mostrarErrores">
-            <small>El campo Sexo del Cliente es requerido</small>
+        <!-- Correo -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteCorreo" class="form-label">Correo</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteCorreo" [(ngModel)]="cliente.clie_Correo"
+                placeholder="Ingrese el correo del cliente" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Fecha de Nacimiento -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-          <div class="d-flex align-items-center">
-            <input type="date" id="clienteFechaNacimiento" class="form-control"
-              [(ngModel)]="cliente.clie_FechaNacimiento" />
+        <!-- Sexo ***** -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label d-block">Sexo <span class="text-danger">*</span></label>
+            <div class="sexo-toggle d-flex">
+              <label class="sexo-option me-2" [class.selected]="cliente.clie_Sexo === 'M'">
+                <input type="radio" name="sexo" value="M" [(ngModel)]="cliente.clie_Sexo" required />
+                <i class="ri-men-line sexo-icon"></i>
+                <span>Masculino</span>
+              </label>
+              <label class="sexo-option" [class.selected]="cliente.clie_Sexo === 'F'">
+                <input type="radio" name="sexo" value="F" [(ngModel)]="cliente.clie_Sexo" />
+                <i class="ri-women-line sexo-icon"></i>
+                <span>Femenino</span>
+              </label>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Sexo && mostrarErrores">
+              <small>El campo Sexo del Cliente es requerido</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Canal -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteCanal" class="form-label">Canal<span class="text-danger">*</span></label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control"
-              [class.is-invalid]="!cliente.cana_Descripcion.trim() && mostrarErrores" id="clienteCanal"
-              [(ngModel)]="cliente.cana_Descripcion" placeholder="Ingrese el canal del cliente" required />
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!cliente.cana_Descripcion.trim() && mostrarErrores">
-            <small>El campo Canal del Cliente es requerido</small>
+        <!-- Fecha de Nacimiento -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+            <div class="d-flex align-items-center">
+              <input type="date" id="clienteFechaNacimiento" class="form-control"
+                [(ngModel)]="cliente.clie_FechaNacimiento" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Estado Civil -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteEstadoCivil" class="form-label">Estado Civil</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteEstadoCivil" [(ngModel)]="cliente.esCv_Descripcion"
-              placeholder="Ingrese el estado civil del cliente" />
+        <!-- Canal -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteCanal" class="form-label">Canal<span class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control"
+                [class.is-invalid]="!cliente.cana_Descripcion.trim() && mostrarErrores" id="clienteCanal"
+                [(ngModel)]="cliente.cana_Descripcion" placeholder="Ingrese el canal del cliente" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.cana_Descripcion.trim() && mostrarErrores">
+              <small>El campo Canal del Cliente es requerido</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Ruta -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteRuta" class="form-label">Ruta</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteRuta" [(ngModel)]="cliente.ruta_Descripcion"
-              placeholder="Ingrese la ruta del cliente" />
+        <!-- Estado Civil -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteEstadoCivil" class="form-label">Estado Civil</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteEstadoCivil" [(ngModel)]="cliente.esCv_Descripcion"
+                placeholder="Ingrese el estado civil del cliente" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Limite de Crédito (Decimal) -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteLimiteCredito" class="form-label">Límite de Crédito</label>
-          <input type="number" class="form-control" id="clienteLimiteCredito" step="0.01"
-            [(ngModel)]="cliente.clie_LimiteCredito" placeholder="Ingrese el límite de crédito" />
-        </div>
-      </div>
-
-      <!-- Días de Crédito (Entero con flechitas) -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteDiasCredito" class="form-label">Días de Crédito</label>
-          <input type="number" class="form-control" id="clienteDiasCredito" [(ngModel)]="cliente.clie_DiasCredito"
-            placeholder="Ingrese los días de crédito" />
-        </div>
-      </div>
-
-      <!-- Saldo (Decimal) -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteSaldo" class="form-label">Saldo</label>
-          <input type="number" class="form-control" id="clienteSaldo" step="0.01" [(ngModel)]="cliente.clie_Saldo"
-            placeholder="Ingrese el saldo" />
-        </div>
-      </div>
-
-      <!-- Observaciones -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteObservaciones" class="form-label">Observaciones</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteObservaciones" [(ngModel)]="cliente.clie_Observaciones"
-              placeholder="Ingrese las observaciones del cliente" />
+        <!-- Ruta -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteRuta" class="form-label">Ruta</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteRuta" [(ngModel)]="cliente.ruta_Descripcion"
+                placeholder="Ingrese la ruta del cliente" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Observaciones de Retiro-->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Retiro</label>
-          <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteObservacionesRetiro"
-              [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" />
+        <!-- Limite de Crédito (Decimal) -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteLimiteCredito" class="form-label">Límite de Crédito</label>
+            <input type="number" class="form-control" id="clienteLimiteCredito" step="0.01"
+              [(ngModel)]="cliente.clie_LimiteCredito" placeholder="Ingrese el límite de crédito" />
+          </div>
+        </div>
+
+        <!-- Días de Crédito (Entero con flechitas) -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteDiasCredito" class="form-label">Días de Crédito</label>
+            <input type="number" class="form-control" id="clienteDiasCredito" [(ngModel)]="cliente.clie_DiasCredito"
+              placeholder="Ingrese los días de crédito" />
+          </div>
+        </div>
+
+        <!-- Saldo (Decimal) -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteSaldo" class="form-label">Saldo</label>
+            <input type="number" class="form-control" id="clienteSaldo" step="0.01" [(ngModel)]="cliente.clie_Saldo"
+              placeholder="Ingrese el saldo" />
+          </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteObservaciones" class="form-label">Observaciones</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteObservaciones" [(ngModel)]="cliente.clie_Observaciones"
+                placeholder="Ingrese las observaciones del cliente" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Observaciones de Retiro-->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Retiro</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteObservacionesRetiro"
+                [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </div>
