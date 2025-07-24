@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
-import { TrasladoDetalle } from 'src/app/Modelos/logistica/TrasladoDetalleModel';
 import { environment } from 'src/environments/environment';
 import { forkJoin } from 'rxjs';
 
@@ -18,6 +17,7 @@ export class CreateComponent implements OnInit {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Traslado>();
   
+  // Estados de alertas
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -27,18 +27,23 @@ export class CreateComponent implements OnInit {
   mensajeWarning = '';
   fechaActual = '';
 
+  // Datos del formulario
   traslado: Traslado = new Traslado();
   origenes: any[] = [];
   destinos: any[] = [];
   productos: any[] = [];
 
   constructor(private http: HttpClient) {
-    this.inicializarFechaActual();
-    this.cargarDatosIniciales();
+    this.inicializar();
   }
 
   ngOnInit(): void {
     this.listarProductos();
+  }
+
+  private inicializar(): void {
+    this.inicializarFechaActual();
+    this.cargarDatosIniciales();
   }
 
   private inicializarFechaActual(): void {
@@ -48,13 +53,11 @@ export class CreateComponent implements OnInit {
   }
 
   private cargarDatosIniciales(): void {
+    const headers = { 'x-api-key': environment.apiKey };
+    
     forkJoin({
-      origenes: this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }),
-      destinos: this.http.get<any>(`${environment.apiBaseUrl}/Bodega/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      })
+      origenes: this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, { headers }),
+      destinos: this.http.get<any>(`${environment.apiBaseUrl}/Bodega/Listar`, { headers })
     }).subscribe({
       next: (data) => {
         this.origenes = data.origenes;
@@ -79,6 +82,7 @@ export class CreateComponent implements OnInit {
     });
   }
 
+  // Métodos de cantidad
   aumentarCantidad(index: number): void {
     this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
   }
@@ -105,29 +109,9 @@ export class CreateComponent implements OnInit {
       }));
   }
 
-  private resetearProductos(): void {
-    this.productos.forEach(producto => {
-      producto.cantidad = 0;
-      producto.observaciones = '';
-    });
-  }
-
   cancelar(): void {
-    this.limpiarAlertas();
-    this.traslado = new Traslado();
-    this.resetearProductos();
-    this.inicializarFechaActual();
+    this.limpiarFormulario();
     this.onCancel.emit();
-  }
-
-  private limpiarAlertas(): void {
-    this.mostrarErrores = false;
-    this.mostrarAlertaExito = false;
-    this.mensajeExito = '';
-    this.mostrarAlertaError = false;
-    this.mensajeError = '';
-    this.mostrarAlertaWarning = false;
-    this.mensajeWarning = '';
   }
 
   cerrarAlerta(): void {
@@ -141,31 +125,33 @@ export class CreateComponent implements OnInit {
     if (!this.validarFormulario(productosSeleccionados)) return;
     
     this.limpiarAlertas();
-    const trasladoData = this.prepararDatosTraslado();
-    
-    this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, trasladoData, {
-      headers: this.obtenerHeaders()
-    }).subscribe({
-      next: (response) => {
-        const trasladoId = this.extraerIdTraslado(response);
-        if (trasladoId > 0) {
-          this.guardarDetallesTraslado(trasladoId, productosSeleccionados);
-        } else {
-          console.error('❌ Estructura de respuesta:', JSON.stringify(response, null, 2));
-          this.mostrarError('No se pudo obtener el ID del traslado creado');
-        }
-      },
-      error: () => this.mostrarError('Error al guardar el encabezado del traslado')
-    });
+    this.crearTraslado(productosSeleccionados);
   }
 
-  private validarFormulario(productosSeleccionados: any[]): boolean {
+  private limpiarFormulario(): void {
+    this.limpiarAlertas();
+    this.traslado = new Traslado();
+    this.productos.forEach(p => { p.cantidad = 0; p.observaciones = ''; });
+    this.inicializarFechaActual();
+  }
+
+  private limpiarAlertas(): void {
+    this.mostrarErrores = false;
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+  }
+
+  private validarFormulario(productos: any[]): boolean {
     const errores = [];
     
     if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
     if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
     if (!this.traslado.tras_Fecha) errores.push('Fecha');
-    if (productosSeleccionados.length === 0) errores.push('Al menos un producto');
+    if (productos.length === 0) errores.push('Al menos un producto');
     
     if (errores.length > 0) {
       this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
@@ -174,11 +160,11 @@ export class CreateComponent implements OnInit {
     return true;
   }
 
-  private prepararDatosTraslado(): any {
+  private crearTraslado(productos: any[]): void {
     const origen = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
     const destino = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
     
-    return {
+    const datos = {
       tras_Id: 0,
       tras_Origen: Number(this.traslado.tras_Origen),
       origen: origen?.sucu_Descripcion || '',
@@ -192,54 +178,42 @@ export class CreateComponent implements OnInit {
       tras_FechaModificacion: new Date().toISOString(),
       tras_Estado: true
     };
+
+    this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, datos, {
+      headers: this.obtenerHeaders()
+    }).subscribe({
+      next: (response) => {
+        const id = this.extraerIdTraslado(response);
+        if (id > 0) {
+          this.crearDetalles(id, productos);
+        } else {
+          this.mostrarError('No se pudo obtener el ID del traslado');
+        }
+      },
+      error: () => this.mostrarError('Error al crear el traslado')
+    });
   }
 
   private extraerIdTraslado(response: any): number {
-    console.log('=== ANALIZANDO RESPUESTA ===');
-    console.log('Respuesta:', JSON.stringify(response, null, 2));
+    const datos = response?.data;
+    if (!datos || datos.code_Status !== 1) return 0;
     
-    // Array de posibles ubicaciones del ID
-    const posiblesIds = [
-      response?.tras_Id,
-      response?.id,
-      response?.data?.tras_Id,
-      response?.data,
-      typeof response === 'number' ? response : null
-    ];
+    // Buscar ID en ubicaciones posibles
+    const ids = [datos.Tras_Id, datos.tras_Id, datos.id, datos.data];
+    const id = ids.find(id => id && Number(id) > 0);
     
-    // Buscar el primer ID válido
-    for (const id of posiblesIds) {
-      if (id && Number(id) > 0) {
-        console.log('✅ ID encontrado:', id);
-        return Number(id);
-      }
-    }
-    
-    // Búsqueda genérica por propiedades que contengan "id"
-    if (response && typeof response === 'object') {
-      for (const [key, value] of Object.entries(response)) {
-        if (key.toLowerCase().includes('id') && typeof value === 'number' && value > 0) {
-          console.log(`✅ ID encontrado en ${key}:`, value);
-          return value;
-        }
-      }
-    }
-    
-    console.log('❌ No se encontró ID válido');
-    return 0;
+    return id ? Number(id) : 0;
   }
 
-  private guardarDetallesTraslado(trasladoId: number, productosSeleccionados: any[]): void {
-    let operacionesCompletadas = 0;
-    let erroresEnDetalles = 0;
-    const totalOperaciones = productosSeleccionados.length;
+  private crearDetalles(trasladoId: number, productos: any[]): void {
+    let completadas = 0;
+    let errores = 0;
+    const total = productos.length;
 
-    console.log(`Guardando ${totalOperaciones} detalles para traslado ID: ${trasladoId}`);
-
-    productosSeleccionados.forEach((producto, index) => {
-      const detalleTraslado = {
+    productos.forEach((producto, index) => {
+      const detalle = {
         trDe_Id: 0,
-        tras_Id: Number(trasladoId),
+        tras_Id: trasladoId,
         prod_Id: Number(producto.prod_Id),
         trDe_Cantidad: Number(producto.cantidad),
         trDe_Observaciones: producto.observaciones || '',
@@ -249,19 +223,17 @@ export class CreateComponent implements OnInit {
         trDe_FechaModificacion: new Date().toISOString()
       };
 
-      this.http.post<any>(`${environment.apiBaseUrl}/Traslado/InsertarDetalle`, detalleTraslado, {
+      this.http.post<any>(`${environment.apiBaseUrl}/Traslado/InsertarDetalle`, detalle, {
         headers: this.obtenerHeaders()
       }).subscribe({
-        next: (response) => {
-          console.log(`✅ Detalle ${index + 1} guardado:`, response);
-          operacionesCompletadas++;
-          this.verificarCompletitud(operacionesCompletadas, erroresEnDetalles, totalOperaciones);
+        next: () => {
+          completadas++;
+          this.verificarCompletitud(completadas, errores, total);
         },
-        error: (error) => {
-          console.error(`❌ Error detalle ${index + 1}:`, error);
-          erroresEnDetalles++;
-          operacionesCompletadas++;
-          this.verificarCompletitud(operacionesCompletadas, erroresEnDetalles, totalOperaciones);
+        error: () => {
+          errores++;
+          completadas++;
+          this.verificarCompletitud(completadas, errores, total);
         }
       });
     });
