@@ -1,4 +1,4 @@
-<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px">
   <h5 class="card-title mb-4">Crear Nuevo Cliente</h5>
 
   <div class="alert-container">
@@ -63,8 +63,9 @@
           <div class="mb-3">
             <label for="clienteCodigo" class="form-label">Código<span class="text-danger">*</span></label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Codigo.trim() && mostrarErrores"
-                id="clienteCodigo" [(ngModel)]="cliente.clie_Codigo" placeholder="Ingrese el código del cliente"
+              <input type="text" class="form-control" [class.is-invalid]="
+                  !cliente.clie_Codigo.trim() && mostrarErrores
+                " id="clienteCodigo" [(ngModel)]="cliente.clie_Codigo" placeholder="Ingrese el código del cliente"
                 required />
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
@@ -77,12 +78,21 @@
         <!-- Nacionalidad -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clie_Nacionalidad" class="form-label">País de Nacimiento</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-            <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad" [class.is-invalid]="!cliente.clie_Nacionalidad && mostrarErrores" required>
-              <option value=0 disabled selected>Seleccione un país</option>
-              <option *ngFor="let nacionalidad of paises" [value]="nacionalidad.clie_Nacionalidad">{{ nacionalidad.pais_Descripcion }}</option>
-            </select>
+            <label for="clie_Nacionalidad" class="form-label">
+              País de Nacimiento<span class="text-danger ms-2">*</span>
+            </label>
+            <div class="d-flex align-items-center">
+              <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad"
+                [class.is-invalid]="
+                  !cliente.clie_Nacionalidad && mostrarErrores
+                " required>
+                <option value="0" disabled selected>Seleccione un país</option>
+                <option *ngFor="let nacionalidad of paises" [value]="nacionalidad.clie_Nacionalidad">
+                  {{ nacionalidad.pais_Descripcion }}
+                </option>
+              </select>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Nacionalidad && mostrarErrores">
               <small>El campo País de Nacimiento es requerido</small>
             </div>
@@ -103,10 +113,16 @@
         <!-- RTN -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteRTN" class="form-label">RTN</label>
+            <label for="clienteRTN" class="form-label">
+              RTN<span class="text-danger ms-2">*</span>
+            </label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteRTN" [(ngModel)]="cliente.clie_RTN"
-                placeholder="Ingrese el RTN del cliente" />
+              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_RTN.trim() && mostrarErrores"
+                id="clienteRTN" [(ngModel)]="cliente.clie_RTN" placeholder="Ingrese el RTN del cliente" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_RTN.trim() && mostrarErrores">
+              <small>El campo RTN es requerido</small>
             </div>
           </div>
         </div>
@@ -114,10 +130,18 @@
         <!-- Nombres -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteNombres" class="form-label">Nombres</label>
+            <label for="clienteNombres" class="form-label">
+              Nombres<span class="text-danger ms-2">*</span>
+            </label>
             <div class="d-flex align-items-center">
               <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
-                placeholder="Ingrese el nombre del cliente" />
+                [class.is-invalid]="
+                  !cliente.clie_Nombres.trim() && mostrarErrores
+                " placeholder="Ingrese el nombre del cliente" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Nombres.trim() && mostrarErrores">
+              <small>El campo Nombres es requerido</small>
             </div>
           </div>
         </div>
@@ -125,10 +149,18 @@
         <!-- Apellidos -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteApellidos" class="form-label">Apellidos</label>
+            <label for="clienteApellidos" class="form-label">
+              Apellidos<span class="text-danger ms-2">*</span>
+            </label>
             <div class="d-flex align-items-center">
               <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
-                placeholder="Ingrese los apellidos del cliente" />
+                [class.is-invalid]="
+                  !cliente.clie_Apellidos.trim() && mostrarErrores
+                " placeholder="Ingrese los apellidos del cliente" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Apellidos.trim() && mostrarErrores">
+              <small>El campo Apellidos es requerido</small>
             </div>
           </div>
         </div>
@@ -155,13 +187,18 @@
           </div>
         </div>
 
-         <!-- Estado Civil -->
+        <!-- Estado Civil -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Estado Civil</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id" [class.is-invalid]="!cliente.esCv_Id && mostrarErrores" required>
-              <option value=0 disabled selected>Seleccione un estado civil</option>
-              <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">{{ estadoCivil.esCv_Descripcion }}</option>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id"
+              [class.is-invalid]="!cliente.esCv_Id && mostrarErrores" required>
+              <option value="0" disabled selected>
+                Seleccione un estado civil
+              </option>
+              <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">
+                {{ estadoCivil.esCv_Descripcion }}
+              </option>
             </select>
           </div>
         </div>
@@ -182,9 +219,10 @@
           <div class="mb-3">
             <label for="clienteTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Telefono.trim() && mostrarErrores"
-                id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono" placeholder="Ingrese el teléfono del cliente"
-                mask="0000-0000" required />
+              <input type="text" class="form-control" [class.is-invalid]="
+                  !cliente.clie_Telefono.trim() && mostrarErrores
+                " id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono"
+                placeholder="Ingrese el teléfono del cliente" mask="0000-0000" required />
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Telefono.trim() && mostrarErrores">
@@ -207,10 +245,20 @@
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
             <i class="ri-arrow-left-line"></i> Anterior
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+          <button
+            *ngIf="activeTab < 5"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="activeTab = activeTab + 1"
+          >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
@@ -222,20 +270,17 @@
     <!--=======================================-->
     <div *ngIf="activeTab === 2">
       <div class="row mx-lg-4">
-        
-          <!-- Canal -->
+        <!-- Canal -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteCanal" class="form-label">Canal<span class="text-danger">*</span></label>
-            <div class="d-flex align-items-center">
-              <input type="text" class="form-control"
-                [class.is-invalid]="!cliente.cana_Descripcion.trim() && mostrarErrores" id="clienteCanal"
-                [(ngModel)]="cliente.cana_Descripcion" placeholder="Ingrese el canal del cliente" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div class="text-danger mt-1" *ngIf="!cliente.cana_Descripcion.trim() && mostrarErrores">
-              <small>El campo Canal del Cliente es requerido</small>
-            </div>
+            <label for="cana_Id" class="form-label">Canal</label>
+            <select id="cana_Id" class="form-select" [(ngModel)]="cliente.cana_Id"
+              [class.is-invalid]="!cliente.cana_Id && mostrarErrores" required>
+              <option value="0" disabled selected>Seleccione un canal</option>
+              <option *ngFor="let canal of canales" [value]="canal.cana_Id">
+                {{ canal.cana_Descripcion }}
+              </option>
+            </select>
           </div>
         </div>
 
@@ -244,9 +289,10 @@
             <label for="clienteNombreNegocio" class="form-label">Nombre del Negocio<span
                 class="text-danger">*</span></label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control"
-                [class.is-invalid]="!cliente.clie_NombreNegocio.trim() && mostrarErrores" id="clienteNegocio"
-                [(ngModel)]="cliente.clie_NombreNegocio" placeholder="Ingrese el nombre del negocio" required />
+              <input type="text" class="form-control" [class.is-invalid]="
+                  !cliente.clie_NombreNegocio.trim() && mostrarErrores
+                " id="clienteNegocio" [(ngModel)]="cliente.clie_NombreNegocio"
+                placeholder="Ingrese el nombre del negocio" required />
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_NombreNegocio.trim() && mostrarErrores">
@@ -256,110 +302,200 @@
         </div>
 
         <!-- Imagen del negocio -->
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteImagenNegocio" class="form-label">Imagen<span class="text-danger">*</span></label>
+            <label for="clienteImagenNegocio" class="form-label"
+              >Imagen<span class="text-danger">*</span></label
+            >
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control"
-                [class.is-invalid]="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores" id="clienteImagenNegocio"
-                [(ngModel)]="cliente.clie_ImagenDelNegocio" placeholder="Ingrese una imagen" required />
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="
+                  !cliente.clie_ImagenDelNegocio.trim() && mostrarErrores
+                "
+                id="clienteImagenNegocio"
+                [(ngModel)]="cliente.clie_ImagenDelNegocio"
+                placeholder="Ingrese una imagen"
+                required
+              />
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
-            <div class="text-danger mt-1" *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores">
+            <div
+              class="text-danger mt-1"
+              *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores"
+            >
               <small>El campo Imagen es requerido</small>
             </div>
           </div>
+        </div> -->
+
+        <div class="col-lg-12">
+          <div class="mb-3">
+            <label class="form-label">Imagen del negocio<span class="text-danger">*</span></label>
+            <dropzone class="dropzone" [config]="dropzoneConfig" [message]="'Selecciona una imagen para subir.'"
+              (success)="onFileSelected($event)"></dropzone>
+            @if (uploadedFiles) {
+            <ul class="list-unstyled mb-0" id="dropzone-preview">
+              @for (file of uploadedFiles; track $index) {
+              <li class="mt-2" id="dropzone-preview-list">
+                <div class="border rounded">
+                  <div class="d-flex flex-wrap gap-2 p-2">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar-sm bg-light rounded p-2">
+                        @if (file.dataURL) {
+                        <img class="img-fluid rounded d-block" [src]="file.dataURL" alt="Dropzone-Image" />
+                        }@else {
+                        <img class="img-fluid rounded d-block" [src]="file" alt="Dropzone-Image" />
+                        }
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="pt-1">
+                        @if (file.name) {
+                        <h5 class="fs-md mb-1">{{ file.name }}</h5>
+                        } @if (file.size) {
+                        <p class="fs-sm text-muted mb-0">{{ file.size }}</p>
+                        }
+                      </div>
+                    </div>
+                    <div class="flex-shrink-0 ms-3">
+                      <button (click)="removeFile(file)" class="btn btn-sm btn-danger">
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              }
+            </ul>
+            }
+          </div>
         </div>
 
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="depa_Codigo" class="form-label">Departamento</label>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <div class="d-flex align-items-center">
-          <select 
-            id="depa_Codigo" 
-            name="depa_Codigo" 
-            class="form-select" 
-            [(ngModel)]="selectedDepa" 
-            (change)="cargarMunicipios(selectedDepa)"
-            required>
-            <option value="" disabled selected>Seleccione un Departamento</option>
-            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion }}</option>
-          </select>
-          <div *ngIf="cargando" class="form-text text-muted">Cargando Departamentos...</div>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
-            <small>El campo Departamento es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="muni_Codigo" class="form-label">Municipio</label>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <div class="d-flex align-items-center">
-          <select 
-            id="muni_Codigo" 
-            name="muni_Codigo" 
-            class="form-select" 
-            [(ngModel)]="nuevaColonia.muni_Codigo" 
-            (change)="cargarColonias(nuevaColonia.muni_Codigo)"
-            required>
-            <option value="" disabled selected>Seleccione un Municipio</option>
-            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
-          </select>
-          <div *ngIf="cargando" class="form-text text-muted">Cargando Municipios...</div>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
-            <small>El campo Municipio es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="colo_Id" class="form-label">Colonia</label>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <div class="d-flex align-items-center">
-          <select 
-            id="colo_Id" 
-            name="colo_Id" 
-            class="form-select" 
-            [(ngModel)]="direccion.colo_Id" 
-            required>
-            <option value="" disabled selected>Seleccione una Colonia</option>
-            <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">{{ colonia.colo_Descripcion }}</option>
-          </select>
-          <div *ngIf="cargandoColonias" class="form-text text-muted">Cargando Colonias...</div>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores">
-            <small>El campo Colonias es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ruta -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteRuta" class="form-label">Ruta</label>
+            <label for="depa_Codigo" class="form-label">Departamento</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteRuta" [(ngModel)]="cliente.ruta_Descripcion"
-                placeholder="Ingrese la ruta del cliente" />
+              <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepa"
+                (change)="cargarMunicipios(selectedDepa)" required>
+                <option value="" disabled selected>
+                  Seleccione un Departamento
+                </option>
+                <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
+                  {{ depa.depa_Descripcion }}
+                </option>
+              </select>
+              <div *ngIf="cargando" class="form-text text-muted">
+                Cargando Departamentos...
+              </div>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
+              <small>El campo Departamento es requerido</small>
             </div>
           </div>
         </div>
 
-         <!-- Tipos de Vivienda -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="muni_Codigo" class="form-label">Municipio</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColonia.muni_Codigo"
+                (change)="cargarColonias(nuevaColonia.muni_Codigo)" required>
+                <option value="" disabled selected>
+                  Seleccione un Municipio
+                </option>
+                <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
+                  {{ muni.muni_Descripcion }}
+                </option>
+              </select>
+              <div *ngIf="cargando" class="form-text text-muted">
+                Cargando Municipios...
+              </div>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
+              <small>El campo Municipio es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="colo_Id" class="form-label">Colonia</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccion.colo_Id" required>
+                <option value="" disabled selected>
+                  Seleccione una Colonia
+                </option>
+                <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">
+                  {{ colonia.colo_Descripcion }}
+                </option>
+              </select>
+              <div *ngIf="cargandoColonias" class="form-text text-muted">
+                Cargando Colonias...
+              </div>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores">
+              <small>El campo Colonias es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dirección Exacta -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteDireccionExacta" class="form-label">
+              Dirección Exacta<span class="text-danger ms-2">*</span>
+            </label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteDireccionExacta"
+                [(ngModel)]="direccionPorCliente.diCl_DireccionExacta" [class.is-invalid]="
+                  !direccionPorCliente.diCl_DireccionExacta.trim() &&
+                  mostrarErrores
+                " placeholder="Ingrese la dirección exacta" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="
+                !direccionPorCliente.diCl_DireccionExacta.trim() &&
+                mostrarErrores
+              ">
+              <small>El campo Dirección Exacta es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ruta -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="ruta_Id" class="form-label">Ruta</label>
+            <select id="ruta_Id" class="form-select" [(ngModel)]="cliente.ruta_Id"
+              [class.is-invalid]="!cliente.ruta_Id && mostrarErrores" required>
+              <option value="0" disabled selected>Seleccione una ruta</option>
+              <option *ngFor="let ruta of rutas" [value]="ruta.ruta_Id">
+                {{ ruta.ruta_Descripcion }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tipos de Vivienda -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id" [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
-              <option value=0 disabled selected>Seleccione un tipo de vivienda</option>
-              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id"> {{ tipoVivienda.tiVi_Descripcion }}</option>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
+              [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
+              <option value="0" disabled selected>
+                Seleccione un tipo de vivienda
+              </option>
+              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
+                {{ tipoVivienda.tiVi_Descripcion }}
+              </option>
             </select>
           </div>
         </div>
@@ -367,20 +503,30 @@
         <button class="btn btn-primary mb-2" (click)="abrirMapa()">
           Seleccionar ubicación en el mapa
         </button>
-        
+
         <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
-          <strong>Ubicación seleccionada:</strong><br>
-          Latitud: {{ latitudSeleccionada }}<br>
+          <strong>Ubicación seleccionada:</strong><br />
+          Latitud: {{ latitudSeleccionada }}<br />
           Longitud: {{ longitudSeleccionada }}
         </div>
       </div>
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
             <i class="ri-arrow-left-line"></i> Anterior
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+          <button
+            *ngIf="activeTab < 5"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="activeTab = activeTab + 1"
+          >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
@@ -425,10 +571,20 @@
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
             <i class="ri-arrow-left-line"></i> Anterior
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+          <button
+            *ngIf="activeTab < 5"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="activeTab = activeTab + 1"
+          >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
@@ -443,10 +599,10 @@
         <!-- DNI -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteDNI" class="form-label">DNI</label>
+            <label for="avalDNI" class="form-label">DNI</label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteDNI" [(ngModel)]="cliente.clie_DNI"
-                placeholder="Ingrese el DNI del cliente" mask="0000-0000-00000" />
+              <input type="text" class="form-control" id="avalDNI" [(ngModel)]="aval.aval_DNI"
+                placeholder="Ingrese el DNI del aval" mask="0000-0000-00000" />
             </div>
           </div>
         </div>
@@ -454,10 +610,10 @@
         <!-- Nombres -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteNombres" class="form-label">Nombres</label>
+            <label for="avalNombres" class="form-label">Nombres</label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
-                placeholder="Ingrese el nombre del cliente" />
+              <input type="text" class="form-control" id="avalNombres" [(ngModel)]="aval.aval_Nombres"
+                placeholder="Ingrese el nombre del aval" />
             </div>
           </div>
         </div>
@@ -465,135 +621,251 @@
         <!-- Apellidos -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteApellidos" class="form-label">Apellidos</label>
+            <label for="avalApellidos" class="form-label">Apellidos</label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
-                placeholder="Ingrese los apellidos del cliente" />
+              <input type="text" class="form-control" id="avalApellidos" [(ngModel)]="aval.aval_Apellidos"
+                placeholder="Ingrese los apellidos del aval" />
             </div>
           </div>
         </div>
-      </div>
 
-       <!-- Estado Civil -->
+        <!-- Estado Civil -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Estado Civil</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id" [class.is-invalid]="!cliente.esCv_Id && mostrarErrores" required>
-              <option value=0 disabled selected>Seleccione un estado civil</option>
-              <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">{{ estadoCivil.esCv_Descripcion }}</option>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="aval.esCv_Id"
+              [class.is-invalid]="!aval.esCv_Id && mostrarErrores" required>
+              <option value="0" disabled selected>
+                Seleccione un estado civil
+              </option>
+              <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">
+                {{ estadoCivil.esCv_Descripcion }}
+              </option>
             </select>
           </div>
         </div>
 
-     <!-- Parentesco -->
+        <!-- Parentesco -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteParentesco" class="form-label">Parentesco</label>
+            <label for="avalParentesco" class="form-label">Parentesco</label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteParentesco" [(ngModel)]="cliente.aval_Parentesco"
-                placeholder="Ingrese el parentesco del cliente" />
+              <input type="text" class="form-control" id="avalParentesco" [(ngModel)]="aval.aval_ParentescoConCliente"
+                placeholder="Ingrese el parentesco del aval" />
             </div>
           </div>
         </div>
-      </div>
 
         <!-- Teléfono -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
+            <label for="avalTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Telefono.trim() && mostrarErrores"
-                id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono" placeholder="Ingrese el teléfono del cliente"
+              <input type="text" class="form-control" [class.is-invalid]="
+                  !aval.aval_Telefono.trim() && mostrarErrores
+                " id="avalTelefono" [(ngModel)]="aval.aval_Telefono" placeholder="Ingrese el teléfono del aval"
                 mask="0000-0000" required />
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
-            <div class="text-danger mt-1" *ngIf="!cliente.clie_Telefono.trim() && mostrarErrores">
-              <small>El campo Teléfono del Cliente es requerido</small>
+            <div class="text-danger mt-1" *ngIf="!aval.aval_Telefono.trim() && mostrarErrores">
+              <small>El campo Teléfono del Aval es requerido</small>
             </div>
           </div>
         </div>
 
-
-       <!-- Tipos de Vivienda -->
+        <!-- Tipos de Vivienda -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id" [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
-              <option value=0 disabled selected>Seleccione un tipo de vivienda</option>
-              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id"> {{ tipoVivienda.tiVi_Descripcion }}</option>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="aval.tiVi_Id"
+              [class.is-invalid]="!aval.tiVi_Id && mostrarErrores" required>
+              <option value="0" disabled selected>
+                Seleccione un tipo de vivienda
+              </option>
+              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
+                {{ tipoVivienda.tiVi_Descripcion }}
+              </option>
             </select>
           </div>
         </div>
 
-      <!-- Botones de navegación -->
-      <div class="row mx-lg-4">
-        <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
-            <i class="ri-arrow-left-line"></i> Anterior
-          </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
-            Siguiente <i class="ri-arrow-right-line"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!--=======================================-->
-    <!--                Estado                 -->
-    <!--=======================================-->
-    <div *ngIf="activeTab === 5">
-      <div class="row mx-lg-4">
-        <div class="col-md-12">
-          <div class="mb-3" style="display: flex;">
-            <label class="form-label" style="margin-right: 10px;">¿Cliente confirmado?</label>
-            <div class="checkbox-wrapper-10">
-              <input checked="" type="checkbox" id="cb5" class="tgl tgl-flip" [(ngModel)]="cliente.clie_Confirmacion" />
-              <label for="cb5" data-tg-on="Si" data-tg-off="No" class="tgl-btn"></label>
-            </div>
-          </div>
-        </div>
-        <!-- Observaciones de Retiro-->
-        <div class="col-md-12">
+        <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Inactividad (En caso del Cliente se desactive, explicar la razon aquí.)</label>
+            <label for="depa_Codigo" class="form-label">Departamento</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteObservacionesRetiro"
-                [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" />
+              <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepaAval"
+                (change)="cargarMunicipiosAval(selectedDepaAval)" required>
+                <option value="" disabled selected>
+                  Seleccione un Departamento
+                </option>
+                <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
+                  {{ depa.depa_Descripcion }}
+                </option>
+              </select>
+              <div *ngIf="cargandoAval" class="form-text text-muted">
+                Cargando Departamentos...
+              </div>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!(selectedDepaAval ?? '').trim() && mostrarErrores">
+              <small>El campo Departamento es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="muni_Codigo" class="form-label">Municipio</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColoniaAval.muni_Codigo"
+                (change)="cargarColoniasAval(nuevaColoniaAval.muni_Codigo)" required>
+                <option value="" disabled selected>
+                  Seleccione un Municipio
+                </option>
+                <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
+                  {{ muni.muni_Descripcion }}
+                </option>
+              </select>
+              <div *ngIf="cargandoAval" class="form-text text-muted">
+                Cargando Municipios...
+              </div>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!(selectedMuniAval ?? '').trim() && mostrarErrores">
+              <small>El campo Municipio es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="colo_Id" class="form-label">Colonia</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccion.colo_Id" required>
+                <option value="" disabled selected>
+                  Seleccione una Colonia
+                </option>
+                <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">
+                  {{ colonia.colo_Descripcion }}
+                </option>
+              </select>
+              <div *ngIf="cargandoColoniasAval" class="form-text text-muted">
+                Cargando Colonias...
+              </div>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!(selectedColoniaAval ?? '').trim() && mostrarErrores">
+              <small>El campo Colonias es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fecha de Nacimiento -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="avalFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+            <div class="d-flex align-items-center">
+              <input type="date" id="avalFechaNacimiento" class="form-control"
+                [(ngModel)]="aval.aval_FechaNacimiento" />
             </div>
           </div>
         </div>
       </div>
-
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
             <i class="ri-arrow-left-line"></i> Anterior
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+          <button
+            *ngIf="activeTab < 5"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="activeTab = activeTab + 1"
+          >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!--=======================================-->
+  <!--                Estado                 -->
+  <!--=======================================-->
+  <div *ngIf="activeTab === 5">
+    <div class="row mx-lg-4">
+      <div class="col-md-12">
+        <div class="mb-3" style="display: flex">
+          <label class="form-label" style="margin-right: 10px">¿Cliente confirmado?</label>
+          <div class="checkbox-wrapper-10">
+            <input checked="" type="checkbox" id="cb5" class="tgl tgl-flip" [(ngModel)]="cliente.clie_Confirmacion" />
+            <label for="cb5" data-tg-on="Si" data-tg-off="No" class="tgl-btn"></label>
+          </div>
+        </div>
+      </div>
+      <!-- Observaciones de Retiro-->
+      <div class="col-md-12">
+        <div class="mb-3">
+          <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Inactividad (En caso del Cliente
+            se desactive,
+            explicar la razon aquí.)</label>
+          <div class="d-flex align-items-center">
+            <input type="text" class="form-control" id="clienteObservacionesRetiro"
+              [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mx-lg-4">
+      <div class="col-md-12 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-success" (click)="guardarCliente()">
+          Guardar <i class="ri-save-line"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Botones de navegación -->
+    <div class="row mx-lg-4">
+      <div class="col-md-12 d-flex justify-content-between gap-2">
+        <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev"
+          (click)="activeTab = activeTab - 1">
+          <i class="ri-arrow-left-line"></i> Anterior
+        </button>
+        <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next"
+          (click)="activeTab = activeTab + 1">
+          Siguiente <i class="ri-arrow-right-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarMapa }" *ngIf="mostrarMapa"></div>
+<div class="modal-backdrop fade" [ngClass]="{ show: mostrarMapa }" *ngIf="mostrarMapa"></div>
 
-<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarMapa }" [style.display]="mostrarMapa ? 'block' : 'none'" tabindex="-1" role="dialog" >
+<div class="modal fade custom-modal" [ngClass]="{ show: mostrarMapa }" [style.display]="mostrarMapa ? 'block' : 'none'"
+  tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
         <span>Seleccionar mi ubicación actual</span>
-        <i class="ri-close-line custom-modal-close"
-        (click)="cerrarMapa()"></i>
+        <i class="ri-close-line custom-modal-close" (click)="cerrarMapa()"></i>
       </div>
-      <hr class="custom-modal-divider">
+      <hr class="custom-modal-divider" />
       <div class="modal-body custom-modal-body">
         <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)"></app-mapa-selector>
         <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
-          <strong>Ubicación seleccionada:</strong><br>
-          Latitud: {{ latitudSeleccionada }}<br>
+          <strong>Ubicación seleccionada:</strong><br />
+          Latitud: {{ latitudSeleccionada }}<br />
           Longitud: {{ longitudSeleccionada }}
         </div>
       </div>
