@@ -203,7 +203,17 @@
             </div>
           </div>
         </div>
-
+      </div>
+      <!-- Botones de navegación -->
+      <div class="row mx-lg-4">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -363,7 +373,17 @@
           Latitud: {{ latitudSeleccionada }}<br>
           Longitud: {{ longitudSeleccionada }}
         </div>
-
+      </div>
+      <!-- Botones de navegación -->
+      <div class="row mx-lg-4">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -372,7 +392,46 @@
     <!--=======================================-->
     <div *ngIf="activeTab === 3">
       <div class="row mx-lg-4">
-        <p>DATOS POLITICOS O DEL CREDITO</p>
+        <!-- Limite de Crédito-->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteLimiteCredito" class="form-label">Límite de Crédito</label>
+            <input type="number" class="form-control" id="clienteLimiteCredito" step="0.01"
+              [(ngModel)]="cliente.clie_LimiteCredito" placeholder="Ingrese el límite de crédito" />
+          </div>
+        </div>
+
+        <!-- Días de Crédito-->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteDiasCredito" class="form-label">Días de Crédito</label>
+            <input type="number" class="form-control" id="clienteDiasCredito" [(ngModel)]="cliente.clie_DiasCredito"
+              placeholder="Ingrese los días de crédito" />
+          </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="col-md-12">
+          <div class="mb-3">
+            <label for="clienteObservaciones" class="form-label">Observaciones</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteObservaciones" [(ngModel)]="cliente.clie_Observaciones"
+                placeholder="Ingrese las observaciones del cliente" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de navegación -->
+      <div class="row mx-lg-4">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -383,6 +442,18 @@
       <div class="row mx-lg-4">
         <p>DATOS DEL AVAL</p>
       </div>
+
+      <!-- Botones de navegación -->
+      <div class="row mx-lg-4">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!--=======================================-->
@@ -390,7 +461,37 @@
     <!--=======================================-->
     <div *ngIf="activeTab === 5">
       <div class="row mx-lg-4">
-        <p>ESTADO</p>
+        <div class="col-md-12">
+          <div class="mb-3" style="display: flex;">
+            <label class="form-label" style="margin-right: 10px;">¿Cliente confirmado?</label>
+            <div class="checkbox-wrapper-10">
+              <input checked="" type="checkbox" id="cb5" class="tgl tgl-flip" [(ngModel)]="cliente.clie_Confirmacion" />
+              <label for="cb5" data-tg-on="Si" data-tg-off="No" class="tgl-btn"></label>
+            </div>
+          </div>
+        </div>
+        <!-- Observaciones de Retiro-->
+        <div class="col-md-12">
+          <div class="mb-3">
+            <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Inactividad (En caso del Cliente se desactive, explicar la razon aquí.)</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteObservacionesRetiro"
+                [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de navegación -->
+      <div class="row mx-lg-4">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button *ngIf="activeTab > 1" type="button" class="btn-tab-custom btn-tab-prev" (click)="activeTab = activeTab - 1">
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next" (click)="activeTab = activeTab + 1">
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
       </div>
     </div>
 </div>
