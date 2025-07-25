@@ -60,6 +60,11 @@ const routes: Routes = [
     canActivate: [PermisoGuard],
     data: { pantallaId: 20 } // ID 20: Sucursales
   },
+  {
+    path: 'clientes',
+    loadChildren: () =>
+      import('./clientes/clientes.module').then(m => m.ClientesModule)
+  },
    {
     path: 'proveedores',
     loadChildren: () =>
