@@ -61,13 +61,16 @@
         <!-- Código -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteCodigo" class="form-label">Código<span class="text-danger">*</span></label>
+            <label for="clienteCodigo" class="form-label">Código</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
+              <div [ngStyle]="{ border: (!cliente.clie_Codigo.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
+                <i class="ri-attachment-line"></i>
+              </div>
               <input type="text" class="form-control" [class.is-invalid]="
                   !cliente.clie_Codigo.trim() && mostrarErrores
                 " id="clienteCodigo" [(ngModel)]="cliente.clie_Codigo" placeholder="Ingrese el código del cliente"
                 required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Codigo.trim() && mostrarErrores">
               <small>El campo Código del Cliente es requerido</small>
@@ -78,20 +81,18 @@
         <!-- Nacionalidad -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clie_Nacionalidad" class="form-label">
-              País de Nacimiento<span class="text-danger ms-2">*</span>
-            </label>
+            <label for="clie_Nacionalidad" class="form-label">Nacionalidad</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad"
                 [class.is-invalid]="
                   !cliente.clie_Nacionalidad && mostrarErrores
                 " required>
-                <option value="0" disabled selected>Seleccione un país</option>
+                <option value="" disabled selected>Seleccione un país</option>
                 <option *ngFor="let nacionalidad of paises" [value]="nacionalidad.clie_Nacionalidad">
                   {{ nacionalidad.pais_Descripcion }}
                 </option>
               </select>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Nacionalidad && mostrarErrores">
               <small>El campo País de Nacimiento es requerido</small>
@@ -104,6 +105,9 @@
           <div class="mb-3">
             <label for="clienteDNI" class="form-label">DNI</label>
             <div class="d-flex align-items-center">
+              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
+                <i class="ri-polaroid-2-line"></i>
+              </div>
               <input type="text" class="form-control" id="clienteDNI" [(ngModel)]="cliente.clie_DNI"
                 placeholder="Ingrese el DNI del cliente" mask="0000-0000-00000" />
             </div>
@@ -113,13 +117,14 @@
         <!-- RTN -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteRTN" class="form-label">
-              RTN<span class="text-danger ms-2">*</span>
-            </label>
+            <label for="clienteRTN" class="form-label">RTN</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
+              <div [ngStyle]="{ border: (!cliente.clie_RTN.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
+                <i class="ri-newspaper-line"></i>
+              </div>
               <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_RTN.trim() && mostrarErrores"
                 id="clienteRTN" [(ngModel)]="cliente.clie_RTN" placeholder="Ingrese el RTN del cliente" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_RTN.trim() && mostrarErrores">
               <small>El campo RTN es requerido</small>
@@ -130,15 +135,16 @@
         <!-- Nombres -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteNombres" class="form-label">
-              Nombres<span class="text-danger ms-2">*</span>
-            </label>
+            <label for="clienteNombres" class="form-label">Nombres</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
+              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
+                <i class="ri-user-3-line"></i>
+              </div>
               <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
                 [class.is-invalid]="
                   !cliente.clie_Nombres.trim() && mostrarErrores
                 " placeholder="Ingrese el nombre del cliente" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Nombres.trim() && mostrarErrores">
               <small>El campo Nombres es requerido</small>
@@ -149,15 +155,16 @@
         <!-- Apellidos -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteApellidos" class="form-label">
-              Apellidos<span class="text-danger ms-2">*</span>
-            </label>
+            <label for="clienteApellidos" class="form-label">Apellidos</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
+              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
+                <i class="ri-user-3-line"></i>
+              </div>
               <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
                 [class.is-invalid]="
                   !cliente.clie_Apellidos.trim() && mostrarErrores
                 " placeholder="Ingrese los apellidos del cliente" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Apellidos.trim() && mostrarErrores">
               <small>El campo Apellidos es requerido</small>
@@ -165,10 +172,11 @@
           </div>
         </div>
 
-        <!-- Sexo ***** -->
+        <!-- Sexo -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label d-block">Sexo <span class="text-danger">*</span></label>
+            <label class="form-label d-block">Sexo</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="sexo-toggle d-flex">
               <label class="sexo-option me-2" [class.selected]="cliente.clie_Sexo === 'M'">
                 <input type="radio" name="sexo" value="M" [(ngModel)]="cliente.clie_Sexo" required />
@@ -191,8 +199,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Estado Civil</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id"
-              [class.is-invalid]="!cliente.esCv_Id && mostrarErrores" required>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id">
               <option value="0" disabled selected>
                 Seleccione un estado civil
               </option>
@@ -208,6 +215,9 @@
           <div class="mb-3">
             <label for="clienteFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
             <div class="d-flex align-items-center">
+              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
+                <i class="ri-calendar-todo-fill"></i>
+              </div>
               <input type="date" id="clienteFechaNacimiento" class="form-control"
                 [(ngModel)]="cliente.clie_FechaNacimiento" />
             </div>
@@ -217,13 +227,16 @@
         <!-- Teléfono -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="clienteTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
+            <label for="clienteTelefono" class="form-label">Teléfono</label>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
+              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
+                <i class="ri-phone-fill"></i>
+              </div>
               <input type="text" class="form-control" [class.is-invalid]="
                   !cliente.clie_Telefono.trim() && mostrarErrores
                 " id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono"
                 placeholder="Ingrese el teléfono del cliente" mask="0000-0000" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_Telefono.trim() && mostrarErrores">
               <small>El campo Teléfono del Cliente es requerido</small>
@@ -236,6 +249,9 @@
           <div class="mb-3">
             <label for="clienteCorreo" class="form-label">Correo</label>
             <div class="d-flex align-items-center">
+              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
+                <i class="ri-mail-unread-line"></i>
+              </div>
               <input type="text" class="form-control" id="clienteCorreo" [(ngModel)]="cliente.clie_Correo"
                 placeholder="Ingrese el correo del cliente" />
             </div>
@@ -301,35 +317,6 @@
           </div>
         </div>
 
-        <!-- Imagen del negocio -->
-        <!-- <div class="col-md-6">
-          <div class="mb-3">
-            <label for="clienteImagenNegocio" class="form-label"
-              >Imagen<span class="text-danger">*</span></label
-            >
-            <div class="d-flex align-items-center">
-              <input
-                type="text"
-                class="form-control"
-                [class.is-invalid]="
-                  !cliente.clie_ImagenDelNegocio.trim() && mostrarErrores
-                "
-                id="clienteImagenNegocio"
-                [(ngModel)]="cliente.clie_ImagenDelNegocio"
-                placeholder="Ingrese una imagen"
-                required
-              />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div
-              class="text-danger mt-1"
-              *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores"
-            >
-              <small>El campo Imagen es requerido</small>
-            </div>
-          </div>
-        </div> -->
-
         <div class="col-lg-12">
           <div class="mb-3">
             <label class="form-label">Imagen del negocio<span class="text-danger">*</span></label>
@@ -379,7 +366,7 @@
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepa"
-                (change)="cargarMunicipios(selectedDepa)" required>
+                (change)="onDepartamentoChange()" required>
                 <option value="" disabled selected>
                   Seleccione un Departamento
                 </option>
@@ -500,8 +487,9 @@
           </div>
         </div>
 
-        <button class="btn btn-primary mb-2" (click)="abrirMapa()">
-          Seleccionar ubicación en el mapa
+        <button class="btn btn-primary mb-4" (click)="abrirMapa()">
+          <span class="btn-text">Seleccionar una Ubicación</span>
+          <span class="btn-icon"><i class="ri-map-pin-2-line"></i></span>
         </button>
 
         <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
@@ -561,8 +549,9 @@
           <div class="mb-3">
             <label for="clienteObservaciones" class="form-label">Observaciones</label>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteObservaciones" [(ngModel)]="cliente.clie_Observaciones"
-                placeholder="Ingrese las observaciones del cliente" />
+              <textarea type="text" class="form-control" id="clienteObservaciones" [(ngModel)]="cliente.clie_Observaciones"
+                placeholder="Ingrese las observaciones del cliente" rows="4">
+              </textarea>
             </div>
           </div>
         </div>
@@ -633,8 +622,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Estado Civil</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="aval.esCv_Id"
-              [class.is-invalid]="!aval.esCv_Id && mostrarErrores" required>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="aval.esCv_Id">
               <option value="0" disabled selected>
                 Seleccione un estado civil
               </option>
@@ -695,11 +683,11 @@
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepaAval"
-                (change)="cargarMunicipiosAval(selectedDepaAval)" required>
+                (change)="onDepartamentoAvalChange()" required>
                 <option value="" disabled selected>
                   Seleccione un Departamento
                 </option>
-                <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
+                <option *ngFor="let depa of DepartamentosAval" [value]="depa.depa_Codigo">
                   {{ depa.depa_Descripcion }}
                 </option>
               </select>
@@ -724,7 +712,7 @@
                 <option value="" disabled selected>
                   Seleccione un Municipio
                 </option>
-                <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
+                <option *ngFor="let muni of MunicipiosAval" [value]="muni.muni_Codigo">
                   {{ muni.muni_Descripcion }}
                 </option>
               </select>
@@ -744,11 +732,11 @@
             <label for="colo_Id" class="form-label">Colonia</label>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccion.colo_Id" required>
+              <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccionAval.colo_Id" required>
                 <option value="" disabled selected>
                   Seleccione una Colonia
                 </option>
-                <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">
+                <option *ngFor="let colonia of ColoniasAval" [value]="colonia.colo_Id">
                   {{ colonia.colo_Descripcion }}
                 </option>
               </select>
@@ -815,12 +803,11 @@
       <!-- Observaciones de Retiro-->
       <div class="col-md-12">
         <div class="mb-3">
-          <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Inactividad (En caso del Cliente
-            se desactive,
-            explicar la razon aquí.)</label>
+          <label for="clienteObservacionesRetiro" class="form-label">Observaciones de Inactividad (En caso del Cliente se desactive, explicar la razon aquí.)</label>
           <div class="d-flex align-items-center">
-            <input type="text" class="form-control" id="clienteObservacionesRetiro"
-              [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" />
+            <textarea type="text" class="form-control" id="clienteObservacionesRetiro"
+              [(ngModel)]="cliente.clie_ObservacionRetiro" placeholder="Ingrese las observaciones del cliente" rows="4">
+            </textarea> 
           </div>
         </div>
       </div>

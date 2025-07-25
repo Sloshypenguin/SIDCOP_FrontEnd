@@ -1,6 +1,6 @@
 export class Aval{
     aval_Id: number = 0;
-    clie_id: number = 0;
+    clie_Id: number = 0;
     aval_Nombres: string = '';
     aval_Apellidos: string = '';
     aval_ParentescoConCliente: string = '';
@@ -15,9 +15,9 @@ export class Aval{
     usua_Creacion: number = 0;
     usuarioCreacion: string = '';
     aval_FechaCreacion: Date = new Date();
-    usua_Modificacion?: number;
-    usuarioModificacion?: string;
-    aval_FechaModificacion?: Date;
+    usua_Modificacion: number = 0;
+    usuarioModificacion: string = '';
+    aval_FechaModificacion: Date = new Date();
 
     constructor(init?:Partial<Aval>) {
         Object.assign(this, init);
