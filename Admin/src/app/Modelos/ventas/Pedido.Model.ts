@@ -5,6 +5,7 @@ export class Pedido {
   pedi_FechaPedido: Date = new Date();
   pedi_FechaEntrega: Date = new Date();
   clie_Codigo: string = '';
+  clie_Id: number = 0; 
   clie_NombreNegocio: string = '';
   clie_Nombres: string = '';
   clie_Apellidos: string = '';
@@ -19,6 +20,7 @@ export class Pedido {
   peDe_ProdPrecio: number = 0;
   peDe_Cantidad: number = 0;
   detalles: any[] = []; // Cambia el tipo según tu modelo de detalle
+  detallesJson: string = '';
 
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
