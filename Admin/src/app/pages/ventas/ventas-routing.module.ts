@@ -37,6 +37,12 @@ const routes: Routes = [
     path: 'ListasPrecios',
     loadChildren: () =>
       import('./listaPrecios/listasprecios.module').then(m => m.SubcategoriasModule)
+   },
+   {
+    path: 'pedidos',
+    loadChildren: () =>
+      import('./pedidos/pedidos.module').then(m => m.PedidosModule)
+
   },
 ];
 
