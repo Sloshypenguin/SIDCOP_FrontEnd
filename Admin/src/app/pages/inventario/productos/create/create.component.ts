@@ -34,6 +34,22 @@ export class CreateComponent {
   proveedores: any[] = [];
   impuestos: any[] = [];
 
+  categoria: Categoria = {
+    cate_Id: 0,
+    cate_Descripcion: '',
+    cate_Estado: true,
+    cate_FechaCreacion: new Date(),
+    cate_FechaModificacion: new Date(),
+    usua_Creacion: 0, 
+    usua_Modificacion: 0,
+    code_Status: 0,
+    subC_Id: 0,
+    subC_Descripcion: '',
+    usuarioCreacion: '',
+    usuarioModificacion: '',
+    message_Status: ''
+  }
+
   producto: Producto = {
     prod_Id: 0,
     prod_Codigo: '',
@@ -74,10 +90,9 @@ export class CreateComponent {
     this.producto.prod_EsPromo = this.producto.prod_EsPromo || 'N';
     this.cargarCategorias();
     this.cargarSubcategorias(); // si usas todo el listado para algo
-    if (this.producto.cate_Id) {
-      this.filtrarSubcategoriasPorCategoria(this.producto.cate_Id);
+    if (this.categoria.cate_Id) {
+      this.filtrarSubcategoriasPorCategoria(this.categoria.cate_Id);
     }
-
   }
 
   validarPrecioUnitario() {
@@ -95,6 +110,17 @@ export class CreateComponent {
     if (!this.producto.prod_PagaImpuesto) {
       this.producto.impu_Id = 0; // O null, dependiendo cómo lo manejes
     }
+  }
+
+  onCategoriaChange(event: any) {
+    const categoriaId = this.producto.cate_Id;
+    if (categoriaId === undefined || categoriaId === 0) {
+      this.subcategoriasFiltradas = [];
+      this.producto.subc_Id = 0;
+      return;
+    }
+    console.log('Filtrando subcategorías para categoría:', categoriaId);
+    this.filtrarSubcategoriasPorCategoria(categoriaId);
   }
 
   constructor(private http: HttpClient) {
@@ -133,16 +159,6 @@ export class CreateComponent {
     );
   }
 
-  cargarSubcategorias() {
-    this.http.get<Categoria[]>(`${environment.apiBaseUrl}/Subcategoria/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {this.subcategorias = data;}, 
-      error => {
-        console.error('Error al cargar las subcategorías:', error);
-      }
-    ); 
-  }
-
   cargarCategorias() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Categorias/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
@@ -153,20 +169,58 @@ export class CreateComponent {
     );
   }
 
-  filtrarSubcategoriasPorCategoria(categoriaId: number | undefined) {
+  cargarSubcategorias() {
+    this.http.get<Categoria[]>(`${environment.apiBaseUrl}/Subcategoria/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {this.subcategorias = data;}, 
+      error => {
+        console.error('Error al cargar las subcategorías:', error);
+      }
+    ); 
+  }
+
+  isCargandoSubcategorias: boolean = false;
+
+  filtrarSubcategoriasPorCategoria(categoriaId: number) {
+    console.log('Filtrando subcategorías para categoría:', categoriaId);
     if (!categoriaId) {
       this.subcategoriasFiltradas = [];
       this.producto.subc_Id = 0;
+      this.isCargandoSubcategorias = false;
       return;
     }
-    this.http.post<Categoria[]>(`${environment.apiBaseUrl}/Categorias/FiltrarSubcategorias`, { cate_Id: categoriaId }, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Subcategorías recibidas:', data);
-      this.subcategoriasFiltradas = data;
+    this.isCargandoSubcategorias = true; // comienza carga  
+    const categoriaBuscar: Categoria = {
+      cate_Id: categoriaId,
+      cate_Descripcion: '',
+      cate_Estado: true,
+      cate_FechaCreacion: new Date(),
+      cate_FechaModificacion: new Date(),
+      usua_Creacion: 0, 
+      usua_Modificacion: 0,
+      code_Status: 0,
+      subC_Id: 0,
+      subC_Descripcion: '',
+      usuarioCreacion: '',
+      usuarioModificacion: '',
+      message_Status: ''
+    }
+    this.http.post<{data: Categoria[]}>(`${environment.apiBaseUrl}/Categorias/FiltrarSubcategorias`, categoriaBuscar, {
+      headers: { 
+          'X-Api-Key': environment.apiKey,
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        }
+    }).subscribe(response  => {
+      console.log('Subcategorías recibidas:', response);
+      this.subcategoriasFiltradas = response.data;
+      console.log('Subcategorías filtradas:', this.subcategoriasFiltradas);
       this.producto.subc_Id = 0; // Reset subcategory selection
+      this.isCargandoSubcategorias = false; // terminó carga
     }, error => {
       console.error('Error al filtrar subcategorías por categoría:', error);
+      this.subcategoriasFiltradas = [];
+      this.isCargandoSubcategorias = false; // error, pero terminó carga
     });
   }
 
@@ -222,76 +276,76 @@ export class CreateComponent {
     this.mensajeWarning = '';
   }
 
-  guardar(): void {
-    this.mostrarErrores = true;
-    if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id
-      && this.producto.prod_PrecioUnitario.toFixed(2) && this.producto.prod_CostoTotal.toFixed(2))
-    {
-      this.mostrarAlertaWarning = false;
-      this.mostrarAlertaError = false;
-      const productoGuardar = {
-        prod_Id: 0,
-        prod_Codigo: this.producto.prod_Codigo.trim(),
-        prod_CodigoBarra: this.producto.prod_CodigoBarra,
-        prod_Descripcion: this.producto.prod_Descripcion.trim(),
-        prod_DescripcionCorta: this.producto.prod_DescripcionCorta.trim(),
-        prod_imagen: this.producto.prod_Imagen,
-        subc_Id: this.producto.subc_Id,
-        marc_Id: this.producto.marc_Id,
-        prov_Id: this.producto.prov_Id,
-        impu_Id: this.producto.impu_Id,
-        prod_PrecioUnitario: this.producto.prod_PrecioUnitario,
-        prod_CostoTotal: this.producto.prod_CostoTotal,
-        prod_PagaImpuesto: this.producto.prod_PagaImpuesto,
-        // prod_PromODesc: ,
-        // prod_EsPromo: this.producto.prod_EsPromo,
-        prod_Estado: true,
-        usua_Creacion: environment.usua_Id,
-        prod_FechaCreacion: new Date().toISOString(),
-        secuencia: 0,
-      };
-      this.http.post<any>(`${environment.apiBaseUrl}/Productos/Insertar`, productoGuardar, {
-        headers: { 
-          'X-Api-Key': environment.apiKey,
-          'Content-Type': 'application/json',
-          'accept': '*/*'
-        }
-      }).subscribe({
-        next: (response) => {
-          if (response.data.code_Status === 1) {
-            this.mostrarErrores = false;
-            this.onSave.emit(this.producto);
-            this.cancelar();
-          } else {
+    guardar(): void {
+      this.mostrarErrores = true;
+      if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id
+        && this.producto.prod_PrecioUnitario.toFixed(2) && this.producto.prod_CostoTotal.toFixed(2))
+      {
+        this.mostrarAlertaWarning = false;
+        this.mostrarAlertaError = false;
+        const productoGuardar = {
+          prod_Id: 0,
+          prod_Codigo: this.producto.prod_Codigo.trim(),
+          prod_CodigoBarra: this.producto.prod_CodigoBarra,
+          prod_Descripcion: this.producto.prod_Descripcion.trim(),
+          prod_DescripcionCorta: this.producto.prod_DescripcionCorta.trim(),
+          prod_imagen: this.producto.prod_Imagen,
+          subc_Id: this.producto.subc_Id,
+          marc_Id: this.producto.marc_Id,
+          prov_Id: this.producto.prov_Id,
+          impu_Id: this.producto.impu_Id,
+          prod_PrecioUnitario: this.producto.prod_PrecioUnitario,
+          prod_CostoTotal: this.producto.prod_CostoTotal,
+          prod_PagaImpuesto: this.producto.prod_PagaImpuesto,
+          // prod_PromODesc: ,
+          // prod_EsPromo: this.producto.prod_EsPromo,
+          prod_Estado: true,
+          usua_Creacion: environment.usua_Id,
+          prod_FechaCreacion: new Date().toISOString(),
+          secuencia: 0,
+        };
+        this.http.post<any>(`${environment.apiBaseUrl}/Productos/Insertar`, productoGuardar, {
+          headers: { 
+            'X-Api-Key': environment.apiKey,
+            'Content-Type': 'application/json',
+            'accept': '*/*'
+          }
+        }).subscribe({
+          next: (response) => {
+            if (response.data.code_Status === 1) {
+              this.mostrarErrores = false;
+              this.onSave.emit(this.producto);
+              this.cancelar();
+            } else {
+              this.mostrarAlertaError = true;
+              this.mensajeError = 'Error al guardar el producto, ' + response.data.message_Status;
+              this.mostrarAlertaExito = false;
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            }
+          },
+          error: (error) => {
             this.mostrarAlertaError = true;
-            this.mensajeError = 'Error al guardar el producto, ' + response.data.message_Status;
+            this.mensajeError = 'Error al guardar el producto. Por favor, intente nuevamente.';
             this.mostrarAlertaExito = false;
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
           }
-        },
-        error: (error) => {
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el producto. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-        }
-      });
-    } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-      this.mostrarAlertaError = false;
-      this.mostrarAlertaExito = false;
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 4000);
-    }
+        });
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+        this.mostrarAlertaError = false;
+        this.mostrarAlertaExito = false;
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 4000);
+      }
   }
 
   onImagenSeleccionada(event: any) {

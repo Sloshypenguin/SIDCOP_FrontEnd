@@ -84,7 +84,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="cate_Id" class="form-label">
-                        Categorías <span class="text-danger">*</span>
+                        Categorías<span class="text-danger">*</span>
                     </label>
                     <div class="d-flex align-items-center">
                         <select
@@ -92,10 +92,10 @@
                             name="cate_Id"
                             class="form-select"
                             [(ngModel)]="producto.cate_Id"
-                            (change)="filtrarSubcategoriasPorCategoria(producto.cate_Id)"
+                            (change)="onCategoriaChange($event)"
                             required
                         >
-                            <option [ngValue]="null" disabled>Seleccione una Categoría</option>
+                            <option [ngValue]="0" disabled>Seleccione una Categoría</option>
                             <option *ngFor="let cate of categorias" [ngValue]="cate.cate_Id">
                             {{ cate.cate_Descripcion }}
                             </option>
@@ -105,6 +105,7 @@
                     <div class="text-danger mt-1" *ngIf="!producto.cate_Id && mostrarErrores">
                         <small>El campo Categoría es requerido</small>
                     </div>
+                    <small class="text-muted">Debug - Categoría seleccionada: {{ producto.cate_Id }}</small>
                 </div>
             </div>
 
@@ -112,7 +113,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="subC_Id" class="form-label">
-                        Subcategorías <span class="text-danger">*</span>
+                        Subcategorías<span class="text-danger">*</span>
                     </label>
                     <select
                         id="subC_Id"
@@ -120,9 +121,19 @@
                         class="form-select"
                         [(ngModel)]="producto.subc_Id"
                         required
-                        [disabled]="!subcategoriasFiltradas?.length"
+                        [disabled]="!producto.cate_Id || producto.cate_Id === 0"
                     >
-                        <option [ngValue]="null" disabled>Seleccione una Subcategoría</option>
+                        <option [ngValue]="0" disabled>
+                            {{ 
+                                !producto.cate_Id || producto.cate_Id === 0 
+                                ? 'Primero seleccione una categoría' 
+                                : isCargandoSubcategorias 
+                                ? 'Cargando subcategorías...' 
+                                : subcategoriasFiltradas.length === 0 
+                                    ? 'No hay subcategorías disponibles' 
+                                    : 'Seleccione una Subcategoría' 
+                            }}
+                        </option>
                         <option *ngFor="let sub of subcategoriasFiltradas" [ngValue]="sub.subC_Id">
                             {{ sub.subC_Descripcion }}
                         </option>
@@ -130,6 +141,8 @@
                     <div class="text-danger mt-1" *ngIf="!producto.subc_Id && mostrarErrores">
                         <small>El campo Subcategoría es requerido</small>
                     </div>
+                    <small class="text-muted">Debug - Subcategorías disponibles: {{ subcategoriasFiltradas.length || 0 }}</small>
+                    <small class="text-muted d-block">Debug - Subcategoría seleccionada: {{ producto.subc_Id }}</small>
                 </div>
             </div>
 
