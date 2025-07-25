@@ -94,7 +94,6 @@ export class CreateComponent {
       };
 
       console.log('Guardando departamento:', departamentoGuardar);
-      
       this.http.post<any>(`${environment.apiBaseUrl}/Departamentos/Insertar`, departamentoGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
