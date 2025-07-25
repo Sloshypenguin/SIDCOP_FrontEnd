@@ -175,7 +175,7 @@ export class ListComponent implements OnInit {
     
     console.log('Eliminando Descuento:', this.descuentoEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/Vendedores/Eliminar/${this.descuentoEliminar.desc_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Descuentos/Eliminar/${this.descuentoEliminar.desc_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'

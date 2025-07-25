@@ -1,5 +1,5 @@
 <app-breadcrumbs
-  [title]="'Vendedores'"
+  [title]="'Descuentos'"
   [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/seller (1).svg" alt="icono breadcrumb"  [width]="70"/>
@@ -43,7 +43,7 @@
 </div>  
 
         <!-- Collapse para el formulario de detalles -->
- <!-- <div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+ <div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
@@ -52,7 +52,7 @@
       </app-details>
     </div>
   </div>
-</div>  -->
+</div>  
 
         <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <table class="table table-gridjs table-style">

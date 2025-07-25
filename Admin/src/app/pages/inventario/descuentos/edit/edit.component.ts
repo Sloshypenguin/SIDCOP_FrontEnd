@@ -31,6 +31,7 @@ seccionVisible: string | null = null;
   seleccionados: number[] = [];
   clientesAgrupados: { canal: string, clientes: any[] }[] = [];
 clientesSeleccionados: number[] = [];
+descuentosExistentes: any[] = [];
  @ViewChild('cdkStepper') cdkStepper!: CdkStepper;
 
     tabActiva: string = 'productos';
@@ -125,6 +126,7 @@ seleccionarTodos(event: any) {
     this.listarPorductos();
     this.listarSubcategorias();
     this.listarClientes();
+    this.listarDescuentos();
     
   }
 
@@ -260,6 +262,16 @@ seleccionarTodos(event: any) {
   });
 }
 
+listarDescuentos(): void {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Descuentos/Listar`, {
+    headers: {
+      'X-Api-Key': environment.apiKey
+    }
+  }).subscribe(res => {
+    this.descuentosExistentes = res;
+  });
+    };
+
 escalas: {
   deEs_InicioEscala: number;
   deEs_FinEscala: number;
@@ -293,14 +305,98 @@ getClientesFiltrados(grupo: any): any[] {
   );
 }
 
-alternarCliente(clie_Id: number, seleccionado: boolean): void {
-  if (seleccionado) {
-    if (!this.clientesSeleccionados.includes(clie_Id)) {
-      this.clientesSeleccionados.push(clie_Id);
+alternarCliente(clienteId: number, checked: boolean): void {
+ if (checked) {
+    const conflicto = this.hayConflicto(clienteId);
+    
+    if (conflicto) {
+      this.mostrarPopup("El cliente ya tiene un descuento vigente en alguno de los ítems seleccionados.");
+      // Para forzar refresco del checkbox, ejecuta fuera del flujo actual:
+      setTimeout(() => {
+        this.clientesSeleccionados = this.clientesSeleccionados.filter(id => id !== clienteId);
+      }, 0);
+      return;
     }
+
+    this.clientesSeleccionados.push(clienteId);
   } else {
-    this.clientesSeleccionados = this.clientesSeleccionados.filter(id => id !== clie_Id);
+    this.clientesSeleccionados = this.clientesSeleccionados.filter(id => id !== clienteId);
   }
+}
+
+onClickCheckbox(event: MouseEvent, clienteId: number) {
+  const input = event.target as HTMLInputElement;
+  const isChecked = input.checked;
+
+  if (isChecked) {
+    const conflicto = this.hayConflicto(clienteId);
+
+    if (conflicto) {
+      this.mostrarPopup("El cliente ya tiene un descuento vigente en alguno de los ítems seleccionados.");
+
+      // Aquí revertimos el cambio visual con setTimeout
+      setTimeout(() => {
+        input.checked = false;  // Desmarca el checkbox
+      }, 0);
+
+      // También no agregamos al array
+      return;
+    }
+
+    this.clientesSeleccionados.push(clienteId);
+  } else {
+    // Si estaba desmarcando, solo actualizar modelo
+    this.clientesSeleccionados = this.clientesSeleccionados.filter(id => id !== clienteId);
+  }
+}
+
+
+hayConflicto(clienteId: number): boolean {
+  const hoy = new Date();
+   let referenciasSeleccionadas: number[] = [];
+
+  // Asignamos según el tipo de descuento
+   switch (this.descuento.desc_Aplicar) {
+    case 'P': // Productos
+    case 'C': // Categorías
+    case 'M': // Marcas
+    case 'S': // Subcategorías
+      referenciasSeleccionadas = this.seleccionados;
+      break;
+    default:
+      return false;
+  }
+
+  // Filtrar descuentos del mismo tipo (P, C, M o S)
+  const descuentosMismoTipo = this.descuentosExistentes.filter(
+    d => d.desc_Aplicar === this.descuento.desc_Aplicar
+  );
+
+  // Verificar conflicto
+  return descuentosMismoTipo.some(descuento => {
+    const clientes: { id: number }[] = JSON.parse(descuento.clientes || '[]');
+    const referencias: { id: number }[] = JSON.parse(descuento.referencias || '[]');
+
+    const clienteIncluido = clientes.some(c => c.id === clienteId);
+    const fechaInicio = new Date(descuento.desc_FechaInicio);
+    const fechaFin = new Date(descuento.desc_FechaFin);
+    const descuentoVigente = hoy >= fechaInicio && hoy <= fechaFin;
+
+    if (!clienteIncluido || !descuentoVigente) return false;
+
+    // Verificar si hay alguna referencia en común
+    return referencias.some(ref => referenciasSeleccionadas.includes(ref.id));
+  });
+}
+
+mostrarPopup(mensaje: string): void {
+  this.mostrarAlertaWarning = true;
+          this.mensajeWarning = mensaje || 'cliente utilizado en otro descuento';
+          
+          setTimeout(() => {
+            this.mostrarAlertaWarning = false;
+            this.mensajeWarning = '';
+          }, 5000);
 }
 
 // Verificar si todos los clientes de un canal están seleccionados
@@ -313,6 +409,22 @@ seleccionarTodosClientes(grupo: any, seleccionar: boolean): void {
   grupo.clientes.forEach((cliente: { clie_Id: number; }) => {
     this.alternarCliente(cliente.clie_Id, seleccionar);
   });
+}
+
+get fechaInicioFormato(): string {
+  return new Date(this.descuento.desc_FechaInicio).toISOString().split('T')[0];
+}
+
+set fechaInicioFormato(value: string) {
+  this.descuento.desc_FechaInicio = new Date(value);
+}
+
+get fechaFinFormato(): string {
+  return new Date(this.descuento.desc_FechaFin).toISOString().split('T')[0];
+}
+
+set fechaFinFormato(value: string) {
+  this.descuento.desc_FechaFin = new Date(value);
 }
 
 
@@ -354,6 +466,7 @@ tieneAyudante: boolean = false;
       this.clientesSeleccionados = clientesIds;
       this.seleccionados = referenciasIds;
 
+
       switch (this.descuento.desc_Aplicar) {
         case 'P':
           this.seccionVisible = 'productos';
@@ -368,6 +481,8 @@ tieneAyudante: boolean = false;
           this.seccionVisible = 'marcas';
           break;
       }
+      this.descuento.desc_FechaInicio = new Date(this.descuento.desc_FechaInicio);
+      this.descuento.desc_FechaFin = new Date(this.descuento.desc_FechaFin);
       this.descuentoOriginal = this.descuento.desc_Descripcion || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
@@ -381,6 +496,35 @@ tieneAyudante: boolean = false;
 
   cancelar(): void {
     this.cerrarAlerta();
+    this.mostrarErrores = false;
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+    this.descuento = {
+       desc_Id:  0,
+  desc_Descripcion:  '',
+  desc_Tipo: false, 
+  desc_Aplicar:  '',
+  desc_FechaInicio:  new Date(),
+  desc_FechaFin: new Date(),
+  desc_Observaciones:  '',
+  usua_Creacion:  0,
+  desc_FechaCreacion:  new Date(),
+  usua_Modificacion: 0,
+  desc_FechaModificacion: new Date(),
+  desc_Estado: false,
+  usuarioCreacion:  '',
+  usuarioModificacion: '',
+  code_Status:  0,
+  message_Status:''
+
+    };
+    this.seleccionados = [];
+    this.clientesSeleccionados = [];
+    this.escalas = [];
     this.onCancel.emit();
   }
 
@@ -463,7 +607,7 @@ tieneAyudante: boolean = false;
   console.log('datos enviados', descuentoActualizar);
 
 
-      this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/Actualizar`, descuentoActualizar, {
+      this.http.put<any>(`${environment.apiBaseUrl}/Descuentos/Actualizar`, descuentoActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',

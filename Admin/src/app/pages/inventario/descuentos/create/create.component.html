@@ -256,7 +256,7 @@
                             class="form-check-input"
                             [id]="'cliente-' + cliente.clie_Id"
                             [checked]="clientesSeleccionados.includes(cliente.clie_Id)"
-                            (change)="alternarCliente(cliente.clie_Id, $any($event.target).checked)"
+                            (click)="onClickCheckbox($event, cliente.clie_Id)"
                           />
                           <label class="form-check-label" [for]="'cliente-' + cliente.clie_Id">
                             {{ cliente.clie_NombreNegocio }}
@@ -335,6 +335,12 @@
             </div>
             </cdk-step>
           </ng-stepper>
+
+<div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+    <strong>¡Atención!</strong> {{ mensajeWarning }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
     
   
 

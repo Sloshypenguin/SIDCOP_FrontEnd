@@ -87,9 +87,9 @@
                     class="form-control" 
                     [class.is-invalid]="!descuento.desc_FechaInicio && mostrarErrores"
                     id="desc_FechaInicio"
-                    [(ngModel)]="descuento.desc_FechaInicio"
+                    [(ngModel)]="fechaInicioFormato"
                     placeholder="Ingrese la Fecha Inicio del descuento"
-                    [value]="descuento.desc_FechaInicio"
+               
                     required>
                   <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
                 </div>
@@ -108,9 +108,9 @@
                     class="form-control" 
                     [class.is-invalid]="!descuento.desc_FechaFin && mostrarErrores"
                     id="desc_FechaFin"
-                    [(ngModel)]="descuento.desc_FechaFin"
+                    [(ngModel)]="fechaFinFormato"
                     placeholder="Ingrese la Fecha Fin del descuento"
-                    [value]="descuento.desc_FechaFin"
+       
                     required>
                   <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
                 </div>
@@ -198,7 +198,7 @@
                     class="form-check-input"
                     [id]="'check-' + getId(item)"
                     [checked]="seleccionados.includes(getId(item))"
-                    (change)="alternarSeleccion(getId(item))" />
+                    (click)="onClickCheckbox($event, item.clie_Id)" />
               <label class="form-check-label" [for]="'check-' + getId(item)">
                 {{ getNombre(item) }}
               </label>
