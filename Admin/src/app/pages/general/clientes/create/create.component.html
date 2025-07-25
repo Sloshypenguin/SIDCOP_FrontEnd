@@ -440,8 +440,90 @@
     <!--=======================================-->
     <div *ngIf="activeTab === 4">
       <div class="row mx-lg-4">
-        <p>DATOS DEL AVAL</p>
+        <!-- DNI -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteDNI" class="form-label">DNI</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteDNI" [(ngModel)]="cliente.clie_DNI"
+                placeholder="Ingrese el DNI del cliente" mask="0000-0000-00000" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombres -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteNombres" class="form-label">Nombres</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
+                placeholder="Ingrese el nombre del cliente" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Apellidos -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteApellidos" class="form-label">Apellidos</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
+                placeholder="Ingrese los apellidos del cliente" />
+            </div>
+          </div>
+        </div>
       </div>
+
+       <!-- Estado Civil -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="esCv_Id" class="form-label">Estado Civil</label>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id" [class.is-invalid]="!cliente.esCv_Id && mostrarErrores" required>
+              <option value=0 disabled selected>Seleccione un estado civil</option>
+              <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">{{ estadoCivil.esCv_Descripcion }}</option>
+            </select>
+          </div>
+        </div>
+
+     <!-- Parentesco -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteParentesco" class="form-label">Parentesco</label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" id="clienteParentesco" [(ngModel)]="cliente.aval_Parentesco"
+                placeholder="Ingrese el parentesco del cliente" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Teléfono -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteTelefono" class="form-label">Teléfono<span class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_Telefono.trim() && mostrarErrores"
+                id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono" placeholder="Ingrese el teléfono del cliente"
+                mask="0000-0000" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Telefono.trim() && mostrarErrores">
+              <small>El campo Teléfono del Cliente es requerido</small>
+            </div>
+          </div>
+        </div>
+
+
+       <!-- Tipos de Vivienda -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id" [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
+              <option value=0 disabled selected>Seleccione un tipo de vivienda</option>
+              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id"> {{ tipoVivienda.tiVi_Descripcion }}</option>
+            </select>
+          </div>
+        </div>
 
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
