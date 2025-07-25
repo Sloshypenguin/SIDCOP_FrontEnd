@@ -14,6 +14,13 @@ import { DetailsComponent } from '../details/details.component';
 import {Colonias} from 'src/app/Modelos/general/Colonias.Model';
 import {Municipio} from 'src/app/Modelos/general/Municipios.Model';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 
 @Component({
@@ -31,7 +38,39 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
       DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrl: './list.component.scss',
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   mostrarOverlayCarga: boolean = false;
@@ -95,6 +134,24 @@ export class ListComponent implements OnInit {
 
    detalles(colonia: Colonias): void {
     console.log('Abriendo detalles para:', colonia);
+    // Validar campos esperados
+    const camposEsperados = [
+      'colo_Descripcion', 'muni_Descripcion', 'depa_Descripcion',
+      'secuencia', 'muni_Codigo', 'depa_Codigo',
+      'usuarioCreacion', 'usuarioModificacion',
+      'colo_FechaCreacion', 'colo_FechaModificacion'
+    ];
+    let faltantes: string[] = [];
+    camposEsperados.forEach(campo => {
+      if (!(campo in colonia)) {
+        faltantes.push(campo);
+      }
+    });
+    if (faltantes.length > 0) {
+      console.warn('ADVERTENCIA: El objeto colonia recibido NO contiene los siguientes campos esperados por el detalle:', faltantes);
+    } else {
+      console.log('Todos los campos esperados están presentes.');
+    }
     this.coloniaDetalle = { 
       ...colonia, 
     };
