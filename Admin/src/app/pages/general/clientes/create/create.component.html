@@ -317,22 +317,18 @@
             <div class="text-danger mt-1" *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores">
               <small>El campo Imagen es requerido</small>
             </div>
-                <button  type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
-      <span class="btn-text">Seleccionar mi ubicación actual</span>
-      <span class="btn-icon"><i class="ri-add-line"></i></span>
-    </button>
           </div>
         </div>
 
-
-
-
-
-<!-- Overlay para el modal -->
-
-
-
-
+        <button class="btn btn-primary mb-2" (click)="mostrarMapa = true">
+          Seleccionar ubicación en el mapa
+        </button>
+        
+        <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
+          <strong>Ubicación seleccionada:</strong><br>
+          Latitud: {{ latitudSeleccionada }}<br>
+          Longitud: {{ longitudSeleccionada }}
+        </div>
       </div>
     </div>
 
@@ -363,6 +359,7 @@
       </div>
     </div>
 </div>
+
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarMapa }" *ngIf="mostrarMapa"></div>
 
 <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarMapa }" [style.display]="mostrarMapa ? 'block' : 'none'" tabindex="-1" role="dialog" >
@@ -370,15 +367,18 @@
     <div class="modal-content">
       <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
         <span>Seleccionar mi ubicación actual</span>
-        <i class="ri-close-line custom-modal-close"></i>
+        <i class="ri-close-line custom-modal-close"
+        (click)="cerrarMapa()"></i>
       </div>
       <hr class="custom-modal-divider">
       <div class="modal-body custom-modal-body">
-        <div class="text-center"> 
+        <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)"></app-mapa-selector>
+        <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
+          <strong>Ubicación seleccionada:</strong><br>
+          Latitud: {{ latitudSeleccionada }}<br>
+          Longitud: {{ longitudSeleccionada }}
         </div>
       </div>
-      <div class="modal-footer custom-modal-footer">
-      </div> 
     </div>
   </div>
 </div>

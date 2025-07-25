@@ -5,11 +5,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { environment } from 'src/environments/environment';
 import {NgxMaskDirective, provideNgxMask} from 'ngx-mask';
+import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective, MapaSelectorComponent],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss',
   providers: [provideNgxMask()]
@@ -35,6 +36,19 @@ export class CreateComponent {
   estadosCiviles: any[] = [];
   canales: any[] = [];
   rutas: any[] = [];
+
+  latitudSeleccionada: number | null = null;
+  longitudSeleccionada: number | null = null;
+
+  onCoordenadasSeleccionadas(coords: { lat: number, lng: number }) {
+    this.latitudSeleccionada = coords.lat;
+    this.longitudSeleccionada = coords.lng;
+    this.mostrarMapa = false;
+  }
+
+  cerrarMapa() {
+    this.mostrarMapa = false;
+  }
 
   constructor(private http: HttpClient) {
     this.cargarPaises();
