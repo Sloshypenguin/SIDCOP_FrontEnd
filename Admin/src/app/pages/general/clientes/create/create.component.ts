@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { environment } from 'src/environments/environment';
-import {NgxMaskDirective, provideNgxMask} from 'ngx-mask';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
 import { Aval } from 'src/app/Modelos/general/Aval.Model';
 
@@ -26,47 +26,47 @@ export class CreateComponent {
   @Output() onSave = new EventEmitter<Cliente>();
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
-  
+
 
   dropzoneConfig = {
-  url: '/api/upload', // Replace with your actual upload endpoint
-  maxFilesize: 5, // MB
-  acceptedFiles: 'image/*',
-  addRemoveLinks: true,
-  dictDefaultMessage: 'Selecciona una imagen para subir.'
-};
+    url: '/api/upload', // Replace with your actual upload endpoint
+    maxFilesize: 5, // MB
+    acceptedFiles: 'image/*',
+    addRemoveLinks: true,
+    dictDefaultMessage: 'Selecciona una imagen para subir.'
+  };
 
   // Propiedad para almacenar archivos subidos
-uploadedFiles: any[] = [];
+  uploadedFiles: any[] = [];
 
-// Método para manejar la selección de archivos
-onFileSelected(event: any): void {
-  const files = event.target.files;
-  if (files && files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.uploadedFiles.push({
-          name: file.name,
-          size: file.size,
-          dataURL: e.target.result
-        });
-      };
-      reader.readAsDataURL(file);
+  // Método para manejar la selección de archivos
+  onFileSelected(event: any): void {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.uploadedFiles.push({
+            name: file.name,
+            size: file.size,
+            dataURL: e.target.result
+          });
+        };
+        reader.readAsDataURL(file);
+      }
     }
   }
-}
 
-// Add this method to remove a file from the uploadedFiles array
-removeFile(file: any): void {
-  if (this.uploadedFiles) {
-    const index = this.uploadedFiles.indexOf(file);
-    if (index > -1) {
-      this.uploadedFiles.splice(index, 1);
+  // Add this method to remove a file from the uploadedFiles array
+  removeFile(file: any): void {
+    if (this.uploadedFiles) {
+      const index = this.uploadedFiles.indexOf(file);
+      if (index > -1) {
+        this.uploadedFiles.splice(index, 1);
+      }
     }
   }
-}
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -77,7 +77,7 @@ removeFile(file: any): void {
   mostrarMapa = false;
 
   nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
-  direccion = {colo_Id: ''};
+  direccion = { colo_Id: '' };
   activeTab = 1;
 
   nacionalidades: any[] = [];
@@ -127,7 +127,7 @@ removeFile(file: any): void {
     this.mostrarMapa = true;
     setTimeout(() => {
       this.mapaSelectorComponent.inicializarMapa();
-    }, 300); 
+    }, 300);
   }
 
   cerrarMapa() {
@@ -175,7 +175,7 @@ removeFile(file: any): void {
     }).subscribe(data => this.rutas = data);
   }
 
-    cargarListados(): void {
+  cargarListados(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
@@ -198,29 +198,29 @@ removeFile(file: any): void {
     });
   }
 
-    cargarMunicipios(codigoDepa: string): void {
-      this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
-      this.selectedMuni = '';
-    }
+  cargarMunicipios(codigoDepa: string): void {
+    this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+    this.selectedMuni = '';
+  }
 
-    cargarColonias(codigoMuni: string): void {
-      console.log('Cargando colonias para municipio:', codigoMuni);
-      console.log('TodasColonias:', this.TodasColonias);
-      this.Colonias = this.TodasColonias.filter(c => c.muni_Codigo === codigoMuni);
-      this.selectedColonia = '';
-    }
+  cargarColonias(codigoMuni: string): void {
+    console.log('Cargando colonias para municipio:', codigoMuni);
+    console.log('TodasColonias:', this.TodasColonias);
+    this.Colonias = this.TodasColonias.filter(c => c.muni_Codigo === codigoMuni);
+    this.selectedColonia = '';
+  }
 
-    cargarMunicipiosAval(codigoDepaAval: string): void {
-      this.MunicipiosAval = this.TodosMunicipiosAval.filter(m => m.depa_Codigo === codigoDepaAval);
-      this.selectedMuniAval = '';
-    }
+  cargarMunicipiosAval(codigoDepaAval: string): void {
+    this.MunicipiosAval = this.TodosMunicipiosAval.filter(m => m.depa_Codigo === codigoDepaAval);
+    this.selectedMuniAval = '';
+  }
 
-    cargarColoniasAval(codigoMuniAval: string): void {
-      console.log('Cargando colonias para municipio:', codigoMuniAval);
-      console.log('TodasColonias:', this.TodasColonias);
-      this.ColoniasAval = this.TodasColoniasAval.filter(c => c.muni_Codigo === codigoMuniAval);
-      this.selectedColoniaAval = '';
-    }
+  cargarColoniasAval(codigoMuniAval: string): void {
+    console.log('Cargando colonias para municipio:', codigoMuniAval);
+    console.log('TodasColonias:', this.TodasColonias);
+    this.ColoniasAval = this.TodasColoniasAval.filter(c => c.muni_Codigo === codigoMuniAval);
+    this.selectedColoniaAval = '';
+  }
 
   cliente: Cliente = {
     clie_Id: 0,
@@ -233,19 +233,19 @@ removeFile(file: any): void {
     clie_Apellidos: '',
     clie_NombreNegocio: '',
     clie_ImagenDelNegocio: '',
-    clie_Telefono:  '',
+    clie_Telefono: '',
     clie_Correo: '',
     clie_Sexo: 'M',
     clie_FechaNacimiento: new Date(),
     tiVi_Id: 0,
-    tiVi_Descripcion:  '',
+    tiVi_Descripcion: '',
     cana_Id: 0,
-    cana_Descripcion:  '',
+    cana_Descripcion: '',
     esCv_Id: 0,
     esCv_Descripcion: '',
     ruta_Id: 0,
     ruta_Descripcion: '',
-    clie_LimiteCredito:  0,
+    clie_LimiteCredito: 0,
     clie_DiasCredito: 0,
     clie_Saldo: 0,
     clie_Vencido: true,
@@ -304,7 +304,7 @@ removeFile(file: any): void {
   crear(): void {
     this.mostrarMapa = true;
   }
-  
+
   cancelar(): void {
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
@@ -324,19 +324,19 @@ removeFile(file: any): void {
       clie_Apellidos: '',
       clie_NombreNegocio: '',
       clie_ImagenDelNegocio: '',
-      clie_Telefono:  '',
+      clie_Telefono: '',
       clie_Correo: '',
       clie_Sexo: '',
       clie_FechaNacimiento: new Date(),
       tiVi_Id: 0,
-      tiVi_Descripcion:  '',
+      tiVi_Descripcion: '',
       cana_Id: 0,
-      cana_Descripcion:  '',
+      cana_Descripcion: '',
       esCv_Id: 0,
       esCv_Descripcion: '',
       ruta_Id: 0,
       ruta_Descripcion: '',
-      clie_LimiteCredito:  0,
+      clie_LimiteCredito: 0,
       clie_DiasCredito: 0,
       clie_Saldo: 0,
       clie_Vencido: true,
@@ -359,11 +359,82 @@ removeFile(file: any): void {
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
-   this.mensajeExito = '';
+    this.mensajeExito = '';
     this.mostrarAlertaError = false;
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
+  }
+
+  guardarCliente():void{
+    const clienteGuardar={
+      clie_Id: 0,
+      clie_Codigo: this.cliente.clie_Codigo.trim(),
+      clie_Nacionalidad: this.cliente.clie_Nacionalidad,
+      pais_Descripcion: this.cliente.pais_Descripcion,
+      clie_DNI: this.cliente.clie_DNI.trim(),
+      clie_RTN: this.cliente.clie_RTN.trim(),
+      clie_Nombres: this.cliente.clie_Nombres.trim(),
+      clie_Apellidos: this.cliente.clie_Apellidos.trim(),
+      clie_NombreNegocio: this.cliente.clie_NombreNegocio.trim(),
+      clie_ImagenDelNegocio: 'Imagen por definir',
+      clie_Telefono: this.cliente.clie_Telefono.trim(),
+      clie_Correo: this.cliente.clie_Correo.trim(),
+      clie_Sexo: this.cliente.clie_Sexo,
+      clie_FechaNacimiento: this.cliente.clie_FechaNacimiento ? this.cliente.clie_FechaNacimiento.toISOString() : null,
+      tiVi_Id: this.cliente.tiVi_Id,
+      tiVi_Descripcion: this.cliente.tiVi_Descripcion,
+      cana_Id: this.cliente.cana_Id,
+      cana_Descripcion: this.cliente.cana_Descripcion,
+      esCv_Id: this.cliente.esCv_Id,
+      esCv_Descripcion: this.cliente.esCv_Descripcion,
+      ruta_Id: this.cliente.ruta_Id,
+      ruta_Descripcion: this.cliente.ruta_Descripcion,
+      clie_LimiteCredito: this.cliente.clie_LimiteCredito,
+      clie_DiasCredito: this.cliente.clie_DiasCredito,
+      clie_Saldo: 110,
+      clie_Vencido: false,
+      clie_Observaciones: this.cliente.clie_Observaciones.trim(),
+      clie_ObservacionRetiro: this.cliente.clie_ObservacionRetiro.trim(),
+      clie_Confirmacion: this.cliente.clie_Confirmacion,
+      clie_Estado: true,
+      usua_Creacion: environment.usua_Id,
+      usua_Modificacion: environment.usua_Id,
+      secuencia: 0,
+      clie_FechaCreacion: new Date(),
+      clie_FechaModificacion: new Date(),
+      code_Status: 0,
+      message_Status: '',
+      usuaC_Nombre: '',
+      usuaM_Nombre: ''
+    }
+    this.http.post<any>(`${environment.apiBaseUrl}/Cliente/Insertar`, clienteGuardar, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        this.cliente.clie_Id = response.clie_Id || response.id || response.data?.clie_Id;
+        this.mensajeExito = `Cliente "${this.cliente.clie_Nombres}" guardado exitosamente`;
+        this.mostrarAlertaExito = true;
+        this.mostrarErrores = false;
+        setTimeout(() => {
+          this.mostrarAlertaExito = false;
+          this.onSave.emit(this.cliente);
+          this.cancelar();
+        }, 3000);
+      },
+      error: (error) => {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al guardar el Cliente. Por favor, intente nuevamente.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
   }
 
   guardar(): void {
