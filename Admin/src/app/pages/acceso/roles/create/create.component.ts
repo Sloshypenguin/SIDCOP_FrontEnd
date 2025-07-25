@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 
 interface TreeItem {
@@ -244,10 +245,14 @@ export class CreateComponent {
     }, []);
   }
   
-  estanExpandidoTodos = true; // por defecto todo expandido
+  get hayExpandido(): boolean {
+    return this.treeData.some(esquema => esquema.expanded || (esquema.children ? esquema.children.some(pantalla => pantalla.expanded) : false));
+  }
+
+  // estanExpandidoTodos = true; // por defecto todo expandido
 
   alternarDesplegables(): void {
-    this.estanExpandidoTodos = !this.estanExpandidoTodos;
+    const expandir = !this.hayExpandido;
 
     const cambiarExpansion = (items: TreeItem[], expandir: boolean) => {
       for (const item of items) {
@@ -255,11 +260,10 @@ export class CreateComponent {
         if (item.children) {
           cambiarExpansion(item.children, expandir);
         }
-      }
-    };
+      } 
+    }
 
-    cambiarExpansion(this.treeData, this.estanExpandidoTodos);
-
+    cambiarExpansion(this.treeData, expandir);
   }
 
   guardar(): void {
@@ -273,7 +277,7 @@ export class CreateComponent {
     const rolInsertar = {
       role_Id: 0,
       role_Descripcion: this.rol.role_Descripcion.trim(),
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       role_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       numero: '',
@@ -317,7 +321,7 @@ export class CreateComponent {
               return {
                 acPa_Id: acPa.AcPa_Id,
                 role_Id: ultimoRol.role_Id,
-                usua_Creacion: environment.usua_Id,
+                usua_Creacion: getUserId(),
                 perm_FechaCreacion: new Date().toISOString()
               };
             })

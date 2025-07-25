@@ -3,14 +3,14 @@ import { PermisosService } from '../services/permisos.service';
 
 @Directive({
   selector: '[appPermiso]',
-  standalone: true
+  standalone: true,
 })
 export class PermisoDirective implements OnInit {
   @Input() pantallaId: number = 0;
   @Input() accion: string = '';
 
   constructor(
-    private el: ElementRef, 
+    private el: ElementRef,
     private renderer: Renderer2,
     private permisosService: PermisosService
   ) {}
@@ -23,9 +23,11 @@ export class PermisoDirective implements OnInit {
       }
       return; // El elemento se mantiene visible si tiene permiso
     }
-    
+
     // Verificar si tiene permiso para la acción específica
-    if (!this.permisosService.tieneAccionPermiso(this.pantallaId, this.accion)) {
+    if (
+      !this.permisosService.tieneAccionPermiso(this.pantallaId, this.accion)
+    ) {
       this.ocultarElemento();
     }
   }

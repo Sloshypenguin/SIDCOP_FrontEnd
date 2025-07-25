@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 interface Permiso {
   perm_Id: number;
@@ -230,9 +231,9 @@ export class EditComponent implements OnChanges {
       pant_Descripcion: '',
       acci_Id: 0,
       acci_Descripcion: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       perm_FechaCreacion: new Date().toISOString(),
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       perm_FechaModificacion: new Date().toISOString()
     };
 
@@ -331,10 +332,14 @@ export class EditComponent implements OnChanges {
     }, []);
   }
 
-  estanExpandidoTodos = true;
+  get hayExpandido(): boolean {
+    return this.treeData.some(esquema => esquema.expanded || (esquema.children ? esquema.children.some(pantalla => pantalla.expanded) : false));
+  }
+
+  // estanExpandidoTodos = true; // por defecto todo expandido
 
   alternarDesplegables(): void {
-    this.estanExpandidoTodos = !this.estanExpandidoTodos;
+    const expandir = !this.hayExpandido;
 
     const cambiarExpansion = (items: TreeItem[], expandir: boolean) => {
       for (const item of items) {
@@ -342,10 +347,10 @@ export class EditComponent implements OnChanges {
         if (item.children) {
           cambiarExpansion(item.children, expandir);
         }
-      }
-    };
+      } 
+    }
 
-    cambiarExpansion(this.treeData, this.estanExpandidoTodos);
+    cambiarExpansion(this.treeData, expandir);
   }
 
   validarEdicion(): void {
@@ -406,7 +411,7 @@ export class EditComponent implements OnChanges {
         return {
           acPa_Id: acPa.AcPa_Id,
           role_Id: this.rol.role_Id,
-          usua_Creacion: environment.usua_Id,
+          usua_Creacion: getUserId(),
           perm_FechaCreacion: new Date().toISOString()
         };
       })
@@ -428,7 +433,7 @@ export class EditComponent implements OnChanges {
       role_Descripcion: this.rol.role_Descripcion.trim(),
       usua_Creacion: this.rol.usua_Creacion,
       role_FechaCreacion: this.rol.role_FechaCreacion,
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       numero: this.rol.secuencia || '',
       role_FechaModificacion: new Date().toISOString(),
       usuarioCreacion: '',
@@ -469,9 +474,9 @@ export class EditComponent implements OnChanges {
         const promesasEliminar = permisosAEliminar.map(pEliminar => {
           const permisoEliminar: PermisoEliminar = {
             perm_Id: pEliminar.perm_Id,
-            usua_Creacion: environment.usua_Id,
+            usua_Creacion: getUserId(),
             perm_FechaCreacion: new Date().toISOString(),
-            usua_Modificacion: environment.usua_Id,
+            usua_Modificacion: getUserId(),
             perm_FechaModificacion: new Date().toISOString()
           };
           return this.http.post(`${environment.apiBaseUrl}/Eliminar`, permisoEliminar, {
@@ -487,7 +492,7 @@ export class EditComponent implements OnChanges {
           const permisoInsertar: PermisoInsertar = {
             acPa_Id: pInsertar.acPa_Id,
             role_Id: pInsertar.role_Id,
-            usua_Creacion: environment.usua_Id,
+            usua_Creacion: getUserId(),
             perm_FechaCreacion: new Date().toISOString()
           };
           return this.http.post(`${environment.apiBaseUrl}/Insertar`, permisoInsertar, {

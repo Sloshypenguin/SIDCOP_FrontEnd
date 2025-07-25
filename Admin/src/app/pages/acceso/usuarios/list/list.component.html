@@ -42,6 +42,14 @@
             </div>
         </div>
 
+        <div *ngIf="showDetailsForm" [@fadeExpand]>
+            <div class="mb-2 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+                <div class="container-fluid flex-grow-1">
+                    <app-details [usuarioData]="usuarioDetalles" (onClose)="cerrarFormularioDetalles()"></app-details>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
