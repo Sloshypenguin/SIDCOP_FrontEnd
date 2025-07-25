@@ -251,7 +251,7 @@
     left: floatingMenuService.left + 'px',
   }">
   <li *ngIf="accionPermitida('editar')">
-    <button type="button" class="dropdown-action-btn" (click)="floatingMenuService.close()">
+    <button type="button" class="dropdown-action-btn" (click)="irAEditar(floatingMenuService.data.cpCo_Id)">
       Editar <i class="ri-edit-line"></i>
     </button>
   </li>
@@ -261,8 +261,13 @@
     </button>
   </li>
   <li *ngIf="accionPermitida('detalle')">
-    <button type="button" class="dropdown-action-btn" (click)="floatingMenuService.close()">
+    <button type="button" class="dropdown-action-btn" (click)="irADetalles(floatingMenuService.data.cpCo_Id)">
       Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('pagar')">
+    <button type="button" class="dropdown-action-btn" (click)="irARegistrarPago(floatingMenuService.data.cpCo_Id)">
+      Registrar Pago <i class="ri-money-dollar-circle-line"></i>
     </button>
   </li>
 </ul>

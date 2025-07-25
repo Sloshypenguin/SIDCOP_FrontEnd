@@ -219,6 +219,22 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
+  // Métodos para navegación desde el menú flotante
+  irAEditar(id: number): void {
+    this.router.navigate(['/ventas/cuentasporcobrar/edit', id]);
+    this.floatingMenuService.close();
+  }
+
+  irADetalles(id: number): void {
+    this.router.navigate(['/ventas/cuentasporcobrar/details', id]);
+    this.floatingMenuService.close();
+  }
+
+  irARegistrarPago(id: number): void {
+    this.router.navigate(['/ventas/cuentasporcobrar/payment', id]);
+    this.floatingMenuService.close();
+  }
+
   private cargardatos(): void {
     this.cuentasPorCobrarService.obtenerCuentasPorCobrar(true, false).subscribe({
       next: (response: any) => {

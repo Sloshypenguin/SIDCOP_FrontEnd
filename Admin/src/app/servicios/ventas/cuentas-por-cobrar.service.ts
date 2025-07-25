@@ -35,10 +35,23 @@ export class CuentasPorCobrarService {
   /**
    * Obtiene una cuenta por cobrar por su ID
    * @param id ID de la cuenta por cobrar
-   * @returns Detalles de la cuenta por cobrar
+   * @returns Cuenta por cobrar específica
    */
   obtenerCuentaPorCobrarPorId(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/CuentasPorCobrar/ObtenerPorId/${id}`, {
+    return this.http.get(`${this.apiUrl}/CuentasPorCobrar/Detalle/${id}`, {
+      headers: this.headers
+    });
+  }
+  
+  /**
+   * Obtiene los detalles de una cuenta por cobrar específica
+   * @param id ID de la cuenta por cobrar
+   * @returns Detalles de la cuenta por cobrar específica
+   */
+  obtenerDetalleCuentaPorCobrar(id: number): Observable<any> {
+    // Utilizamos el endpoint de listar todas las cuentas y luego filtramos por ID en el componente
+    // porque la API no proporciona un endpoint específico para obtener una cuenta por ID
+    return this.http.get(`${this.apiUrl}/PagosCuentasPorCobrar/ListarCuentasPorCobrar?soloActivas=true&soloVencidas=false`, {
       headers: this.headers
     });
   }

@@ -20,6 +20,7 @@ export class CuentaPorCobrar {
   clie_Codigo: string = '';
   clie_Nombres: string = '';
   clie_Apellidos: string = '';
+  clie_NombreCompleto: string = '';
   clie_NombreNegocio: string = '';
   clie_Telefono: string = '';
   clie_LimiteCredito: number = 0;
