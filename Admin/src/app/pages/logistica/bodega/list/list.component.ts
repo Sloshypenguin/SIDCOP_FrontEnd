@@ -12,6 +12,16 @@ import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
+//Importaciones de Animaciones
 
 @Component({
   selector: 'app-list',
@@ -28,7 +38,40 @@ import { DetailsComponent } from '../details/details.component';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
@@ -91,6 +134,7 @@ export class ListComponent implements OnInit {
   bodegaDetalle: Bodega | null = null;
   
   // Propiedades para alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -102,8 +146,8 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   bodegaAEliminar: Bodega | null = null;
 
-  constructor(public table: ReactiveTableService<Bodega>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
+  constructor(public table: ReactiveTableService<Bodega>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
+    this.cargardatos(true);
   }
 
   accionesDisponibles: string[] = [];
@@ -128,9 +172,7 @@ export class ListComponent implements OnInit {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  // (navigateToCreate eliminado, lógica movida a crear)
 
-  // (navigateToEdit y navigateToDetails eliminados, lógica movida a editar y detalles)
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -147,17 +189,31 @@ export class ListComponent implements OnInit {
   }
 
   guardarBodega(bodega: Bodega): void {
-    console.log('Bodega guardada exitosamente desde create component:', bodega);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Bodega guardada exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarBodega(bodega: Bodega): void {
-    console.log('Bodega actualizada exitosamente desde edit component:', bodega);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Bodega actualizada exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(bodega: Bodega): void {
@@ -176,7 +232,7 @@ export class ListComponent implements OnInit {
     if (!this.bodegaAEliminar) return;
     
     console.log('Eliminando bodega:', this.bodegaAEliminar);
-    
+    this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Bodega/Eliminar/${this.bodegaAEliminar.bode_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -184,66 +240,70 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Bodega eliminada exitosamente');
-            this.mensajeExito = `Bodega "${this.bodegaAEliminar!.bode_Descripcion}" eliminada exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          console.log('Respuesta del servidor:', response);
+          
+          // Verificar el código de estado en la respuesta
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              // Éxito: eliminado correctamente
+              console.log('Bodega eliminada exitosamente');
+              this.mensajeExito = `Bodega "${this.bodegaAEliminar!.bode_Descripcion}" eliminada exitosamente`;
+              this.mostrarAlertaExito = true;
 
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('La bodega está siendo utilizada');
+              // Ocultar la alerta después de 3 segundos
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+
+
+              this.cargardatos(false);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === -1) {
+              //result: está siendo utilizado
+              console.log('La bodega está siendo utilizada');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: la bodega está siendo utilizada.';
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === 0) 
+            {
+              // Error general
+              console.log('Error general al eliminar');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar la bodega.';
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            }
+          } else {
+            // Respuesta inesperada
+            console.log('Respuesta inesperada del servidor');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la bodega está siendo utilizada.';
-            
+            this.mensajeError = response.message || 'Error inesperado al eliminar la bodega.';
+
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar la bodega.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
+
             // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar la bodega.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
+        }, 1000);
       },
     });
   }
@@ -286,12 +346,18 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  //Declaramos un estado en el cargarDatos, esto para hacer el overlay
+  //segun dicha funcion de recargar, ya que si vienes de hacer una accion
+  //es innecesario mostrar el overlay de carga
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Bodega[]>(`${environment.apiBaseUrl}/Bodega/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.table.setData(data);
+      },500);
     });
   }
 }

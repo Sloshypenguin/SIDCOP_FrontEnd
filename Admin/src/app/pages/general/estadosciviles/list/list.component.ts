@@ -12,7 +12,7 @@ import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
-
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -37,7 +37,7 @@ export class ListComponent implements OnInit {
   // Acciones disponibles para el usuario en esta pantalla
   accionesDisponibles: string[] = [];
 
-  // Método robusto para validar si una acción está permitida
+  // METODO PARA VALIDAR SI UNA ACCIÓN ESTÁ PERMITIDA
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
@@ -51,25 +51,9 @@ export class ListComponent implements OnInit {
       { label: 'Estados Civiles', active: true }
     ];
 
-    // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
+    // OBTENER ACCIONES DISPONIBLES DEL USUARIO
     this.cargarAccionesUsuario();
     console.log('Acciones disponibles:', this.accionesDisponibles);
-  }
-
-  // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
   }
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
@@ -102,6 +86,16 @@ export class ListComponent implements OnInit {
     this.showEditForm = false; // Cerrar edit si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
+   constructor(public table: ReactiveTableService<EstadoCivil>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  )
+    {
+    this.cargardatos();
+  }   
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -123,14 +117,6 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   estadoCivilAEliminar: EstadoCivil | null = null;
-
-  constructor(public table: ReactiveTableService<EstadoCivil>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
-  }
-
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -257,34 +243,34 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  // Método para cargar las acciones disponibles del usuario
+  // AQUI EMPIEZA LO BUENO PARA LAS ACCIONES
   private cargarAccionesUsuario(): void {
-    // Obtener permisosJson del localStorage
+    // OBTENEMOS PERMISOSJSON DEL LOCALSTORAGE
     const permisosRaw = localStorage.getItem('permisosJson');
     console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try {
         const permisos = JSON.parse(permisosRaw);
-        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES
         let modulo = null;
         if (Array.isArray(permisos)) {
-          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
+          // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES POR ID
           modulo = permisos.find((m: any) => m.Pant_Id === 14);
         } else if (typeof permisos === 'object' && permisos !== null) {
-          // Si es objeto, buscar por clave
+          // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
           modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
-          console.log('Acciones del módulo:', modulo.Acciones);
-          // Extraer solo el nombre de la acción
+          // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
           console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
       }
-    }
+    } 
+    // AQUI FILTRAMOS Y NORMALIZAMOS LAS ACCIONES
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
     console.log('Acciones finales:', this.accionesDisponibles);
   }
@@ -298,3 +284,4 @@ export class ListComponent implements OnInit {
     });
   }
 }
+

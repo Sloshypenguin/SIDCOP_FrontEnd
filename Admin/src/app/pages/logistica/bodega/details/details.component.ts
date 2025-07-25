@@ -40,7 +40,7 @@ export class DetailsComponent implements OnChanges {
         this.mensajeError = 'Error al cargar los detalles de la bodega.';
         this.cargando = false;
       }
-    }, 500); // Simula tiempo de carga
+    }, 500);
   }
 
   cerrar(): void {

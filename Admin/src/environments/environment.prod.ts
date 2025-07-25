@@ -1,6 +1,9 @@
+const usuarioId = localStorage.getItem('usuarioId');
+const idUsuario = usuarioId ? parseInt(usuarioId, 10) : null; // Usa null como valor predeterminado si no hay ID
+
 export const environment = {
   production: true,
-  defaultauth: 'fakebackend',
+  defaultauth: 'firebase',
   firebaseConfig: {
     apiKey: '',
     authDomain: '',
@@ -11,7 +14,9 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-  apiBaseUrl: 'https://localhost:7071', // Update this to your production API URL
+  apiBaseUrl: 'https://localhost:7071', // URL de producción para SIDCOP
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
-  usua_Id: 1 // Update this for production
+  usua_Id: idUsuario, // Se establecerá dinámicamente al iniciar sesión
+
+  googleMapsApiKey: 'AIzaSyA6bbij1_4crYsWVg6E1PnqGb17lNGdIjA'
 };

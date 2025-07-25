@@ -17,6 +17,18 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2
             },
+            {
+                id: -1, // ID negativo para siempre ser visible
+                label: 'Depuración de Permisos',
+                link: '/dashboards/permisos-debug',
+                parentId: 2
+            },
+            {
+                id: -2, // ID negativo para siempre ser visible
+                label: 'Ejemplo de Permisos',
+                link: '/dashboards/permisos-ejemplo',
+                parentId: 2
+            },
         ]
     },
     {
@@ -28,6 +40,12 @@ export const MENU: MenuItem[] = [
                 id: 61,
                 label: 'MENUITEMS.ACCESO.LIST.USUARIOS',
                 link: '/acceso/usuarios',
+                parentId: 6
+            },
+            {
+                id: 62,
+                label: 'MENUITEMS.ACCESO.LIST.ROLES',
+                link: '/acceso/roles',
                 parentId: 6
             },
         ]
@@ -117,6 +135,13 @@ export const MENU: MenuItem[] = [
                 icon: 'ri-building-2-line'
             },
             {
+                id: 10,
+                label: 'MENUITEMS.GENERAL.LIST.CLIENTES',
+                link: '/general/clientes',
+                parentId: 2,
+                icon: 'ri-building-2-line'
+            },
+            {
                 id: 9,
                 label: 'MENUITEMS.GENERAL.LIST.CARGOS',
                 link: '/general/cargos',
@@ -192,6 +217,14 @@ export const MENU: MenuItem[] = [
                 link: '/logistica/bodegas',
                 parentId: 4,
                 icon: 'ri-truck-line'
+            },
+
+            {
+                id: 29,
+                label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
+                link: '/logistica/traslados',
+                parentId: 4,
+                icon: 'ri-truck-line'
             }
             // Puedes añadir más subitems aquí según sea necesario
         ]
@@ -213,6 +246,13 @@ export const MENU: MenuItem[] = [
                 id: 27,
                 label: 'MENUITEMS.INVENTARIO.LIST.SUBCATEGORIAS',
                 link: '/inventario/subcategorias',
+                parentId: 3,
+                icon: 'ri-truck-line'
+            },
+            {
+                id: 25,
+                label: 'MENUITEMS.INVENTARIO.LIST.PRODUCTOS',
+                link: '/inventario/productos',
                 parentId: 3,
                 icon: 'ri-truck-line'
             }

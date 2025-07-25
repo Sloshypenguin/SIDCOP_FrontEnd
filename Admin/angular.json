@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Steex": {
+    "SIDCOP": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/steex",
+            "outputPath": "dist/SIDCOP",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -32,6 +32,7 @@
               "node_modules/ngx-ui-switch/ui-switch.component.css",
               "node_modules/slick-carousel/slick/slick.scss",
               "node_modules/slick-carousel/slick/slick-theme.scss",
+              "node_modules/leaflet/dist/leaflet.css",
               "src/assets/scss/bootstrap.scss",
               "src/assets/scss/app.scss",
               "src/assets/scss/icons.scss",
@@ -94,10 +95,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Steex:build:production"
+              "buildTarget": "SIDCOP:build:production"
             },
             "development": {
-              "buildTarget": "Steex:build:development"
+              "buildTarget": "SIDCOP:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -105,7 +106,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "Steex:build"
+            "buildTarget": "SIDCOP:build"
           }
         },
         "test": {

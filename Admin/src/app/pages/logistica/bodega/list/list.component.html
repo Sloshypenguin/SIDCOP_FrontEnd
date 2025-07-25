@@ -21,7 +21,7 @@
         </div>
         
         <!-- Collapse para el formulario de creación -->
-<div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
+<div *ngIf="showCreateForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarBodega($event)"></app-create>
@@ -30,7 +30,7 @@
 </div>
 
         <!-- Collapse para el formulario de edición -->
-<div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
+<div *ngIf="showEditForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
@@ -43,7 +43,7 @@
 </div>
 
         <!-- Collapse para el formulario de detalles -->
-<div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+<div *ngIf="showDetailsForm" [@fadeExpand]> 
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
@@ -59,46 +59,162 @@
             <thead>
               <tr>
                  <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">No.</th>
-                <th class="gridjs-th">Descripción</th>
-                <th class="gridjs-th">Capacidad</th>
-                <th class="gridjs-th">Placa</th>
-                <th class="gridjs-th">Tipo de Camion</th>
-                <th class="gridjs-th">VIN</th>
-                <th class="gridjs-th">Vendedor</th>
-                <th class="gridjs-th">Sucursal</th>
-                <th class="gridjs-th">Registro Cai</th>
-                <th class="gridjs-th">Modelo</th>
+                 <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                    <span class="table-header-flex">
+                      No.
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column;">
+                       <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('bode_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Descripción
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+               <th class="gridjs-th" (click)="table.sortBy('bode_Capacidad')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Capacidad
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_Capacidad' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_Capacidad' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+               <th class="gridjs-th" (click)="table.sortBy('bode_Placa')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Placa
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_Placa' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_Placa' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('bode_TipoCamion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Tipo Camión
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_TipoCamion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_TipoCamion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('bode_VIN')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      VIN
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_VIN' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'bode_VIN' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('vend_Nombres')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Vendedor
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'vend_Nombres' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'vend_Nombres' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('sucu_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Sucursal
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'sucu_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'sucu_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('regC_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Registro Cai
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'regC_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'regC_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                <th class="gridjs-th" (click)="table.sortBy('mode_Descripcion')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Modelo
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'mode_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'mode_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
 
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative"  *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                  <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                       <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('eliminar')">
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('detalle')">
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
+                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
+                    <div class="dropdown-action-list">
+                      <button type="button"
+                    class="dropdown-toggle"
+                    [attr.aria-expanded]="false"
+                    (click)="floatingMenuService.open($event, data)">
+                    <span>Acciones</span>
+                    <i class="ri-settings-3-line"></i>
+                  </button>
                   </div>
-                </td>
+                  </td>
                 <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                 <td>{{data.bode_Descripcion}}</td>
                 <td>{{data.bode_Capacidad}}</td>
@@ -143,7 +259,7 @@
 </div>
 
 <!-- Contenedor de alertas flotantes -->
-<div class="alert-container">
+<div class="alert-container" style="z-index: 3000;">
   <!-- Alerta de éxito -->
   <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
     <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
@@ -196,4 +312,40 @@
 <!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
 
+
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenuService.data); floatingMenuService.close()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>
+
 <!-- end row -->
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+    <div class="typing-indicator">
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+    </div>
+</div>

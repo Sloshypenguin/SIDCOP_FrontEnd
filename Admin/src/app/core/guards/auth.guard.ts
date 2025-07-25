@@ -15,25 +15,16 @@ export class AuthGuard  {
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    //     if (environment.defaultauth === 'firebase') {
-    //         const currentUser = this.authenticationService.currentUser();
-    //         if (currentUser) {
-    //             // logged in so return true
-    //             return true;
-    //         }
-    //     } else {
-    //         const currentUser = this.authFackservice.currentUserValue;
-    //         if (currentUser) {
-    //             // logged in so return true
-    //             return true;
-    //         }
-    //         // check if user data is in storage is logged in via API.
-    //         if(localStorage.getItem('currentUser')) {
-    //             return true;
-    //         }
-    //  }
-        // // not logged in so redirect to login page with the return url
-        // this.router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
-        return true;
+        // Verificar si hay un usuario en localStorage
+        const currentUser = localStorage.getItem('currentUser');
+        
+        if (currentUser) {
+            // Usuario ha iniciado sesión, permitir acceso
+            return true;
+        }
+        
+        // Usuario no ha iniciado sesión, redirigir a la página de login
+        this.router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
+        return false;
     }
 }

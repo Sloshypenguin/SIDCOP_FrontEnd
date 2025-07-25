@@ -7,6 +7,8 @@ export class Categoria{
   cate_FechaModificacion?: Date;
   cate_Estado: boolean = false;
   
+  subC_Id?: number = 0;
+  subC_Descripcion?: string = '';
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
   code_Status: number = 0;

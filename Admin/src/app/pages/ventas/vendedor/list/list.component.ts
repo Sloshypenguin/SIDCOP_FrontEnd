@@ -8,10 +8,11 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
+import { Vendedor } from 'src/app/Modelos/ventas/Vendedor.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -109,8 +110,9 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   vendedorEliminar: Vendedor | null = null;
 
-  constructor(public table: ReactiveTableService<Vendedor>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Vendedor>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
     this.cargardatos();
+
   }
 
    accionesDisponibles: string[] = [];
