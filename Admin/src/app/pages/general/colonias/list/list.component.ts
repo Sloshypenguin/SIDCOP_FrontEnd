@@ -34,6 +34,7 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
   styleUrl: './list.component.scss'
 })
 export class ListComponent implements OnInit {
+  mostrarOverlayCarga: boolean = false;
 
   activeActionRow: number | null = null;
   // Variables para control de alertas
@@ -109,12 +110,24 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   coloniaAEliminar: Colonias | null = null;
 
-  private cargardatos(): void {
+  private cargardatos(mostrarOverlay: boolean = true): void {
+    if (mostrarOverlay) this.mostrarOverlayCarga = true;
     this.http.get<Colonias[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+    }).subscribe({
+      next: (data) => {
+        this.table.setData(data);
+        this.mostrarOverlayCarga = false;
+      },
+      error: (error) => {
+        this.mostrarOverlayCarga = false;
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar las colonias.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
     });
   }
 
@@ -122,7 +135,9 @@ export class ListComponent implements OnInit {
     private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute,
-    public floatingMenuService: FloatingMenuService) {}
+    public floatingMenuService: FloatingMenuService) {
+      this.cargardatos(true);
+    }
 
   // Verificar si una acción está permitida
   accionPermitida(accion: string): boolean {
@@ -206,17 +221,85 @@ export class ListComponent implements OnInit {
   }
 
   guardarColonias(colonia: Colonias): void {
-    console.log('colonia guardado exitosamente desde create component:', colonia);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Colonia/Crear`, colonia, {
+      headers: { 
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        setTimeout(() => {
+          this.cargardatos(false);
+          if (response.success && response.data && response.data.code_Status === 1) {
+            this.mensajeExito = 'Colonia creada exitosamente';
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            this.cerrarFormulario();
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data?.message_Status || 'Error al crear la colonia.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
+        }, 1000);
+      },
+      error: (error) => {
+        this.mostrarOverlayCarga = false;
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error inesperado al crear la colonia.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
   }
 
   actualizarColonias(colonia: Colonias): void {
-    console.log('colonia actualizado exitosamente desde edit component:', colonia);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Colonia/Actualizar`, colonia, {
+      headers: { 
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        setTimeout(() => {
+          this.cargardatos(false);
+          if (response.success && response.data && response.data.code_Status === 1) {
+            this.mensajeExito = 'Colonia actualizada exitosamente';
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            this.cerrarFormularioEdicion();
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data?.message_Status || 'Error al actualizar la colonia.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
+        }, 1000);
+      },
+      error: (error) => {
+        this.mostrarOverlayCarga = false;
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error inesperado al actualizar la colonia.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
   }
 
   confirmarEliminar(  colonia: Colonias): void {
@@ -233,9 +316,7 @@ export class ListComponent implements OnInit {
 
   eliminar(): void {
     if (!this.coloniaAEliminar) return;
-    
-    console.log('Eliminando colonia:', this.coloniaAEliminar);
-    
+    this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Colonia/Eliminar/${this.coloniaAEliminar.colo_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -243,67 +324,55 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Colonia eliminada exitosamente');
-            this.mensajeExito = `Colonia "${this.coloniaAEliminar!.colo_Descripcion}" eliminada exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
-
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Colonia está siendo utilizado');
+        setTimeout(() => {
+          this.cargardatos(false);
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              this.mensajeExito = `Colonia "${this.coloniaAEliminar!.colo_Descripcion}" eliminada exitosamente`;
+              this.mostrarAlertaExito = true;
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === -1) {
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: la colonia está siendo utilizada.';
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === 0) {
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar la colonia.';
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+              this.cancelarEliminar();
+            }
+          } else {
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la colonia está siendo utilizado.';
-            
+            this.mensajeError = response.message || 'Error inesperado al eliminar la colonia.';
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar la colonia.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar la colonia.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
+        }, 1000);
       },
+      error: (error) => {
+        this.mostrarOverlayCarga = false;
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error inesperado al eliminar la colonia.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        this.cancelarEliminar();
+      }
     });
   }
 
