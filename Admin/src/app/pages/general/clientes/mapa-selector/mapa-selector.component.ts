@@ -9,13 +9,16 @@ import { CommonModule } from '@angular/common';
   templateUrl: './mapa-selector.component.html',
   styleUrl: './mapa-selector.component.scss',
 })
-export class MapaSelectorComponent implements AfterViewInit {
+export class MapaSelectorComponent {
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
 
   @Output() coordenadasSeleccionadas = new EventEmitter<{ lat: number, lng: number }>();
 
-  ngAfterViewInit(): void {
+  private mapaInicializado = false;
+  inicializarMapa() {
+    if (this.mapaInicializado) return;
+
     this.map = L.map('mapa').setView([14.6349, -90.5069], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,5 +37,11 @@ export class MapaSelectorComponent implements AfterViewInit {
 
       this.coordenadasSeleccionadas.emit({ lat, lng });
     });
+
+    this.mapaInicializado = true;
+
+    setTimeout(() => {
+      this.map!.invalidateSize();
+    }, 100);
   }
 }

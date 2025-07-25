@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -18,6 +18,8 @@ import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component'
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cliente>();
+  @ViewChild(MapaSelectorComponent)
+  mapaSelectorComponent!: MapaSelectorComponent;
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -44,6 +46,13 @@ export class CreateComponent {
     this.latitudSeleccionada = coords.lat;
     this.longitudSeleccionada = coords.lng;
     this.mostrarMapa = false;
+  }
+
+  abrirMapa() {
+    this.mostrarMapa = true;
+    setTimeout(() => {
+      this.mapaSelectorComponent.inicializarMapa();
+    }, 300); 
   }
 
   cerrarMapa() {
