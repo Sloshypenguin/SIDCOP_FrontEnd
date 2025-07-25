@@ -166,7 +166,7 @@ export class CreateComponent {
     clie_ImagenDelNegocio: '',
     clie_Telefono:  '',
     clie_Correo: '',
-    clie_Sexo: '',
+    clie_Sexo: 'M',
     clie_FechaNacimiento: new Date(),
     tiVi_Id: 0,
     tiVi_Descripcion:  '',
