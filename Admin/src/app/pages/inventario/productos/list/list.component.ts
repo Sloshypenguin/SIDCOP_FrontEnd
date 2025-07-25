@@ -38,6 +38,9 @@ export class ListComponent implements OnInit {
   // Acciones disponibles para el usuario en esta pantalla
   accionesDisponibles: string[] = [];
 
+  busqueda: string = '';
+  productosFiltrados: any[] = [];
+
   // Método robusto para validar si una acción está permitida
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
@@ -292,12 +295,59 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
+  productoGrid: any = [];
+  productos: any = [];
+
+  filtradorProductos(): void {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) {
+      this.productosFiltrados = this.productos;
+    } else {
+      this.productosFiltrados = this.productos.filter((producto: any) =>
+        (producto.prod_DescripcionCorta || '').toLowerCase().includes(termino) ||
+        (producto.prod_CodigoBarra || '').toLowerCase().includes(termino) ||
+        (producto.prod_Descripcion || '').toLowerCase().includes(termino)
+      );
+    }
+  }
+
   private cargardatos(): void {
     this.http.get<Producto[]>(`${environment.apiBaseUrl}/Productos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+      this.productoGrid = data || [];
+      this.productos = this.productoGrid.slice(0, 10);
+      this.filtradorProductos();
     });
+  }
+
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
+  get startIndex(): number {
+    return this.productoGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
+  }
+
+  get endIndex(): number {
+    if (!this.productoGrid?.length) return 0;
+    const end = this.currentPage * this.itemsPerPage;
+    return end > this.productoGrid.length ? this.productoGrid.length : end;
+  }
+
+  pageChanged(event: any): void {
+    this.currentPage = event.page;
+    const startItem = (event.page - 1) * event.itemsPerPage;
+    const endItem = event.page * event.itemsPerPage;
+    this.productos = this.productoGrid.slice(startItem, endItem);
+    this.filtradorProductos();
+  }
+
+  trackByProductoId(index: number, item: any): any {
+    return item.prod_Id;
+  }
+
+  onImgError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/images/users/32/agotado.png';
   }
 }

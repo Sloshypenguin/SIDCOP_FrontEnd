@@ -58,10 +58,14 @@ export class EditComponent implements OnChanges {
   }
 
 
-  sucursales: any[] = [];
-  registroCais: any[] = [];
-  vendedores: any[] = [];
-  modelos: any[] = [];
+  // Variables para las listas desplegables
+   sucursales: any[] = [];
+    registroCais: any[] = [];
+    vendedores: any[] = [];
+    modelos: any[] = [];
+
+
+    // Métodos para obtener las listas desplegables desde el backend
 
 
   listarSucursales(): void {
@@ -115,6 +119,7 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
+  // Validar campos requeridos
     if (
       !this.bodega.bode_Descripcion.trim() ||
       !this.bodega.bode_VIN.trim() ||

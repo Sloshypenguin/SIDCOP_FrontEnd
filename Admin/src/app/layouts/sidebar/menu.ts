@@ -135,6 +135,13 @@ export const MENU: MenuItem[] = [
                 icon: 'ri-building-2-line'
             },
             {
+                id: 10,
+                label: 'MENUITEMS.GENERAL.LIST.CLIENTES',
+                link: '/general/clientes',
+                parentId: 2,
+                icon: 'ri-building-2-line'
+            },
+            {
                 id: 9,
                 label: 'MENUITEMS.GENERAL.LIST.CARGOS',
                 link: '/general/cargos',
@@ -196,12 +203,22 @@ export const MENU: MenuItem[] = [
                 parentId: 5,
                 icon: 'ri-group-line'
             },
+
             {
                 id: 43,
                 label: 'MENUITEMS.VENTAS.LIST.CUENTASPORCOBRAR',
                 link: '/ventas/cuentasporcobrar',
                 parentId: 5,
                 icon: 'ri-money-dollar-circle-line'
+            }
+
+              {
+                id: 38,
+                label: 'MENUITEMS.VENTAS.LIST.PEDIDOS',
+                link: '/ventas/pedidos',
+                parentId: 5,
+                icon: 'ri-group-line'
+
             },
             // Puedes añadir más subitems aquí según sea necesario
         ]
@@ -253,6 +270,13 @@ export const MENU: MenuItem[] = [
                 id: 25,
                 label: 'MENUITEMS.INVENTARIO.LIST.PRODUCTOS',
                 link: '/inventario/productos',
+                parentId: 3,
+                icon: 'ri-truck-line'
+            },
+             {
+                id: 22,
+                label: 'MENUITEMS.INVENTARIO.LIST.DESCUENTOS',
+                link: '/inventario/descuentos',
                 parentId: 3,
                 icon: 'ri-truck-line'
             }

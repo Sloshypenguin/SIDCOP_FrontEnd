@@ -34,9 +34,22 @@ const routes: Routes = [
       import('./vendedor/vendedor.module').then(m => m.VendedoresModule)
   },
   {
+
     path: 'cuentasporcobrar',
     loadChildren: () =>
       import('./cuentasporcobrar/cuentasporcobrar.module').then(m => m.CuentasPorCobrarModule)
+    },
+    {
+ path: 'ListasPrecios',
+    loadChildren: () =>
+      import('./listaPrecios/listasprecios.module').then(m => m.SubcategoriasModule)
+   },
+   {
+    path: 'pedidos',
+    loadChildren: () =>
+      import('./pedidos/pedidos.module').then(m => m.PedidosModule)
+
+
   },
 ];
 

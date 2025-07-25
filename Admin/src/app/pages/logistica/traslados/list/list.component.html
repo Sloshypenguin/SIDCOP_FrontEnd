@@ -130,7 +130,9 @@
                     </span>
                   </th>
                 </tr>
-                <tr class="gridjs-th"*ngFor="let data of table.paginated$ | async; let i = index">
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of table.paginated$ | async; let i = index">
                   <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
                     <div class="dropdown-action-list">
                       <button type="button"
@@ -148,7 +150,7 @@
                   <td>{{data.tras_Fecha | date:'dd/MM/yyyy'}}</td>
                   <td>{{data.tras_Observaciones}}</td>
                 </tr>
-                </thead>
+              </tbody>
             </table>
           </div>
         </div>
@@ -174,19 +176,22 @@
 </div>
 
 <!-- Contenedor de alertas flotantes -->
-<div class="alert-container">
+<div class="alert-container" style="z-index: 3000;">
+  <!-- Alerta de éxito -->
   <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
     <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
     <strong>¡Éxito!</strong> {{ mensajeExito }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
-
+  
+  <!-- Alerta de advertencia -->
   <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
     <i class="ri-alert-line me-3 align-middle fs-lg"></i>
     <strong>¡Atención!</strong> {{ mensajeWarning }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
-
+  
+  <!-- Alerta de error -->
   <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
     <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
     <strong>¡Error!</strong> {{ mensajeError }}
@@ -206,25 +211,28 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar el traslado del <strong>{{ trasladoAEliminar?.origen }}</strong> al <strong>{{ trasladoAEliminar?.destino }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar el traslado del <strong>{{ trasladoAEliminar?.origen }}</strong> al <strong>{{ trasladoAEliminar?.destino }}</strong>?
           </p>
         </div>
       </div>
       <div class="modal-footer custom-modal-footer">
-        <button type="button" class="btn btn-primary gray btn-sm btn-minw-5" (click)="cancelarEliminar()"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
-        <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
-          <span class="btn-text">Si</span>
-          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+        <button type="button" class="btn btn-minw-5 btn-primary gray btn-sm" [disabled]="mostrarOverlayCarga" (click)="cancelarEliminar()">
+          <span class="btn-text">No</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
         </button>
-      </div> 
+        <button type="button" class="btn btn-minw-5 btn-primary red btn-sm" [disabled]="mostrarOverlayCarga" (click)="eliminar()">
+          <span class="btn-text" *ngIf="!mostrarOverlayCarga">Si</span>
+          <span class="btn-text" *ngIf="mostrarOverlayCarga">Eliminando...</span>
+          <span class="btn-icon" *ngIf="!mostrarOverlayCarga"><i class="ri-delete-bin-line"></i></span>
+          <span class="btn-icon" *ngIf="mostrarOverlayCarga"><i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i></span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
-
-
 
 <ul
   *ngIf="floatingMenuService.show"
@@ -250,3 +258,15 @@
     </button>
   </li>
 </ul>
+
+<!-- end row -->
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+    <div class="typing-indicator">
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+    </div>
+</div>
