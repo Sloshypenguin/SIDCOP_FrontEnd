@@ -14,8 +14,8 @@ export class Producto {
     prod_PrecioUnitario: number = 0;
     prod_CostoTotal: number = 0;
     prod_PagaImpuesto: string = "";
-    prod_PromODesc: number = 0;
-    prod_EsPromo: string = "";
+    prod_PromODesc?: number = 0;
+    prod_EsPromo?: string = "";
     prod_Estado: boolean = true;
     usua_Creacion: number = 0;
     prod_FechaCreacion: Date = new Date();
@@ -25,6 +25,7 @@ export class Producto {
     prov_NombreEmpresa?: string = '';
     subc_Descripcion?: string = '';
     impu_Descripcion?: string = '';
+    promDesc?: string = '';
     usuarioCreacion?: string = '';
     usuarioModificacion?: string;
     secuencia?: number;
