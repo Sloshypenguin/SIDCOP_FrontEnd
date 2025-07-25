@@ -112,12 +112,12 @@
             <!-- Subcategoria -->
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="subC_Id" class="form-label">
+                    <label for="subc_Id" class="form-label">
                         Subcategorías<span class="text-danger">*</span>
                     </label>
                     <select
-                        id="subC_Id"
-                        name="subC_Id"
+                        id="subc_Id"
+                        name="subc_Id"
                         class="form-select"
                         [(ngModel)]="producto.subc_Id"
                         required
@@ -134,7 +134,7 @@
                                     : 'Seleccione una Subcategoría' 
                             }}
                         </option>
-                        <option *ngFor="let sub of subcategoriasFiltradas" [ngValue]="sub.subC_Id">
+                        <option *ngFor="let sub of subcategoriasFiltradas" [ngValue]="sub.subc_Id">
                             {{ sub.subC_Descripcion }}
                         </option>
                     </select>
