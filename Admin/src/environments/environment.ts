@@ -17,6 +17,8 @@ export const environment = {
     measurementId: "G-1N6FB2GG55"
   },
   apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
+   //apiBaseUrl: 'http://192.168.1.146:8091', //cambiar si es necesario
+
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
   usua_Id: 1, //para cambiar cuando tengamos inicio de sesion
 };

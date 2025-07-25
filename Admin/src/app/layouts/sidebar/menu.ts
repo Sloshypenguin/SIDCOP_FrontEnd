@@ -17,6 +17,18 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2
             },
+            {
+                id: -1, // ID negativo para siempre ser visible
+                label: 'Depuración de Permisos',
+                link: '/dashboards/permisos-debug',
+                parentId: 2
+            },
+            {
+                id: -2, // ID negativo para siempre ser visible
+                label: 'Ejemplo de Permisos',
+                link: '/dashboards/permisos-ejemplo',
+                parentId: 2
+            },
         ]
     },
     {
@@ -119,6 +131,13 @@ export const MENU: MenuItem[] = [
                 id: 13,
                 label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
                 link: '/general/empleados',
+                parentId: 2,
+                icon: 'ri-building-2-line'
+            },
+            {
+                id: 10,
+                label: 'MENUITEMS.GENERAL.LIST.CLIENTES',
+                link: '/general/clientes',
                 parentId: 2,
                 icon: 'ri-building-2-line'
             },

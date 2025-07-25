@@ -42,6 +42,14 @@
             </div>
         </div>
 
+        <div *ngIf="showDetailsForm" [@fadeExpand]>
+            <div class="mb-2 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+                <div class="container-fluid flex-grow-1">
+                    <app-details [usuarioData]="usuarioDetalles" (onClose)="cerrarFormularioDetalles()"></app-details>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
@@ -104,8 +112,9 @@
                                         }
 
                                         <li *ngIf="accionPermitida('restablecer contraseña')">
-                                            <button class="dropdown-action-btn">Cambiar Clave
-                                                <i class="ri-refresh-line"></i></button>
+                                            <button class="dropdown-action-btn"
+                                            (click)="restablecer(data)">Cambiar Clave
+                                            <i class="ri-refresh-line"></i></button>
                                         </li>
                                         <li *ngIf="accionPermitida('detalle')">
                                             <button class="dropdown-action-btn" (click)="detalles(data)">Detalles
@@ -139,7 +148,7 @@
                                     <span class="text-break" style="font-size: 0.8em;">-Usuario<p class="text-muted" style="font-size: 1.5em;">{{ data.usua_Usuario }}</p></span>
                                 </li>
                                 <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
-                                    <span class="text-break" style="font-size: 0.8em;">-Rol<p class="text-muted" style="font-size: 1.5em;">RolDescripcion</p></span>
+                                    <span class="text-break" style="font-size: 0.8em;">-Rol<p class="text-muted" style="font-size: 1.5em;">{{ data.role_Descripcion }}</p></span>
                                 </li>
                             </ul>
                         </div>
@@ -186,7 +195,12 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="text-center mt-3 mb-3">
-                        <i class="ri-user-unfollow-fill" style="font-size: 3rem; color: #4E1212;"></i>
+                        @if (usuarioEliminar?.usua_Estado) {
+                            <i class="ri-user-unfollow-fill" style="font-size: 3rem; color: #AF1D1D;"></i>
+                        }
+                        @else {
+                            <i class="ri-user-follow-fill" style="font-size: 3rem; color: #7DE477;"></i>
+                        }
                     </div>
                     <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
                         <i class=""></i>
@@ -227,6 +241,53 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionRestablecer }" [style.display]="mostrarConfirmacionRestablecer ? 'block' : 'none'" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="text-center mt-3 mb-3">
+                        <h5 class="text-muted">Cambiar clave del usuario:</h5> <h6>{{usuarioRestablecer?.usua_Usuario}}</h6>
+                        <hr>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        <!-- Clave -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="usua_Clave" class="form-label">Contraseña</label>
+                                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                                <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="usuario.usua_Clave" [class.is-invalid]="!usuario.usua_Clave.trim() && mostrarErrores" placeholder="Ingrese la Contraseña" required />
+                                <div class="text-danger mt-1" *ngIf="!usuario.usua_Clave.trim() && mostrarErrores">
+                                    <small>El campo Contraseña es requerido</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirmar Clave -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="usua_Clave" class="form-label">Confirmar Contraseña</label>
+                                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                                <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="confirmaciondePassword" [class.is-invalid]="!confirmaciondePassword.trim() && mostrarErrores" placeholder="Ingrese la Confirmación" required />
+                                <div class="text-danger mt-1" *ngIf="!confirmaciondePassword.trim() && mostrarErrores">
+                                    <small>El campo Confirmar Contraseña requerido</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer custom-modal-footer">
+                        <button type="button" class="btn btn-primary gold" (click)="cancelarRestablecer()">
+                            <span class="btn-text">Cancelar</span>
+                            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="restablecerClave()">
+                            <span class="btn-text">Guardar</span>
+                            <span class="btn-icon"><i class="ri-save-line"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
     </div>
 </div>
