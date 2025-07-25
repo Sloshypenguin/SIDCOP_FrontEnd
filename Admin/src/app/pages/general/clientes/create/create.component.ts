@@ -1,15 +1,16 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { environment } from 'src/environments/environment';
 import {NgxMaskDirective, provideNgxMask} from 'ngx-mask';
+import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective, MapaSelectorComponent],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss',
   providers: [provideNgxMask()]
@@ -17,6 +18,8 @@ import {NgxMaskDirective, provideNgxMask} from 'ngx-mask';
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cliente>();
+  @ViewChild(MapaSelectorComponent)
+  mapaSelectorComponent!: MapaSelectorComponent;
   
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -27,6 +30,8 @@ export class CreateComponent {
   mensajeWarning = '';
   mostrarMapa = false;
 
+  nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
+  direccion = {colo_Id: ''};
   activeTab = 1;
 
   nacionalidades: any[] = [];
@@ -36,12 +41,49 @@ export class CreateComponent {
   canales: any[] = [];
   rutas: any[] = [];
 
+  latitudSeleccionada: number | null = null;
+  longitudSeleccionada: number | null = null;
+
+  cargando = false;
+  cargandoColonias = false;
+  // Filtrado en DDLs
+  Departamentos: any[] = [];
+
+  TodosMunicipios: any[] = [];
+  Municipios: any[] = [];
+
+  TodasColonias: any[] = [];
+  Colonias: any[] = [];
+
+
+  selectedDepa: string = '';
+  selectedMuni: string = '';
+  selectedColonia: string = '';
+
+  onCoordenadasSeleccionadas(coords: { lat: number, lng: number }) {
+    this.latitudSeleccionada = coords.lat;
+    this.longitudSeleccionada = coords.lng;
+    this.mostrarMapa = false;
+  }
+
+  abrirMapa() {
+    this.mostrarMapa = true;
+    setTimeout(() => {
+      this.mapaSelectorComponent.inicializarMapa();
+    }, 300); 
+  }
+
+  cerrarMapa() {
+    this.mostrarMapa = false;
+  }
+
   constructor(private http: HttpClient) {
     this.cargarPaises();
     this.cargarTiposDeVivienda();
     this.cargarEstadosCiviles();
     this.cargarCanales();
     this.cargarRutas();
+    this.cargarListados();
   }
 
   cargarPaises() {
@@ -55,7 +97,7 @@ export class CreateComponent {
   cargarTiposDeVivienda() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/TipoDeVivienda/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => this.paises = data);
+    }).subscribe(data => this.tiposDeVivienda = data);
   }
 
   cargarEstadosCiviles() {
@@ -76,6 +118,41 @@ export class CreateComponent {
     }).subscribe(data => this.rutas = data);
   }
 
+    cargarListados(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.Departamentos = data,
+      error: (error) => console.error('Error cargando departamentos:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodosMunicipios = data,
+      error: (error) => console.error('Error cargando municipios:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodasColonias = data,
+      error: (error) => console.error('Error cargando colonias:', error)
+    });
+  }
+
+    cargarMunicipios(codigoDepa: string): void {
+      this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+      this.selectedMuni = '';
+    }
+
+    cargarColonias(codigoMuni: string): void {
+      console.log('Cargando colonias para municipio:', codigoMuni);
+      console.log('TodasColonias:', this.TodasColonias);
+      this.Colonias = this.TodasColonias.filter(c => c.muni_Codigo === codigoMuni);
+      this.selectedColonia = '';
+    }
+
   cliente: Cliente = {
     clie_Id: 0,
     clie_Codigo: '',
@@ -89,7 +166,7 @@ export class CreateComponent {
     clie_ImagenDelNegocio: '',
     clie_Telefono:  '',
     clie_Correo: '',
-    clie_Sexo: '',
+    clie_Sexo: 'M',
     clie_FechaNacimiento: new Date(),
     tiVi_Id: 0,
     tiVi_Descripcion:  '',
