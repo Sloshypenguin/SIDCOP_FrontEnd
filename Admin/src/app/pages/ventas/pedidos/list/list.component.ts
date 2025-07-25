@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
+import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
@@ -49,7 +49,7 @@ export class ListComponent implements OnInit {
      */
     this.breadCrumbItems = [
       { label: 'Ventas' },
-      { label: 'Puntos de Emision', active: true }
+      { label: 'Pedidos', active: true }
     ];
 
        // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
@@ -68,24 +68,21 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(puntodeemision: PuntoEmision): void {
-    console.log('Abriendo formulario de edición para:', puntodeemision);
+  editar(pedido: Pedido): void {
+    console.log('Abriendo formulario de edición para:', pedido);
     console.log('Datos específicos:', {
-      id: puntodeemision.puEm_Id,
-      codigo: puntodeemision.puEm_Codigo,
-      descripcion: puntodeemision.puEm_Descripcion,
-      completo: puntodeemision
+      completo: pedido
     });
-    this.PEEditando = { ...puntodeemision }; // Hacer copia profunda
+    this.PedidoEditando = { ...pedido }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(puntodeemision: PuntoEmision): void {
-    console.log('Abriendo detalles para:', puntodeemision);
-    this.PEDetalle = { ...puntodeemision }; // Hacer copia profunda
+  detalles(pedido: Pedido): void {
+    console.log('Abriendo detalles para:', pedido);
+    this.PedidoDetalle = { ...pedido }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -99,8 +96,8 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  PEEditando: PuntoEmision | null = null;
-  PEDetalle: PuntoEmision | null = null;
+  PedidoEditando: Pedido | null = null;
+  PedidoDetalle: Pedido | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -112,9 +109,9 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  PEEliminar: PuntoEmision | null = null;
+  PedidoEliminar: Pedido | null = null;
 
-constructor(public table: ReactiveTableService<PuntoEmision>, 
+constructor(public table: ReactiveTableService<Pedido>, 
     private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute,
@@ -137,46 +134,46 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
   
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.PEEditando = null;
+    this.PedidoEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.PEDetalle = null;
+    this.PedidoDetalle = null;
   }
 
-  guardarPE(puntodeemision: PuntoEmision): void {
-    console.log('Estado civil guardado exitosamente desde create component:', puntodeemision);
+  guardarPedido(pedido: Pedido): void {
+    console.log('Estado civil guardado exitosamente desde create component:', pedido);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
   }
 
-  actualizarPE(puntodeemision: PuntoEmision): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', puntodeemision);
+  actualizarPedido(pedido: Pedido): void {
+    console.log('Estado civil actualizado exitosamente desde edit component:', pedido);
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(puntodeemision: PuntoEmision): void {
-    console.log('Solicitando confirmación para eliminar:', puntodeemision);
-    this.PEEliminar = puntodeemision;
+  confirmarEliminar(pedido: Pedido): void {
+    console.log('Solicitando confirmación para eliminar:', pedido);
+    this.PedidoEliminar = pedido;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.PEEliminar = null;
+    this.PedidoEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.PEEliminar) return;
+    if (!this.PedidoEliminar) return;
     
-    console.log('Eliminando estado civil:', this.PEEliminar);
+    console.log('Eliminando estado civil:', this.PedidoEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/PuntoEmision/Eliminar/${this.PEEliminar.puEm_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Pedido/Eliminar/${this.PedidoEliminar.pedi_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -190,7 +187,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             console.log('Punto de Emision exitosamente');
-            this.mensajeExito = `Punto de Emision "${this.PEEliminar!.puEm_Descripcion}" eliminado exitosamente`;
+            this.mensajeExito = `Punto de Emision "${this.PedidoEliminar!.pedi_FechaPedido}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -286,7 +283,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
   }
 
   private cargardatos(): void {
-    this.http.get<PuntoEmision[]>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
+    this.http.get<Pedido[]>(`${environment.apiBaseUrl}/Pedido/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);

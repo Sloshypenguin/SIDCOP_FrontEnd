@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Productos',
+      title: 'Pedidos',
     },
     children: [
       { 
@@ -17,14 +17,7 @@ const routes: Routes = [
         path: 'list',
         loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
         data: {
-          title: 'Listado de Productos',
-        }
-      },
-      {
-        path: 'details/:id',
-        loadComponent: () => import('./details/details.component').then(m => m.DetailsComponent),
-        data: {
-          title: 'Detalles del Producto',
+          title: 'Listado de Pedidos',
         }
       },
     ]
@@ -35,5 +28,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ProductosRoutingModule {}
-
+export class PedidosRoutingModule {}
