@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
 
@@ -10,6 +10,8 @@ import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
+  constructor(private cdr: ChangeDetectorRef) {}
+
   @Input() coloniaData: Colonias | null = null;
   @Output() onClose = new EventEmitter<void>();
 
@@ -19,28 +21,6 @@ export class DetailsComponent implements OnChanges {
   mostrarAlertaError = false;
   mensajeError = '';
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['coloniaData'] && changes['coloniaData'].currentValue) {
-      this.cargarDetallesSimulado(changes['coloniaData'].currentValue);
-    }
-  }
-
-  cargarDetallesSimulado(data: Colonias): void {
-    this.cargando = true;
-    this.mostrarAlertaError = false;
-
-    setTimeout(() => {
-      try {
-        this.coloniaDetalle = { ...data };
-        this.cargando = false;
-      } catch (error) {
-        console.error('Error al cargar detalles de la colonia:', error);
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles de la colonia.';
-        this.cargando = false;
-      }
-    }, 500);
-  }
 
   formatearFecha(fecha: string | Date | null | undefined): string {
     if (!fecha) return 'N/A';
@@ -56,6 +36,32 @@ export class DetailsComponent implements OnChanges {
     } catch {
       return 'N/A';
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['coloniaData'] && changes['coloniaData'].currentValue) {
+      this.cargarDetallesSimulado(changes['coloniaData'].currentValue);
+    }
+  }
+
+  
+  cargarDetallesSimulado(data: Colonias): void {
+    this.cargando = true;
+    this.mostrarAlertaError = false;
+
+    setTimeout(() => {
+      try {
+        this.coloniaDetalle = { ...data };
+        this.cargando = false;
+        console.log('DetailsComponent -> cargando:', this.cargando, 'coloniaDetalle:', this.coloniaDetalle);
+        this.cdr.detectChanges(); // Forzar actualización del template
+      } catch (error) {
+        console.error('Error al cargar detalles de la colonia:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar los detalles de la colonia.';
+        this.cargando = false;
+      }
+    }, 500);
   }
 
   cerrar(): void {
