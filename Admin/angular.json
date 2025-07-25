@@ -32,6 +32,7 @@
               "node_modules/ngx-ui-switch/ui-switch.component.css",
               "node_modules/slick-carousel/slick/slick.scss",
               "node_modules/slick-carousel/slick/slick-theme.scss",
+              "node_modules/leaflet/dist/leaflet.css",
               "src/assets/scss/bootstrap.scss",
               "src/assets/scss/app.scss",
               "src/assets/scss/icons.scss",
