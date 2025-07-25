@@ -685,35 +685,6 @@
           </div>
         </div>
 
-        <!-- Nombres -->
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="clienteNombres" class="form-label">
-              Nombres<span class="text-danger ms-2">*</span>
-            </label>
-            <div class="d-flex align-items-center">
-              <input
-                type="text"
-                class="form-control"
-                id="clienteNombres"
-                [(ngModel)]="cliente.clie_Nombres"
-                [class.is-invalid]="
-                  !cliente.clie_Nombres.trim() && mostrarErrores
-                "
-                placeholder="Ingrese el nombre del cliente"
-                required
-              />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div
-              class="text-danger mt-1"
-              *ngIf="!cliente.clie_Nombres.trim() && mostrarErrores"
-            >
-              <small>El campo Nombres es requerido</small>
-            </div>
-          </div>
-        </div>
-
         <!-- Dirección Exacta -->
         <div class="col-md-6">
           <div class="mb-3">
@@ -727,7 +698,8 @@
                 id="clienteDireccionExacta"
                 [(ngModel)]="direccionPorCliente.diCl_DireccionExacta"
                 [class.is-invalid]="
-                  !direccionPorCliente.diCl_DireccionExacta.trim() && mostrarErrores
+                  !direccionPorCliente.diCl_DireccionExacta.trim() &&
+                  mostrarErrores
                 "
                 placeholder="Ingrese la dirección exacta"
                 required
@@ -736,7 +708,10 @@
             </div>
             <div
               class="text-danger mt-1"
-              *ngIf="!direccionPorCliente.diCl_DireccionExacta.trim() && mostrarErrores"
+              *ngIf="
+                !direccionPorCliente.diCl_DireccionExacta.trim() &&
+                mostrarErrores
+              "
             >
               <small>El campo Dirección Exacta es requerido</small>
             </div>
@@ -1056,8 +1031,8 @@
                 id="depa_Codigo"
                 name="depa_Codigo"
                 class="form-select"
-                [(ngModel)]="selectedDepa"
-                (change)="cargarMunicipios(selectedDepa)"
+                [(ngModel)]="selectedDepaAval"
+                (change)="cargarMunicipiosAval(selectedDepaAval)"
                 required
               >
                 <option value="" disabled selected>
@@ -1077,7 +1052,7 @@
             </div>
             <div
               class="text-danger mt-1"
-              *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores"
+              *ngIf="!(selectedDepaAval ?? '').trim() && mostrarErrores"
             >
               <small>El campo Departamento es requerido</small>
             </div>
@@ -1094,7 +1069,7 @@
                 name="muni_Codigo"
                 class="form-select"
                 [(ngModel)]="nuevaColonia.muni_Codigo"
-                (change)="cargarColonias(nuevaColonia.muni_Codigo)"
+                (change)="cargarColoniasAval(nuevaColonia.muni_Codigo)"
                 required
               >
                 <option value="" disabled selected>
@@ -1114,7 +1089,7 @@
             </div>
             <div
               class="text-danger mt-1"
-              *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores"
+              *ngIf="!(selectedMuniAval ?? '').trim() && mostrarErrores"
             >
               <small>El campo Municipio es requerido</small>
             </div>
@@ -1150,7 +1125,7 @@
             </div>
             <div
               class="text-danger mt-1"
-              *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores"
+              *ngIf="!(selectedColoniaAval ?? '').trim() && mostrarErrores"
             >
               <small>El campo Colonias es requerido</small>
             </div>
@@ -1177,7 +1152,7 @@
     </div>
 
     <!-- Botones de navegación -->
-    <div class="row mx-lg-4">
+    <!-- <div class="row mx-lg-4">
       <div class="col-md-12 d-flex justify-content-between gap-2">
         <button
           *ngIf="activeTab > 1"
@@ -1196,7 +1171,7 @@
           Siguiente <i class="ri-arrow-right-line"></i>
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <!--=======================================-->
@@ -1243,6 +1218,14 @@
             />
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="row mx-lg-4">
+      <div class="col-md-12 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-success" (click)="guardar()">
+          Guardar <i class="ri-save-line"></i>
+        </button>
       </div>
     </div>
 
