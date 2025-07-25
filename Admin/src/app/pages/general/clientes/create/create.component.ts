@@ -106,6 +106,13 @@ removeFile(file: any): void {
   selectedMuni: string = '';
   selectedColonia: string = '';
 
+  nuevaColoniaAval: { muni_Codigo: string } = { muni_Codigo: '' };
+  cargandoAval = false;
+  cargandoColoniasAval = false;
+  TodosMunicipiosAval: any[] = [];
+  MunicipiosAval: any[] = [];
+  TodasColoniasAval: any[] = [];
+  ColoniasAval: any[] = [];
   selectedDepaAval: string = '';
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
@@ -203,15 +210,15 @@ removeFile(file: any): void {
       this.selectedColonia = '';
     }
 
-    cargarMunicipiosAval(codigoDepa: string): void {
-      this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+    cargarMunicipiosAval(codigoDepaAval: string): void {
+      this.MunicipiosAval = this.TodosMunicipiosAval.filter(m => m.depa_Codigo === codigoDepaAval);
       this.selectedMuniAval = '';
     }
 
-    cargarColoniasAval(codigoMuni: string): void {
-      console.log('Cargando colonias para municipio:', codigoMuni);
+    cargarColoniasAval(codigoMuniAval: string): void {
+      console.log('Cargando colonias para municipio:', codigoMuniAval);
       console.log('TodasColonias:', this.TodasColonias);
-      this.Colonias = this.TodasColonias.filter(c => c.muni_Codigo === codigoMuni);
+      this.ColoniasAval = this.TodasColoniasAval.filter(c => c.muni_Codigo === codigoMuniAval);
       this.selectedColoniaAval = '';
     }
 

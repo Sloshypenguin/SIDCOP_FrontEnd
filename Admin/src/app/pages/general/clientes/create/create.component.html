@@ -1045,7 +1045,7 @@
                   {{ depa.depa_Descripcion }}
                 </option>
               </select>
-              <div *ngIf="cargando" class="form-text text-muted">
+              <div *ngIf="cargandoAval" class="form-text text-muted">
                 Cargando Departamentos...
               </div>
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -1068,8 +1068,8 @@
                 id="muni_Codigo"
                 name="muni_Codigo"
                 class="form-select"
-                [(ngModel)]="nuevaColonia.muni_Codigo"
-                (change)="cargarColoniasAval(nuevaColonia.muni_Codigo)"
+                [(ngModel)]="nuevaColoniaAval.muni_Codigo"
+                (change)="cargarColoniasAval(nuevaColoniaAval.muni_Codigo)"
                 required
               >
                 <option value="" disabled selected>
@@ -1082,7 +1082,7 @@
                   {{ muni.muni_Descripcion }}
                 </option>
               </select>
-              <div *ngIf="cargando" class="form-text text-muted">
+              <div *ngIf="cargandoAval" class="form-text text-muted">
                 Cargando Municipios...
               </div>
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -1118,7 +1118,7 @@
                   {{ colonia.colo_Descripcion }}
                 </option>
               </select>
-              <div *ngIf="cargandoColonias" class="form-text text-muted">
+              <div *ngIf="cargandoColoniasAval" class="form-text text-muted">
                 Cargando Colonias...
               </div>
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
