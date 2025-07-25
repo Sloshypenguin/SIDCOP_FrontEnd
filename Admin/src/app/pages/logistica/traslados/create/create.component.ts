@@ -27,6 +27,10 @@ export class CreateComponent implements OnInit {
   mensajeWarning = '';
   fechaActual = '';
 
+  // Control de tabs
+  tabActivo = 1;
+  puedeAvanzarAResumen = false;
+
   // Datos del formulario
   traslado: Traslado = new Traslado();
   origenes: any[] = [];
@@ -82,32 +86,119 @@ export class CreateComponent implements OnInit {
     });
   }
 
-  // Métodos de cantidad
+  // ========== MÉTODOS DE NAVEGACIÓN DE TABS ==========
+  
+  cambiarTab(tab: number): void {
+    if (tab === 2 && !this.puedeAvanzarAResumen) {
+      this.mostrarWarning('Complete los datos requeridos antes de continuar');
+      return;
+    }
+    this.tabActivo = tab;
+    this.limpiarAlertas();
+  }
+
+  irAResumen(): void {
+    this.mostrarErrores = true;
+    
+    if (this.validarDatosBasicos()) {
+      this.puedeAvanzarAResumen = true;
+      this.tabActivo = 2;
+      this.limpiarAlertas();
+    }
+  }
+
+  private validarDatosBasicos(): boolean {
+    const errores = [];
+    
+    if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) {
+      errores.push('Origen');
+    }
+    if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) {
+      errores.push('Destino');
+    }
+    if (!this.traslado.tras_Fecha) {
+      errores.push('Fecha');
+    }
+    
+    const productosSeleccionados = this.getProductosSeleccionados();
+    if (productosSeleccionados.length === 0) {
+      errores.push('Al menos un producto');
+    }
+    
+    if (errores.length > 0) {
+      this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
+      return false;
+    }
+    
+    return true;
+  }
+
+  // ========== MÉTODOS PARA EL RESUMEN ==========
+
+  getNombreOrigen(): string {
+    const origen = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
+    return origen ? origen.sucu_Descripcion : 'No seleccionado';
+  }
+
+  getNombreDestino(): string {
+    const destino = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
+    return destino ? destino.bode_Descripcion : 'No seleccionado';
+  }
+
+  getTotalProductosSeleccionados(): number {
+    return this.productos
+      .filter(producto => producto.cantidad > 0)
+      .reduce((total, producto) => total + producto.cantidad, 0);
+  }
+
+  getProductosSeleccionados(): any[] {
+    return this.productos.filter(producto => producto.cantidad > 0);
+  }
+
+  // ========== MÉTODOS DE CANTIDAD (existentes) ==========
+  
   aumentarCantidad(index: number): void {
     this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
+    this.actualizarEstadoNavegacion();
   }
   
   disminuirCantidad(index: number): void {
     if (this.productos[index].cantidad > 0) {
       this.productos[index].cantidad--;
+      this.actualizarEstadoNavegacion();
     }
   }
   
   validarCantidad(index: number): void {
     const cantidad = this.productos[index].cantidad;
     this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
+    this.actualizarEstadoNavegacion();
   }
 
-  obtenerProductosSeleccionados(): any[] {
-    return this.productos
-      .filter(producto => producto.cantidad > 0)
-      .map(producto => ({
-        prod_Id: producto.prod_Id,
-        prod_Descripcion: producto.prod_Descripcion,
-        cantidad: producto.cantidad,
-        observaciones: producto.observaciones
-      }));
+  private actualizarEstadoNavegacion(): void {
+    // Si estamos en el tab de resumen y cambian las cantidades, 
+    // revalidamos si se puede mantener ahí
+    if (this.tabActivo === 2) {
+      this.puedeAvanzarAResumen = this.validarDatosBasicos();
+      if (!this.puedeAvanzarAResumen) {
+        this.tabActivo = 1;
+        this.mostrarWarning('Se detectaron cambios. Complete los datos requeridos.');
+      }
+    }
   }
+
+obtenerProductosSeleccionados(): any[] {
+  return this.productos
+    .filter(producto => producto.cantidad > 0)
+    .map(producto => ({
+      prod_Id: producto.prod_Id,
+      prod_Descripcion: producto.prod_Descripcion,
+      cantidad: producto.cantidad,
+      observaciones: producto.observaciones || '' // Ya existe en tu código
+    }));
+}
+
+  // ========== MÉTODOS DE ACCIONES PRINCIPALES ==========
 
   cancelar(): void {
     this.limpiarFormulario();
@@ -119,20 +210,31 @@ export class CreateComponent implements OnInit {
   }
 
   guardar(): void {
+    // Validación final antes de guardar
     this.mostrarErrores = true;
     const productosSeleccionados = this.obtenerProductosSeleccionados();
     
-    if (!this.validarFormulario(productosSeleccionados)) return;
+    if (!this.validarFormularioCompleto(productosSeleccionados)) {
+      // Si la validación falla, volver al primer tab
+      this.tabActivo = 1;
+      return;
+    }
     
     this.limpiarAlertas();
     this.crearTraslado(productosSeleccionados);
   }
+
+  // ========== MÉTODOS PRIVADOS (existentes con algunas modificaciones) ==========
 
   private limpiarFormulario(): void {
     this.limpiarAlertas();
     this.traslado = new Traslado();
     this.productos.forEach(p => { p.cantidad = 0; p.observaciones = ''; });
     this.inicializarFechaActual();
+    
+    // Resetear estado de tabs
+    this.tabActivo = 1;
+    this.puedeAvanzarAResumen = false;
   }
 
   private limpiarAlertas(): void {
@@ -145,7 +247,7 @@ export class CreateComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  private validarFormulario(productos: any[]): boolean {
+  private validarFormularioCompleto(productos: any[]): boolean {
     const errores = [];
     
     if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
