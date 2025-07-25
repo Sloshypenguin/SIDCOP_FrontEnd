@@ -2,7 +2,6 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
 import { Descuento } from 'src/app/Modelos/inventario/DescuentoModel';
 import { DescuentoDetalle } from 'src/app/Modelos/inventario/DescuentoDetalleModel';
 import { DescuentoPorCliente } from 'src/app/Modelos/inventario/DescuentoPorClienteModel';

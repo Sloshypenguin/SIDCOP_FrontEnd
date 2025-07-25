@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
+import { Vendedor } from 'src/app/Modelos/ventas/Vendedor.Model';
 
 @Component({
   selector: 'app-details',
