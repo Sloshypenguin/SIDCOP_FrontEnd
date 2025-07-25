@@ -6,11 +6,17 @@ import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { environment } from 'src/environments/environment';
 import {NgxMaskDirective, provideNgxMask} from 'ngx-mask';
 import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
+import { Aval } from 'src/app/Modelos/general/Aval.Model';
+
+import { NgModule } from '@angular/core';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente.Model';
+
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective, MapaSelectorComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective, MapaSelectorComponent, DropzoneModule],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss',
   providers: [provideNgxMask()]
@@ -21,6 +27,46 @@ export class CreateComponent {
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
   
+
+  dropzoneConfig = {
+  url: '/api/upload', // Replace with your actual upload endpoint
+  maxFilesize: 5, // MB
+  acceptedFiles: 'image/*',
+  addRemoveLinks: true,
+  dictDefaultMessage: 'Selecciona una imagen para subir.'
+};
+
+  // Propiedad para almacenar archivos subidos
+uploadedFiles: any[] = [];
+
+// Método para manejar la selección de archivos
+onFileSelected(event: any): void {
+  const files = event.target.files;
+  if (files && files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.uploadedFiles.push({
+          name: file.name,
+          size: file.size,
+          dataURL: e.target.result
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+// Add this method to remove a file from the uploadedFiles array
+removeFile(file: any): void {
+  if (this.uploadedFiles) {
+    const index = this.uploadedFiles.indexOf(file);
+    if (index > -1) {
+      this.uploadedFiles.splice(index, 1);
+    }
+  }
+}
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -195,6 +241,43 @@ export class CreateComponent {
     usuaM_Nombre: ''
   };
 
+ direccionPorCliente: DireccionPorCliente = {
+    diCl_Id: 0,
+    clie_Id: 0,
+    colo_Id: 0,
+    diCl_DireccionExacta: '',
+    diCl_Observaciones: '',
+    diCl_Latitud: 0,
+    diCl_Longitud: 0,
+    usua_Creacion: 0,
+    diCl_FechaCreacion: new Date(),
+    usua_Modificacion: 0,
+    diCl_FechaModificacion: new Date(),
+  };
+
+  aval: Aval = {
+    aval_Id: 0,
+    clie_id: 0,
+    aval_Nombres: '',
+    aval_Apellidos: '',
+    aval_ParentescoConCliente: '',
+    aval_DNI: '',
+    aval_Telefono: '',
+    tiVi_Id: 0,
+    aval_DireccionExacta: '',
+    colo_Id: 0,
+    aval_FechaNacimiento: new Date(),
+    esCv_Id: 0,
+    aval_Sexo: 'M',
+    usua_Creacion: environment.usua_Id, // variable global, obtiene el valor del environment
+    usuarioCreacion: '',
+    aval_FechaCreacion: new Date(),
+    usua_Modificacion: undefined,
+    usuarioModificacion: undefined,
+    aval_FechaModificacion: undefined
+  };
+
+
   crear(): void {
     this.mostrarMapa = true;
   }
@@ -319,7 +402,7 @@ export class CreateComponent {
 
       console.log('Guardando Cliente:', clienteGuardar);
       
-      this.http.post<any>(`${environment.apiBaseUrl}/EstadosCiviles/Insertar`, clienteGuardar, {
+      this.http.post<any>(`${environment.apiBaseUrl}/Clientes/Insertar`, clienteGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
           'Content-Type': 'application/json',
