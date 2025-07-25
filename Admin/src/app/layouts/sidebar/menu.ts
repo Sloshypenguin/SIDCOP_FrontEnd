@@ -196,6 +196,13 @@ export const MENU: MenuItem[] = [
                 parentId: 5,
                 icon: 'ri-group-line'
             },
+            {
+                id: 43,
+                label: 'MENUITEMS.VENTAS.LIST.CUENTASPORCOBRAR',
+                link: '/ventas/cuentasporcobrar',
+                parentId: 5,
+                icon: 'ri-money-dollar-circle-line'
+            },
             // Puedes añadir más subitems aquí según sea necesario
         ]
     },

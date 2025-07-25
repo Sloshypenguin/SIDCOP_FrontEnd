@@ -40,7 +40,8 @@
         "CAIS": "CAIS",
         "VENDEDORES": "Vendedores",
         "REGISTROCAIS": "Registros CAI",
-        "PUNTOSEMISION": "Puntos Emision"
+        "PUNTOSEMISION": "Puntos Emision",
+        "CUENTASPORCOBRAR": "Cuentas por Cobrar"
       }
     },
     "LOGISTICA": {
