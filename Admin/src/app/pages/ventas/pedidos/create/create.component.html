@@ -1,1 +1,237 @@
-<p>create works!</p>
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px">
+  <!-- Título del componente -->
+  <h5 class="card-title mb-4">Crear Nuevo Pedido</h5>
+
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div
+      *ngIf="mostrarAlertaExito"
+      class="alert alert-success alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Alerta de advertencia -->
+    <div
+      *ngIf="mostrarAlertaWarning"
+      class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Alerta de error -->
+    <div
+      *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+
+  <div class="flex-grow-1">
+    <div class="row">
+
+      <!-- Select de Cliente -->
+      <div class="col-md-6">
+        <label for="cliente" class="form-label">
+          Cliente <span class="text-danger">*</span>
+        </label>
+        <div class="mb-3">
+          <select
+            id="cliente"
+            name="cliente"
+            class="form-select"
+            [(ngModel)]="pedido.clie_Id"
+            (change)="onClienteSeleccionado(pedido.clie_Id)"
+            [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
+            required
+          >
+            <option value="" disabled selected>Seleccione un cliente</option>
+            <option *ngFor="let cliente of Clientes" [value]="cliente.clie_Id">
+              {{ cliente.clie_NombreNegocio }}
+            </option>
+          </select>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!pedido.clie_Codigo && mostrarErrores"
+          >
+            <small>El campo Cliente es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Select de Dirección -->
+      <div class="col-md-6">
+        <label for="direccion" class="form-label">
+          Dirección <span class="text-danger">*</span>
+        </label>
+        <div class="mb-3">
+          <select
+            id="direccion"
+            name="direccion"
+            class="form-select"
+            [(ngModel)]="pedido.diCl_Id"
+            [class.is-invalid]="!pedido.diCl_Id && mostrarErrores"
+            required
+          >
+            <option value="" disabled selected>Seleccione una dirección</option>
+            <option
+              *ngFor="let direccion of Direccines"
+              [value]="direccion.diCl_Id"
+            >
+              {{ direccion.diCl_DireccionExacta }}
+            </option>
+          </select>
+          <div
+            class="text-danger mt-1"
+            *ngIf="!pedido.diCl_Id && mostrarErrores"
+          >
+            <small>El campo Dirección es requerido</small>
+          </div>
+        </div>
+      </div>
+
+       <div class="col-md-6">
+        <div class="mb-3">
+          <label for="inicial-input" class="form-label"
+            >Fecha Entrega<span class="text-danger">*</span></label
+          >
+          <input
+            type="date"
+            id="inicial-input"
+            [(ngModel)]="pedido.pedi_FechaEntrega"
+            class="form-control"
+            [class.is-invalid]="
+              !pedido.pedi_FechaEntrega && mostrarErrores
+            "
+            placeholder="Seleccione la fecha de entrega"
+            required
+          />
+          <div
+            class="text-danger"
+            *ngIf="!pedido.pedi_FechaEntrega && mostrarErrores"
+          >
+            <small>La fecha de entrega  es requerida</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+      <div class="col-12">
+        <h6 class="mb-3">
+          <i class="ri-box-3-line me-2"></i>
+          Seleccionar Productos
+        </h6>
+        
+        <!-- Contenedor de tarjetas de productos -->
+        <div class="productos-container">
+          <div class="row g-3">
+            <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let producto of productos; let i = index">
+              <div class="card producto-card h-100 shadow-sm border-0">
+                <div class="card-body p-3">
+                  <!-- Imagen del producto -->
+                  <div class="producto-imagen-container mb-3 text-center">
+                    <img 
+                      [src]="producto.prod_Imagen || 'assets/images/default-product.png'" 
+                      [alt]="producto.prod_Descripcion"
+                      class="producto-imagen rounded"
+                      onerror="this.src='assets/images/default-product.png'">
+                  </div>
+                  
+                  <!-- Nombre del producto -->
+                  <h6 class="card-title text-center mb-3 producto-titulo">
+                    {{ producto.prod_Descripcion }}
+                  </h6>
+                  
+                  <!-- Controles de cantidad -->
+                  <div class="cantidad-controls mb-3">
+                    <label class="form-label small text-muted">Cantidad</label>
+                    <div class="input-group input-group-sm">
+                      <button 
+                        class="btn btn-outline-secondary btn-cantidad" 
+                        type="button"
+                        (click)="disminuirCantidad(i)"
+                        [disabled]="producto.cantidad <= 0">
+                        <i class="ri-subtract-line"></i>
+                      </button>
+                      <input 
+                        type="number" 
+                        class="form-control text-center cantidad-input" 
+                        [(ngModel)]="producto.cantidad"
+                        (change)="validarCantidad(i)"
+                        min="0"
+                        max="999">
+                      <button 
+                        class="btn btn-outline-secondary btn-cantidad" 
+                        type="button"
+                        (click)="aumentarCantidad(i)">
+                        <i class="ri-add-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Indicador de producto seleccionado -->
+                <div class="card-footer bg-transparent border-0 p-2" *ngIf="producto.cantidad > 0">
+                  <div class="badge bg-success w-100 py-2">
+                    <i class="ri-check-line me-1"></i>
+                    {{ producto.cantidad }} {{ producto.cantidad === 1 ? 'unidad' : 'unidades' }} seleccionadas
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    </div>
+  </div>
+
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            class="btn btn-primary gold"
+            (click)="cancelar()"
+          >
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardar()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
