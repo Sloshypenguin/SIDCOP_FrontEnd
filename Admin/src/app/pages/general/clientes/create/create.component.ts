@@ -30,6 +30,8 @@ export class CreateComponent {
   mensajeWarning = '';
   mostrarMapa = false;
 
+  nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
+  direccion = {colo_Id: ''};
   activeTab = 1;
 
   nacionalidades: any[] = [];
@@ -41,6 +43,22 @@ export class CreateComponent {
 
   latitudSeleccionada: number | null = null;
   longitudSeleccionada: number | null = null;
+
+  cargando = false;
+  cargandoColonias = false;
+  // Filtrado en DDLs
+  Departamentos: any[] = [];
+
+  TodosMunicipios: any[] = [];
+  Municipios: any[] = [];
+
+  TodasColonias: any[] = [];
+  Colonias: any[] = [];
+
+
+  selectedDepa: string = '';
+  selectedMuni: string = '';
+  selectedColonia: string = '';
 
   onCoordenadasSeleccionadas(coords: { lat: number, lng: number }) {
     this.latitudSeleccionada = coords.lat;
@@ -65,6 +83,7 @@ export class CreateComponent {
     this.cargarEstadosCiviles();
     this.cargarCanales();
     this.cargarRutas();
+    this.cargarListados();
   }
 
   cargarPaises() {
@@ -78,7 +97,7 @@ export class CreateComponent {
   cargarTiposDeVivienda() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/TipoDeVivienda/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => this.paises = data);
+    }).subscribe(data => this.tiposDeVivienda = data);
   }
 
   cargarEstadosCiviles() {
@@ -98,6 +117,41 @@ export class CreateComponent {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => this.rutas = data);
   }
+
+    cargarListados(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.Departamentos = data,
+      error: (error) => console.error('Error cargando departamentos:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodosMunicipios = data,
+      error: (error) => console.error('Error cargando municipios:', error)
+    });
+
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.TodasColonias = data,
+      error: (error) => console.error('Error cargando colonias:', error)
+    });
+  }
+
+    cargarMunicipios(codigoDepa: string): void {
+      this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+      this.selectedMuni = '';
+    }
+
+    cargarColonias(codigoMuni: string): void {
+      console.log('Cargando colonias para municipio:', codigoMuni);
+      console.log('TodasColonias:', this.TodasColonias);
+      this.Colonias = this.TodasColonias.filter(c => c.muni_Codigo === codigoMuni);
+      this.selectedColonia = '';
+    }
 
   cliente: Cliente = {
     clie_Id: 0,
