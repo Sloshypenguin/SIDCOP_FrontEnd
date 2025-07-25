@@ -32,6 +32,8 @@ import { SslBypassInterceptor } from './core/helpers/ssl-bypass.interceptor';
 
 import { AuthenticationEffects } from './store/Authentication/authentication.effects';
 import { initFirebaseBackend } from './authUtils';
+import { AgmCoreModule } from '@agm/core';
+import { MapModalComponent } from './pages/general/clientes/map-modal/map-modal.component';
 
 
 export function createTranslateLoader(http: HttpClient): any {
@@ -43,11 +45,25 @@ if (environment.defaultauth === 'firebase') {
   fakebackendInterceptor;
 }
 
-@NgModule({ declarations: [
+@NgModule({ 
+  declarations: [
         AppComponent,
-        AuthlayoutComponent
+        AuthlayoutComponent,
+        MapModalComponent
     ],
-    bootstrap: [AppComponent], imports: [TranslateModule.forRoot({
+    bootstrap: [AppComponent], 
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        ToastrModule.forRoot(),
+        FormsModule,
+        ReactiveFormsModule,
+        AngularFireAuthModule,
+         AgmCoreModule.forRoot({
+           apiKey: environment.googleMapsApiKey
+         }),
+        TranslateModule.forRoot({
             defaultLanguage: 'en',
             loader: {
                 provide: TranslateLoader,
@@ -66,14 +82,8 @@ if (environment.defaultauth === 'firebase') {
            
         ]),
         AngularFireModule.initializeApp(environment.firebaseConfig),
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        
-        ToastrModule.forRoot(),
-        FormsModule,
-        ReactiveFormsModule,
-        AngularFireAuthModule], providers: [
+    ],
+    providers: [
         { provide: HTTP_INTERCEPTORS, useClass: SslBypassInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

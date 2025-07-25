@@ -317,6 +317,7 @@
             <div class="text-danger mt-1" *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores">
               <small>El campo Imagen es requerido</small>
             </div>
+<<<<<<< Updated upstream
                 <button  type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
       <span class="btn-text">Seleccionar mi ubicación actual</span>
       <span class="btn-icon"><i class="ri-add-line"></i></span>
@@ -330,6 +331,41 @@
 
 <!-- Overlay para el modal -->
 
+=======
+          </div>
+        </div>
+
+        <button  type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
+          <span class="btn-text">Seleccionar mi ubicación actual</span>
+          <span class="btn-icon"><i class="ri-add-line"></i></span>
+        </button>
+
+        <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarMapa }" >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+                <span>Seleccionar mi ubicación actual</span>
+                <i class="ri-close-line custom-modal-close"></i>
+              </div>
+              <hr class="custom-modal-divider">
+              <div class="modal-body custom-modal-body">
+                <div class="text-center"> 
+                </div>
+              </div>
+              <div class="modal-footer custom-modal-footer">
+                <button type="button" class="btn btn-primary gray btn-sm btn-minw-5"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
+                <button type="button" class="btn btn-primary red btn-sm btn-minw-5">
+                  <span class="btn-text">Si</span>
+                  <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+                </button>
+              </div> 
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay para el modal -->
+        <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarMapa }" *ngIf="mostrarMapa"></div>
+>>>>>>> Stashed changes
 
 
 

@@ -20,6 +20,8 @@ export const environment = {
   apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
   usua_Id: idUsuario, // Ahora se obtiene del usuario de la sesión actual
+
+  googleMapsApiKey: 'AIzaSyA6bbij1_4crYsWVg6E1PnqGb17lNGdIjA'
 }; 
 
 /*
