@@ -44,7 +44,8 @@
         "CAIS": "CAIs",
         "VENDEDORES": "Vendedores",
         "REGISTROCAIS": "Registros CAI",
-        "PUNTOSEMISION": "Puntos Emision"
+        "PUNTOSEMISION": "Puntos Emision",
+        "PEDIDOS": "Pedidos"
       }
     },
     "LOGISTICA": {
