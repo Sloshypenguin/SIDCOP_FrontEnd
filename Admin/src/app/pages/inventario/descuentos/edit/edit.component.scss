@@ -1,0 +1,38 @@
+
+
+
+.application-tabs {
+				display: flex;
+				gap: 0;
+				margin-bottom: 25px;
+				background: #e9ecef;
+				border-radius: 15px;
+				padding: 5px;
+			}
+
+			.tab-button {
+				flex: 1;
+				padding: 12px 20px;
+				border: none;
+				background: transparent;
+				border-radius: 12px;
+				cursor: pointer;
+				font-weight: 500;
+				transition: all 0.3s ease;
+				color: #141a2f;
+				font-family: "Gantari", sans-serif;
+			}
+
+			.tab-button.active {
+				background: #141a2f;
+				color: white;
+			}
+
+			.tab-content {
+				display: none;
+				animation: fadeIn 0.3s ease;
+			}
+
+			.tab-content.active {
+				display: block;
+			}

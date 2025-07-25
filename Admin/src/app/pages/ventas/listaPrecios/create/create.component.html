@@ -1,0 +1,349 @@
+<app-breadcrumbs
+  [title]="'Listas de Precios'"
+  [breadcrumbItems]="breadCrumbItems"
+>
+  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" style="width: 14vh; height: 12vh;" 
+       src="assets/images/imagenes/FACTURADOS.svg" alt="icono breadcrumb" />
+</app-breadcrumbs>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+
+        <!-- Floating Alerts -->
+        <div class="alert-container">
+          <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+            <strong>¡Éxito!</strong> {{ mensajeExito }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+          </div>
+          <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+            <strong>¡Atención!</strong> {{ mensajeWarning }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+          </div>
+          <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+            <strong>¡Error!</strong> {{ mensajeError }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+          </div>
+        </div>
+
+        <!-- Product Selector -->
+        <div class="mb-0">
+          <label class="form-label">Producto </label>
+        </div>
+        <div class="mb-3">
+          <ng-select
+            [items]="productosLista"
+            bindLabel="prod_Descripcion"
+            [(ngModel)]="productoSeleccionado"
+            (change)="onProductoChange($event)"
+            [searchable]="true"
+            placeholder="Selecciona un Producto"
+            [clearable]="true"
+          >
+          </ng-select>
+        </div>
+
+        <!-- Alert for no product selected -->
+        <div *ngIf="!productoSeleccionado && createError" class="alert alert-danger custom-alert mb-3">
+          {{ createError }}
+        </div>
+
+        <!-- Crear Nueva Lista Button -->
+        <div class="mb-3" *ngIf="productoSeleccionado && nocreando">
+          <button
+            type="button"
+            class="btn btn-primary me-2 mb-2"
+            (click)="startCreateNewLista()"
+          >
+            <span class="btn-text">Nueva Lista</span>
+            <span class="btn-icon"><i class="ri-add-line"></i></span>
+          </button>
+        </div>
+
+        <!-- NUEVA LISTA COLLAPSE -->
+        <div *ngIf="isCreatingNewLista" class="mb-4">
+          <div class="card extra-element-card border-primary shadow-lg" style="background: #f8f9fa;">
+            <div class="card-header text-white position-relative" style="min-height: 3rem; background: #141a2e">
+              <span>Crear Nueva Lista de Precios</span>
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <label>Precio Contado</label>
+                  <input type="number" class="form-control" [(ngModel)]="newLista.precioContado" min="1" required />
+                  <div *ngIf="inputErrors.precioContado" class="alert alert-danger custom-alert mt-2">
+                    {{ inputErrors.precioContado }}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label>Precio Crédito</label>
+                  <input type="number" class="form-control" [(ngModel)]="newLista.precioCredito" min="1" required />
+                  <div *ngIf="inputErrors.precioCredito" class="alert alert-danger custom-alert mt-2">
+                    {{ inputErrors.precioCredito }}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label>Inicio Escala</label>
+                  <input type="number" class="form-control" [(ngModel)]="newLista.inicioEscala" min="0" required />
+                  <div *ngIf="inputErrors.inicioEscala" class="alert alert-danger custom-alert mt-2">
+                    {{ inputErrors.inicioEscala }}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label>Fin Escala</label>
+                  <input type="number" class="form-control" [(ngModel)]="newLista.finEscala" min="0" required />
+                  <div *ngIf="inputErrors.finEscala" class="alert alert-danger custom-alert mt-2">
+                    {{ inputErrors.finEscala }}
+                  </div>
+                </div>
+              </div>
+
+              <div *ngFor="let canal of canalesLista" class="mb-2">
+                <div class="card border-primary mb-2">
+                  <div
+                    class="card-header d-flex align-items-center justify-content-between"
+                    style="cursor:pointer"
+                    (click)="toggleNewCanalCollapse(canal.cana_Id)"
+                  >
+                    <div (click)="$event.stopPropagation()">
+                      <input type="checkbox"
+                        [checked]="isNewCanalFullyChecked(canal)"
+                        [indeterminate]="isNewIndeterminate(canal)"
+                        (change)="toggleNewParentCheckbox(canal, $event)">
+                      <span class="ms-2">{{ canal.cana_Descripcion }}</span>
+                    </div>
+                    <i
+                      [ngClass]="{
+                        'ri-arrow-up-s-line': newLista.canalesOpen[canal.cana_Id],
+                        'ri-arrow-down-s-line': !newLista.canalesOpen[canal.cana_Id]
+                      }"
+                      class="fs-5"
+                    ></i>
+                  </div>
+                  <div [collapse]="!newLista.canalesOpen[canal.cana_Id]">
+                    <div class="card-body">
+                      <div class="row">
+                        <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6">
+                          <div class="form-check">
+                            <input type="checkbox"
+                              [checked]="newLista.clientesChecked.includes(cliente.clie_Id)"
+                              (change)="toggleNewChildCheckbox(cliente.clie_Id, $event)">
+                            <span class="ms-2">{{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="inputErrors.clientesChecked" class="alert alert-danger custom-alert mt-2">
+                        {{ inputErrors.clientesChecked }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Error Message -->
+              <div *ngIf="createError" class="alert alert-danger custom-alert mt-3">
+                {{ createError }}
+              </div>
+
+              <div class="mt-auto pt-3">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="d-flex justify-content-end gap-2">
+                      <button
+                          type="button"
+                          class="btn btn-primary gold"
+                          (click)="isCreatingNewLista = false; nocreando = true;"
+                        >
+                          <span class="btn-text">Cancelar</span>
+                          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="crearNuevaLista()">
+                          <span class="btn-text">Guardar</span>
+                          <span class="btn-icon"><i class="ri-save-line"></i></span>
+                        </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- EXISTING LISTAS COLLAPSE -->
+        <div *ngIf="!isCreatingNewLista">
+          <div *ngIf="noListasMsg" class="alert alert-info custom-alert mb-3">
+            {{ noListasMsg }}
+          </div>
+          <div *ngFor="let lista of listasAgrupadas; let i = index" class="mb-4">
+            <div class="card extra-element-card border-primary shadow-lg" style="background: #f8f9fa;">
+              <div 
+                [ngClass]="{ 'rounded-bottom-2': lista.isCollapsed, 'rounded-bottom-0': !lista.isCollapsed }"
+                class="card-header text-white position-relative" style="min-height: 3rem; background: #141a2e"
+              >
+                <span>Lista de Precios #{{ lista.listaId }}</span>
+                <button
+                  class="btn btn-light btn-sm position-absolute end-0 top-0 m-2"
+                  type="button"
+                  (click)="toggleCollapse(lista)"
+                  aria-label="Toggle"
+                >
+                  <i
+                    [ngClass]="{
+                      'ri-arrow-up-s-line': !lista.isCollapsed,
+                      'ri-arrow-down-s-line': lista.isCollapsed
+                    }"
+                    class="fs-4"
+                  ></i>
+                </button>
+              </div>
+              <div [collapse]="lista.isCollapsed">
+                <div class="card-body">
+                  <div class="row mb-3">
+                    <div class="col-md-3">
+                      <label>Precio Contado</label>
+                      <input type="number" class="form-control" [(ngModel)]="lista.precioContado" min="1" required />
+                      <div *ngIf="lista.inputErrors?.precioContado" class="alert alert-danger custom-alert mt-2">
+                        {{ lista.inputErrors.precioContado }}
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label>Precio Crédito</label>
+                      <input type="number" class="form-control" [(ngModel)]="lista.precioCredito" min="1" required />
+                      <div *ngIf="lista.inputErrors?.precioCredito" class="alert alert-danger custom-alert mt-2">
+                        {{ lista.inputErrors.precioCredito }}
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label>Inicio Escala</label>
+                      <input type="number" class="form-control" [(ngModel)]="lista.inicioEscala" min="0" required />
+                      <div *ngIf="lista.inputErrors?.inicioEscala" class="alert alert-danger custom-alert mt-2">
+                        {{ lista.inputErrors.inicioEscala }}
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label>Fin Escala</label>
+                      <input type="number" class="form-control" [(ngModel)]="lista.finEscala" min="0" required />
+                      <div *ngIf="lista.inputErrors?.finEscala" class="alert alert-danger custom-alert mt-2">
+                        {{ lista.inputErrors.finEscala }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngFor="let canal of canalesLista" class="mb-2">
+                    <div class="card border-primary mb-2">
+                      <div
+                        class="card-header d-flex align-items-center justify-content-between"
+                        style="cursor:pointer"
+                        (click)="canal.open = !canal.open"
+                      >
+                        <div (click)="$event.stopPropagation()">
+                          <input type="checkbox"
+                            [checked]="isCanalFullyChecked(lista, canal)"
+                            [indeterminate]="isIndeterminate(lista, canal)"
+                            (change)="toggleParentCheckbox(lista, canal, $event)">
+                          <span class="ms-2">{{ canal.cana_Descripcion }}</span>
+                        </div>
+                        <i
+                          [ngClass]="{
+                            'ri-arrow-up-s-line': canal.open,
+                            'ri-arrow-down-s-line': !canal.open
+                          }"
+                          class="fs-5"
+                        ></i>
+                      </div>
+                      <div [collapse]="!canal.open">
+                        <div class="card-body">
+                          <div class="row">
+                            <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6">
+                              <div class="form-check">
+                                <input type="checkbox"
+                                  [checked]="isClienteChecked(lista, cliente.clie_Id)"
+                                  (change)="onChildCheckboxChange(lista, canal, cliente.clie_Id, $event)">
+                                <span class="ms-2">{{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div *ngIf="lista.inputErrors?.clientesChecked" class="alert alert-danger custom-alert mt-2">
+                            {{ lista.inputErrors.clientesChecked }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-3 d-flex gap-2 justify-content-end">
+                    <button type="button" class="btn btn-primary" (click)="abrirModalGuardarCambios(lista)">
+                          <span class="btn-text">Guardar Cambios</span>
+                          <span class="btn-icon"><i class="ri-save-line"></i></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- card-body -->
+    </div> <!-- card -->
+  </div> <!-- col-lg-12 -->
+</div> <!-- row -->
+
+<!-- Modal de confirmación para guardar cambios -->
+<div
+  class="modal fade custom-modal"
+  [ngClass]="{ show: mostrarConfirmacionGuardar }"
+  [style.display]="mostrarConfirmacionGuardar ? 'block' : 'none'"
+  tabindex="-1"
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Confirmación</span>
+        <i
+          class="ri-close-line custom-modal-close"
+          (click)="cancelarGuardarCambios()"
+        ></i>
+      </div>
+      <hr class="custom-modal-divider" />
+      <div class="modal-body custom-modal-body">
+        <div class="text-center">
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>
+            ¿Seguro que deseas guardar cambios en la lista
+            <strong>#{{ listaAGuardar?.listaId }}</strong>?
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary gray btn-sm btn-minw-5"
+          (click)="cancelarGuardarCambios()"
+        >
+          <span class="btn-text">No</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary gold btn-sm btn-minw-5"
+          (click)="confirmarGuardarCambios()"
+        >
+          <span class="btn-text">Sí</span>
+          <span class="btn-icon"><i class="ri-save-line"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay para el modal de guardar cambios -->
+<div
+  class="modal-backdrop fade"
+  [ngClass]="{ show: mostrarConfirmacionGuardar }"
+  *ngIf="mostrarConfirmacionGuardar"
+></div>
