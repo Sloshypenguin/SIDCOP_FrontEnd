@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Descuento } from 'src/app/Modelos/inventario/DescuentoModel';
@@ -592,7 +593,7 @@ tieneAyudante: boolean = false;
     desc_Observaciones: this.descuento.desc_Observaciones.trim(),
     usua_Creacion: this.descuento.usua_Creacion,
     desc_FechaCreacion: new Date(this.descuento.desc_FechaCreacion),
-    usua_Modificacion: environment.usua_Id,
+    usua_Modificacion: getUserId(),
     desc_FechaModificacion: new Date(),
     desc_Estado: false,
     idClientes: this.clientesSeleccionados,

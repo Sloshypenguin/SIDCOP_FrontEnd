@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Vendedor } from 'src/app/Modelos/ventas/Vendedor.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -272,7 +273,7 @@ tieneAyudante: boolean = false;
     vend_EsExterno: this.vendedor.vend_EsExterno || false,
     usua_Creacion: this.vendedor.usua_Creacion,
     vend_FechaCreacion: this.vendedor.vend_FechaCreacion,
-    usua_Modificacion: environment.usua_Id,
+    usua_Modificacion: getUserId(),
     vend_FechaModificacion: new Date().toISOString(),
     usuarioCreacion: '',
     usuarioModificacion: ''

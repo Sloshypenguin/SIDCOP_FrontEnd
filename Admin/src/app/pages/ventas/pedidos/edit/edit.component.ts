@@ -10,7 +10,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -278,7 +279,7 @@ set fechaInicioFormato(value: string) {
          
         pedi_Id: this.pedido.pedi_Id,
         diCl_Id: this.pedido.diCl_Id,
-        vend_Id: environment.usua_Id, // Asumiendo que el usuario actual es el vendedor
+        vend_Id: getUserId(), // Asumiendo que el usuario actual es el vendedor
         pedi_FechaPedido: new Date().toISOString(),
         pedi_FechaEntrega: this.pedido.pedi_FechaEntrega,
         clie_Codigo: '',
@@ -295,7 +296,7 @@ set fechaInicioFormato(value: string) {
         detalles: productosSeleccionados,
         usua_Creacion: 0,
         pedi_FechaCreacion: new Date().toISOString(),
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         pedi_FechaModificacion: new Date().toISOString(),
         pedi_Estado: true,
         secuencia: 0

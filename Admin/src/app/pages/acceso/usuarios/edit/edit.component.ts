@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { set } from 'lodash';
 
 @Component({
@@ -127,9 +128,9 @@ export class EditComponent implements OnChanges{
         usua_EsVendedor: this.usuario.usua_EsVendedor,
         usua_EsAdmin: this.usuario.usua_EsAdmin,
         usua_Imagen: this.usuario.usua_Imagen,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         usua_FechaCreacion: new Date().toISOString(),
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         usua_FechaModificacion: new Date().toISOString(),
         usua_Estado: true,
         permisosJson:"",

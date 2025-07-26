@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -92,7 +93,7 @@ export class CreateComponent implements OnInit {
       const coloniaGuardar = {
         colo_Descripcion: (this.nuevaColonia.colo_Descripcion ?? '').trim(),
         muni_Codigo: (this.nuevaColonia.muni_Codigo ?? '').trim(),
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         colo_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 

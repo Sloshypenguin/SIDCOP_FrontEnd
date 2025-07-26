@@ -87,6 +87,10 @@ export class TopbarComponent {
 
     
 
+    // Inicializar cartData como un array vacío si es undefined
+    this.cartData = this.cartData || [];
+    
+    // Ahora podemos usar map de forma segura
     this.cartData.map((x: any) => {
       x['total'] = (x['qty'] * x['price']).toFixed(2)
       this.subtotal += parseFloat(x['total'])
@@ -202,7 +206,6 @@ export class TopbarComponent {
     { text: 'français', flag: 'assets/images/flags/french.svg', lang: 'fr' },
     { text: 'Arabic', flag: 'assets/images/flags/ae.svg', lang: 'ar' },
   ];
-
   /***
   * Language Value Set
   */

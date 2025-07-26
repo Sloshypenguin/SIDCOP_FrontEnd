@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "npx serve -s dist/SIDCOP",
+    "start-secure": "npx serve-https -s dist/SIDCOP",
+    "build": "node --max-old-space-size=2048 ./node_modules/@angular/cli/bin/ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "analyze": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build --configuration production --source-map && npx source-map-explorer dist/SIDCOP/**/*.js"
@@ -69,6 +70,7 @@
     "@types/lodash": "^4.17.5",
     "@types/prismjs": "^1.26.4",
     "jasmine-core": "~5.1.2",
+    "serve": "^14.2.4",
     "source-map-explorer": "^2.5.3",
     "typescript": "5.4.5",
     "webpack": "^5.95.0"

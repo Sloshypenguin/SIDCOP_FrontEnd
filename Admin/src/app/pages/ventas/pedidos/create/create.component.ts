@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
 
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -232,7 +233,7 @@ onClienteSeleccionado(clienteId: number) {
       const pedidoGuardar = {
         pedi_Id: 0,
         diCl_Id: this.pedido.diCl_Id,
-        vend_Id: environment.usua_Id, // Asumiendo que el usuario actual es el vendedor
+        vend_Id: getUserId(), // Asumiendo que el usuario actual es el vendedor
         pedi_FechaPedido: new Date().toISOString(),
         pedi_FechaEntrega: this.pedido.pedi_FechaEntrega,
         clie_Codigo: '',
@@ -247,7 +248,7 @@ onClienteSeleccionado(clienteId: number) {
         vend_Nombres: '',
         vend_Apellidos: '',
         detalles: productosSeleccionados,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         pedi_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: null,
         pedi_FechaModificacion: null,
