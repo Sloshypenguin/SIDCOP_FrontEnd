@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npx serve -s dist/SIDCOP --single",
+    "start": "npx serve -s dist/SIDCOP",
     "start-secure": "npx serve-https -s dist/SIDCOP",
-    "build": "ng build --configuration=production",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "analyze": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build --configuration production --source-map && npx source-map-explorer dist/SIDCOP/**/*.js"
@@ -20,6 +20,7 @@
     "@angular/core": "^18.0.3",
     "@angular/fire": "^18.0.1",
     "@angular/forms": "^18.0.3",
+    "@angular/material": "^20.1.2",
     "@angular/platform-browser": "^18.0.3",
     "@angular/platform-browser-dynamic": "^18.0.3",
     "@angular/router": "^18.2.13",
@@ -30,6 +31,7 @@
     "@ngrx/store-devtools": "^18.0.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
+    "angular-ng-stepper": "^2.0.0",
     "angularx-flatpickr": "^8.1.0",
     "bootstrap": "5.3.3",
     "flatpickr": "^4.6.13",

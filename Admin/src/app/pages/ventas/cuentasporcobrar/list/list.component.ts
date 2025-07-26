@@ -1,0 +1,267 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
+import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
+import { TableModule } from 'src/app/pages/table/table.module';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { CuentaPorCobrar } from 'src/app/Modelos/ventas/CuentasPorCobrar.Model';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import { CuentasPorCobrarService } from 'src/app/servicios/ventas/cuentas-por-cobrar.service';
+
+@Component({
+  selector: 'app-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    BreadcrumbsComponent,
+    TableModule,
+    PaginationModule
+  ],
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss']
+})
+export class ListComponent implements OnInit {
+  // bread crumb items
+  breadCrumbItems!: Array<{}>;
+
+  // Acciones disponibles para el usuario en esta pantalla
+  accionesDisponibles: string[] = [];
+
+  // METODO PARA VALIDAR SI UNA ACCIÓN ESTÁ PERMITIDA
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+  }
+
+  ngOnInit(): void {
+    /**
+     * BreadCrumb
+     */
+    this.breadCrumbItems = [
+      { label: 'Ventas' },
+      { label: 'Cuentas por Cobrar', active: true }
+    ];
+
+    // OBTENER ACCIONES DISPONIBLES DEL USUARIO
+    this.cargarAccionesUsuario();
+    console.log('Acciones disponibles:', this.accionesDisponibles);
+  }
+
+  constructor(public table: ReactiveTableService<CuentaPorCobrar>, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService,
+    private cuentasPorCobrarService: CuentasPorCobrarService
+  )
+  {
+    this.cargardatos();
+  }   
+
+  activeActionRow: number | null = null;
+  showEdit = true;
+  showDetails = true;
+  showDelete = true;
+  showPayment = true;
+  
+  // Propiedades para alertas
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  
+  // Propiedades para confirmación de eliminación
+  mostrarConfirmacionEliminar = false;
+  cuentaPorCobrarAEliminar: CuentaPorCobrar | null = null;
+
+  cerrarAlerta(): void {
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+  }
+
+  confirmarEliminar(cuentaPorCobrar: CuentaPorCobrar): void {
+    console.log('Solicitando confirmación para eliminar:', cuentaPorCobrar);
+    this.cuentaPorCobrarAEliminar = cuentaPorCobrar;
+    this.mostrarConfirmacionEliminar = true;
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  cancelarEliminar(): void {
+    this.mostrarConfirmacionEliminar = false;
+    this.cuentaPorCobrarAEliminar = null;
+  }
+
+  eliminar(): void {
+    if (!this.cuentaPorCobrarAEliminar) return;
+    
+    console.log('Eliminando cuenta por cobrar:', this.cuentaPorCobrarAEliminar);
+    
+    this.cuentasPorCobrarService.eliminarCuentaPorCobrar(this.cuentaPorCobrarAEliminar.cpCo_Id).subscribe({
+      next: (response: any) => {
+        console.log('Respuesta del servidor:', response);
+        
+        // Verificar el código de estado en la respuesta
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Cuenta por cobrar eliminada exitosamente');
+            this.mensajeExito = `Cuenta por cobrar eliminada exitosamente`;
+            this.mostrarAlertaExito = true;
+            
+            // Ocultar la alerta después de 3 segundos
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            
+            this.cargardatos();
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            //result: está siendo utilizado
+            console.log('Cuenta por cobrar está siendo utilizada');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la cuenta por cobrar está siendo utilizada.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar la cuenta por cobrar.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          }
+        } else {
+          // Respuesta inesperada
+          console.log('Respuesta inesperada del servidor');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar la cuenta por cobrar.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        }
+      },
+      error: (error) => {
+        console.error('Error al eliminar la cuenta por cobrar:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al comunicarse con el servidor. Por favor, inténtelo de nuevo más tarde.';
+        
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        
+        // Cerrar el modal de confirmación
+        this.cancelarEliminar();
+      }
+    });
+  }
+
+  // AQUI EMPIEZA LO BUENO PARA LAS ACCIONES
+  private cargarAccionesUsuario(): void {
+    // OBTENEMOS PERMISOSJSON DEL LOCALSTORAGE
+    const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    let accionesArray: string[] = [];
+    if (permisosRaw) {
+      try {
+        const permisos = JSON.parse(permisosRaw);
+        // BUSCAMOS EL MÓDULO DE CUENTAS POR COBRAR
+        let modulo = null;
+        if (Array.isArray(permisos)) {
+          // BUSCAMOS EL MÓDULO DE CUENTAS POR COBRAR POR ID O NOMBRE
+          modulo = permisos.find((m: any) => 
+            m.Pant_Id === 34 || // ID correcto del módulo de Cuentas por Cobrar
+            (m.Nombre && m.Nombre.toLowerCase() === 'cuentas por cobrar')
+          );
+        } else if (typeof permisos === 'object' && permisos !== null) {
+          // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
+          modulo = permisos['Cuentas por Cobrar'] || permisos['cuentas por cobrar'] || null;
+        }
+        if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          console.log('Acciones del módulo:', accionesArray);
+        }
+      } catch (e) {
+        console.error('Error al parsear permisosJson:', e);
+      }
+    } 
+    // AQUI FILTRAMOS Y NORMALIZAMOS LAS ACCIONES
+    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    console.log('Acciones finales:', this.accionesDisponibles);
+  }
+
+  // Métodos para navegación desde el menú flotante
+  irAEditar(id: number): void {
+    this.router.navigate(['/ventas/cuentasporcobrar/edit', id]);
+    this.floatingMenuService.close();
+  }
+
+  irADetalles(id: number): void {
+    this.router.navigate(['/ventas/cuentasporcobrar/details', id]);
+    this.floatingMenuService.close();
+  }
+
+  irARegistrarPago(id: number): void {
+    this.router.navigate(['/ventas/cuentasporcobrar/payment', id]);
+    this.floatingMenuService.close();
+  }
+
+  private cargardatos(): void {
+    this.cuentasPorCobrarService.obtenerCuentasPorCobrar(true, false).subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          const data = response.data;
+          console.log('Datos recargados:', data);
+          // Agregar secuencia a cada elemento
+          data.forEach((item: CuentaPorCobrar, index: number) => {
+            item.secuencia = index + 1;
+          });
+          this.table.setData(data);
+        } else {
+          console.error('Respuesta sin datos:', response);
+          this.mostrarAlertaError = true;
+          this.mensajeError = 'No se pudieron cargar los datos correctamente.';
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar datos:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
+        
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
+  }
+}

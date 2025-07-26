@@ -10,7 +10,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -435,7 +436,7 @@ confirmarGuardarCambios() {
       preP_PrecioCredito: lista.precioCredito,
       preP_InicioEscala: lista.inicioEscala,
       preP_FinEscala: lista.finEscala,
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       preP_FechaModificacion: new Date().toISOString(),
       preP_ListaPrecios: lista.listaId
     };

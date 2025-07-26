@@ -33,7 +33,8 @@
       "LIST": {
         "CATEGORIAS": "Categorias",
         "SUBCATEGORIAS": "Subcategorias",
-        "PRODUCTOS": "Productos"
+        "PRODUCTOS": "Productos",
+        "DESCUENTOS": "Descuentos"
       }
     },
     "VENTAS": {
@@ -45,6 +46,7 @@
         "VENDEDORES": "Vendedores",
         "REGISTROCAIS": "Registros CAI",
         "PUNTOSEMISION": "Puntos Emision",
+        "CUENTASPORCOBRAR": "Cuentas por cobrar",
         "PEDIDOS": "Pedidos"
       }
     },

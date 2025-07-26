@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
+
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
 import { forkJoin } from 'rxjs';
@@ -413,7 +414,7 @@ obtenerProductosSeleccionados(): any[] {
       destino: destino?.bode_Descripcion || '',
       tras_Fecha: new Date(this.traslado.tras_Fecha).toISOString(),
       tras_Observaciones: this.traslado.tras_Observaciones || '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       tras_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       tras_FechaModificacion: new Date().toISOString(),

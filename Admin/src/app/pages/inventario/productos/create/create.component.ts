@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Producto } from 'src/app/Modelos/inventario/Producto.Model';
 import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 
@@ -246,7 +247,7 @@ export class CreateComponent {
         // prod_PromODesc: ,
         // prod_EsPromo: this.producto.prod_EsPromo,
         prod_Estado: true,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         prod_FechaCreacion: new Date().toISOString(),
         secuencia: 0,
       };

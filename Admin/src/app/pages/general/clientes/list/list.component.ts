@@ -13,7 +13,8 @@ import { SimplebarAngularModule } from 'simplebar-angular';
 import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { HttpClient } from '@angular/common/http';
 import { cloneDeep } from 'lodash';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 
@@ -238,9 +239,9 @@ export class ListComponent {
           clie_ObservacionRetiro: '',
           clie_Confirmacion: true,
           clie_Estado: true,
-          usua_Creacion: environment.usua_Id,
+          usua_Creacion: getUserId(),
           clie_FechaCreacion: new Date(),
-          usua_Modificacion: environment.usua_Id,
+          usua_Modificacion: getUserId(),
           clie_FechaModificacion: new Date(),
 
           usuaC_Nombre: '',
