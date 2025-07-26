@@ -22,23 +22,6 @@ import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente
   providers: [provideNgxMask()]
 })
 export class CreateComponent {
-  onDepartamentoChange(): void {
-    this.cargarMunicipios(this.selectedDepa);
-    this.nuevaColonia.muni_Codigo = '';
-    this.direccion.colo_Id = '';
-    this.Colonias = [];
-    this.selectedMuni = '';
-    this.selectedColonia = '';
-  }
-
-  onDepartamentoAvalChange(): void {
-    this.cargarMunicipiosAval(this.selectedDepaAval);
-    this.nuevaColoniaAval.muni_Codigo = '';
-    this.direccionAval.colo_Id = '';
-    this.ColoniasAval = [];
-    this.selectedMuniAval = '';
-    this.selectedColoniaAval = '';
-  }
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cliente>();
   @ViewChild(MapaSelectorComponent)
@@ -46,8 +29,8 @@ export class CreateComponent {
 
 
   dropzoneConfig = {
-    url: '/api/upload', // Replace with your actual upload endpoint
-    maxFilesize: 5, // MB
+    url: '/api/upload',
+    maxFilesize: 5,
     acceptedFiles: 'image/*',
     addRemoveLinks: true,
     dictDefaultMessage: 'Selecciona una imagen para subir.'
@@ -75,7 +58,6 @@ export class CreateComponent {
     }
   }
 
-  // Add this method to remove a file from the uploadedFiles array
   removeFile(file: any): void {
     if (this.uploadedFiles) {
       const index = this.uploadedFiles.indexOf(file);
@@ -84,6 +66,7 @@ export class CreateComponent {
       }
     }
   }
+
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -110,7 +93,6 @@ export class CreateComponent {
 
   cargando = false;
   cargandoColonias = false;
-  // Filtrado en DDLs
   Departamentos: any[] = [];
 
   TodosMunicipios: any[] = [];
@@ -139,12 +121,15 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
+  trackByIndex(index: number) { return index; }
+
   onCoordenadasSeleccionadas(coords: { lat: number, lng: number }) {
     this.latitudSeleccionada = coords.lat;
     this.longitudSeleccionada = coords.lng;
-    this.mostrarMapa = false;
   }
 
+  //Sera para mandar una coordenada previa al mapa
+  coordenadaPrevia: { lat: number, lng: number } | null = null;
   abrirMapa() {
     this.mostrarMapa = true;
     setTimeout(() => {
@@ -244,6 +229,23 @@ export class CreateComponent {
     });
   }
 
+  onDepartamentoChange(): void {
+    this.cargarMunicipios(this.selectedDepa);
+    this.nuevaColonia.muni_Codigo = '';
+    this.direccion.colo_Id = '';
+    this.Colonias = [];
+    this.selectedMuni = '';
+    this.selectedColonia = '';
+  }
+
+  onDepartamentoAvalChange(): void {
+    this.cargarMunicipiosAval(this.selectedDepaAval);
+    this.nuevaColoniaAval.muni_Codigo = '';
+    this.direccionAval.colo_Id = '';
+    this.ColoniasAval = [];
+    this.selectedMuniAval = '';
+    this.selectedColoniaAval = '';
+  }
 
   cargarMunicipios(codigoDepa: string): void {
     this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);

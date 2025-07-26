@@ -269,6 +269,7 @@
           >
             <i class="ri-arrow-left-line"></i> Anterior
           </button>
+          <button style="background: none;border: none;"></button>
           <button
             *ngIf="activeTab < 5"
             type="button"
@@ -286,37 +287,6 @@
     <!--=======================================-->
     <div *ngIf="activeTab === 2">
       <div class="row mx-lg-4">
-        <!-- Canal -->
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="cana_Id" class="form-label">Canal</label>
-            <select id="cana_Id" class="form-select" [(ngModel)]="cliente.cana_Id"
-              [class.is-invalid]="!cliente.cana_Id && mostrarErrores" required>
-              <option value="0" disabled selected>Seleccione un canal</option>
-              <option *ngFor="let canal of canales" [value]="canal.cana_Id">
-                {{ canal.cana_Descripcion }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="clienteNombreNegocio" class="form-label">Nombre del Negocio<span
-                class="text-danger">*</span></label>
-            <div class="d-flex align-items-center">
-              <input type="text" class="form-control" [class.is-invalid]="
-                  !cliente.clie_NombreNegocio.trim() && mostrarErrores
-                " id="clienteNegocio" [(ngModel)]="cliente.clie_NombreNegocio"
-                placeholder="Ingrese el nombre del negocio" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div class="text-danger mt-1" *ngIf="!cliente.clie_NombreNegocio.trim() && mostrarErrores">
-              <small>El campo Nombre del Negocio del Cliente es requerido</small>
-            </div>
-          </div>
-        </div>
-
         <div class="col-lg-12">
           <div class="mb-3">
             <label class="form-label">Imagen del negocio<span class="text-danger">*</span></label>
@@ -359,6 +329,69 @@
             }
           </div>
         </div>
+
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="cana_Id" class="form-label">Canal</label>
+            <select id="cana_Id" class="form-select" [(ngModel)]="cliente.cana_Id"
+              [class.is-invalid]="!cliente.cana_Id && mostrarErrores" required>
+              <option value="0" disabled selected>Seleccione un canal</option>
+              <option *ngFor="let canal of canales" [value]="canal.cana_Id">
+                {{ canal.cana_Descripcion }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clienteNombreNegocio" class="form-label">Nombre del Negocio<span
+                class="text-danger">*</span></label>
+            <div class="d-flex align-items-center">
+              <input type="text" class="form-control" [class.is-invalid]="
+                  !cliente.clie_NombreNegocio.trim() && mostrarErrores
+                " id="clienteNegocio" [(ngModel)]="cliente.clie_NombreNegocio"
+                placeholder="Ingrese el nombre del negocio" required />
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_NombreNegocio.trim() && mostrarErrores">
+              <small>El campo Nombre del Negocio del Cliente es requerido</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ruta -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="ruta_Id" class="form-label">Ruta</label>
+            <select id="ruta_Id" class="form-select" [(ngModel)]="cliente.ruta_Id"
+              [class.is-invalid]="!cliente.ruta_Id && mostrarErrores" required>
+              <option value="0" disabled selected>Seleccione una ruta</option>
+              <option *ngFor="let ruta of rutas" [value]="ruta.ruta_Id">
+                {{ ruta.ruta_Descripcion }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tipos de Vivienda -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
+            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
+              [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
+              <option value="0" disabled selected>
+                Seleccione un tipo de vivienda
+              </option>
+              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
+                {{ tipoVivienda.tiVi_Descripcion }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="mt-4 mb-4" />
 
         <div class="col-md-6">
           <div class="mb-3">
@@ -457,46 +490,10 @@
           </div>
         </div>
 
-        <!-- Ruta -->
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="ruta_Id" class="form-label">Ruta</label>
-            <select id="ruta_Id" class="form-select" [(ngModel)]="cliente.ruta_Id"
-              [class.is-invalid]="!cliente.ruta_Id && mostrarErrores" required>
-              <option value="0" disabled selected>Seleccione una ruta</option>
-              <option *ngFor="let ruta of rutas" [value]="ruta.ruta_Id">
-                {{ ruta.ruta_Descripcion }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Tipos de Vivienda -->
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
-              [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
-              <option value="0" disabled selected>
-                Seleccione un tipo de vivienda
-              </option>
-              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
-                {{ tipoVivienda.tiVi_Descripcion }}
-              </option>
-            </select>
-          </div>
-        </div>
-
         <button class="btn btn-primary mb-4" (click)="abrirMapa()">
           <span class="btn-text">Seleccionar una Ubicación</span>
           <span class="btn-icon"><i class="ri-map-pin-2-line"></i></span>
         </button>
-
-        <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
-          <strong>Ubicación seleccionada:</strong><br />
-          Latitud: {{ latitudSeleccionada }}<br />
-          Longitud: {{ longitudSeleccionada }}
-        </div>
       </div>
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
@@ -844,17 +841,12 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
-        <span>Seleccionar mi ubicación actual</span>
+        <h3 class="text-muted">Seleccionar una ubicación</h3>
         <i class="ri-close-line custom-modal-close" (click)="cerrarMapa()"></i>
       </div>
       <hr class="custom-modal-divider" />
       <div class="modal-body custom-modal-body">
         <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)"></app-mapa-selector>
-        <div *ngIf="latitudSeleccionada && longitudSeleccionada" class="mt-2">
-          <strong>Ubicación seleccionada:</strong><br />
-          Latitud: {{ latitudSeleccionada }}<br />
-          Longitud: {{ longitudSeleccionada }}
-        </div>
       </div>
     </div>
   </div>

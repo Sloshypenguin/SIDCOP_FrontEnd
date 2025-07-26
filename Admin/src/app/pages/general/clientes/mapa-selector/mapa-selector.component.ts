@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { CommonModule } from '@angular/common';
 
@@ -10,20 +10,27 @@ import { CommonModule } from '@angular/common';
   styleUrl: './mapa-selector.component.scss',
 })
 export class MapaSelectorComponent {
-  private map: L.Map | undefined;
-  private marker: L.Marker | undefined;
-
+  @Input() coordenadasIniciales: { lat: number, lng: number } | null = null;
   @Output() coordenadasSeleccionadas = new EventEmitter<{ lat: number, lng: number }>();
 
+  private map: L.Map | undefined;
+  private marker: L.Marker | undefined;
   private mapaInicializado = false;
+
   inicializarMapa() {
     if (this.mapaInicializado) return;
 
-    this.map = L.map('mapa').setView([14.6349, -90.5069], 6);
+    const coords = this.coordenadasIniciales ?? { lat: 15.4894, lng: -88.0260 };
+
+    this.map = L.map('mapa').setView([coords.lat, coords.lng], 7);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '&copy; SIDCOP'
     }).addTo(this.map);
+
+    if (this.coordenadasIniciales) {
+      this.marker = L.marker([coords.lat, coords.lng]).addTo(this.map);
+    }
 
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       const lat = e.latlng.lat;
@@ -34,14 +41,12 @@ export class MapaSelectorComponent {
       } else {
         this.marker = L.marker(e.latlng).addTo(this.map!);
       }
-
       this.coordenadasSeleccionadas.emit({ lat, lng });
     });
-
-    this.mapaInicializado = true;
-
     setTimeout(() => {
       this.map!.invalidateSize();
     }, 100);
+
+    this.mapaInicializado = true;
   }
 }
