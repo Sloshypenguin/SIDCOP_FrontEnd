@@ -20,6 +20,13 @@ const routes: Routes = [
           title: 'Listado de Productos',
         }
       },
+      {
+        path: 'details/:id',
+        loadComponent: () => import('./details/details.component').then(m => m.DetailsComponent),
+        data: {
+          title: 'Detalles del Producto',
+        }
+      },
     ]
   }
 ];

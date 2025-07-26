@@ -13,6 +13,7 @@ import { Canal } from 'src/app/Modelos/general/Canal.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list-canales',
@@ -50,12 +51,6 @@ export class ListComponent implements OnInit {
     this.cargardatos();
   }
 
-  // Dropdown acciones
-  activeActionRow: number | null = null;
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
-
   // Form controls
   showCreateForm = false;
   showEditForm = false;
@@ -79,14 +74,15 @@ export class ListComponent implements OnInit {
     public table: ReactiveTableService<Canal>,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {}
 
   crear(): void {
     this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false;
     this.showDetailsForm = false;
-    this.activeActionRow = null;
+    // (Eliminada referencia a activeActionRow)
   }
 
   editar(canal: Canal): void {
@@ -94,7 +90,6 @@ export class ListComponent implements OnInit {
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
-    this.activeActionRow = null;
   }
 
   detalles(canal: Canal): void {
@@ -102,7 +97,7 @@ export class ListComponent implements OnInit {
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
-    this.activeActionRow = null;
+
   }
 
   cerrarFormulario(): void {
@@ -138,7 +133,6 @@ export class ListComponent implements OnInit {
   confirmarEliminar(canal: Canal): void {
     this.canalAEliminar = canal;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null;
   }
 
   cancelarEliminar(): void {
