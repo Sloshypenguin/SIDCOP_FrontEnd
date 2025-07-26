@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -186,7 +187,7 @@ export class EditComponent implements OnChanges {
     ) {
       const sucursalActualizar = {
         ...this.sucursal,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         sucu_FechaModificacion: new Date().toISOString()
       };
 

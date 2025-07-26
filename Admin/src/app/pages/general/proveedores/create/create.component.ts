@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Proveedor } from 'src/app/Modelos/general/Proveedor.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -107,7 +108,7 @@ export class CreateComponent {
       this.mostrarAlertaError = false;
       const proveedorGuardar = {
         ...this.proveedor,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         prov_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         prov_FechaModificacion: new Date().toISOString(),

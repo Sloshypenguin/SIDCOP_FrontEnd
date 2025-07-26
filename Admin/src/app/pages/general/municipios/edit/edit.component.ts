@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -102,7 +103,7 @@ export class EditComponent {
         muni_Descripcion: this.municipio.muni_Descripcion.trim(),
         usua_Creacion: this.municipio.usua_Creacion,
         muni_FechaCreacion: this.municipio.muni_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         numero: this.municipio.depa_Codigo || '',
         muni_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

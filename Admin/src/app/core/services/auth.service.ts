@@ -54,14 +54,32 @@ export class AuthenticationService {
 
   // Sign in with Google provider
   signInWithGoogle(): Promise<User> {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return this.signInWithPopup(provider);
+    try {
+      if (!firebase.apps.length || !(firebase.apps[0].options as any).apiKey) {
+        console.warn('Firebase no está inicializado o tiene una configuración inválida');
+        return Promise.reject('Firebase no está disponible');
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      return this.signInWithPopup(provider);
+    } catch (error) {
+      console.error('Error al intentar autenticar con Google:', error);
+      return Promise.reject('Error al intentar autenticar con Google');
+    }
   }
 
   // Sign in with Facebook provider
   signInWithFacebook(): Promise<User> {
-    const provider = new firebase.auth.FacebookAuthProvider();
-    return this.signInWithPopup(provider);
+    try {
+      if (!firebase.apps.length || !(firebase.apps[0].options as any).apiKey) {
+        console.warn('Firebase no está inicializado o tiene una configuración inválida');
+        return Promise.reject('Firebase no está disponible');
+      }
+      const provider = new firebase.auth.FacebookAuthProvider();
+      return this.signInWithPopup(provider);
+    } catch (error) {
+      console.error('Error al intentar autenticar con Facebook:', error);
+      return Promise.reject('Error al intentar autenticar con Facebook');
+    }
   }
 
   // Sign in with a popup for the specified provider

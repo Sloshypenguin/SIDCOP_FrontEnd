@@ -10,7 +10,7 @@ export class Producto {
     subc_Id: number = 0;
     marc_Id: number = 0;
     prov_Id: number = 0;
-    impu_Id?: number = 0;
+    impu_Id?: number | null = 0;
     prod_PrecioUnitario: number = 0;
     prod_CostoTotal: number = 0;
     prod_PagaImpuesto: string = "";

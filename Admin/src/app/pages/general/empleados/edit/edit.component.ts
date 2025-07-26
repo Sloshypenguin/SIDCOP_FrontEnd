@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
@@ -212,7 +213,7 @@ export class EditComponent implements OnChanges {
         empl_DireccionExacta: this.empleado.empl_DireccionExacta,
         empl_Imagen: this.empleado.empl_Imagen,
         empl_Estado: true,
-        usua_Creacion: environment.usua_Id, // variable global
+        usua_Creacion: getUserId(), // variable global
         empl_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 1,
         empl_FechaModificacion: new Date().toISOString(),
