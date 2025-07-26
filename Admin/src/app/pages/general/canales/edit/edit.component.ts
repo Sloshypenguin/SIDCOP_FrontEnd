@@ -1,7 +1,8 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Canal } from 'src/app/Modelos/general/Canal.Model';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -101,7 +102,7 @@ export class EditComponent implements OnChanges {
       cana_FechaCreacion: this.canal.cana_FechaCreacion instanceof Date
         ? this.canal.cana_FechaCreacion.toISOString()
         : this.canal.cana_FechaCreacion,
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       cana_FechaModificacion: new Date().toISOString(),
       cana_Estado: this.canal.cana_Estado,
       UsuarioCreacion: this.canal.UsuarioCreacion || '',

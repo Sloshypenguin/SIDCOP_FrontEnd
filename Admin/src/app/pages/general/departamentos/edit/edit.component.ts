@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 
 @Component({
@@ -103,7 +104,7 @@ export class EditComponent {
         depa_Descripcion: this.departamento.depa_Descripcion.trim(),
         usua_Creacion: this.departamento.usua_Creacion,
         depa_FechaCreacion: this.departamento.depa_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         numero: this.departamento.secuencia || '',
         depa_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

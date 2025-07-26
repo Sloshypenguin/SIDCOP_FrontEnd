@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 
 @Component({
@@ -108,7 +109,7 @@ export class EditComponent implements OnChanges {
         cate_Descripcion: this.categoria.cate_Descripcion.trim(),
         usua_Creacion: this.categoria.usua_Creacion,
         cate_FechaCreacion: this.categoria.cate_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
                 
         cate_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

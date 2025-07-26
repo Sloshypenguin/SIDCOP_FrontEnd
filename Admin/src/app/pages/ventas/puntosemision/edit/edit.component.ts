@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -118,7 +119,7 @@ export class EditComponent implements OnChanges {
         puEm_Descripcion: this.puntoEmision.puEm_Descripcion.trim(),
         usua_Creacion: this.puntoEmision.usua_Creacion,
         puEm_FechaCreacion: this.puntoEmision.puEm_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         sucu_Id: this.puntoEmision.sucu_Id,
         puEm_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

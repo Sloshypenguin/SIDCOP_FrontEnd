@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -84,7 +85,7 @@ export class CreateComponent {
       const departamentoGuardar = {
         depa_Codigo: this.departamento.depa_Codigo.trim(),
         depa_Descripcion: this.departamento.depa_Descripcion.trim(),
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         depa_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 

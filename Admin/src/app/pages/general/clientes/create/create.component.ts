@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
 import { Aval } from 'src/app/Modelos/general/Aval.Model';
@@ -11,6 +12,7 @@ import { Aval } from 'src/app/Modelos/general/Aval.Model';
 import { NgModule } from '@angular/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente.Model';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 
 @Component({
@@ -292,7 +294,7 @@ export class CreateComponent {
     aval_FechaNacimiento: new Date(),
     esCv_Id: 0,
     aval_Sexo: 'M',
-    usua_Creacion: environment.usua_Id,
+    usua_Creacion: getUserId(),
     usuarioCreacion: '',
     aval_FechaCreacion: new Date(),
     usua_Modificacion: undefined,
@@ -398,8 +400,8 @@ export class CreateComponent {
       clie_ObservacionRetiro: this.cliente.clie_ObservacionRetiro.trim(),
       clie_Confirmacion: this.cliente.clie_Confirmacion,
       clie_Estado: true,
-      usua_Creacion: environment.usua_Id,
-      usua_Modificacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
+      usua_Modificacion: getUserId(),
       secuencia: 0,
       clie_FechaCreacion: new Date(),
       clie_FechaModificacion: new Date(),
@@ -505,7 +507,7 @@ export class CreateComponent {
         clie_Telefono: telefonoMask,
         clie_FechaCreacion: new Date().toISOString(),
         clie_FechaModificacion: new Date().toISOString(),
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         usua_Modificacion: 0
       };
 
@@ -524,7 +526,7 @@ export class CreateComponent {
             clie_Id: clienteId,
             diCl_FechaCreacion: new Date().toISOString(),
             diCl_FechaModificacion: new Date().toISOString(),
-            usua_Creacion: environment.usua_Id,
+            usua_Creacion: getUserId(),
             usua_Modificacion: 0
           };
           this.http.post<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Insertar`, direccionGuardar, {
@@ -541,7 +543,7 @@ export class CreateComponent {
                   clie_id: clienteId,
                   aval_FechaCreacion: new Date().toISOString(),
                   aval_FechaModificacion: new Date().toISOString(),
-                  usua_Creacion: environment.usua_Id,
+                  usua_Creacion: getUserId(),
                   usua_Modificacion: 0
                 };
                 this.http.post<any>(`${environment.apiBaseUrl}/Aval/Insertar`, avalGuardar, {
