@@ -14,7 +14,8 @@ import { SimplebarAngularModule } from 'simplebar-angular';
 import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { HttpClient } from '@angular/common/http';
 import { cloneDeep } from 'lodash';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 

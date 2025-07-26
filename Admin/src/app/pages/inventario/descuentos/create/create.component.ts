@@ -6,7 +6,8 @@ import { Descuento } from 'src/app/Modelos/inventario/DescuentoModel';
 import { DescuentoDetalle } from 'src/app/Modelos/inventario/DescuentoDetalleModel';
 import { DescuentoPorCliente } from 'src/app/Modelos/inventario/DescuentoPorClienteModel';
 import { DescuentoPorEscala } from 'src/app/Modelos/inventario/DescuentoPorEscalaModel';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CdkStepperModule } from '@angular/cdk/stepper';
@@ -486,7 +487,7 @@ tieneAyudante: boolean = false;
       desc_FechaInicio:  new Date(this.descuento.desc_FechaInicio) ,
       desc_FechaFin: new Date(this.descuento.desc_FechaFin),
       desc_Observaciones:  '',
-      usua_Creacion:  environment.usua_Id,
+      usua_Creacion:  getUserId(),
       desc_FechaCreacion:  new Date(),
       usua_Modificacion: 0,
       desc_FechaModificacion: new Date(),
@@ -539,7 +540,7 @@ tieneAyudante: boolean = false;
           const DescuentoDetalleGuardar: any = {
           desc_Id:  this.descuentoDetalle.desc_Id,
           idReferencias:  this.descuentoDetalle.idReferencias,
-          usua_Creacion:  environment.usua_Id,
+          usua_Creacion:  getUserId(),
           desD_FechaCreacion:  new Date(),
           desD_Id:  0,
           desD_IdReferencia: 0,
@@ -553,7 +554,7 @@ tieneAyudante: boolean = false;
           const DescuentoPorClienteGuardar: any = {
           desc_Id:  this.descuentoPorCliente.desc_Id,
           idClientes:  this.clientesSeleccionados,
-          usua_Creacion:  environment.usua_Id,
+          usua_Creacion:  getUserId(),
           deEs_FechaCreacion:  new Date(),
           deCl_Id:  0,
           clie_Id: 0, 
@@ -567,7 +568,7 @@ tieneAyudante: boolean = false;
           const DescuentoPorEscalaGuardar: any = {
           desc_Id:  this.descuentoPorEscala.desc_Id,
           escalas:  this.escalas,
-          usua_Creacion:  environment.usua_Id,
+          usua_Creacion:  getUserId(),
           deEs_FechaCreacion:  new Date(),
           deEs_Id:  0,
           deEs_InicioEscala: 0, 

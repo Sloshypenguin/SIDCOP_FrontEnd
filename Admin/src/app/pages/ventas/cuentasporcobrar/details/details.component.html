@@ -1,0 +1,186 @@
+<div class="details-container">
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <!-- Botón de regresar -->
+  <div class="details-header-button">
+    <button type="button" class="btn btn-primary" (click)="cerrar()">
+      <span class="btn-text">Regresar</span>
+      <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+    </button>
+  </div>
+
+  <!-- Contenido de detalles -->
+  <div *ngIf="!cargando && cuentaPorCobrarDetalle" class="details-content">
+    
+    <!-- Header con información principal -->
+    <div class="details-header">
+      <div class="details-title">Detalles de Cuenta por Cobrar</div>
+      <div class="details-id-row">
+        <div class="details-id">
+          <div class="details-id-label">Código</div>
+          <div class="details-id-value">{{ cuentaPorCobrarDetalle.cpCo_Id || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Estado</div>
+          <div class="details-id-value">
+            <span *ngIf="cuentaPorCobrarDetalle.cpCo_Anulado" class="badge bg-danger">Anulada</span>
+            <span *ngIf="!cuentaPorCobrarDetalle.cpCo_Anulado && cuentaPorCobrarDetalle.cpCo_Saldada" class="badge bg-success">Saldada</span>
+            <span *ngIf="!cuentaPorCobrarDetalle.cpCo_Anulado && !cuentaPorCobrarDetalle.cpCo_Saldada && estaVencida()" class="badge bg-warning">Vencida</span>
+            <span *ngIf="!cuentaPorCobrarDetalle.cpCo_Anulado && !cuentaPorCobrarDetalle.cpCo_Saldada && !estaVencida()" class="badge bg-primary">Pendiente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del cliente -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Información del Cliente</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Cliente:</strong> {{ cuentaPorCobrarDetalle.clie_Nombres || 'N/A' }}</p>
+            <p><strong>Negocio:</strong> {{ cuentaPorCobrarDetalle.clie_NombreNegocio || 'N/A' }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Teléfono:</strong> {{ cuentaPorCobrarDetalle.clie_Telefono || 'N/A' }}</p>
+            <p><strong>Límite de Crédito:</strong> {{ formatearMoneda(cuentaPorCobrarDetalle.clie_LimiteCredito) }}</p>
+            <p><strong>Saldo Actual:</strong> {{ formatearMoneda(cuentaPorCobrarDetalle.clie_Saldo) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información de la cuenta por cobrar -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Detalle de la Cuenta</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Factura:</strong> {{ cuentaPorCobrarDetalle.fact_Id }}</p>
+            <p><strong>Fecha de Emisión:</strong> {{ formatearFecha(cuentaPorCobrarDetalle.cpCo_FechaEmision) }}</p>
+            <p><strong>Fecha de Vencimiento:</strong> {{ formatearFecha(cuentaPorCobrarDetalle.cpCo_FechaVencimiento) }}</p>
+            <p *ngIf="estaVencida()" class="text-danger"><strong>Días Vencidos:</strong> {{ calcularDiasVencimiento() }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Valor Total:</strong> {{ formatearMoneda(cuentaPorCobrarDetalle.cpCo_Valor) }}</p>
+            <p><strong>Saldo Pendiente:</strong> {{ formatearMoneda(cuentaPorCobrarDetalle.cpCo_Saldo) }}</p>
+            <p><strong>Pagado:</strong> {{ formatearMoneda(cuentaPorCobrarDetalle.cpCo_Valor - cuentaPorCobrarDetalle.cpCo_Saldo) }}</p>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <p><strong>Observaciones:</strong> {{ cuentaPorCobrarDetalle.cpCo_Observaciones || 'Sin observaciones' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de pagos -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Historial de Pagos</h5>
+        <button *ngIf="!cuentaPorCobrarDetalle.cpCo_Anulado && !cuentaPorCobrarDetalle.cpCo_Saldada" type="button" class="btn btn-sm btn-success" (click)="registrarPago()">
+          <i class="ri-add-line me-1"></i> Registrar Pago
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Forma de Pago</th>
+                <th>Referencia</th>
+                <th>Observaciones</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pago of pagos" [ngClass]="{'table-danger': pago.pago_Anulado}">
+                <td>{{ pago.pago_Id }}</td>
+                <td>{{ formatearFecha(pago.pago_Fecha) }}</td>
+                <td>{{ formatearMoneda(pago.pago_Monto) }}</td>
+                <td>{{ pago.pago_FormaPago }}</td>
+                <td>{{ pago.pago_NumeroReferencia || 'N/A' }}</td>
+                <td>{{ pago.pago_Observaciones }}</td>
+                <td>
+                  <span *ngIf="!pago.pago_Anulado" class="badge bg-success">Activo</span>
+                  <span *ngIf="pago.pago_Anulado" class="badge bg-danger">Anulado</span>
+                </td>
+              </tr>
+              <tr *ngIf="pagos.length === 0">
+                <td colspan="7" class="text-center">No hay pagos registrados</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de auditoría -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Historial de Acciones</h5>
+      </div>
+      <div class="card-body">
+        <div class="audit-table">
+          <div class="audit-header">
+            <div class="audit-col">Acción</div>
+            <div class="audit-col">Usuario</div>
+            <div class="audit-col">Fecha</div>
+          </div>
+        
+          <!-- Fila de creación -->
+          <div class="audit-row">
+            <div class="audit-col">
+              <span class="audit-action">Creador</span>
+            </div>
+            <div class="audit-col">
+              <span class="audit-user">{{ cuentaPorCobrarDetalle.usuarioCreacion }}</span>
+            </div>
+            <div class="audit-col">
+              <span class="audit-date">{{ formatearFecha(cuentaPorCobrarDetalle.cpCo_FechaCreacion) }}</span>
+            </div>
+          </div>
+          
+          <!-- Fila de modificación -->
+          <div class="audit-row">
+            <div class="audit-col">
+              <span class="audit-action">Modificación</span>
+            </div>
+            <div class="audit-col">
+              <span class="audit-user">{{ cuentaPorCobrarDetalle.usuarioModificacion || 'N/A' }}</span>
+            </div>
+            <div class="audit-col">
+              <span class="audit-date">{{ formatearFecha(cuentaPorCobrarDetalle.cpCo_FechaModificacion ?? null) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- Indicador de carga -->
+  <div *ngIf="cargando" class="loading-indicator">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando detalles...</p>
+  </div>
+</div>

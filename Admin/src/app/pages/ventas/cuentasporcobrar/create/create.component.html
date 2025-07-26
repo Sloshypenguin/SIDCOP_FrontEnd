@@ -1,0 +1,167 @@
+<div class="create-container">
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlertaError()" aria-label="Close"></button>
+    </div>
+    
+    <!-- Alerta de éxito -->
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlertaExito()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <!-- Botón de regresar -->
+  <div class="create-header-button">
+    <button type="button" class="btn btn-primary" (click)="cancelar()">
+      <span class="btn-text">Regresar</span>
+      <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+    </button>
+  </div>
+
+  <!-- Contenido del formulario -->
+  <div class="card" *ngIf="!cargando && cuentaPorCobrar">
+    <div class="card-header">
+      <h5 class="card-title mb-0">Registrar Pago a Cuenta por Cobrar</h5>
+    </div>
+    <div class="card-body">
+      
+      <!-- Información de la cuenta -->
+      <div class="info-section mb-4">
+        <div class="section-title">Información de la Cuenta</div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-item">
+              <div class="info-label">Cliente:</div>
+              <div class="info-value">{{ cuentaPorCobrar.clie_Nombres }} {{ cuentaPorCobrar.clie_Apellidos }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Negocio:</div>
+              <div class="info-value">{{ cuentaPorCobrar.clie_NombreNegocio || 'N/A' }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Factura:</div>
+              <div class="info-value">{{ cuentaPorCobrar.fact_Id }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-item">
+              <div class="info-label">Valor Total:</div>
+              <div class="info-value">{{ formatearMoneda(cuentaPorCobrar.cpCo_Valor) }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Saldo Pendiente:</div>
+              <div class="info-value highlight">{{ formatearMoneda(cuentaPorCobrar.cpCo_Saldo) }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Fecha Vencimiento:</div>
+              <div class="info-value">{{ cuentaPorCobrar.cpCo_FechaVencimiento | date:'dd/MM/yyyy' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Formulario de pago -->
+      <form [formGroup]="pagoForm" (ngSubmit)="onSubmit()">
+        <!-- Campo oculto para ID de cuenta -->
+        <input type="hidden" formControlName="cpCo_Id">
+        
+        <div class="row">
+          <!-- Monto del pago -->
+          <div class="col-md-6 mb-3">
+            <label for="pago_Monto" class="form-label">Monto del Pago *</label>
+            <div class="input-group">
+              <span class="input-group-text">L</span>
+              <input 
+                type="number" 
+                class="form-control" 
+                id="pago_Monto" 
+                formControlName="pago_Monto" 
+                placeholder="0.00" 
+                [ngClass]="{'is-invalid': esCampoInvalido('pago_Monto')}"
+                [max]="cuentaPorCobrar.cpCo_Saldo"
+                step="0.01">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('pago_Monto')">
+                {{ obtenerMensajeError('pago_Monto') }}
+              </div>
+            </div>
+            <div class="form-text" *ngIf="pagoForm.value.pago_Monto">
+              Después del pago, el saldo pendiente será: 
+              {{ formatearMoneda((cuentaPorCobrar.cpCo_Saldo || 0) - (pagoForm.value.pago_Monto || 0)) }}
+            </div>
+          </div>
+          
+          <!-- Forma de pago -->
+          <div class="col-md-6 mb-3">
+            <label for="pago_FormaPago" class="form-label">Forma de Pago *</label>
+            <select 
+              class="form-select" 
+              id="pago_FormaPago" 
+              formControlName="pago_FormaPago"
+              [ngClass]="{'is-invalid': esCampoInvalido('pago_FormaPago')}">
+              <option *ngFor="let forma of formasPago" [value]="forma">{{ forma }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="esCampoInvalido('pago_FormaPago')">
+              {{ obtenerMensajeError('pago_FormaPago') }}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Número de referencia (opcional) -->
+        <div class="mb-3">
+          <label for="pago_NumeroReferencia" class="form-label">Número de Referencia</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="pago_NumeroReferencia" 
+            formControlName="pago_NumeroReferencia" 
+            placeholder="Número de cheque, transferencia, etc. (opcional)">
+          <div class="form-text">Campo opcional para registrar referencias del pago.</div>
+        </div>
+        
+        <!-- Observaciones -->
+        <div class="mb-4">
+          <label for="pago_Observaciones" class="form-label">Observaciones</label>
+          <textarea 
+            class="form-control" 
+            id="pago_Observaciones" 
+            rows="3" 
+            formControlName="pago_Observaciones"
+            [ngClass]="{'is-invalid': esCampoInvalido('pago_Observaciones')}"></textarea>
+          <div class="invalid-feedback" *ngIf="esCampoInvalido('pago_Observaciones')">
+            {{ obtenerMensajeError('pago_Observaciones') }}
+          </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-light" (click)="cancelar()" [disabled]="enviando">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success" [disabled]="pagoForm.invalid || enviando || (cuentaPorCobrar && !cuentaPorCobrar.cpCo_Saldo)">
+            <span *ngIf="!enviando">Registrar Pago</span>
+            <span *ngIf="enviando">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Procesando...
+            </span>
+          </button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+  
+  <!-- Indicador de carga -->
+  <div *ngIf="cargando" class="loading-indicator">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando datos de la cuenta por cobrar...</p>
+  </div>
+</div>

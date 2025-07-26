@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -86,7 +87,7 @@ export class CreateComponent {
       const cargoGuardar = {
         carg_Id: 0,
         carg_Descripcion: this.cargo.carg_Descripcion,
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         carg_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         carg_FechaModificacion : new Date().toISOString(),

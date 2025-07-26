@@ -2,7 +2,8 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit-config-factura',
@@ -209,7 +210,7 @@ export class EditConfigFacturaComponent implements OnChanges {
   private guardar(): void {
     const body = {
       ...this.configFactura,
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       coFa_FechaModificacion: new Date().toISOString()
     };
 

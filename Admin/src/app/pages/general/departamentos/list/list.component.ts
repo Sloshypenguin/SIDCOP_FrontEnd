@@ -5,13 +5,22 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 @Component({
   selector: 'app-list',
@@ -28,12 +37,54 @@ import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
       DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrl: './list.component.scss',
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   // Acciones disponibles para el usuario en esta pantalla
   accionesDisponibles: string[] = [];
+  mostrarOverlayCarga= false;
 
+  constructor(public table: ReactiveTableService<Departamento>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  ) {
+    this.cargardatos(true);
+  }
+  
   // Método para verificar si una acción está permitida
   accionPermitida(accion: string): boolean {
     // Convertir a minúsculas para hacer la comparación insensible a mayúsculas
@@ -48,6 +99,8 @@ export class ListComponent implements OnInit {
     
     return this.accionesDisponibles.some(a => a === accionReal);
   }
+
+  
 
   // Método para cargar las acciones disponibles del usuario
   cargarAccionesUsuario() {
@@ -172,11 +225,12 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   departamentoAEliminar: Departamento | null = null;
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
+      this.mostrarOverlayCarga = false;
       this.table.setData(data);
     });
   }
@@ -188,11 +242,9 @@ export class ListComponent implements OnInit {
     //   { label: 'Departamentos', active: true }
     // ];
     this.cargarAccionesUsuario();
-    this.cargardatos();
     console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
-  constructor(public table: ReactiveTableService<Departamento>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
@@ -214,16 +266,32 @@ export class ListComponent implements OnInit {
 
   guardarDepartamento(departamento: Departamento): void {
     console.log('Departamento guardado exitosamente desde create component:', departamento);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Bodega guardada exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarDepartamento(departamento: Departamento): void {
     console.log('Departamento actualizado exitosamente desde edit component:', departamento);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Departamento actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(departamento: Departamento): void {
@@ -242,6 +310,7 @@ export class ListComponent implements OnInit {
     if (!this.departamentoAEliminar) return;
     
     console.log('Eliminando departamento:', this.departamentoAEliminar);
+    this.mostrarOverlayCarga = true;
     
     this.http.post(`${environment.apiBaseUrl}/Departamentos/Eliminar/${this.departamentoAEliminar.depa_Codigo}`, {}, {
       headers: { 
@@ -250,66 +319,69 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Departamento eliminado exitosamente');
-            this.mensajeExito = `Departamento "${this.departamentoAEliminar!.depa_Descripcion}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
+        setTimeout(() => {
+          this.cargardatos(false);
+          console.log('Respuesta del servidor:', response);
+          
+          // Verificar el código de estado en la respuesta
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              // Éxito: eliminado correctamente
+              console.log('Departamento eliminado exitosamente');
+              this.mensajeExito = `Departamento "${this.departamentoAEliminar!.depa_Descripcion}" eliminado exitosamente`;
+              this.mostrarAlertaExito = true;
 
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Departamento está siendo utilizado');
+              // Ocultar la alerta después de 3 segundos
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+
+              this.cargardatos(false);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === -1) {
+              //result: está siendo utilizado
+              console.log('El departamento está siendo utilizado');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: el departamento está siendo utilizado.';
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === 0) 
+            {
+              // Error general
+              console.log('Error general al eliminar');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar el departamento.';
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            }
+          } else {
+            // Respuesta inesperada
+            console.log('Respuesta inesperada del servidor');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el departamento está siendo utilizado.';
-            
+            this.mensajeError = response.message || 'Error inesperado al eliminar el departamento.';
+
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el departamento.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
+
             // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el departamento.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
+        }, 1000);
       },
     });
   }

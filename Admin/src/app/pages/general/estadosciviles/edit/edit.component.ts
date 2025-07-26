@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -102,7 +103,7 @@ export class EditComponent implements OnChanges {
         esCv_Descripcion: this.estadoCivil.esCv_Descripcion.trim(),
         usua_Creacion: this.estadoCivil.usua_Creacion,
         esCv_FechaCreacion: this.estadoCivil.esCv_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         numero: this.estadoCivil.secuencia || '',
         esCv_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

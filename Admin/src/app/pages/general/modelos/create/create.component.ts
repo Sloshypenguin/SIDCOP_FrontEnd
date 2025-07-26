@@ -2,7 +2,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Modelo } from 'src/app/Modelos/general/Modelo.Model';
 
 // Interfaz para las marcas
@@ -155,7 +156,7 @@ modelo: Modelo = new Modelo({
       mode_Id: 0,
       maVe_Id: Number(this.modelo.maVe_Id),
       mode_Descripcion: this.modelo.mode_Descripcion.trim(),
-      usua_Creacion: Number(environment.usua_Id),
+      usua_Creacion: Number(getUserId()),
       usuarioCreacion: "",
       usuarioModificacion: "",
       mode_FechaCreacion: new Date(),

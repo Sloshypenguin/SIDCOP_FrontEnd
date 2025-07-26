@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Marcas } from 'src/app/Modelos/general/Marcas.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -102,7 +103,7 @@ export class EditComponent implements OnChanges {
         marc_Descripcion: this.marca.marc_Descripcion.trim(),
         usua_Creacion: this.marca.usua_Creacion,
         marc_FechaCreacion: this.marca.marc_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         numero: this.marca.marc_Id  || '',
         marc_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
