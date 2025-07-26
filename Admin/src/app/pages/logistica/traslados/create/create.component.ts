@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
-
-import { environment } from 'src/environments/environment.prod';
-import { getUserId } from 'src/app/core/utils/user-utils';
+import { environment } from 'src/environments/environment';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -257,144 +255,6 @@ obtenerProductosSeleccionados(): any[] {
     if (!this.traslado.tras_Fecha) errores.push('Fecha');
     if (productos.length === 0) errores.push('Al menos un producto');
     
-    if (this.traslado.tras_Origen > 0 &&
-        this.traslado.tras_Destino > 0 &&
-        this.traslado.tras_Fecha &&
-        productosSeleccionados.length > 0 // Validar que haya al menos un producto seleccionado
-      ) {
-      // Limpiar alertas previas
-      this.mostrarAlertaWarning = false;
-      this.mostrarAlertaError = false;
-      
-      // Buscar las descripciones basándose en los IDs seleccionados
-      const origenSeleccionado = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
-      const destinoSeleccionado = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
-      
-      // Datos del encabezado (sin productos)
-      const trasladoEncabezado = {
-        tras_Id: 0,
-        tras_Origen: Number(this.traslado.tras_Origen),
-        origen: origenSeleccionado ? origenSeleccionado.sucu_Descripcion : '',
-        tras_Destino: Number(this.traslado.tras_Destino),
-        destino: destinoSeleccionado ? destinoSeleccionado.bode_Descripcion : '',
-        tras_Fecha: this.traslado.tras_Fecha.toISOString ? this.traslado.tras_Fecha.toISOString() : new Date(this.traslado.tras_Fecha).toISOString(),
-        tras_Observaciones: this.traslado.tras_Observaciones || '',
-        usua_Creacion: getUserId(),
-        tras_FechaCreacion: new Date().toISOString(),
-        usua_Modificacion: 0,
-        tras_FechaModificacion: new Date().toISOString(),
-        tras_Estado: true
-      };
-
-      console.log('Guardando encabezado del traslado:', trasladoEncabezado);
-      
-      // Paso 1: Guardar el encabezado del traslado
-      this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, trasladoEncabezado, {
-        headers: { 
-          'X-Api-Key': environment.apiKey,
-          'Content-Type': 'application/json',
-          'accept': '*/*'
-        }
-      }).subscribe({
-        next: (responseEncabezado) => {
-          console.log('=== RESPUESTA DEL ENCABEZADO ===');
-          console.log('Tipo de respuesta:', typeof responseEncabezado);
-          console.log('Respuesta completa:', responseEncabezado);
-          console.log('Respuesta como JSON:', JSON.stringify(responseEncabezado, null, 2));
-          console.log('Propiedades de la respuesta:', Object.keys(responseEncabezado || {}));
-          
-          // Si la respuesta es un objeto, mostrar todas sus propiedades
-          if (responseEncabezado && typeof responseEncabezado === 'object') {
-            for (let key in responseEncabezado) {
-              console.log(`Propiedad "${key}":`, responseEncabezado[key], `(tipo: ${typeof responseEncabezado[key]})`);
-            }
-          }
-          
-          // Obtener el ID del traslado recién creado - vamos a probar diferentes formas
-          let trasladoId = null;
-          
-          // Opción 1: responseEncabezado.tras_Id
-          if (responseEncabezado && responseEncabezado.tras_Id) {
-            trasladoId = responseEncabezado.tras_Id;
-            console.log('✅ ID encontrado en responseEncabezado.tras_Id:', trasladoId);
-          }
-          // Opción 2: responseEncabezado.id
-          else if (responseEncabezado && responseEncabezado.id) {
-            trasladoId = responseEncabezado.id;
-            console.log('✅ ID encontrado en responseEncabezado.id:', trasladoId);
-          }
-          // Opción 3: responseEncabezado directamente es el ID
-          else if (typeof responseEncabezado === 'number') {
-            trasladoId = responseEncabezado;
-            console.log('✅ ID encontrado directamente en responseEncabezado:', trasladoId);
-          }
-          // Opción 4: Buscar en data
-          else if (responseEncabezado && responseEncabezado.data) {
-            if (responseEncabezado.data.tras_Id) {
-              trasladoId = responseEncabezado.data.tras_Id;
-              console.log('✅ ID encontrado en responseEncabezado.data.tras_Id:', trasladoId);
-            } else if (typeof responseEncabezado.data === 'number') {
-              trasladoId = responseEncabezado.data;
-              console.log('✅ ID encontrado en responseEncabezado.data:', trasladoId);
-            }
-          }
-          // Opción 5: Buscar propiedades que contengan "id" (case insensitive)
-          else if (responseEncabezado && typeof responseEncabezado === 'object') {
-            const keys = Object.keys(responseEncabezado);
-            for (let key of keys) {
-              if (key.toLowerCase().includes('id') && typeof responseEncabezado[key] === 'number') {
-                trasladoId = responseEncabezado[key];
-                console.log(`✅ ID encontrado en responseEncabezado.${key}:`, trasladoId);
-                break;
-              }
-            }
-          }
-          
-          console.log('🎯 ID final del traslado que se usará:', trasladoId);
-          console.log('================================');
-          
-          if (trasladoId && trasladoId > 0) {
-            // Paso 2: Guardar los detalles (productos)
-            this.guardarDetallesTraslado(trasladoId, productosSeleccionados);
-          } else {
-            console.error('❌ No se pudo obtener el ID del traslado creado');
-            console.error('Estructura de respuesta completa:', JSON.stringify(responseEncabezado, null, 2));
-            this.mostrarAlertaError = true;
-            this.mensajeError = 'Error: No se pudo obtener el ID del traslado creado. Revisa la consola para más detalles.';
-          }
-        },
-        error: (error) => {
-          console.error('Error al guardar encabezado del traslado:', error);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el encabezado del traslado. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-        }
-      });
-    } else {
-      let mensajeError = 'Por favor complete todos los campos requeridos: ';
-      const errores = [];
-      
-      if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
-      if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
-      if (!this.traslado.tras_Fecha) errores.push('Fecha');
-      if (productosSeleccionados.length === 0) errores.push('Al menos un producto');
-      
-      mensajeError += errores.join(', ');
-      
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = mensajeError;
-      this.mostrarAlertaError = false;
-      this.mostrarAlertaExito = false;
-      
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 4000);
     if (errores.length > 0) {
       this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
       return false;
@@ -414,7 +274,7 @@ obtenerProductosSeleccionados(): any[] {
       destino: destino?.bode_Descripcion || '',
       tras_Fecha: new Date(this.traslado.tras_Fecha).toISOString(),
       tras_Observaciones: this.traslado.tras_Observaciones || '',
-      usua_Creacion: getUserId(),
+      usua_Creacion: environment.usua_Id,
       tras_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       tras_FechaModificacion: new Date().toISOString(),
@@ -459,7 +319,7 @@ obtenerProductosSeleccionados(): any[] {
         prod_Id: Number(producto.prod_Id),
         trDe_Cantidad: Number(producto.cantidad),
         trDe_Observaciones: producto.observaciones || '',
-        usua_Creacion: Number(getUserId()), // Asegurar que sea número
+        usua_Creacion: Number(environment.usua_Id),
         trDe_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         trDe_FechaModificacion: new Date().toISOString()
