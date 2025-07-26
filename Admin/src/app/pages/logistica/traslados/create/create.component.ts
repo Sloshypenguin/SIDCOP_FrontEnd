@@ -260,7 +260,7 @@ obtenerProductosSeleccionados(): any[] {
     if (this.traslado.tras_Origen > 0 &&
         this.traslado.tras_Destino > 0 &&
         this.traslado.tras_Fecha &&
-        productos.length > 0 // Validar que haya al menos un producto seleccionado
+        productosSeleccionados.length > 0 // Validar que haya al menos un producto seleccionado
       ) {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
@@ -355,7 +355,7 @@ obtenerProductosSeleccionados(): any[] {
           
           if (trasladoId && trasladoId > 0) {
             // Paso 2: Guardar los detalles (productos)
-            this.crearDetalles(trasladoId, productos);
+            this.guardarDetallesTraslado(trasladoId, productosSeleccionados);
           } else {
             console.error('❌ No se pudo obtener el ID del traslado creado');
             console.error('Estructura de respuesta completa:', JSON.stringify(responseEncabezado, null, 2));
@@ -382,7 +382,7 @@ obtenerProductosSeleccionados(): any[] {
       if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
       if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
       if (!this.traslado.tras_Fecha) errores.push('Fecha');
-      if (productos.length === 0) errores.push('Al menos un producto');
+      if (productosSeleccionados.length === 0) errores.push('Al menos un producto');
       
       mensajeError += errores.join(', ');
       
@@ -395,6 +395,8 @@ obtenerProductosSeleccionados(): any[] {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
       }, 4000);
+    if (errores.length > 0) {
+      this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
       return false;
     }
     return true;
