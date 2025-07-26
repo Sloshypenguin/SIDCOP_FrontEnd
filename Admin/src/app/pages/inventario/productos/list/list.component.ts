@@ -321,7 +321,7 @@ export class ListComponent implements OnInit {
   }
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 8;
 
   get startIndex(): number {
     return this.productoGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
