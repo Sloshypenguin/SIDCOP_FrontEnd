@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
 
+
 @Component({
   selector: 'app-details',
   standalone: true,
@@ -13,16 +14,24 @@ export class DetailsComponent implements OnChanges {
   @Input() PedidoData: Pedido | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  PEDetalle: Pedido | null = null;
+  PedidoDetalle: Pedido | null = null;
+  productos: any[] = [];
   cargando = false;
 
   mostrarAlertaError = false;
   mensajeError = '';
+  referenciasLista = [];
+  clientesLista = [];
+  referenciasNombre : any[] = [];
+ 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['PedidoData'] && changes['PedidoData'].currentValue) {
       this.cargarDetallesSimulado(changes['PedidoData'].currentValue);
     }
+    
+     
+
   }
 
   // Simulación de carga
@@ -32,15 +41,16 @@ export class DetailsComponent implements OnChanges {
 
     setTimeout(() => {
       try {
-        this.PEDetalle = { ...data };
+       this.PedidoDetalle = { ...data };
+        this.productos = JSON.parse(this.PedidoDetalle.detallesJson ?? '[]');
         this.cargando = false;
       } catch (error) {
-        console.error('Error al cargar detalles del estado civil:', error);
+        console.error('Error al cargar detalles del pedido:', error);
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al cargar los detalles del estado civil.';
+        this.mensajeError = 'Error al cargar los detalles del pedido.';
         this.cargando = false;
       }
-    }, 500); // Simula tiempo de carga
+    }, 500);
   }
 
   cerrar(): void {

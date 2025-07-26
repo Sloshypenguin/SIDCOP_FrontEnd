@@ -175,6 +175,17 @@ listarProductosDesdePedido(): void {
   return `${anio}-${mes}-${dia}`; // formato 'yyyy-MM-dd'
 }
 
+get fechaInicioFormato(): string {
+  return new Date(this.pedido.pedi_FechaEntrega).toISOString().split('T')[0];
+}
+
+set fechaInicioFormato(value: string) {
+  this.pedido.pedi_FechaEntrega = new Date(value);
+}
+
+
+
+
 
 
  ngOnChanges(changes: SimpleChanges): void {

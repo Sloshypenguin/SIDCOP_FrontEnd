@@ -18,7 +18,7 @@ export const environment = {
   },
 
   //apiBaseUrl: 'http://SIDCOP.somee.com',
-apiBaseUrl: 'https://localhost:7071',
+  apiBaseUrl: 'https://localhost:7071',
    //apiBaseUrl: 'http://192.168.1.146:8091', //cambiar si es necesario
 
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
