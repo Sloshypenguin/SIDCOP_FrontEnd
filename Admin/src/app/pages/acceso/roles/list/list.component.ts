@@ -266,9 +266,21 @@ export class ListComponent implements OnInit {
   private cargardatos(): void {
     this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+      },
+      error: error => {
+        console.error('Error al cargar roles:', error);
+        this.table.setData([]);
+      }
     });
   }
 

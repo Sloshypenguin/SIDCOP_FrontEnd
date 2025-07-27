@@ -46,23 +46,29 @@
           <i [ngClass]="permitsExpanded ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'" style="font-size:1.5rem;"></i>
         </button>
 
-        <div id="permisosContent" [hidden]="!permitsExpanded" class="mt-3 ps-3">
+        <div id="permisosContent" [hidden]="!permitsExpanded" class="mt-3">
           <ng-container *ngIf="permisosPorPantalla && permisosPorPantalla.size > 0; else noPermisos">
-            <ul class="list-unstyled">
-              <li *ngFor="let item of permisosPorPantalla | keyvalue" class="mb-3 permisos-card">
-                <strong class="pantalla-titulo">{{ item.value.descripcion }}</strong>
-                <div class="acciones-card-container mt-2 text-center">
-                  <span *ngFor="let accion of item.value.acciones" class="accion-chip">{{ accion }}</span>
+            <div class="pantallas-grid"
+                [ngClass]="{
+                  'cols-1': permisosPorPantalla.size === 1,
+                  'cols-2': permisosPorPantalla.size === 2,
+                  'cols-3': permisosPorPantalla.size >= 3
+                }">
+              <div *ngFor="let entry of permisosPorPantalla | keyvalue" class="pantalla-column">
+                <strong class="pantalla-titulo">{{ entry.value.descripcion }}</strong>
+                <div class="acciones-card-container mt-2">
+                  <span *ngFor="let accion of entry.value.acciones" class="accion-chip">{{ accion }}</span>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </div>
           </ng-container>
-
           <ng-template #noPermisos>
             <p class="text-muted fst-italic">No tiene ningún permiso asignado.</p>
           </ng-template>
         </div>
       </div>
+
+
 
     </div>
     
