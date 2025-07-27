@@ -839,23 +839,56 @@
         <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)"></app-mapa-selector>
         
         <div class="row mx-lg-4 mt-4">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="clienteDireccionExacta" class="form-label">Latitud</label>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              <div class="d-flex align-items-center">
+                <input type="text" class="form-control" id="clienteDireccionExacta"
+                  [(ngModel)]="direccionPorCliente.diCl_Latitud" [class.is-invalid]="
+                    !direccionPorCliente.diCl_Latitud &&
+                    mostrarErrores
+                  " placeholder="Latitud" required />
+              </div>
+              <div class="text-danger" *ngIf="
+                  !direccionPorCliente.diCl_Latitud &&
+                  mostrarErrores
+                ">
+                <small>El campo Latitud es requerida</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="clienteDireccionExacta" class="form-label">Longitud</label>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              <div class="d-flex align-items-center">
+                <input type="text" class="form-control" id="clienteDireccionExacta"
+                  [(ngModel)]="direccionPorCliente.diCl_Longitud" [class.is-invalid]="
+                    !direccionPorCliente.diCl_Longitud &&
+                    mostrarErrores
+                  " placeholder="Longitud" required />
+              </div>
+              <div class="text-danger" *ngIf="
+                  !direccionPorCliente.diCl_Longitud &&
+                  mostrarErrores
+                ">
+                <small>El Longitud es requerida</small>
+              </div>
+            </div>
+          </div>
+
           <!-- Dirección Exacta -->
           <div class="col-md-6">
             <div class="mb-3">
               <label for="clienteDescripcionDeDireccion" class="form-label">Descripción</label>
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
                 <input type="text" class="form-control" id="clienteDescripcionDeDireccion"
                   [(ngModel)]="direccionPorCliente.diCl_Observaciones" [class.is-invalid]="
                     !direccionPorCliente.diCl_Observaciones.trim() &&
                     mostrarErrores
                   " placeholder="Ingrese la descripcion" required />
-              </div>
-              <div class="text-danger" *ngIf="
-                  !direccionPorCliente.diCl_Observaciones.trim() &&
-                  mostrarErrores
-                ">
-                <small>El campo Dirección Exacta es requerido</small>
               </div>
             </div>
           </div>
@@ -914,7 +947,7 @@
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
                 <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccionPorCliente.colo_Id" required>
-                  <option value="" disabled selected>
+                  <option value="0" disabled selected>
                     Seleccione una Colonia
                   </option>
                   <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">
@@ -942,26 +975,6 @@
                     !direccionPorCliente.diCl_DireccionExacta.trim() &&
                     mostrarErrores
                   " placeholder="Ingrese la dirección exacta" required />
-              </div>
-              <div class="text-danger" *ngIf="
-                  !direccionPorCliente.diCl_DireccionExacta.trim() &&
-                  mostrarErrores
-                ">
-                <small>El campo Dirección Exacta es requerido</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="clienteDireccionExacta" class="form-label">Latitud</label>
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
-              <div class="d-flex align-items-center">
-                <input type="text" class="form-control" id="clienteDireccionExacta"
-                  [(ngModel)]="direccionPorCliente.diCl_DireccionExacta" [class.is-invalid]="
-                    !direccionPorCliente.diCl_DireccionExacta.trim() &&
-                    mostrarErrores
-                  " placeholder="Latitud" required />
               </div>
               <div class="text-danger" *ngIf="
                   !direccionPorCliente.diCl_DireccionExacta.trim() &&
