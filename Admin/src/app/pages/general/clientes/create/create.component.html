@@ -62,7 +62,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteCodigo" class="form-label">Código</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <div [ngStyle]="{ border: (!cliente.clie_Codigo.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
                 <i class="ri-attachment-line"></i>
@@ -82,7 +82,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clie_Nacionalidad" class="form-label">Nacionalidad</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad"
                 [class.is-invalid]="
@@ -118,7 +118,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteRTN" class="form-label">RTN</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <div [ngStyle]="{ border: (!cliente.clie_RTN.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
                 <i class="ri-newspaper-line"></i>
@@ -136,7 +136,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteNombres" class="form-label">Nombres</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
                 <i class="ri-user-3-line"></i>
@@ -156,7 +156,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteApellidos" class="form-label">Apellidos</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
                 <i class="ri-user-3-line"></i>
@@ -176,7 +176,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label class="form-label d-block">Sexo</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="sexo-toggle d-flex">
               <label class="sexo-option me-2" [class.selected]="cliente.clie_Sexo === 'M'">
                 <input type="radio" name="sexo" value="M" [(ngModel)]="cliente.clie_Sexo" required />
@@ -228,7 +228,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteTelefono" class="form-label">Teléfono</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
                 <i class="ri-phone-fill"></i>
@@ -334,13 +334,21 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="cana_Id" class="form-label">Canal</label>
-            <select id="cana_Id" class="form-select" [(ngModel)]="cliente.cana_Id"
-              [class.is-invalid]="!cliente.cana_Id && mostrarErrores" required>
-              <option value="0" disabled selected>Seleccione un canal</option>
-              <option *ngFor="let canal of canales" [value]="canal.cana_Id">
-                {{ canal.cana_Descripcion }}
-              </option>
-            </select>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <select id="cana_Id" class="form-select" [(ngModel)]="cliente.cana_Id"
+                [class.is-invalid]="
+                  !cliente.cana_Id && mostrarErrores
+                " required>
+                <option value="" disabled selected>Seleccione un canal</option>
+                <option *ngFor="let canal of canales" [value]="canal.cana_Id">
+                  {{ canal.cana_Descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.cana_Id && mostrarErrores">
+              <small>El campo Canal es requerido</small>
+            </div>
           </div>
         </div>
 
@@ -353,7 +361,7 @@
                   !cliente.clie_NombreNegocio.trim() && mostrarErrores
                 " id="clienteNegocio" [(ngModel)]="cliente.clie_NombreNegocio"
                 placeholder="Ingrese el nombre del negocio" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!cliente.clie_NombreNegocio.trim() && mostrarErrores">
               <small>El campo Nombre del Negocio del Cliente es requerido</small>
@@ -366,7 +374,7 @@
           <div class="mb-3">
             <label for="ruta_Id" class="form-label">Ruta</label>
             <select id="ruta_Id" class="form-select" [(ngModel)]="cliente.ruta_Id"
-              [class.is-invalid]="!cliente.ruta_Id && mostrarErrores" required>
+              [class.is-invalid]="!cliente.ruta_Id && mostrarErrores">
               <option value="0" disabled selected>Seleccione una ruta</option>
               <option *ngFor="let ruta of rutas" [value]="ruta.ruta_Id">
                 {{ ruta.ruta_Descripcion }}
@@ -379,24 +387,29 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
-              [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
-              <option value="0" disabled selected>
-                Seleccione un tipo de vivienda
-              </option>
-              <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
-                {{ tipoVivienda.tiVi_Descripcion }}
-              </option>
-            </select>
-          </div>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center"></div>
+              <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
+                [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
+                <option value="0" disabled selected>
+                  Seleccione un tipo de vivienda
+                </option>
+                <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
+                  {{ tipoVivienda.tiVi_Descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.tiVi_Id && mostrarErrores">
+              <small>El campo Tipo de Vivienda es requerido</small>
+            </div>
         </div>
 
         <hr class="mt-4 mb-4" />
 
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="depa_Codigo" class="form-label">Departamento</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <label for="depa_Codigo" class="form-label">Departamento<span class="text-danger">*</span></label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepa"
                 (change)="onDepartamentoChange()" required>
@@ -410,7 +423,7 @@
               <div *ngIf="cargando" class="form-text text-muted">
                 Cargando Departamentos...
               </div>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
               <small>El campo Departamento es requerido</small>
@@ -420,8 +433,8 @@
 
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="muni_Codigo" class="form-label">Municipio</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <label for="muni_Codigo" class="form-label">Municipio<span class="text-danger">*</span></label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColonia.muni_Codigo"
                 (change)="cargarColonias(nuevaColonia.muni_Codigo)" required>
@@ -435,7 +448,7 @@
               <div *ngIf="cargando" class="form-text text-muted">
                 Cargando Municipios...
               </div>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
               <small>El campo Municipio es requerido</small>
@@ -445,8 +458,8 @@
 
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="colo_Id" class="form-label">Colonia</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <label for="colo_Id" class="form-label">Colonia<span class="text-danger">*</span></label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccion.colo_Id" required>
                 <option value="" disabled selected>
@@ -459,7 +472,7 @@
               <div *ngIf="cargandoColonias" class="form-text text-muted">
                 Cargando Colonias...
               </div>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores">
               <small>El campo Colonias es requerido</small>
@@ -471,7 +484,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteDireccionExacta" class="form-label">
-              Dirección Exacta<span class="text-danger ms-2">*</span>
+              Dirección Exacta<span class="text-danger">*</span>
             </label>
             <div class="d-flex align-items-center">
               <input type="text" class="form-control" id="clienteDireccionExacta"
@@ -479,9 +492,9 @@
                   !direccionPorCliente.diCl_DireccionExacta.trim() &&
                   mostrarErrores
                 " placeholder="Ingrese la dirección exacta" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
-            <div class="text-danger mt-1" *ngIf="
+            <div class="text-danger" *ngIf="
                 !direccionPorCliente.diCl_DireccionExacta.trim() &&
                 mostrarErrores
               ">
@@ -630,13 +643,42 @@
           </div>
         </div>
 
+        <!-- <div class="col-md-6">
+          <div class="mb-3">
+            <label for="clie_Nacionalidad" class="form-label">Nacionalidad</label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad"
+                [class.is-invalid]="
+                  !cliente.clie_Nacionalidad && mostrarErrores
+                " required>
+                <option value="" disabled selected>Seleccione un país</option>
+                <option *ngFor="let nacionalidad of paises" [value]="nacionalidad.clie_Nacionalidad">
+                  {{ nacionalidad.pais_Descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_Nacionalidad && mostrarErrores">
+              <small>El campo País de Nacimiento es requerido</small>
+            </div>
+          </div>
+        </div> -->
+
         <!-- Parentesco -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="avalParentesco" class="form-label">Parentesco</label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="avalParentesco" [(ngModel)]="aval.aval_ParentescoConCliente"
-                placeholder="Ingrese el parentesco del aval" />
+              <select id="pare_Id" class="form-select" [(ngModel)]="aval.pare_Id"
+                [class.is-invalid]="
+                  !aval.pare_Id && mostrarErrores
+                " required>
+                <option value="" disabled selected>Seleccione un país</option>
+                <option *ngFor="let parentesco of parentescos" [value]="parentesco.pare_Id">
+                  {{ parentesco.pais_Descripcion }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
@@ -650,7 +692,7 @@
                   !aval.aval_Telefono.trim() && mostrarErrores
                 " id="avalTelefono" [(ngModel)]="aval.aval_Telefono" placeholder="Ingrese el teléfono del aval"
                 mask="0000-0000" required />
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!aval.aval_Telefono.trim() && mostrarErrores">
               <small>El campo Teléfono del Aval es requerido</small>
@@ -677,7 +719,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="depa_Codigo" class="form-label">Departamento</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepaAval"
                 (change)="onDepartamentoAvalChange()" required>
@@ -691,7 +733,7 @@
               <div *ngIf="cargandoAval" class="form-text text-muted">
                 Cargando Departamentos...
               </div>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!(selectedDepaAval ?? '').trim() && mostrarErrores">
               <small>El campo Departamento es requerido</small>
@@ -702,7 +744,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="muni_Codigo" class="form-label">Municipio</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColoniaAval.muni_Codigo"
                 (change)="cargarColoniasAval(nuevaColoniaAval.muni_Codigo)" required>
@@ -716,7 +758,7 @@
               <div *ngIf="cargandoAval" class="form-text text-muted">
                 Cargando Municipios...
               </div>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!(selectedMuniAval ?? '').trim() && mostrarErrores">
               <small>El campo Municipio es requerido</small>
@@ -727,7 +769,7 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="colo_Id" class="form-label">Colonia</label>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
               <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccionAval.colo_Id" required>
                 <option value="" disabled selected>
@@ -740,7 +782,7 @@
               <div *ngIf="cargandoColoniasAval" class="form-text text-muted">
                 Cargando Colonias...
               </div>
-              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!(selectedColoniaAval ?? '').trim() && mostrarErrores">
               <small>El campo Colonias es requerido</small>
@@ -812,9 +854,10 @@
 
     <div class="row mx-lg-4">
       <div class="col-md-12 d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-success" (click)="guardarCliente()">
-          Guardar <i class="ri-save-line"></i>
-        </button>
+        <button type="button" class="btn btn-primary" (click)="guardarTodo()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
       </div>
     </div>
 

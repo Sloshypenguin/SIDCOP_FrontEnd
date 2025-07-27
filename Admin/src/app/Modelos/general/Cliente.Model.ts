@@ -33,7 +33,7 @@ export class Cliente{
     clie_ObservacionRetiro: string = '';
     clie_Confirmacion: boolean = true;
     usua_Creacion: number = 0;
-    clie_FechaCreacion?: Date;
+    clie_FechaCreacion: Date = new Date();
     usua_Modificacion: number = 0;
     clie_FechaModificacion?: Date;
     clie_Estado: boolean = true;
