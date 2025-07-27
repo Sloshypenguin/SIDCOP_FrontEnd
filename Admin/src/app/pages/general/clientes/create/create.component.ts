@@ -89,6 +89,7 @@ export class CreateComponent {
   estadosCiviles: any[] = [];
   canales: any[] = [];
   rutas: any[] = [];
+  parentescos: any[] = [];
 
   latitudSeleccionada: number | null = null;
   longitudSeleccionada: number | null = null;
@@ -183,6 +184,12 @@ export class CreateComponent {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Rutas/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => this.rutas = data);
+  }
+
+  cargarParentescos() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Parentesco/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.parentescos = data);
   }
 
   cargarListados(): void {
@@ -334,10 +341,11 @@ export class CreateComponent {
     clie_Id: 0,
     aval_Nombres: '',
     aval_Apellidos: '',
-    aval_ParentescoConCliente: '',
+    pare_Id: 0,
     aval_DNI: '',
     aval_Telefono: '',
     tiVi_Id: 0,
+    aval_Observaciones: '',
     aval_DireccionExacta: '',
     colo_Id: 0,
     aval_FechaNacimiento: new Date(),
@@ -554,9 +562,9 @@ export class CreateComponent {
   guardarAval(): void {
     this.mostrarErrores = true;
     if (this.aval.clie_Id && this.aval.aval_Nombres.trim() && this.aval.aval_Apellidos.trim()
-      && this.aval.aval_ParentescoConCliente.trim() && this.aval.aval_DNI.trim()
-      && this.aval.aval_Telefono.trim() && this.aval.tiVi_Id && this.aval.aval_DireccionExacta.trim() 
-      && this.aval.colo_Id) {
+      && this.aval.pare_Id && this.aval.aval_DNI.trim()
+      && this.aval.aval_Telefono.trim() && this.aval.tiVi_Id && this.aval.aval_Observaciones 
+      && this.aval.aval_DireccionExacta.trim() && this.aval.colo_Id) {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       const avalGuardar = {
@@ -564,10 +572,12 @@ export class CreateComponent {
         clie_Id: this.aval.clie_Id,
         aval_Nombres: this.aval.aval_Nombres.trim(),
         aval_Apellidos: this.aval.aval_Apellidos.trim(),
-        aval_ParentescoConCliente: this.aval.aval_ParentescoConCliente.trim(),
+        pare_Id: this.aval.pare_Id,
         aval_DNI: this.aval.aval_DNI.trim(),
         aval_Telefono: this.aval.aval_Telefono.trim(),
         tiVi_Id: this.aval.tiVi_Id,
+        tiVi_Descripcion: '',
+        aval_Observaciones: this.aval.aval_Observaciones.trim(),
         aval_DireccionExacta: this.aval.aval_DireccionExacta.trim(),
         colo_Id: this.aval.colo_Id,
         aval_FechaNacimiento: new Date(),
@@ -611,5 +621,29 @@ export class CreateComponent {
       }, 3000);
     }
   }
+
+  guardarTodo(): void {
+    this.guardarCliente();
+    this.guardarDireccionPorCliente();
+
+    if (this.avalTieneDatos()) {
+      this.guardarAval();
+    }
+  }
+
+  avalTieneDatos(): boolean {
+    return (
+      !!this.aval.aval_Nombres &&
+      !!this.aval.aval_Apellidos &&
+      !!this.aval.aval_Sexo &&
+      !!this.aval.pare_Id &&
+      !!this.aval.aval_DNI &&
+      !!this.aval.aval_Telefono &&
+      !!this.aval.tiVi_Id &&
+      !!this.aval.aval_Observaciones &&
+      !!this.aval.aval_DireccionExacta
+    );  
+  }
+
 }
   
