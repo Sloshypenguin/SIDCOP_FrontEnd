@@ -28,6 +28,7 @@ export class CreateComponent {
   @Output() onSave = new EventEmitter<Cliente>();
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
+  entrando = true;
 
 
   dropzoneConfig = {
@@ -124,14 +125,17 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
+  tabuladores(){
+    
+  }
+
   trackByIndex(index: number) { return index; }
 
   onCoordenadasSeleccionadas(coords: { lat: number, lng: number }) {
-    this.latitudSeleccionada = coords.lat;
-    this.longitudSeleccionada = coords.lng;
+    this.direccionPorCliente.diCl_Latitud = coords.lat;
+    this.direccionPorCliente.diCl_Longitud = coords.lng;
   }
 
-  //Sera para mandar una coordenada previa al mapa
   coordenadaPrevia: { lat: number, lng: number } | null = null;
   abrirMapa() {
     this.mostrarMapa = true;
@@ -150,6 +154,7 @@ export class CreateComponent {
     this.cargarEstadosCiviles();
     this.cargarCanales();
     this.cargarRutas();
+    this.cargarParentescos();
     this.cargarListados();
     this.cargarListadosAval();
   }
@@ -359,11 +364,6 @@ export class CreateComponent {
     aval_FechaModificacion: new Date()
   };
 
-
-  crear(): void {
-    this.mostrarMapa = true;
-  }
-
   cancelar(): void {
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
@@ -427,11 +427,7 @@ export class CreateComponent {
 
   guardarCliente(): void {
     this.mostrarErrores = true;
-    if (this.cliente.clie_Codigo.trim() && this.cliente.clie_Nacionalidad.trim()
-      && this.cliente.clie_DNI.trim() && this.cliente.clie_RTN.trim()
-      && this.cliente.clie_Nombres.trim() && this.cliente.clie_Apellidos.trim()
-      && this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim()
-      && this.cliente.clie_Telefono.trim() && this.cliente.tiVi_Id && this.cliente.cana_Id) {
+    if (this.entrando) {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       const clienteGuardar = {
@@ -448,7 +444,7 @@ export class CreateComponent {
         clie_Telefono: this.cliente.clie_Telefono.trim(),
         clie_Correo: this.cliente.clie_Correo.trim(),
         clie_Sexo: this.cliente.clie_Sexo,
-        clie_FechaNacimiento: this.cliente.clie_FechaNacimiento ? this.cliente.clie_FechaNacimiento.toISOString() : null,
+        clie_FechaNacimiento: new Date(),
         tiVi_Id: this.cliente.tiVi_Id,
         tiVi_Descripcion: this.cliente.tiVi_Descripcion,
         cana_Id: this.cliente.cana_Id,
@@ -485,6 +481,8 @@ export class CreateComponent {
         next: (response) => {
           if (response.data.data) {
             this.idDelCliente = response.data.data;
+            this.guardarDireccionesPorCliente(this.idDelCliente);
+            this.guardarAval(this.idDelCliente);
           }
         },
         error: (error) => {
@@ -498,7 +496,7 @@ export class CreateComponent {
       });
     } else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+      this.mensajeWarning = '1Por favor, complete todos los campos obligatorios.';
       setTimeout(() => {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
@@ -506,19 +504,17 @@ export class CreateComponent {
     }
   }
 
-  guardarDireccionPorCliente(): void {
+  guardarDireccionesPorCliente(clie_Id: number): void {
     this.mostrarErrores = true;
-    if (this.direccionPorCliente.clie_Id && this.direccionPorCliente.colo_Id
-      && this.direccionPorCliente.diCl_DireccionExacta.trim() && this.direccionPorCliente.diCl_Longitud
-      && this.direccionPorCliente.diCl_Latitud) {
+    if (this.entrando) {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       const direccionPorClienteGuardar = {
         diCl_Id: 0,
-        clie_Id: this.direccionPorCliente.clie_Id,
+        clie_Id: clie_Id,
         colo_Id: this.direccionPorCliente.colo_Id,
         diCl_DireccionExacta: this.direccionPorCliente.diCl_DireccionExacta.trim(),
-        diCl_Observaciones: this.direccionPorCliente.diCl_Observaciones.trim,
+        diCl_Observaciones: this.direccionPorCliente.diCl_Observaciones.trim(),
         diCl_Latitud: this.direccionPorCliente.diCl_Latitud,
         diCl_Longitud: this.direccionPorCliente.diCl_Longitud,
         usua_Creacion: environment.usua_Id,
@@ -534,9 +530,7 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          if (response.data.data) {
-            this.idDeLaDireccionDelCliente = response.data.data;
-          }
+          console.log(response);
         },
         error: (error) => {
           this.mostrarAlertaError = true;
@@ -550,7 +544,7 @@ export class CreateComponent {
     } 
     else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+      this.mensajeWarning = '2Por favor, complete todos los campos obligatorios.';
       setTimeout(() => {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
@@ -559,17 +553,14 @@ export class CreateComponent {
   }
 
 
-  guardarAval(): void {
+  guardarAval(clie_Id: number): void {
     this.mostrarErrores = true;
-    if (this.aval.clie_Id && this.aval.aval_Nombres.trim() && this.aval.aval_Apellidos.trim()
-      && this.aval.pare_Id && this.aval.aval_DNI.trim()
-      && this.aval.aval_Telefono.trim() && this.aval.tiVi_Id && this.aval.aval_Observaciones 
-      && this.aval.aval_DireccionExacta.trim() && this.aval.colo_Id) {
+    if (this.entrando) {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
       const avalGuardar = {
         aval_Id: 0,
-        clie_Id: this.aval.clie_Id,
+        clie_Id: clie_Id,
         aval_Nombres: this.aval.aval_Nombres.trim(),
         aval_Apellidos: this.aval.aval_Apellidos.trim(),
         pare_Id: this.aval.pare_Id,
@@ -598,9 +589,7 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          if (response.data.data) {
-            this.idDeLaDireccionDelCliente = response.data.data;
-          }
+          console.log(response);
         },
         error: (error) => {
           this.mostrarAlertaError = true;
@@ -614,20 +603,11 @@ export class CreateComponent {
     } 
     else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+      this.mensajeWarning = '3Por favor, complete todos los campos obligatorios.';
       setTimeout(() => {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
       }, 3000);
-    }
-  }
-
-  guardarTodo(): void {
-    this.guardarCliente();
-    this.guardarDireccionPorCliente();
-
-    if (this.avalTieneDatos()) {
-      this.guardarAval();
     }
   }
 
