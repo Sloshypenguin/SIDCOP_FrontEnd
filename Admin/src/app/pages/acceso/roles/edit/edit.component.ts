@@ -150,16 +150,18 @@ export class EditComponent implements OnChanges {
         try {
           let data = raw.trim();
           if (!data.startsWith('[')) data = `[${data}]`;
-          const parsed = JSON.parse(data);
+          const parsed: Esquema[] = JSON.parse(data);
+
           this.treeData = parsed.map((esquema: Esquema) => {
             const esquemaNode: TreeItem = {
               id: esquema.Esquema,
               name: esquema.Esquema,
               type: 'esquema',
               selected: false,
-              expanded: true,
+              expanded: false,
               children: []
             };
+
             esquemaNode.children = esquema.Pantallas.map((pantalla: Pantalla) => {
               const pantallaNode: TreeItem = {
                 id: `${esquema.Esquema}_${pantalla.Pant_Id}`,
@@ -170,24 +172,36 @@ export class EditComponent implements OnChanges {
                 parent: esquemaNode,
                 children: []
               };
+
               pantallaNode.children = pantalla.Acciones.map((accion: Accion) => {
                 const accionIdCompuesto = `${pantalla.Pant_Id}_${accion.Acci_Id}`;
+                const selected = this.permisosDelRol.includes(accionIdCompuesto);
                 return {
                   id: accionIdCompuesto,
                   name: accion.Accion,
                   type: 'accion',
-                  selected: this.permisosDelRol.includes(accionIdCompuesto),
+                  selected: selected,
                   expanded: false,
                   parent: pantallaNode
                 };
               });
+
+              // Si alguna acción está seleccionada, marcar pantalla como seleccionada y expandida
               pantallaNode.selected = pantallaNode.children.some(c => c.selected);
+              pantallaNode.expanded = pantallaNode.selected;
+
               return pantallaNode;
             });
+
+            // Si alguna pantalla está seleccionada, marcar esquema como seleccionado y expandido
             esquemaNode.selected = esquemaNode.children.some(c => c.selected);
-            this.updateSelectedItems();
+            esquemaNode.expanded = esquemaNode.selected;
+
             return esquemaNode;
           });
+
+          this.updateSelectedItems();
+
         } catch (e) {
           console.error('No se pudo parsear:', e);
         }
@@ -195,6 +209,7 @@ export class EditComponent implements OnChanges {
       error: err => console.error('Error al cargar pantallas:', err)
     });
   }
+
 
   private cargarPermisos(): void {
     if (!this.rol.role_Id) {
