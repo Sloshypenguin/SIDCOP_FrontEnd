@@ -10,7 +10,7 @@ import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
-// import { CreateComponent } from '../create/create.component';
+import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
@@ -25,7 +25,7 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
-    // CreateComponent,
+    CreateComponent,
     EditComponent,
     DetailsComponent
   ],

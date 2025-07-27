@@ -1,523 +1,523 @@
-// import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
-// import { HttpClient, HttpClientModule } from '@angular/common/http';
-// import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
 
-// import { environment } from 'src/environments/environment.prod';
-// import { getUserId } from 'src/app/core/utils/user-utils';
-// import { forkJoin } from 'rxjs';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
+import { forkJoin } from 'rxjs';
 
-// @Component({
-//   selector: 'app-create',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule, HttpClientModule],
-//   templateUrl: './create.component.html',
-//   styleUrl: './create.component.scss'
-// })
-// export class CreateComponent implements OnInit {
-//   @Output() onCancel = new EventEmitter<void>();
-//   @Output() onSave = new EventEmitter<Traslado>();
+@Component({
+  selector: 'app-create',
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
+  templateUrl: './create.component.html',
+  styleUrl: './create.component.scss'
+})
+export class CreateComponent implements OnInit {
+  @Output() onCancel = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<Traslado>();
   
-//   // Estados de alertas
-//   mostrarErrores = false;
-//   mostrarAlertaExito = false;
-//   mensajeExito = '';
-//   mostrarAlertaError = false;
-//   mensajeError = '';
-//   mostrarAlertaWarning = false;
-//   mensajeWarning = '';
-//   fechaActual = '';
+  // Estados de alertas
+  mostrarErrores = false;
+  mostrarAlertaExito = false;
+  mensajeExito = '';
+  mostrarAlertaError = false;
+  mensajeError = '';
+  mostrarAlertaWarning = false;
+  mensajeWarning = '';
+  fechaActual = '';
 
-//   // Control de tabs
-//   tabActivo = 1;
-//   puedeAvanzarAResumen = false;
+  // Control de tabs
+  tabActivo = 1;
+  puedeAvanzarAResumen = false;
 
-//   // Datos del formulario
-//   traslado: Traslado = new Traslado();
-//   origenes: any[] = [];
-//   destinos: any[] = [];
-//   productos: any[] = [];
+  // Datos del formulario
+  traslado: Traslado = new Traslado();
+  origenes: any[] = [];
+  destinos: any[] = [];
+  productos: any[] = [];
 
-//   constructor(private http: HttpClient) {
-//     this.inicializar();
-//   }
+  constructor(private http: HttpClient) {
+    this.inicializar();
+  }
 
-//   ngOnInit(): void {
-//     this.listarProductos();
-//   }
+  ngOnInit(): void {
+    this.listarProductos();
+  }
 
-//   private inicializar(): void {
-//     this.inicializarFechaActual();
-//     this.cargarDatosIniciales();
-//   }
+  private inicializar(): void {
+    this.inicializarFechaActual();
+    this.cargarDatosIniciales();
+  }
 
-//   private inicializarFechaActual(): void {
-//     const hoy = new Date();
-//     this.fechaActual = hoy.toISOString().split('T')[0];
-//     this.traslado.tras_Fecha = hoy;
-//   }
+  private inicializarFechaActual(): void {
+    const hoy = new Date();
+    this.fechaActual = hoy.toISOString().split('T')[0];
+    this.traslado.tras_Fecha = hoy;
+  }
 
-//   private cargarDatosIniciales(): void {
-//     const headers = { 'x-api-key': environment.apiKey };
+  private cargarDatosIniciales(): void {
+    const headers = { 'x-api-key': environment.apiKey };
     
-//     forkJoin({
-//       origenes: this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, { headers }),
-//       destinos: this.http.get<any>(`${environment.apiBaseUrl}/Bodega/Listar`, { headers })
-//     }).subscribe({
-//       next: (data) => {
-//         this.origenes = data.origenes;
-//         this.destinos = data.destinos;
-//       },
-//       error: () => this.mostrarError('Error al cargar datos iniciales')
-//     });
-//   }
+    forkJoin({
+      origenes: this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, { headers }),
+      destinos: this.http.get<any>(`${environment.apiBaseUrl}/Bodega/Listar`, { headers })
+    }).subscribe({
+      next: (data) => {
+        this.origenes = data.origenes;
+        this.destinos = data.destinos;
+      },
+      error: () => this.mostrarError('Error al cargar datos iniciales')
+    });
+  }
 
-//   listarProductos(): void {
-//     this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
-//       headers: { 'x-api-key': environment.apiKey }
-//     }).subscribe({
-//       next: (data) => {
-//         this.productos = data.map((producto: any) => ({
-//           ...producto,
-//           cantidad: 0,
-//           observaciones: ''
-//         }));
-//       },
-//       error: () => this.mostrarError('Error al cargar productos')
-//     });
-//   }
+  listarProductos(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        this.productos = data.map((producto: any) => ({
+          ...producto,
+          cantidad: 0,
+          observaciones: ''
+        }));
+      },
+      error: () => this.mostrarError('Error al cargar productos')
+    });
+  }
 
-//   // ========== MÉTODOS DE NAVEGACIÓN DE TABS ==========
+  // ========== MÉTODOS DE NAVEGACIÓN DE TABS ==========
   
-//   cambiarTab(tab: number): void {
-//     if (tab === 2 && !this.puedeAvanzarAResumen) {
-//       this.mostrarWarning('Complete los datos requeridos antes de continuar');
-//       return;
-//     }
-//     this.tabActivo = tab;
-//     this.limpiarAlertas();
-//   }
+  cambiarTab(tab: number): void {
+    if (tab === 2 && !this.puedeAvanzarAResumen) {
+      this.mostrarWarning('Complete los datos requeridos antes de continuar');
+      return;
+    }
+    this.tabActivo = tab;
+    this.limpiarAlertas();
+  }
 
-//   irAResumen(): void {
-//     this.mostrarErrores = true;
+  irAResumen(): void {
+    this.mostrarErrores = true;
     
-//     if (this.validarDatosBasicos()) {
-//       this.puedeAvanzarAResumen = true;
-//       this.tabActivo = 2;
-//       this.limpiarAlertas();
-//     }
-//   }
+    if (this.validarDatosBasicos()) {
+      this.puedeAvanzarAResumen = true;
+      this.tabActivo = 2;
+      this.limpiarAlertas();
+    }
+  }
 
-//   private validarDatosBasicos(): boolean {
-//     const errores = [];
+  private validarDatosBasicos(): boolean {
+    const errores = [];
     
-//     if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) {
-//       errores.push('Origen');
-//     }
-//     if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) {
-//       errores.push('Destino');
-//     }
-//     if (!this.traslado.tras_Fecha) {
-//       errores.push('Fecha');
-//     }
+    if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) {
+      errores.push('Origen');
+    }
+    if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) {
+      errores.push('Destino');
+    }
+    if (!this.traslado.tras_Fecha) {
+      errores.push('Fecha');
+    }
     
-//     const productosSeleccionados = this.getProductosSeleccionados();
-//     if (productosSeleccionados.length === 0) {
-//       errores.push('Al menos un producto');
-//     }
+    const productosSeleccionados = this.getProductosSeleccionados();
+    if (productosSeleccionados.length === 0) {
+      errores.push('Al menos un producto');
+    }
     
-//     if (errores.length > 0) {
-//       this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
-//       return false;
-//     }
+    if (errores.length > 0) {
+      this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
+      return false;
+    }
     
-//     return true;
-//   }
+    return true;
+  }
 
-//   // ========== MÉTODOS PARA EL RESUMEN ==========
+  // ========== MÉTODOS PARA EL RESUMEN ==========
 
-//   getNombreOrigen(): string {
-//     const origen = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
-//     return origen ? origen.sucu_Descripcion : 'No seleccionado';
-//   }
+  getNombreOrigen(): string {
+    const origen = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
+    return origen ? origen.sucu_Descripcion : 'No seleccionado';
+  }
 
-//   getNombreDestino(): string {
-//     const destino = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
-//     return destino ? destino.bode_Descripcion : 'No seleccionado';
-//   }
+  getNombreDestino(): string {
+    const destino = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
+    return destino ? destino.bode_Descripcion : 'No seleccionado';
+  }
 
-//   getTotalProductosSeleccionados(): number {
-//     return this.productos
-//       .filter(producto => producto.cantidad > 0)
-//       .reduce((total, producto) => total + producto.cantidad, 0);
-//   }
+  getTotalProductosSeleccionados(): number {
+    return this.productos
+      .filter(producto => producto.cantidad > 0)
+      .reduce((total, producto) => total + producto.cantidad, 0);
+  }
 
-//   getProductosSeleccionados(): any[] {
-//     return this.productos.filter(producto => producto.cantidad > 0);
-//   }
+  getProductosSeleccionados(): any[] {
+    return this.productos.filter(producto => producto.cantidad > 0);
+  }
 
-//   // ========== MÉTODOS DE CANTIDAD (existentes) ==========
+  // ========== MÉTODOS DE CANTIDAD (existentes) ==========
   
-//   aumentarCantidad(index: number): void {
-//     this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
-//     this.actualizarEstadoNavegacion();
-//   }
+  aumentarCantidad(index: number): void {
+    this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
+    this.actualizarEstadoNavegacion();
+  }
   
-//   disminuirCantidad(index: number): void {
-//     if (this.productos[index].cantidad > 0) {
-//       this.productos[index].cantidad--;
-//       this.actualizarEstadoNavegacion();
-//     }
-//   }
+  disminuirCantidad(index: number): void {
+    if (this.productos[index].cantidad > 0) {
+      this.productos[index].cantidad--;
+      this.actualizarEstadoNavegacion();
+    }
+  }
   
-//   validarCantidad(index: number): void {
-//     const cantidad = this.productos[index].cantidad;
-//     this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
-//     this.actualizarEstadoNavegacion();
-//   }
+  validarCantidad(index: number): void {
+    const cantidad = this.productos[index].cantidad;
+    this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
+    this.actualizarEstadoNavegacion();
+  }
 
-//   private actualizarEstadoNavegacion(): void {
-//     // Si estamos en el tab de resumen y cambian las cantidades, 
-//     // revalidamos si se puede mantener ahí
-//     if (this.tabActivo === 2) {
-//       this.puedeAvanzarAResumen = this.validarDatosBasicos();
-//       if (!this.puedeAvanzarAResumen) {
-//         this.tabActivo = 1;
-//         this.mostrarWarning('Se detectaron cambios. Complete los datos requeridos.');
-//       }
-//     }
-//   }
+  private actualizarEstadoNavegacion(): void {
+    // Si estamos en el tab de resumen y cambian las cantidades, 
+    // revalidamos si se puede mantener ahí
+    if (this.tabActivo === 2) {
+      this.puedeAvanzarAResumen = this.validarDatosBasicos();
+      if (!this.puedeAvanzarAResumen) {
+        this.tabActivo = 1;
+        this.mostrarWarning('Se detectaron cambios. Complete los datos requeridos.');
+      }
+    }
+  }
 
-// obtenerProductosSeleccionados(): any[] {
-//   return this.productos
-//     .filter(producto => producto.cantidad > 0)
-//     .map(producto => ({
-//       prod_Id: producto.prod_Id,
-//       prod_Descripcion: producto.prod_Descripcion,
-//       cantidad: producto.cantidad,
-//       observaciones: producto.observaciones || '' // Ya existe en tu código
-//     }));
-// }
+obtenerProductosSeleccionados(): any[] {
+  return this.productos
+    .filter(producto => producto.cantidad > 0)
+    .map(producto => ({
+      prod_Id: producto.prod_Id,
+      prod_Descripcion: producto.prod_Descripcion,
+      cantidad: producto.cantidad,
+      observaciones: producto.observaciones || '' // Ya existe en tu código
+    }));
+}
 
-//   // ========== MÉTODOS DE ACCIONES PRINCIPALES ==========
+  // ========== MÉTODOS DE ACCIONES PRINCIPALES ==========
 
-//   cancelar(): void {
-//     this.limpiarFormulario();
-//     this.onCancel.emit();
-//   }
+  cancelar(): void {
+    this.limpiarFormulario();
+    this.onCancel.emit();
+  }
 
-//   cerrarAlerta(): void {
-//     this.limpiarAlertas();
-//   }
+  cerrarAlerta(): void {
+    this.limpiarAlertas();
+  }
 
-//   guardar(): void {
-//     // Validación final antes de guardar
-//     this.mostrarErrores = true;
-//     const productosSeleccionados = this.obtenerProductosSeleccionados();
+  guardar(): void {
+    // Validación final antes de guardar
+    this.mostrarErrores = true;
+    const productosSeleccionados = this.obtenerProductosSeleccionados();
     
-//     if (!this.validarFormularioCompleto(productosSeleccionados)) {
-//       // Si la validación falla, volver al primer tab
-//       this.tabActivo = 1;
-//       return;
-//     }
+    if (!this.validarFormularioCompleto(productosSeleccionados)) {
+      // Si la validación falla, volver al primer tab
+      this.tabActivo = 1;
+      return;
+    }
     
-//     this.limpiarAlertas();
-//     this.crearTraslado(productosSeleccionados);
-//   }
+    this.limpiarAlertas();
+    this.crearTraslado(productosSeleccionados);
+  }
 
-//   // ========== MÉTODOS PRIVADOS (existentes con algunas modificaciones) ==========
+  // ========== MÉTODOS PRIVADOS (existentes con algunas modificaciones) ==========
 
-//   private limpiarFormulario(): void {
-//     this.limpiarAlertas();
-//     this.traslado = new Traslado();
-//     this.productos.forEach(p => { p.cantidad = 0; p.observaciones = ''; });
-//     this.inicializarFechaActual();
+  private limpiarFormulario(): void {
+    this.limpiarAlertas();
+    this.traslado = new Traslado();
+    this.productos.forEach(p => { p.cantidad = 0; p.observaciones = ''; });
+    this.inicializarFechaActual();
     
-//     // Resetear estado de tabs
-//     this.tabActivo = 1;
-//     this.puedeAvanzarAResumen = false;
-//   }
+    // Resetear estado de tabs
+    this.tabActivo = 1;
+    this.puedeAvanzarAResumen = false;
+  }
 
-//   private limpiarAlertas(): void {
-//     this.mostrarErrores = false;
-//     this.mostrarAlertaExito = false;
-//     this.mensajeExito = '';
-//     this.mostrarAlertaError = false;
-//     this.mensajeError = '';
-//     this.mostrarAlertaWarning = false;
-//     this.mensajeWarning = '';
-//   }
+  private limpiarAlertas(): void {
+    this.mostrarErrores = false;
+    this.mostrarAlertaExito = false;
+    this.mensajeExito = '';
+    this.mostrarAlertaError = false;
+    this.mensajeError = '';
+    this.mostrarAlertaWarning = false;
+    this.mensajeWarning = '';
+  }
 
-//   private validarFormularioCompleto(productos: any[]): boolean {
-//     const errores = [];
+  private validarFormularioCompleto(productos: any[]): boolean {
+    const errores = [];
     
-//     if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
-//     if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
-//     if (!this.traslado.tras_Fecha) errores.push('Fecha');
-//     if (productos.length === 0) errores.push('Al menos un producto');
+    if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
+    if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
+    if (!this.traslado.tras_Fecha) errores.push('Fecha');
+    if (productos.length === 0) errores.push('Al menos un producto');
     
-//     if (this.traslado.tras_Origen > 0 &&
-//         this.traslado.tras_Destino > 0 &&
-//         this.traslado.tras_Fecha &&
-//         productosSeleccionados.length > 0 // Validar que haya al menos un producto seleccionado
-//       ) {
-//       // Limpiar alertas previas
-//       this.mostrarAlertaWarning = false;
-//       this.mostrarAlertaError = false;
+    if (this.traslado.tras_Origen > 0 &&
+        this.traslado.tras_Destino > 0 &&
+        this.traslado.tras_Fecha &&
+        productosSeleccionados.length > 0 // Validar que haya al menos un producto seleccionado
+      ) {
+      // Limpiar alertas previas
+      this.mostrarAlertaWarning = false;
+      this.mostrarAlertaError = false;
       
-//       // Buscar las descripciones basándose en los IDs seleccionados
-//       const origenSeleccionado = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
-//       const destinoSeleccionado = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
+      // Buscar las descripciones basándose en los IDs seleccionados
+      const origenSeleccionado = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
+      const destinoSeleccionado = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
       
-//       // Datos del encabezado (sin productos)
-//       const trasladoEncabezado = {
-//         tras_Id: 0,
-//         tras_Origen: Number(this.traslado.tras_Origen),
-//         origen: origenSeleccionado ? origenSeleccionado.sucu_Descripcion : '',
-//         tras_Destino: Number(this.traslado.tras_Destino),
-//         destino: destinoSeleccionado ? destinoSeleccionado.bode_Descripcion : '',
-//         tras_Fecha: this.traslado.tras_Fecha.toISOString ? this.traslado.tras_Fecha.toISOString() : new Date(this.traslado.tras_Fecha).toISOString(),
-//         tras_Observaciones: this.traslado.tras_Observaciones || '',
-//         usua_Creacion: getUserId(),
-//         tras_FechaCreacion: new Date().toISOString(),
-//         usua_Modificacion: 0,
-//         tras_FechaModificacion: new Date().toISOString(),
-//         tras_Estado: true
-//       };
+      // Datos del encabezado (sin productos)
+      const trasladoEncabezado = {
+        tras_Id: 0,
+        tras_Origen: Number(this.traslado.tras_Origen),
+        origen: origenSeleccionado ? origenSeleccionado.sucu_Descripcion : '',
+        tras_Destino: Number(this.traslado.tras_Destino),
+        destino: destinoSeleccionado ? destinoSeleccionado.bode_Descripcion : '',
+        tras_Fecha: this.traslado.tras_Fecha.toISOString ? this.traslado.tras_Fecha.toISOString() : new Date(this.traslado.tras_Fecha).toISOString(),
+        tras_Observaciones: this.traslado.tras_Observaciones || '',
+        usua_Creacion: getUserId(),
+        tras_FechaCreacion: new Date().toISOString(),
+        usua_Modificacion: 0,
+        tras_FechaModificacion: new Date().toISOString(),
+        tras_Estado: true
+      };
 
-//       console.log('Guardando encabezado del traslado:', trasladoEncabezado);
+      console.log('Guardando encabezado del traslado:', trasladoEncabezado);
       
-//       // Paso 1: Guardar el encabezado del traslado
-//       this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, trasladoEncabezado, {
-//         headers: { 
-//           'X-Api-Key': environment.apiKey,
-//           'Content-Type': 'application/json',
-//           'accept': '*/*'
-//         }
-//       }).subscribe({
-//         next: (responseEncabezado) => {
-//           console.log('=== RESPUESTA DEL ENCABEZADO ===');
-//           console.log('Tipo de respuesta:', typeof responseEncabezado);
-//           console.log('Respuesta completa:', responseEncabezado);
-//           console.log('Respuesta como JSON:', JSON.stringify(responseEncabezado, null, 2));
-//           console.log('Propiedades de la respuesta:', Object.keys(responseEncabezado || {}));
+      // Paso 1: Guardar el encabezado del traslado
+      this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, trasladoEncabezado, {
+        headers: { 
+          'X-Api-Key': environment.apiKey,
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        }
+      }).subscribe({
+        next: (responseEncabezado) => {
+          console.log('=== RESPUESTA DEL ENCABEZADO ===');
+          console.log('Tipo de respuesta:', typeof responseEncabezado);
+          console.log('Respuesta completa:', responseEncabezado);
+          console.log('Respuesta como JSON:', JSON.stringify(responseEncabezado, null, 2));
+          console.log('Propiedades de la respuesta:', Object.keys(responseEncabezado || {}));
           
-//           // Si la respuesta es un objeto, mostrar todas sus propiedades
-//           if (responseEncabezado && typeof responseEncabezado === 'object') {
-//             for (let key in responseEncabezado) {
-//               console.log(`Propiedad "${key}":`, responseEncabezado[key], `(tipo: ${typeof responseEncabezado[key]})`);
-//             }
-//           }
+          // Si la respuesta es un objeto, mostrar todas sus propiedades
+          if (responseEncabezado && typeof responseEncabezado === 'object') {
+            for (let key in responseEncabezado) {
+              console.log(`Propiedad "${key}":`, responseEncabezado[key], `(tipo: ${typeof responseEncabezado[key]})`);
+            }
+          }
           
-//           // Obtener el ID del traslado recién creado - vamos a probar diferentes formas
-//           let trasladoId = null;
+          // Obtener el ID del traslado recién creado - vamos a probar diferentes formas
+          let trasladoId = null;
           
-//           // Opción 1: responseEncabezado.tras_Id
-//           if (responseEncabezado && responseEncabezado.tras_Id) {
-//             trasladoId = responseEncabezado.tras_Id;
-//             console.log('✅ ID encontrado en responseEncabezado.tras_Id:', trasladoId);
-//           }
-//           // Opción 2: responseEncabezado.id
-//           else if (responseEncabezado && responseEncabezado.id) {
-//             trasladoId = responseEncabezado.id;
-//             console.log('✅ ID encontrado en responseEncabezado.id:', trasladoId);
-//           }
-//           // Opción 3: responseEncabezado directamente es el ID
-//           else if (typeof responseEncabezado === 'number') {
-//             trasladoId = responseEncabezado;
-//             console.log('✅ ID encontrado directamente en responseEncabezado:', trasladoId);
-//           }
-//           // Opción 4: Buscar en data
-//           else if (responseEncabezado && responseEncabezado.data) {
-//             if (responseEncabezado.data.tras_Id) {
-//               trasladoId = responseEncabezado.data.tras_Id;
-//               console.log('✅ ID encontrado en responseEncabezado.data.tras_Id:', trasladoId);
-//             } else if (typeof responseEncabezado.data === 'number') {
-//               trasladoId = responseEncabezado.data;
-//               console.log('✅ ID encontrado en responseEncabezado.data:', trasladoId);
-//             }
-//           }
-//           // Opción 5: Buscar propiedades que contengan "id" (case insensitive)
-//           else if (responseEncabezado && typeof responseEncabezado === 'object') {
-//             const keys = Object.keys(responseEncabezado);
-//             for (let key of keys) {
-//               if (key.toLowerCase().includes('id') && typeof responseEncabezado[key] === 'number') {
-//                 trasladoId = responseEncabezado[key];
-//                 console.log(`✅ ID encontrado en responseEncabezado.${key}:`, trasladoId);
-//                 break;
-//               }
-//             }
-//           }
+          // Opción 1: responseEncabezado.tras_Id
+          if (responseEncabezado && responseEncabezado.tras_Id) {
+            trasladoId = responseEncabezado.tras_Id;
+            console.log('✅ ID encontrado en responseEncabezado.tras_Id:', trasladoId);
+          }
+          // Opción 2: responseEncabezado.id
+          else if (responseEncabezado && responseEncabezado.id) {
+            trasladoId = responseEncabezado.id;
+            console.log('✅ ID encontrado en responseEncabezado.id:', trasladoId);
+          }
+          // Opción 3: responseEncabezado directamente es el ID
+          else if (typeof responseEncabezado === 'number') {
+            trasladoId = responseEncabezado;
+            console.log('✅ ID encontrado directamente en responseEncabezado:', trasladoId);
+          }
+          // Opción 4: Buscar en data
+          else if (responseEncabezado && responseEncabezado.data) {
+            if (responseEncabezado.data.tras_Id) {
+              trasladoId = responseEncabezado.data.tras_Id;
+              console.log('✅ ID encontrado en responseEncabezado.data.tras_Id:', trasladoId);
+            } else if (typeof responseEncabezado.data === 'number') {
+              trasladoId = responseEncabezado.data;
+              console.log('✅ ID encontrado en responseEncabezado.data:', trasladoId);
+            }
+          }
+          // Opción 5: Buscar propiedades que contengan "id" (case insensitive)
+          else if (responseEncabezado && typeof responseEncabezado === 'object') {
+            const keys = Object.keys(responseEncabezado);
+            for (let key of keys) {
+              if (key.toLowerCase().includes('id') && typeof responseEncabezado[key] === 'number') {
+                trasladoId = responseEncabezado[key];
+                console.log(`✅ ID encontrado en responseEncabezado.${key}:`, trasladoId);
+                break;
+              }
+            }
+          }
           
-//           console.log('🎯 ID final del traslado que se usará:', trasladoId);
-//           console.log('================================');
+          console.log('🎯 ID final del traslado que se usará:', trasladoId);
+          console.log('================================');
           
-//           if (trasladoId && trasladoId > 0) {
-//             // Paso 2: Guardar los detalles (productos)
-//             this.guardarDetallesTraslado(trasladoId, productosSeleccionados);
-//           } else {
-//             console.error('❌ No se pudo obtener el ID del traslado creado');
-//             console.error('Estructura de respuesta completa:', JSON.stringify(responseEncabezado, null, 2));
-//             this.mostrarAlertaError = true;
-//             this.mensajeError = 'Error: No se pudo obtener el ID del traslado creado. Revisa la consola para más detalles.';
-//           }
-//         },
-//         error: (error) => {
-//           console.error('Error al guardar encabezado del traslado:', error);
-//           this.mostrarAlertaError = true;
-//           this.mensajeError = 'Error al guardar el encabezado del traslado. Por favor, intente nuevamente.';
-//           this.mostrarAlertaExito = false;
+          if (trasladoId && trasladoId > 0) {
+            // Paso 2: Guardar los detalles (productos)
+            this.guardarDetallesTraslado(trasladoId, productosSeleccionados);
+          } else {
+            console.error('❌ No se pudo obtener el ID del traslado creado');
+            console.error('Estructura de respuesta completa:', JSON.stringify(responseEncabezado, null, 2));
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error: No se pudo obtener el ID del traslado creado. Revisa la consola para más detalles.';
+          }
+        },
+        error: (error) => {
+          console.error('Error al guardar encabezado del traslado:', error);
+          this.mostrarAlertaError = true;
+          this.mensajeError = 'Error al guardar el encabezado del traslado. Por favor, intente nuevamente.';
+          this.mostrarAlertaExito = false;
           
-//           setTimeout(() => {
-//             this.mostrarAlertaError = false;
-//             this.mensajeError = '';
-//           }, 5000);
-//         }
-//       });
-//     } else {
-//       let mensajeError = 'Por favor complete todos los campos requeridos: ';
-//       const errores = [];
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+        }
+      });
+    } else {
+      let mensajeError = 'Por favor complete todos los campos requeridos: ';
+      const errores = [];
       
-//       if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
-//       if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
-//       if (!this.traslado.tras_Fecha) errores.push('Fecha');
-//       // if (productosSeleccionados.length === 0) errores.push('Al menos un producto');
+      if (!this.traslado.tras_Origen || this.traslado.tras_Origen == 0) errores.push('Origen');
+      if (!this.traslado.tras_Destino || this.traslado.tras_Destino == 0) errores.push('Destino');
+      if (!this.traslado.tras_Fecha) errores.push('Fecha');
+      // if (productosSeleccionados.length === 0) errores.push('Al menos un producto');
       
-//       mensajeError += errores.join(', ');
+      mensajeError += errores.join(', ');
       
-//       this.mostrarAlertaWarning = true;
-//       this.mensajeWarning = mensajeError;
-//       this.mostrarAlertaError = false;
-//       this.mostrarAlertaExito = false;
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = mensajeError;
+      this.mostrarAlertaError = false;
+      this.mostrarAlertaExito = false;
       
-//       setTimeout(() => {
-//         this.mostrarAlertaWarning = false;
-//         this.mensajeWarning = '';
-//       }, 4000);
-//     if (errores.length > 0) {
-//       this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
-//       return false;
-//     }
-//     return true;
-//   }
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+        this.mensajeWarning = '';
+      }, 4000);
+    if (errores.length > 0) {
+      this.mostrarWarning(`Complete los campos: ${errores.join(', ')}`);
+      return false;
+    }
+    return true;
+  }
 
-//   private crearTraslado(productos: any[]): void {
-//     const origen = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
-//     const destino = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
+  private crearTraslado(productos: any[]): void {
+    const origen = this.origenes.find(o => o.sucu_Id == this.traslado.tras_Origen);
+    const destino = this.destinos.find(d => d.bode_Id == this.traslado.tras_Destino);
     
-//     const datos = {
-//       tras_Id: 0,
-//       tras_Origen: Number(this.traslado.tras_Origen),
-//       origen: origen?.sucu_Descripcion || '',
-//       tras_Destino: Number(this.traslado.tras_Destino),
-//       destino: destino?.bode_Descripcion || '',
-//       tras_Fecha: new Date(this.traslado.tras_Fecha).toISOString(),
-//       tras_Observaciones: this.traslado.tras_Observaciones || '',
-//       usua_Creacion: getUserId(),
-//       tras_FechaCreacion: new Date().toISOString(),
-//       usua_Modificacion: 0,
-//       tras_FechaModificacion: new Date().toISOString(),
-//       tras_Estado: true
-//     };
+    const datos = {
+      tras_Id: 0,
+      tras_Origen: Number(this.traslado.tras_Origen),
+      origen: origen?.sucu_Descripcion || '',
+      tras_Destino: Number(this.traslado.tras_Destino),
+      destino: destino?.bode_Descripcion || '',
+      tras_Fecha: new Date(this.traslado.tras_Fecha).toISOString(),
+      tras_Observaciones: this.traslado.tras_Observaciones || '',
+      usua_Creacion: getUserId(),
+      tras_FechaCreacion: new Date().toISOString(),
+      usua_Modificacion: 0,
+      tras_FechaModificacion: new Date().toISOString(),
+      tras_Estado: true
+    };
 
-//     this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, datos, {
-//       headers: this.obtenerHeaders()
-//     }).subscribe({
-//       next: (response) => {
-//         const id = this.extraerIdTraslado(response);
-//         if (id > 0) {
-//           this.crearDetalles(id, productos);
-//         } else {
-//           this.mostrarError('No se pudo obtener el ID del traslado');
-//         }
-//       },
-//       error: () => this.mostrarError('Error al crear el traslado')
-//     });
-//   }
+    this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, datos, {
+      headers: this.obtenerHeaders()
+    }).subscribe({
+      next: (response) => {
+        const id = this.extraerIdTraslado(response);
+        if (id > 0) {
+          this.crearDetalles(id, productos);
+        } else {
+          this.mostrarError('No se pudo obtener el ID del traslado');
+        }
+      },
+      error: () => this.mostrarError('Error al crear el traslado')
+    });
+  }
 
-//   private extraerIdTraslado(response: any): number {
-//     const datos = response?.data;
-//     if (!datos || datos.code_Status !== 1) return 0;
+  private extraerIdTraslado(response: any): number {
+    const datos = response?.data;
+    if (!datos || datos.code_Status !== 1) return 0;
     
-//     // Buscar ID en ubicaciones posibles
-//     const ids = [datos.Tras_Id, datos.tras_Id, datos.id, datos.data];
-//     const id = ids.find(id => id && Number(id) > 0);
+    // Buscar ID en ubicaciones posibles
+    const ids = [datos.Tras_Id, datos.tras_Id, datos.id, datos.data];
+    const id = ids.find(id => id && Number(id) > 0);
     
-//     return id ? Number(id) : 0;
-//   }
+    return id ? Number(id) : 0;
+  }
 
-//   private crearDetalles(trasladoId: number, productos: any[]): void {
-//     let completadas = 0;
-//     let errores = 0;
-//     const total = productos.length;
+  private crearDetalles(trasladoId: number, productos: any[]): void {
+    let completadas = 0;
+    let errores = 0;
+    const total = productos.length;
 
-//     productos.forEach((producto, index) => {
-//       const detalle = {
-//         trDe_Id: 0,
-//         tras_Id: trasladoId,
-//         prod_Id: Number(producto.prod_Id),
-//         trDe_Cantidad: Number(producto.cantidad),
-//         trDe_Observaciones: producto.observaciones || '',
-//         usua_Creacion: Number(getUserId()), // Asegurar que sea número
-//         trDe_FechaCreacion: new Date().toISOString(),
-//         usua_Modificacion: 0,
-//         trDe_FechaModificacion: new Date().toISOString()
-//       };
+    productos.forEach((producto, index) => {
+      const detalle = {
+        trDe_Id: 0,
+        tras_Id: trasladoId,
+        prod_Id: Number(producto.prod_Id),
+        trDe_Cantidad: Number(producto.cantidad),
+        trDe_Observaciones: producto.observaciones || '',
+        usua_Creacion: Number(getUserId()), // Asegurar que sea número
+        trDe_FechaCreacion: new Date().toISOString(),
+        usua_Modificacion: 0,
+        trDe_FechaModificacion: new Date().toISOString()
+      };
 
-//       this.http.post<any>(`${environment.apiBaseUrl}/Traslado/InsertarDetalle`, detalle, {
-//         headers: this.obtenerHeaders()
-//       }).subscribe({
-//         next: () => {
-//           completadas++;
-//           this.verificarCompletitud(completadas, errores, total);
-//         },
-//         error: () => {
-//           errores++;
-//           completadas++;
-//           this.verificarCompletitud(completadas, errores, total);
-//         }
-//       });
-//     });
-//   }
+      this.http.post<any>(`${environment.apiBaseUrl}/Traslado/InsertarDetalle`, detalle, {
+        headers: this.obtenerHeaders()
+      }).subscribe({
+        next: () => {
+          completadas++;
+          this.verificarCompletitud(completadas, errores, total);
+        },
+        error: () => {
+          errores++;
+          completadas++;
+          this.verificarCompletitud(completadas, errores, total);
+        }
+      });
+    });
+  }
 
-//   private verificarCompletitud(completadas: number, errores: number, total: number): void {
-//     if (completadas === total) {
-//       if (errores === 0) {
-//         this.mostrarExito(`Traslado guardado exitosamente con ${total} producto(s)`);
-//         setTimeout(() => {
-//           this.onSave.emit(this.traslado);
-//           this.cancelar();
-//         }, 3000);
-//       } else {
-//         this.mostrarWarning(`Traslado guardado, pero ${errores} de ${total} productos fallaron`);
-//       }
-//     }
-//   }
+  private verificarCompletitud(completadas: number, errores: number, total: number): void {
+    if (completadas === total) {
+      if (errores === 0) {
+        this.mostrarExito(`Traslado guardado exitosamente con ${total} producto(s)`);
+        setTimeout(() => {
+          this.onSave.emit(this.traslado);
+          this.cancelar();
+        }, 3000);
+      } else {
+        this.mostrarWarning(`Traslado guardado, pero ${errores} de ${total} productos fallaron`);
+      }
+    }
+  }
 
-//   private obtenerHeaders(): any {
-//     return { 
-//       'X-Api-Key': environment.apiKey,
-//       'Content-Type': 'application/json',
-//       'accept': '*/*'
-//     };
-//   }
+  private obtenerHeaders(): any {
+    return { 
+      'X-Api-Key': environment.apiKey,
+      'Content-Type': 'application/json',
+      'accept': '*/*'
+    };
+  }
 
-//   private mostrarExito(mensaje: string): void {
-//     this.mensajeExito = mensaje;
-//     this.mostrarAlertaExito = true;
-//     this.mostrarErrores = false;
-//   }
+  private mostrarExito(mensaje: string): void {
+    this.mensajeExito = mensaje;
+    this.mostrarAlertaExito = true;
+    this.mostrarErrores = false;
+  }
 
-//   private mostrarError(mensaje: string): void {
-//     this.mensajeError = mensaje;
-//     this.mostrarAlertaError = true;
-//     setTimeout(() => this.limpiarAlertas(), 5000);
-//   }
+  private mostrarError(mensaje: string): void {
+    this.mensajeError = mensaje;
+    this.mostrarAlertaError = true;
+    setTimeout(() => this.limpiarAlertas(), 5000);
+  }
 
-//   private mostrarWarning(mensaje: string): void {
-//     this.mensajeWarning = mensaje;
-//     this.mostrarAlertaWarning = true;
-//     setTimeout(() => this.limpiarAlertas(), 4000);
-//   }
-// }
+  private mostrarWarning(mensaje: string): void {
+    this.mensajeWarning = mensaje;
+    this.mostrarAlertaWarning = true;
+    setTimeout(() => this.limpiarAlertas(), 4000);
+  }
+}
