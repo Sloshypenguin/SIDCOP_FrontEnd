@@ -404,110 +404,40 @@
             </div>
         </div>
 
-        <hr class="mt-4 mb-4" />
-
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="depa_Codigo" class="form-label">Departamento<span class="text-danger">*</span></label>
-            <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            <div class="d-flex align-items-center">
-              <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepa"
-                (change)="onDepartamentoChange()" required>
-                <option value="" disabled selected>
-                  Seleccione un Departamento
-                </option>
-                <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
-                  {{ depa.depa_Descripcion }}
-                </option>
-              </select>
-              <div *ngIf="cargando" class="form-text text-muted">
-                Cargando Departamentos...
-              </div>
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
+        <div style="display: flex; justify-content: space-between;" class="mb-2 mt-4">
+          <h4 class="text-muted">Direcciones</h4>
+          <button class="btn btn-primary col-2" (click)="abrirMapa()">
+            <span class="btn-text">Seleccionar una Ubicación</span>
+            <span class="btn-icon"><i class="ri-map-pin-2-line"></i></span>
+          </button>
+        </div>
+        <hr class="mb-4" />
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <div class="ubicacion-card">
+          <div class="card-actions">
+            <button class="icon-button"><i class="fas fa-edit"></i></button>
+            <button class="icon-button delete"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        
+          <div class="card-content">
+            <div class="info">
+              <h2 class="direccion-nombre">Los Andes</h2>
+              <p class="detalle"><i class="fas fa-map-marker-alt"></i> Francisco Morazán - Tegucigalpa, Col. Kennedy</p>
+              <p class="detalle"><i class="fas fa-crosshairs"></i> Lat: 14.0721, Lng: -87.1921</p>
             </div>
-            <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
-              <small>El campo Departamento es requerido</small>
+          
+            <div class="ver-ubicacion">
+              <button class="btn btn-primary">
+                <span class="btn-text">Ver</span>
+                <span class="btn-icon"><i class="ri-map-pin-2-line"></i></span>
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="muni_Codigo" class="form-label">Municipio<span class="text-danger">*</span></label>
-            <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            <div class="d-flex align-items-center">
-              <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColonia.muni_Codigo"
-                (change)="cargarColonias(nuevaColonia.muni_Codigo)" required>
-                <option value="" disabled selected>
-                  Seleccione un Municipio
-                </option>
-                <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
-                  {{ muni.muni_Descripcion }}
-                </option>
-              </select>
-              <div *ngIf="cargando" class="form-text text-muted">
-                Cargando Municipios...
-              </div>
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
-              <small>El campo Municipio es requerido</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="colo_Id" class="form-label">Colonia<span class="text-danger">*</span></label>
-            <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            <div class="d-flex align-items-center">
-              <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccion.colo_Id" required>
-                <option value="" disabled selected>
-                  Seleccione una Colonia
-                </option>
-                <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">
-                  {{ colonia.colo_Descripcion }}
-                </option>
-              </select>
-              <div *ngIf="cargandoColonias" class="form-text text-muted">
-                Cargando Colonias...
-              </div>
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div class="text-danger mt-1" *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores">
-              <small>El campo Colonias es requerido</small>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dirección Exacta -->
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="clienteDireccionExacta" class="form-label">
-              Dirección Exacta<span class="text-danger">*</span>
-            </label>
-            <div class="d-flex align-items-center">
-              <input type="text" class="form-control" id="clienteDireccionExacta"
-                [(ngModel)]="direccionPorCliente.diCl_DireccionExacta" [class.is-invalid]="
-                  !direccionPorCliente.diCl_DireccionExacta.trim() &&
-                  mostrarErrores
-                " placeholder="Ingrese la dirección exacta" required />
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            </div>
-            <div class="text-danger" *ngIf="
-                !direccionPorCliente.diCl_DireccionExacta.trim() &&
-                mostrarErrores
-              ">
-              <small>El campo Dirección Exacta es requerido</small>
-            </div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary mb-4" (click)="abrirMapa()">
-          <span class="btn-text">Seleccionar una Ubicación</span>
-          <span class="btn-icon"><i class="ri-map-pin-2-line"></i></span>
-        </button>
       </div>
+
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
@@ -890,6 +820,105 @@
       <hr class="custom-modal-divider" />
       <div class="modal-body custom-modal-body">
         <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)"></app-mapa-selector>
+        
+        <div class="row mx-lg-4">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="depa_Codigo" class="form-label">Departamento<span class="text-danger">*</span></label>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              <div class="d-flex align-items-center">
+                <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepa"
+                  (change)="onDepartamentoChange()" required>
+                  <option value="" disabled selected>
+                    Seleccione un Departamento
+                  </option>
+                  <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
+                    {{ depa.depa_Descripcion }}
+                  </option>
+                </select>
+                <div *ngIf="cargando" class="form-text text-muted">
+                  Cargando Departamentos...
+                </div>
+                <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              </div>
+              <div class="text-danger mt-1" *ngIf="!(selectedDepa ?? '').trim() && mostrarErrores">
+                <small>El campo Departamento es requerido</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="muni_Codigo" class="form-label">Municipio<span class="text-danger">*</span></label>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              <div class="d-flex align-items-center">
+                <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColonia.muni_Codigo"
+                  (change)="cargarColonias(nuevaColonia.muni_Codigo)" required>
+                  <option value="" disabled selected>
+                    Seleccione un Municipio
+                  </option>
+                  <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
+                    {{ muni.muni_Descripcion }}
+                  </option>
+                </select>
+                <div *ngIf="cargando" class="form-text text-muted">
+                  Cargando Municipios...
+                </div>
+                <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              </div>
+              <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
+                <small>El campo Municipio es requerido</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="colo_Id" class="form-label">Colonia<span class="text-danger">*</span></label>
+              <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              <div class="d-flex align-items-center">
+                <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccion.colo_Id" required>
+                  <option value="" disabled selected>
+                    Seleccione una Colonia
+                  </option>
+                  <option *ngFor="let colonia of Colonias" [value]="colonia.colo_Id">
+                    {{ colonia.colo_Descripcion }}
+                  </option>
+                </select>
+                <div *ngIf="cargandoColonias" class="form-text text-muted">
+                  Cargando Colonias...
+                </div>
+                <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              </div>
+              <div class="text-danger mt-1" *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores">
+                <small>El campo Colonias es requerido</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dirección Exacta -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="clienteDireccionExacta" class="form-label">
+                Dirección Exacta<span class="text-danger">*</span>
+              </label>
+              <div class="d-flex align-items-center">
+                <input type="text" class="form-control" id="clienteDireccionExacta"
+                  [(ngModel)]="direccionPorCliente.diCl_DireccionExacta" [class.is-invalid]="
+                    !direccionPorCliente.diCl_DireccionExacta.trim() &&
+                    mostrarErrores
+                  " placeholder="Ingrese la dirección exacta" required />
+                <span class="text-danger" *ngIf="mostrarErrores">*</span>
+              </div>
+              <div class="text-danger" *ngIf="
+                  !direccionPorCliente.diCl_DireccionExacta.trim() &&
+                  mostrarErrores
+                ">
+                <small>El campo Dirección Exacta es requerido</small>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
