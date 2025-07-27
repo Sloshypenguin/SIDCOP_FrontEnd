@@ -88,3 +88,59 @@
   font-size: 0.9rem;
   cursor: default;
 }
+
+/* Grid para pantallas como columnas */
+.pantallas-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.pantallas-grid.cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.pantallas-grid.cols-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.pantallas-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Estilo para cada columna de pantalla */
+.pantalla-column {
+  border: 1px solid #eee;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Reutiliza tus estilos existentes */
+.pantalla-titulo {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #b59e7f;
+  display: inline-block;
+  padding-bottom: 0.25rem;
+}
+
+.acciones-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.accion-chip {
+  background: #e3f2fd;
+  color: #1a73e8;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
