@@ -183,8 +183,6 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.productoAEliminar) return;
     
-    console.log('Eliminando estado civil:', this.productoAEliminar);
-    
     this.http.post(`${environment.apiBaseUrl}/Productos/Eliminar/${this.productoAEliminar.prod_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -192,7 +190,6 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
         
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
@@ -253,6 +250,26 @@ export class ListComponent implements OnInit {
           this.cancelarEliminar();
         }
       },
+      error: (err) => {
+        console.log('Respuesta completa:', err);
+this.mensajeExito = JSON.stringify(err, null, 2);
+this.mostrarAlertaExito = true;
+        const codeStatus = err?.error?.data?.code_Status;
+        const messageStatus = err?.error?.data?.message_Status;
+        this.mostrarAlertaError = true;
+        if (codeStatus === -1) {
+          this.mensajeError = messageStatus || 'No se puede eliminar: el producto está siendo utilizado.';
+        } else if (codeStatus === 0) {
+          this.mensajeError = messageStatus || 'Error al eliminar el producto.';
+        } else {
+          this.mensajeError = err?.error?.message || 'Error al eliminar el producto. Intenta de nuevo.';
+        }
+        setTimeout(() => {  
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        this.cancelarEliminar();
+      }
     });
   }
 
