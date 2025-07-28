@@ -6,6 +6,7 @@ import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.com
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CreateComponent } from '../create/create.component';
@@ -13,6 +14,14 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 import { Descuento } from 'src/app/Modelos/inventario/DescuentoModel';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -29,7 +38,40 @@ import { Descuento } from 'src/app/Modelos/inventario/DescuentoModel';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
@@ -99,6 +141,7 @@ export class ListComponent implements OnInit {
   descuentoDetalle: Descuento | null = null;
   
   // Propiedades para alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -111,7 +154,7 @@ export class ListComponent implements OnInit {
   descuentoEliminar: Descuento | null = null;
 
   constructor(public table: ReactiveTableService<Descuento>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
-    this.cargardatos();
+    this.cargardatos(true);
 
   }
 
@@ -146,16 +189,35 @@ export class ListComponent implements OnInit {
 
   guardarVendedor(descuento: Descuento): void {
     console.log('Descuento guardado exitosamente desde create component:', descuento);
+     this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
     // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.cargardatos(false);
+    this.showCreateForm = false;
+      this.mensajeExito = `Descuento guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+    setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+
+     }, 1000);
   }
 
   actualizarDescuento(descuento: Descuento): void {
+     this.mostrarOverlayCarga = true;
     console.log('Descuento actualizado exitosamente desde edit component:', descuento);
+    setTimeout(() => {
     // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.cargardatos(false);
+    this.showEditForm = false;
+      this.mensajeExito = `Descuento actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+     }, 1000);
   }
 
   confirmarEliminar(descuento: Descuento): void {
@@ -174,7 +236,7 @@ export class ListComponent implements OnInit {
     if (!this.descuentoEliminar) return;
     
     console.log('Eliminando Descuento:', this.descuentoEliminar);
-    
+    this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Descuentos/Eliminar/${this.descuentoEliminar.desc_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -182,6 +244,8 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
         console.log('Respuesta del servidor:', response);
         
         // Verificar el código de estado en la respuesta
@@ -199,7 +263,7 @@ export class ListComponent implements OnInit {
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -242,6 +306,7 @@ export class ListComponent implements OnInit {
           // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
+      }, 1000);
       },
     });
   }
@@ -284,12 +349,23 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Descuento[]>(`${environment.apiBaseUrl}/Descuentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+       setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+         const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+        this.table.setData(data);
+      },500);
     });
   }
 }
