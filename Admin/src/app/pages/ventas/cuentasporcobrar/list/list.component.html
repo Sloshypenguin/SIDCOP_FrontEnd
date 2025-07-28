@@ -5,7 +5,7 @@
     { label: 'Cuentas por Cobrar', active: true }
   ]"
 >
-<img class="icon-breadcrumb" style="width: 10vh; height: 10vh;" src="assets/images/svg/Vector.svg" alt="breadcrumb icon" />
+<img class="icon-breadcrumb" style="width: 10vh; height: 10vh;" src="assets/images/svg/cxc.svg" alt="cuentas por cobrar icon" />
 </app-breadcrumbs>
 
 <div class="row">
@@ -187,6 +187,18 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Overlay de carga -->
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+  <div class="typing-indicator">
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
   </div>
 </div>
 
