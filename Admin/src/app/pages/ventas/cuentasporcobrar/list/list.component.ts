@@ -79,6 +79,9 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   cuentaPorCobrarAEliminar: CuentaPorCobrar | null = null;
+  
+  // Propiedad para mostrar overlay de carga
+  mostrarOverlayCarga = false;
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
@@ -236,8 +239,14 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
+    // Mostrar overlay de carga
+    this.mostrarOverlayCarga = true;
+    
     this.cuentasPorCobrarService.obtenerCuentasPorCobrar(true, false).subscribe({
       next: (response: any) => {
+        // Ocultar overlay de carga
+        this.mostrarOverlayCarga = false;
+        
         if (response.success && response.data) {
           const data = response.data;
           console.log('Datos recargados:', data);
@@ -250,9 +259,16 @@ export class ListComponent implements OnInit {
           console.error('Respuesta sin datos:', response);
           this.mostrarAlertaError = true;
           this.mensajeError = 'No se pudieron cargar los datos correctamente.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
         }
       },
       error: (error) => {
+        // Ocultar overlay de carga incluso en caso de error
+        this.mostrarOverlayCarga = false;
         console.error('Error al cargar datos:', error);
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
