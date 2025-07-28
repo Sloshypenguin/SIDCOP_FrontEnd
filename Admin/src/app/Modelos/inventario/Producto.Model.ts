@@ -2,7 +2,7 @@ export class Producto {
     prod_Id: number = 0;
     prod_Descripcion: string = '';
     prod_DescripcionCorta: string = '';
-    prod_Imagen: string = '';
+    prod_Imagen?: string = '';
     prod_Codigo: string = '';
     prod_CodigoBarra?: string = '';
     cate_Id?: number = 0;
@@ -10,10 +10,10 @@ export class Producto {
     subc_Id: number = 0;
     marc_Id: number = 0;
     prov_Id: number = 0;
-    impu_Id?: number | null = 0;
+    impu_Id?: number = 0;
     prod_PrecioUnitario: number = 0;
     prod_CostoTotal: number = 0;
-    prod_PagaImpuesto: string = "";
+    prod_PagaImpuesto?: string = "";
     prod_PromODesc?: number = 0;
     prod_EsPromo?: string = "";
     prod_Estado: boolean = true;
