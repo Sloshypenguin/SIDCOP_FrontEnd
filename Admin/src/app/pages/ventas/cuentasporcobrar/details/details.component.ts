@@ -282,7 +282,7 @@ export class DetailsComponent implements OnInit {
           this.enviandoAnulacion = false;
         },
         error: (error) => {
-          console.error('Error al anular pago:', error);
+
           this.mostrarAlertaError = true;
           this.mensajeError =
             'Error al conectar con el servidor. Intente nuevamente más tarde.';
@@ -319,7 +319,7 @@ export class DetailsComponent implements OnInit {
   private cargarAccionesUsuario(): void {
     // OBTENEMOS PERMISOSJSON DEL LOCALSTORAGE
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+
     let accionesArray: string[] = [];
     
     if (permisosRaw) {
@@ -332,7 +332,7 @@ export class DetailsComponent implements OnInit {
         if (Array.isArray(permisos)) {
           // BUSCAMOS EL MÓDULO DE CUENTAS POR COBRAR POR ID
           modulo = permisos.find((m: any) => m.Pant_Id === 34);
-          console.log('Módulo encontrado por ID 34:', modulo);
+
         } else if (typeof permisos === 'object' && permisos !== null) {
           // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
           modulo = permisos['Cuentas por Cobrar'] || permisos['cuentas por cobrar'] || null;
@@ -341,10 +341,8 @@ export class DetailsComponent implements OnInit {
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
-          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
-        console.error('Error al parsear permisosJson:', e);
       }
     }
     
@@ -353,10 +351,8 @@ export class DetailsComponent implements OnInit {
       .filter((a) => typeof a === 'string' && a.length > 0)
       .map((a) => a.trim().toLowerCase());
 
-    console.log('Acciones finales:', this.accionesDisponibles);
     
     // Verificar específicamente si existe el permiso de anular
     const tienePermisoAnular = this.accionPermitida('anular');
-    console.log('¿Tiene permiso para anular?', tienePermisoAnular);
   }
 }
