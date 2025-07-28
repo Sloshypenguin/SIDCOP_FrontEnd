@@ -1,6 +1,6 @@
 <div class="d-flex flex-column" style="height: 100%; min-height: 250px">
   <!-- Título del componente -->
-  <h5 class="card-title mb-4">Editar Punto de Emision</h5>
+  <h5 class="card-title mb-4">Editar Pedido</h5>
 
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
@@ -59,7 +59,7 @@
 
        <div class="col-md-6">
         <div class="mb-3">
-          <label for="clie_Id" class="form-label">Departamento</label>
+          <label for="clie_Id" class="form-label">Cliente</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
           <select 
@@ -69,8 +69,8 @@
             [(ngModel)]="selectedCliente" 
             (change)="cargarMunicipios(selectedCliente)"
             required>
-            <option value="" disabled selected>Seleccione un Departamento</option>
-            <option *ngFor="let depa of Clientes" [value]="depa.clie_Id">{{ depa.clie_NombreNegocio }}</option>
+            <option [ngValue]="0" disabled selected>{{ Clientes && Clientes.length > 0 ? 'Seleccione un Cliente' : 'Cargando clientes...' }}</option>
+            <option *ngFor="let cliente of Clientes" [ngValue]="cliente.clie_Id">{{ cliente.clie_NombreNegocio }}</option>
           </select>
           
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -82,7 +82,7 @@
 
       <div class="col-md-6">
         <div class="mb-3">
-          <label for="diCl_Id" class="form-label">Municipio</label>
+          <label for="diCl_Id" class="form-label">Dirección</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
           <select 
@@ -90,15 +90,19 @@
             name="diCl_Id" 
             class="form-select" 
             [(ngModel)]="pedidoEditada.diCl_Id" 
+            [disabled]="!selectedCliente || Direcciones.length === 0"
             required>
-            <option value="" disabled selected>Seleccione un Municipio</option>
-            <option *ngFor="let muni of Direcciones" [value]="muni.diCl_Id">{{ muni.diCl_DireccionExacta }}</option>
+            <option [ngValue]="0" disabled selected>{{ Direcciones.length > 0 ? 'Seleccione una Dirección' : 'No hay direcciones disponibles' }}</option>
+            <option *ngFor="let dir of Direcciones" [ngValue]="dir.diCl_Id">{{ dir.diCl_DireccionExacta }}</option>
           </select>
          
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" >
-            <small>El campo Municipio es requerido</small>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && selectedCliente && !pedidoEditada.diCl_Id">
+            <small>Por favor seleccione una dirección de entrega</small>
+          </div>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && selectedCliente && Direcciones.length === 0">
+            <small>Este cliente no tiene direcciones registradas</small>
           </div>
         </div>
       </div>
@@ -304,9 +308,7 @@
               class="ri-edit-line me-2 custom-modal-alert-icon"
               (click)="cancelarEdicion()"
             ></i>
-            ¿Estás seguro que deseas editar el Pedido
-            <strong>VER PEDI</strong> por
-            <strong>VER</strong>?
+            ¿Estás seguro que deseas guardar los cambios en este pedido?
           </p>
         </div>
       </div>

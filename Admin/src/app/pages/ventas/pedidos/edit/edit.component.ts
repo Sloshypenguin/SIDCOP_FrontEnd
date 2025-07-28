@@ -63,17 +63,19 @@ listarProductosDesdePedido(): void {
   }).subscribe({
     next: (data) => {
       this.productos = data.map((producto: any) => {
-        const detalle = this.pedidoEditada.detalles.find((d: any) => d.id == producto.prod_Id);
+        // Buscar el detalle del pedido que corresponde a este producto
+        const detalle = this.pedidoEditada.detalles.find((d: any) => d.prod_Id === producto.prod_Id);
+        
         return {
           ...producto,
-          cantidad: detalle?.cantidad || 0,
-          precio: detalle?.precio || producto.prod_PrecioUnitario || 0
+          cantidad: detalle ? detalle.peDe_Cantidad : 0,
+          precio: detalle ? detalle.peDe_ProdPrecio : producto.prod_PrecioUnitario || 0
         };
-       
       });
       this.filtrarProductos();
     },
-    error: () => {
+    error: (err) => {
+      console.error('Error al cargar productos:', err);
       this.mostrarAlertaError = true;
       this.mensajeError = 'Error al cargar productos.';
     }
@@ -265,19 +267,22 @@ set fechaInicioFormato(value: string) {
 
   validarEdicion(): void {
     this.mostrarErrores = true;
+    const productosSeleccionados = this.obtenerProductosSeleccionados();
 
-    if (this.pedidoEditada.muni_Descripcion.trim()) {
-      if (this.pedidoEditada.depa_Descripcion.trim() !== this.PEOriginal) {
-        this.mostrarConfirmacionEditar = true;
-      } else {
-        this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'No se han detectado cambios.';
-        setTimeout(() => this.cerrarAlerta(), 4000);
-      }
+    if (this.pedidoEditada.diCl_Id && this.pedidoEditada.pedi_FechaEntrega && productosSeleccionados.length > 0) {
+      // Si hay cambios, mostrar confirmación
+      this.mostrarConfirmacionEditar = true;
     } else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning =
-        'Por favor complete todos los campos requeridos antes de guardar.';
+      if (!this.pedidoEditada.diCl_Id) {
+        this.mensajeWarning = 'Por favor seleccione una dirección de entrega.';
+      } else if (!this.pedidoEditada.pedi_FechaEntrega) {
+        this.mensajeWarning = 'Por favor seleccione una fecha de entrega.';
+      } else if (productosSeleccionados.length === 0) {
+        this.mensajeWarning = 'Por favor seleccione al menos un producto.';
+      } else {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      }
       setTimeout(() => this.cerrarAlerta(), 4000);
     }
   }
@@ -293,39 +298,26 @@ set fechaInicioFormato(value: string) {
 
   private guardar(): void {
     this.mostrarErrores = true;
-     const productosSeleccionados = this.obtenerProductosSeleccionados();
+    const productosSeleccionados = this.obtenerProductosSeleccionados();
 
     if (this.pedidoEditada.diCl_Id && this.pedidoEditada.pedi_FechaEntrega && productosSeleccionados.length > 0) {
-      const PEActualizar = {
-         
+      // Buscar la dirección seleccionada para obtener información del cliente
+      const direccionSeleccionada = this.TodasDirecciones.find((dir: any) => dir.diCl_Id === this.pedidoEditada.diCl_Id);
+      
+      const pedidoActualizar = {
         pedi_Id: this.pedidoEditada.pedi_Id,
         diCl_Id: this.pedidoEditada.diCl_Id,
-        vend_Id: getUserId(), // Asumiendo que el usuario actual es el vendedor
-        pedi_FechaPedido: new Date().toISOString(),
-        pedi_FechaEntrega: this.pedidoEditada.pedi_FechaEntrega,
-        clie_Codigo: '',
-        clie_Id: 0,
-        clie_NombreNegocio: '',
-        clie_Nombres: '',
-        clie_Apellidos: '',
-        colo_Descripcion: '',
-        muni_Descripcion: '',
-        depa_Descripcion: '',
-        diCl_DireccionExacta: '',
-        vend_Nombres: '',
-        vend_Apellidos: '',
+        vend_Id: getUserId(), // Usuario actual como vendedor
+        pedi_FechaPedido: this.pedidoEditada.pedi_FechaPedido.toISOString(),
+        pedi_FechaEntrega: this.pedidoEditada.pedi_FechaEntrega.toISOString(),
         detalles: productosSeleccionados,
-        usua_Creacion: 0,
-        pedi_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: getUserId(),
         pedi_FechaModificacion: new Date().toISOString(),
-        pedi_Estado: true,
-        secuencia: 0
-      
+        pedi_Estado: true
       };
 
       this.http
-        .put<any>(`${environment.apiBaseUrl}/Pedido/Actualizar`, PEActualizar, {
+        .put<any>(`${environment.apiBaseUrl}/Pedido/Actualizar`, pedidoActualizar, {
           headers: {
             'X-Api-Key': environment.apiKey,
             'Content-Type': 'application/json',
@@ -334,7 +326,12 @@ set fechaInicioFormato(value: string) {
         })
         .subscribe({
           next: (response) => {
-            this.mensajeExito = `Pedido "${this.pedidoEditada.clie_NombreNegocio}" actualizado exitosamente`;
+            // Obtener el nombre del cliente para el mensaje
+            const clienteNombre = direccionSeleccionada ? 
+              direccionSeleccionada.clie_NombreNegocio || `${direccionSeleccionada.clie_Nombres} ${direccionSeleccionada.clie_Apellidos}` : 
+              'Cliente';
+              
+            this.mensajeExito = `Pedido para "${clienteNombre}" actualizado exitosamente`;
             this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
 
@@ -345,54 +342,95 @@ set fechaInicioFormato(value: string) {
             }, 3000);
           },
           error: (error) => {
-            console.error('Error al actualizar Punto de Emision:', error);
+            console.error('Error al actualizar Pedido:', error);
             this.mostrarAlertaError = true;
             this.mensajeError =
-              'Error al actualizar el Punto de Emision. Por favor, intente nuevamente.';
+              'Error al actualizar el Pedido. Por favor, intente nuevamente.';
             setTimeout(() => this.cerrarAlerta(), 5000);
           },
         });
     } else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning =
-        'Por favor complete todos los campos requeridos antes de guardar.';
+      if (!this.pedidoEditada.diCl_Id) {
+        this.mensajeWarning = 'Por favor seleccione una dirección de entrega.';
+      } else if (!this.pedidoEditada.pedi_FechaEntrega) {
+        this.mensajeWarning = 'Por favor seleccione una fecha de entrega.';
+      } else if (productosSeleccionados.length === 0) {
+        this.mensajeWarning = 'Por favor seleccione al menos un producto.';
+      } else {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      }
       setTimeout(() => this.cerrarAlerta(), 4000);
     }
   }
 
   cargarListados(): void {
+    // Cargar lista de clientes
     this.http.get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
-      next: (cliente) => {
-        this.Clientes = cliente;
-          console.log('Clientes cargados:', this.Clientes);
+      next: (clientes) => {
+        this.Clientes = clientes;
+        console.log('Clientes cargados:', this.Clientes.length);
+        
+        // Cargar lista de direcciones
         this.http.get<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
           headers: { 'x-api-key': environment.apiKey }
         }).subscribe({
           next: (direcciones) => {
-            console.log('Direcciones cargadas:', direcciones);
+            console.log('Direcciones cargadas:', direcciones.length);
             this.TodasDirecciones = direcciones;
             this.configurarUbicacionInicial();
+          },
+          error: (error) => {
+            console.error('Error al cargar direcciones:', error);
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al cargar las direcciones de clientes.';
+            setTimeout(() => this.cerrarAlerta(), 5000);
           }
         });
+      },
+      error: (error) => {
+        console.error('Error al cargar clientes:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar la lista de clientes.';
+        setTimeout(() => this.cerrarAlerta(), 5000);
       }
     });
   }
 
   configurarUbicacionInicial(): void {
-      const direccion = this.TodasDirecciones.find((m: any) => m.diCl_Id === this.pedidoEditada.diCl_Id);
+      // Buscar la dirección correspondiente al pedido que estamos editando
+      const direccion = this.TodasDirecciones.find((dir: any) => dir.diCl_Id === this.pedidoEditada.diCl_Id);
+      
       if (direccion) {
+        // Si encontramos la dirección, seleccionamos su cliente correspondiente
         this.selectedCliente = direccion.clie_Id;
-        this.selectedDireccion = direccion.diCl_Id;
-        this.Direcciones = this.TodasDirecciones.filter((m: any) => m.clie_Id === this.selectedCliente);
+        
+        // Filtramos las direcciones para mostrar solo las del cliente seleccionado
+        this.Direcciones = this.TodasDirecciones.filter((dir: any) => dir.clie_Id === this.selectedCliente);
+        
+        console.log('Ubicación inicial configurada - Cliente ID:', this.selectedCliente, 
+                    'Dirección ID:', this.pedidoEditada.diCl_Id, 
+                    'Direcciones disponibles:', this.Direcciones.length);
+      } else {
+        // Si no hay dirección seleccionada, inicializamos con valores vacíos
+        this.selectedCliente = 0;
+        this.Direcciones = [];
+        console.log('No se encontró la dirección con ID:', this.pedidoEditada.diCl_Id);
       }
     }
 
     cargarMunicipios(codigoDepa: number): void {
-    this.Direcciones = this.TodasDirecciones.filter((m: any) => m.clie_Id === codigoDepa);
-    this.selectedDireccion = 0;
-  }
+      // Filtrar las direcciones por el cliente seleccionado
+      this.Direcciones = this.TodasDirecciones.filter((dir: any) => dir.clie_Id === codigoDepa);
+      
+      // Resetear la dirección seleccionada
+      this.pedidoEditada.diCl_Id = 0;
+      this.selectedDireccion = 0;
+      
+      console.log('Direcciones filtradas para cliente ID', codigoDepa, ':', this.Direcciones);
+    }
 
 
 }
