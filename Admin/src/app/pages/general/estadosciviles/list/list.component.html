@@ -25,7 +25,7 @@
         </div>
         
         <!-- Collapse para el formulario de creación -->
-<div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
+<div *ngIf="showCreateForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarEstadoCivil($event)"></app-create>
@@ -34,7 +34,7 @@
 </div>
 
         <!-- Collapse para el formulario de edición -->
-<div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
+<div *ngIf="showEditForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
@@ -47,7 +47,7 @@
 </div>
 
         <!-- Collapse para el formulario de detalles -->
-<div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+<div *ngIf="showDetailsForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
