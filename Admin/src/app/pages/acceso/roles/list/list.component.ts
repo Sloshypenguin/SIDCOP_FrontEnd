@@ -215,7 +215,7 @@ export class ListComponent implements OnInit {
     if (!this.rolAEliminar) return;
         
     this.mostrarOverlayCarga = true;
-    this.http.put(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
