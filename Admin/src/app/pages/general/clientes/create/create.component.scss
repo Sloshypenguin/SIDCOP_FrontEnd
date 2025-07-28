@@ -289,3 +289,21 @@
   justify-content: flex-end;
   flex: 1;
 }
+
+
+.dropzone {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.uploaded-img-wrapper img {
+  object-fit: cover;
+}

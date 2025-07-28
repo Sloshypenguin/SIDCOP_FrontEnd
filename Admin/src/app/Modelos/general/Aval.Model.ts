@@ -11,7 +11,7 @@ export class Aval{
     aval_Observaciones: string = '';
     aval_DireccionExacta: string = '';
     colo_Id: number = 0;
-    aval_FechaNacimiento: Date = new Date();
+    aval_FechaNacimiento?: Date | null;
     esCv_Id: number = 0;
     usua_Creacion: number = 0;
     usuarioCreacion: string = '';

@@ -10,7 +10,7 @@ import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component'
 import { Aval } from 'src/app/Modelos/general/Aval.Model';
 
 import { NgModule } from '@angular/core';
-import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente.Model';
 import { getUserId } from 'src/app/core/utils/user-utils';
 
@@ -31,42 +31,55 @@ export class CreateComponent {
   entrando = true;
 
 
-  dropzoneConfig = {
-    url: '/api/upload',
-    maxFilesize: 5,
-    acceptedFiles: 'image/*',
+  public dropzoneConfig: DropzoneConfigInterface = {
+    url: 'https://httpbin.org/post',
+    clickable: true,
     addRemoveLinks: true,
-    dictDefaultMessage: 'Selecciona una imagen para subir.'
+    previewsContainer: false,
+    paramName: 'file',
+    maxFilesize: 50,
+    acceptedFiles: 'image/*',
   };
 
-  // Propiedad para almacenar archivos subidos
   uploadedFiles: any[] = [];
 
-  // Método para manejar la selección de archivos
   onFileSelected(event: any): void {
     const files = event.target.files;
     if (files && files.length > 0) {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.uploadedFiles.push({
-            name: file.name,
-            size: file.size,
-            dataURL: e.target.result
-          });
-        };
-        reader.readAsDataURL(file);
+        this.uploadFileToCloudinary(file);
       }
     }
   }
 
+  uploadFileToCloudinary(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'subidas_usuarios');
+    formData.append('folder', 'subidas_usuarios');
+
+    this.http
+      .post<any>('https://api.cloudinary.com/v1_1/dbt7mxrwk/upload', formData)
+      .subscribe(
+        (response) => {
+          this.uploadedFiles.push({
+            name: file.name,
+            size: file.size,
+            dataURL: response.secure_url,
+          });
+          console.log(response)
+        },
+        (error) => {
+          console.error('Error al subir a Cloudinary:', error);
+        }
+      );
+  }
+
   removeFile(file: any): void {
-    if (this.uploadedFiles) {
-      const index = this.uploadedFiles.indexOf(file);
-      if (index > -1) {
-        this.uploadedFiles.splice(index, 1);
-      }
+    const index = this.uploadedFiles.indexOf(file);
+    if (index > -1) {
+      this.uploadedFiles.splice(index, 1);
     }
   }
 
@@ -126,7 +139,7 @@ export class CreateComponent {
   selectedColoniaAval: string = '';
 
   tabuladores(no:number){
-    if(no ==1){
+    if(no == 1){
       this.mostrarErrores=true
       if(this.cliente.clie_Codigo.trim() && this.cliente.clie_Nacionalidad.trim() &&
         this.cliente.clie_RTN.trim() && this.cliente.clie_Nombres.trim() &&
@@ -134,10 +147,6 @@ export class CreateComponent {
         this.cliente.clie_FechaNacimiento && this.cliente.tiVi_Id &&
         this.cliente.clie_Telefono.trim())
       {
-        this.mostrarErrores=false;
-        this.activeTab=2;
-      }
-      else{
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
         setTimeout(() => {
@@ -145,8 +154,39 @@ export class CreateComponent {
           this.mensajeWarning = '';
         }, 3000);
       }
+      else{
+        this.mostrarErrores=false;
+        this.activeTab=2;
+      }
+    }
+
+    if(no == 2){
+      this.mostrarErrores=true
+      if(this.cliente.clie_NombreNegocio.trim() && this.cliente.ruta_Id &&
+        this.cliente.cana_Id && this.direccionPorCliente.diCl_Observaciones.trim() &&
+        this.selectedDepa.trim() && this.nuevaColonia.muni_Codigo.trim() && this.aval.colo_Id &&
+        this.direccionPorCliente.diCl_DireccionExacta)
+      {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      else{
+        this.mostrarErrores=false;
+        this.activeTab=3;
+      }
+    }
+
+    if(no == 3){
+      this.mostrarErrores=false;
+      this.activeTab=4;
     }
   }
+
+  
 
   trackByIndex(index: number) { return index; }
 
@@ -346,6 +386,7 @@ export class CreateComponent {
     usuaM_Nombre: ''
   };
 
+  direccionesPorCliente: DireccionPorCliente[] = [];
   direccionPorCliente: DireccionPorCliente = {
     diCl_Id: 0,
     clie_Id: 0,
@@ -359,6 +400,7 @@ export class CreateComponent {
     usua_Modificacion: 0,
     diCl_FechaModificacion: new Date(),
   };
+  direccionEditandoIndex: number | null = null;
 
   aval: Aval = {
     aval_Id: 0,
@@ -372,7 +414,7 @@ export class CreateComponent {
     aval_Observaciones: '',
     aval_DireccionExacta: '',
     colo_Id: 0,
-    aval_FechaNacimiento: new Date(),
+    aval_FechaNacimiento: null,
     esCv_Id: 0,
     aval_Sexo: 'M',
     usua_Creacion: getUserId(),
@@ -523,24 +565,56 @@ export class CreateComponent {
     }
   }
 
+  agregarDireccion() {
+    if (this.direccionEditandoIndex !== null) {
+      this.direccionesPorCliente[this.direccionEditandoIndex] = { ...this.direccionPorCliente };
+      this.direccionEditandoIndex = null;
+    } else {
+      this.direccionesPorCliente.push({ ...this.direccionPorCliente });
+    }
+    this.limpiarDireccionModal();
+    this.cerrarMapa();
+  }
+
+  editarDireccion(index: number) {
+    this.direccionEditandoIndex = index;
+    this.direccionPorCliente = { ...this.direccionesPorCliente[index] };
+    this.mostrarMapa = true;
+    setTimeout(() => {
+      this.mapaSelectorComponent.inicializarMapa();
+    }, 300);
+  }
+
+  eliminarDireccion(index: number) {
+    this.direccionesPorCliente.splice(index, 1);
+  }
+
+  limpiarDireccionModal() {
+    this.direccionPorCliente = {
+      diCl_Id: 0,
+      clie_Id: 0,
+      colo_Id: 0,
+      diCl_DireccionExacta: '',
+      diCl_Observaciones: '',
+      diCl_Latitud: 0,
+      diCl_Longitud: 0,
+      usua_Creacion: 0,
+      diCl_FechaCreacion: new Date(),
+      usua_Modificacion: 0,
+      diCl_FechaModificacion: new Date(),
+    };
+  }
+
   guardarDireccionesPorCliente(clie_Id: number): void {
-    this.mostrarErrores = true;
-    if (this.entrando) {
-      this.mostrarAlertaWarning = false;
-      this.mostrarAlertaError = false;
+    for (const direccion of this.direccionesPorCliente) {
       const direccionPorClienteGuardar = {
-        diCl_Id: 0,
+        ...direccion,
         clie_Id: clie_Id,
-        colo_Id: this.direccionPorCliente.colo_Id,
-        diCl_DireccionExacta: this.direccionPorCliente.diCl_DireccionExacta.trim(),
-        diCl_Observaciones: this.direccionPorCliente.diCl_Observaciones.trim(),
-        diCl_Latitud: this.direccionPorCliente.diCl_Latitud,
-        diCl_Longitud: this.direccionPorCliente.diCl_Longitud,
         usua_Creacion: environment.usua_Id,
         diCl_FechaCreacion: new Date(),
         usua_Modificacion: environment.usua_Id,
         diCl_FechaModificacion: new Date()
-      } 
+      };
       this.http.post<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Insertar`, direccionPorClienteGuardar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -560,14 +634,6 @@ export class CreateComponent {
           }, 3000);
         }
       });
-    } 
-    else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = '2Por favor, complete todos los campos obligatorios.';
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 3000);
     }
   }
 
