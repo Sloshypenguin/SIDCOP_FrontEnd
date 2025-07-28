@@ -175,6 +175,12 @@ export class ListComponent {
   mostrarConfirmacionRestablecer = false;
   usuarioRestablecer: Usuario | null = null;
 
+  // Propiedades para mostrar contraseña
+  mostrarModalContrasena = false;
+  usuarioMostrarClave: Usuario | null = null;
+  claveSeguridad: string = '';
+  contrasenaObtenida: string | null = null;
+
 
   constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private route: ActivatedRoute){
     this.cargarDatos(true);
@@ -196,6 +202,83 @@ export class ListComponent {
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
     this.usuarioDetalles = null;
+  }
+
+  // Métodos para mostrar contraseña
+  mostrarContrasena(usuario: Usuario): void {
+    this.usuarioMostrarClave = { ...usuario };
+    this.mostrarModalContrasena = true;
+    this.claveSeguridad = '';
+    this.contrasenaObtenida = null;
+    this.activeActionRow = null;
+  }
+
+  cancelarMostrarContrasena(): void {
+    this.mostrarModalContrasena = false;
+    this.usuarioMostrarClave = null;
+    this.claveSeguridad = '';
+    this.contrasenaObtenida = null;
+  }
+
+  obtenerContrasena(): void {
+    if (!this.claveSeguridad || !this.usuarioMostrarClave) {
+      this.mensajeWarning = 'Debe ingresar la clave de seguridad';
+      this.mostrarAlertaWarning = true;
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+      }, 3000);
+      return;
+    }
+
+    this.mostrarOverlayCarga = true;
+
+    const apiUrl = `${environment.apiBaseUrl}/Usuarios/MostrarContrasena?usuaId=${this.usuarioMostrarClave.usua_Id}&claveSeguridad=${encodeURIComponent(this.claveSeguridad)}`;
+    
+    this.http.get(apiUrl, {
+      headers: {
+        'X-Api-Key': environment.apiKey
+      }
+    }).subscribe({
+      next: (response: any) => {
+        this.mostrarOverlayCarga = false;
+        
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Contraseña obtenida correctamente
+            this.contrasenaObtenida = response.data.data;
+          } else if (response.data.message_Status === 'Usuario no encontrado o sin contraseña.') {
+            // Usuario no encontrado o sin contraseña
+            this.mensajeWarning = 'Usuario no encontrado o sin contraseña';
+            this.mostrarAlertaWarning = true;
+            setTimeout(() => {
+              this.mostrarAlertaWarning = false;
+            }, 3000);
+          } else {
+            // Contraseña de seguridad incorrecta u otro error
+            this.mensajeError = response.data.message_Status || 'Contraseña de seguridad incorrecta';
+            this.mostrarAlertaError = true;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+            }, 3000);
+          }
+        } else {
+          this.mensajeError = 'Error al obtener la contraseña';
+          this.mostrarAlertaError = true;
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+          }, 3000);
+        }
+      },
+      error: (error) => {
+        this.mostrarOverlayCarga = false;
+        this.mensajeError = 'Error al conectar con el servidor';
+        this.mostrarAlertaError = true;
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+        }, 3000);
+        console.error('Error al obtener la contraseña:', error);
+      }
+    });
   }
 
   guardarUsuario(usuario: Usuario): void {
@@ -235,8 +318,8 @@ export class ListComponent {
   cancelarRestablecer(): void {
     this.mostrarConfirmacionRestablecer = false;
     this.usuarioRestablecer = null;
-    this.confirmaciondePassword = '';
     this.usuario.usua_Clave = '';
+    this.confirmaciondePassword = '';
     this.mostrarErrores = false;
   }
 
