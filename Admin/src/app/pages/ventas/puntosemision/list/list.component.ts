@@ -14,6 +14,14 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -30,7 +38,40 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   // bread crumb items
@@ -106,6 +147,7 @@ export class ListComponent implements OnInit {
   PEDetalle: PuntoEmision | null = null;
   
   // Propiedades para alertas
+      mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -124,7 +166,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
     public floatingMenuService: FloatingMenuService
   )
     {
-    this.cargardatos();
+    this.cargardatos(true);
   }   
 
 
@@ -149,17 +191,33 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
   }
 
   guardarPE(puntodeemision: PuntoEmision): void {
-    console.log('Estado civil guardado exitosamente desde create component:', puntodeemision);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Punto de Emision guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarPE(puntodeemision: PuntoEmision): void {
     console.log('Estado civil actualizado exitosamente desde edit component:', puntodeemision);
     // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Punto de Emision actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(puntodeemision: PuntoEmision): void {
@@ -194,7 +252,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
         estado: '',
         secuencia: 0,
       };
-    
+     this.mostrarOverlayCarga = true;
     this.http.put(`${environment.apiBaseUrl}/PuntoEmision/Eliminar`, PEeliminado, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -203,7 +261,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
     }).subscribe({
       next: (response: any) => {
         console.log('Respuesta del servidor:', response);
-        
+        setTimeout(() => {
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
@@ -220,7 +278,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -263,6 +321,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
           // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
+         }, 1000);
       },
     });
   }
@@ -306,12 +365,14 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
   }
 
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+     this.mostrarOverlayCarga = state;
     this.http.get<PuntoEmision[]>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
-        const tienePermisoListar = this.accionPermitida('listar');
+    }).subscribe(data => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+         const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();
 
         const datosFiltrados = tienePermisoListar
@@ -319,11 +380,8 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
         this.table.setData(datosFiltrados);
-      },
-      error: error => {
-        console.error('Error al cargar roles:', error);
-        this.table.setData([]);
-      }
+        this.table.setData(data);
+      },500);
     });
   }
 }

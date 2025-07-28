@@ -185,10 +185,6 @@ set fechaInicioFormato(value: string) {
 }
 
 
-
-
-
-
  ngOnChanges(changes: SimpleChanges): void {
   if (changes['PedidoData'] && changes['PedidoData'].currentValue) {
     this.pedido = { ...changes['PedidoData'].currentValue };
