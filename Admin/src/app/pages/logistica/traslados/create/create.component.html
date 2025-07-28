@@ -78,12 +78,19 @@
                     class="form-select"
                     [class.is-invalid]="(!traslado.tras_Origen || traslado.tras_Origen == 0) && mostrarErrores"
                     [(ngModel)]="traslado.tras_Origen"
+                    (change)="onOrigenChange()"
                     required>
                         <option value="" disabled selected>Seleccione origen</option>
                         <option *ngFor="let origen of origenes" [value]="origen.sucu_Id">
                             {{ origen.sucu_Descripcion }}
                         </option>
                 </select>
+                <!-- Indicador de carga de inventario -->
+                <div *ngIf="cargandoInventario" class="ms-2">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Cargando inventario...</span>
+                  </div>
+                </div>
               </div>
               <div class="text-danger mt-1" *ngIf="(!traslado.tras_Origen || traslado.tras_Origen == 0) && mostrarErrores">
                 <small>El campo origen es requerido</small>
@@ -159,8 +166,14 @@
               Seleccionar Productos
             </h6>
             
+            <!-- Mensaje informativo -->
+            <div class="alert alert-info d-flex align-items-center mb-3" *ngIf="!traslado.tras_Origen || traslado.tras_Origen === 0">
+              <i class="ri-information-fill me-2"></i>
+              <span>Seleccione una sucursal de origen para ver los productos disponibles</span>
+            </div>
+            
             <!-- Buscador de productos -->
-            <div class="row mb-3">
+            <div class="row mb-3" *ngIf="traslado.tras_Origen && traslado.tras_Origen > 0">
               <div class="col-md-6">
                 <div class="search-container">
                   <div class="input-group">
@@ -197,20 +210,31 @@
             </div>
             
             <!-- Contenedor de tarjetas de productos -->
-            <div class="productos-container">
+            <div class="productos-container" *ngIf="traslado.tras_Origen && traslado.tras_Origen > 0">
               <div class="row g-3">
                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" *ngFor="let producto of getProductosPaginados(); let i = index">
-                  <div class="card producto-card-premium h-100">
+                  <div class="card producto-card-premium h-100" 
+                       [class.sin-stock]="!producto.tieneStock"
+                       [class.selected]="producto.cantidad > 0">
                     <!-- Header de la tarjeta con indicador de selección -->
                     <div class="card-header-premium" [class.selected]="producto.cantidad > 0">
                       <div class="selection-indicator" *ngIf="producto.cantidad > 0">
                         <i class="ri-check-line"></i>
                       </div>
+                      <!-- Badge de stock -->
+                      <div class="stock-badge" [class.sin-stock]="!producto.tieneStock">
+                        <span *ngIf="producto.tieneStock" class="text-success">
+                          <i class="ri-check-line me-1"></i>{{ producto.stockDisponible }} disponibles
+                        </span>
+                        <span *ngIf="!producto.tieneStock" class="text-danger">
+                          <i class="ri-close-line me-1"></i>Sin stock
+                        </span>
+                      </div>
                     </div>
                     
                     <div class="card-body-premium p-3">
                       <!-- Imagen del producto -->
-                      <div class="producto-imagen-premium mb-3">
+                      <div class="producto-imagen-premium mb-3" [class.disabled]="!producto.tieneStock">
                         <img 
                           [src]="producto.prod_Imagen || 'assets/images/default-product.png'" 
                           [alt]="producto.prod_Descripcion"
@@ -221,10 +245,17 @@
                             <i class="ri-check-double-line"></i>
                           </div>
                         </div>
+                        <!-- Overlay para productos sin stock -->
+                        <div class="sin-stock-overlay" *ngIf="!producto.tieneStock">
+                          <div class="sin-stock-content">
+                            <i class="ri-forbid-line"></i>
+                            <span>Sin Stock</span>
+                          </div>
+                        </div>
                       </div>
                       
                       <!-- Nombre del producto -->
-                      <h6 class="producto-titulo-premium mb-3">
+                      <h6 class="producto-titulo-premium mb-3" [class.text-muted]="!producto.tieneStock">
                         {{ producto.prod_Descripcion }}
                       </h6>
                       
@@ -236,7 +267,7 @@
                             class="btn-cantidad-premium btn-minus" 
                             type="button"
                             (click)="disminuirCantidad(getProductoIndex(producto.prod_Id))"
-                            [disabled]="producto.cantidad <= 0">
+                            [disabled]="producto.cantidad <= 0 || !producto.tieneStock">
                             <i class="ri-subtract-line"></i>
                           </button>
                           <input 
@@ -245,14 +276,23 @@
                             [(ngModel)]="producto.cantidad"
                             (change)="validarCantidad(getProductoIndex(producto.prod_Id))"
                             min="0"
-                            max="999"
+                            [max]="producto.stockDisponible"
+                            [disabled]="!producto.tieneStock"
                             readonly>
                           <button 
                             class="btn-cantidad-premium btn-plus" 
                             type="button"
-                            (click)="aumentarCantidad(getProductoIndex(producto.prod_Id))">
+                            (click)="aumentarCantidad(getProductoIndex(producto.prod_Id))"
+                            [disabled]="!producto.tieneStock || producto.cantidad >= producto.stockDisponible">
                             <i class="ri-add-line"></i>
                           </button>
+                        </div>
+                        <!-- Información de límite de stock -->
+                        <div class="stock-info mt-2" *ngIf="producto.tieneStock && producto.cantidad > 0">
+                          <small class="text-muted">
+                            <i class="ri-information-line me-1"></i>
+                            {{ producto.cantidad }} de {{ producto.stockDisponible }} disponibles
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -280,7 +320,7 @@
             </div>
             
             <!-- Paginación -->
-            <div class="d-flex justify-content-between align-items-center mt-4" *ngIf="getProductosFiltrados().length > productosPorPagina">
+            <div class="d-flex justify-content-between align-items-center mt-4" *ngIf="getProductosFiltrados().length > productosPorPagina && traslado.tras_Origen && traslado.tras_Origen > 0">
               <div class="pagination-info">
                 <span class="text-muted">
                   Mostrando {{ getInicioRegistro() }} - {{ getFinRegistro() }} de {{ getProductosFiltrados().length }} productos
@@ -392,6 +432,7 @@
                         <th>Producto</th>
                         <th class="text-center">Imagen</th>
                         <th class="text-center">Cantidad</th>
+                        <th class="text-center">Stock Disponible</th>
                         <th>Observaciones</th>
                       </tr>
                     </thead>
@@ -409,6 +450,9 @@
                         </td>
                         <td class="text-center">
                           <span class="badge cantidad-badge-resumen">{{ producto.cantidad }}</span>
+                        </td>
+                        <td class="text-center">
+                          <span class="badge bg-info">{{ producto.stockDisponible }}</span>
                         </td>
                         <td>
                           <input 
@@ -485,3 +529,76 @@
     </div>
   </div>
 </div>
+
+<style>
+/* Estilos adicionales para el manejo de inventario */
+.producto-card-premium.sin-stock {
+  opacity: 0.6;
+  border-color: #dc3545;
+}
+
+.stock-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stock-badge.sin-stock {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.producto-imagen-premium.disabled {
+  position: relative;
+}
+
+.sin-stock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(220, 53, 69, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.sin-stock-content {
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+.sin-stock-content i {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.stock-info {
+  text-align: center;
+}
+
+.btn-cantidad-premium:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cantidad-input-premium:disabled {
+  background-color: #f8f9fa;
+  opacity: 0.8;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+</style>
