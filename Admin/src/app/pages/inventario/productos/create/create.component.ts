@@ -335,6 +335,7 @@ export class CreateComponent {
             },
             error: (error) => {
               console.error('Error HTTP detectado:', error);
+              console.error('Error completo:', error);
               if (error.status === 400) {
                 console.error('400 Bad Request:', error.error); // posible detalle del error
               }

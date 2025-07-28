@@ -14,6 +14,8 @@ import { getUserId } from 'src/app/core/utils/user-utils';
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   @Input() sucursalData: Sucursales | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Sucursales>();
@@ -191,6 +193,7 @@ export class EditComponent implements OnChanges {
         sucu_FechaModificacion: new Date().toISOString()
       };
 
+      this.mostrarOverlayCarga = true;
       this.http.put<any>(`${environment.apiBaseUrl}/Sucursales/Actualizar`, sucursalActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -199,6 +202,7 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
+          this.mostrarOverlayCarga = false;
           if (response?.data?.code_Status === 1) {
             this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" actualizada exitosamente`;
             this.mostrarAlertaExito = true;
@@ -221,6 +225,7 @@ export class EditComponent implements OnChanges {
           }
         },
         error: (error) => {
+          this.mostrarOverlayCarga = false;
           this.mostrarAlertaError = true;
           this.mensajeError = error?.error?.data?.message_Status || 'Error al actualizar la sucursal. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;

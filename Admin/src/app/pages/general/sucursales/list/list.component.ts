@@ -34,6 +34,8 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   breadCrumbItems!: Array<{}>;
   accionesDisponibles: string[] = [];
 
@@ -245,10 +247,25 @@ export class ListComponent implements OnInit {
   }
 
   private cargarDatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+        this.mostrarOverlayCarga = false;
+      },
+      error: error => {
+        this.mostrarOverlayCarga = false;
+        this.table.setData([]);
+      }
     });
   }
 }

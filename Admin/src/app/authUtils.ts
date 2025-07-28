@@ -17,11 +17,9 @@ class FirebaseAuthBackend {
                     }
                 });
             } catch (error) {
-                console.warn('Error al inicializar Firebase:', error);
                 // No hacemos nada más, simplemente evitamos que la app falle
             }
         } else {
-            console.warn('No se inicializó Firebase: configuración incompleta o apiKey vacía');
         }
     }
 
