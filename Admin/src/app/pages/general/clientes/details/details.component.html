@@ -23,6 +23,11 @@
     
     <!-- Header con descripción -->
     <div class="details-header">
+        <!-- <div class="details-id">
+            <div class="details-id-label">Imagen Negocio</div>
+            <div class="details-id-value">{{ clienteDetalle.clie_ImagenDelNegocio }}</div>
+        </div> -->
+
         <div class="details-title">Detalles de Cliente</div>
             <div class="details-id-row">
                 <div class="details-id">
@@ -83,6 +88,7 @@
        </div>
      
     <!-- SEPARACIÓN -->
+    <div class="details-title text-center">Detalles de su(s) Direcciones</div>
     <div class="details-id-row">
                 <div class="details-id" *ngFor="let direccion of direcciones">
                     <div class="details-id-label">Colonia</div>

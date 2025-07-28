@@ -782,7 +782,7 @@
                 border: (!selectedDepaAval.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
                 backgroundColor: (!selectedDepaAval.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
                 padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
-              </i>
+                </i>
                 <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepaAval"
                   (change)="onDepartamentoAvalChange()" 
                   [class.is-invalid]="!selectedDepaAval.trim() && mostrarErrores" required>
@@ -1007,6 +1007,11 @@
               <label for="clienteDireccionExacta" class="form-label">Latitud</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
+                <i class="ri-pushpin-2-line" [ngStyle]="{
+                  border: (!direccionPorCliente.diCl_Latitud && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!direccionPorCliente.diCl_Latitud && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
                 <input type="text" class="form-control" id="clienteDireccionExacta"
                   [(ngModel)]="direccionPorCliente.diCl_Latitud" [class.is-invalid]="
                     !direccionPorCliente.diCl_Latitud &&
@@ -1027,6 +1032,11 @@
               <label for="clienteDireccionExacta" class="form-label">Longitud</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
+                <i class="ri-pushpin-2-line" [ngStyle]="{
+                  border: (!direccionPorCliente.diCl_Longitud && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!direccionPorCliente.diCl_Longitud && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
                 <input type="text" class="form-control" id="clienteDireccionExacta"
                   [(ngModel)]="direccionPorCliente.diCl_Longitud" [class.is-invalid]="
                     !direccionPorCliente.diCl_Longitud &&
@@ -1047,11 +1057,22 @@
             <div class="mb-3">
               <label for="clienteDescripcionDeDireccion" class="form-label">Descripción</label>
               <div class="d-flex align-items-center">
+                <i class="ri-attachment-line" [ngStyle]="{
+                  border: (!direccionPorCliente.diCl_Observaciones.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!direccionPorCliente.diCl_Observaciones.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
                 <input type="text" class="form-control" id="clienteDescripcionDeDireccion"
                   [(ngModel)]="direccionPorCliente.diCl_Observaciones" [class.is-invalid]="
                     !direccionPorCliente.diCl_Observaciones.trim() &&
                     mostrarErrores
                   " placeholder="Ingrese la descripcion" required />
+              </div>
+              <div class="text-danger" *ngIf="
+                  !direccionPorCliente.diCl_Observaciones.trim() &&
+                  mostrarErrores
+                ">
+                <small>El Descripción es requerida</small>
               </div>
             </div>
           </div>
@@ -1061,8 +1082,14 @@
               <label for="depa_Codigo" class="form-label">Departamento</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
+                <i class="ri-road-map-line" [ngStyle]="{
+                  border: (!selectedDepa.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!selectedDepa.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
                 <select id="depa_Codigo" name="depa_Codigo" class="form-select" [(ngModel)]="selectedDepa"
-                  (change)="onDepartamentoChange()" required>
+                  (change)="onDepartamentoChange()" 
+                  [class.is-invalid]="!selectedDepa.trim() && mostrarErrores" required>
                   <option value="" disabled selected>
                     Seleccione un Departamento
                   </option>
@@ -1085,8 +1112,14 @@
               <label for="muni_Codigo" class="form-label">Municipio</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
+                <i class="ri-map-pin-2-line" [ngStyle]="{
+                  border: (!nuevaColonia.muni_Codigo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!nuevaColonia.muni_Codigo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
                 <select id="muni_Codigo" name="muni_Codigo" class="form-select" [(ngModel)]="nuevaColonia.muni_Codigo"
-                  (change)="cargarColonias(nuevaColonia.muni_Codigo)" required>
+                  (change)="cargarColonias(nuevaColonia.muni_Codigo)" 
+                  [class.is-invalid]="!nuevaColonia.muni_Codigo.trim() && mostrarErrores" required>
                   <option value="" disabled selected>
                     Seleccione un Municipio
                   </option>
@@ -1098,7 +1131,7 @@
                   Cargando Municipios...
                 </div>
               </div>
-              <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
+              <div class="text-danger mt-1" *ngIf="!(nuevaColonia.muni_Codigo ?? '').trim() && mostrarErrores">
                 <small>El campo Municipio es requerido</small>
               </div>
             </div>
@@ -1109,7 +1142,13 @@
               <label for="colo_Id" class="form-label">Colonia</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
-                <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccionPorCliente.colo_Id" required>
+                <i class="ri-community-line" [ngStyle]="{
+                  border: (!direccionPorCliente.colo_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!direccionPorCliente.colo_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
+                <select id="colo_Id" name="colo_Id" class="form-select" [(ngModel)]="direccionPorCliente.colo_Id" 
+                  [class.is-invalid]="!direccionPorCliente.colo_Id && mostrarErrores" required>
                   <option value="0" disabled selected>
                     Seleccione una Colonia
                   </option>
@@ -1121,7 +1160,7 @@
                   Cargando Colonias...
                 </div>
               </div>
-              <div class="text-danger mt-1" *ngIf="!(selectedColonia ?? '').trim() && mostrarErrores">
+              <div class="text-danger mt-1" *ngIf="!direccionPorCliente.colo_Id && mostrarErrores">
                 <small>El campo Colonias es requerido</small>
               </div>
             </div>
@@ -1133,6 +1172,11 @@
               <label for="clienteDireccionExacta" class="form-label">Dirección Exacta</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
               <div class="d-flex align-items-center">
+                <i class="ri-direction-line" [ngStyle]="{
+                  border: (!direccionPorCliente.diCl_DireccionExacta.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!direccionPorCliente.diCl_DireccionExacta.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                </i>
                 <input type="text" class="form-control" id="clienteDireccionExacta"
                   [(ngModel)]="direccionPorCliente.diCl_DireccionExacta" [class.is-invalid]="
                     !direccionPorCliente.diCl_DireccionExacta.trim() &&
