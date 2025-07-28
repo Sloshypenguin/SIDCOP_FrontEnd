@@ -13,6 +13,7 @@ import { Proveedor } from 'src/app/Modelos/general/Proveedor.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 import {
   trigger,
   state,
@@ -103,7 +104,8 @@ export class ListComponent implements OnInit {
     public table: ReactiveTableService<Proveedor>, 
     private http: HttpClient, 
     private router: Router, 
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {
     this.cargardatos(true);
   }
@@ -148,8 +150,8 @@ export class ListComponent implements OnInit {
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
   }
 
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
+  onActionMenuClick(event: MouseEvent, data: Proveedor) {
+    this.floatingMenuService.open(event, data);
   }
 
   cerrarAlerta(): void {
