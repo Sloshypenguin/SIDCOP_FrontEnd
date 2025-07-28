@@ -231,7 +231,14 @@ export class ListComponent implements OnInit {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.mostrarOverlayCarga = false;
-      this.table.setData(data);
+      const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
     });
   }
 
