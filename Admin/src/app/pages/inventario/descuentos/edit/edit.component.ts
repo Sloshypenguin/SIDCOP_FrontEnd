@@ -33,6 +33,7 @@ seccionVisible: string | null = null;
   clientesAgrupados: { canal: string, clientes: any[] }[] = [];
 clientesSeleccionados: number[] = [];
 descuentosExistentes: any[] = [];
+activeTab: number = 1;
  @ViewChild('cdkStepper') cdkStepper!: CdkStepper;
 
     tabActiva: string = 'productos';
@@ -641,7 +642,7 @@ tieneAyudante: boolean = false;
   }
 
   validarPasoActual(): boolean {
-  switch (this.cdkStepper.selectedIndex) {
+  switch (this.activeTab) {
     case 0: // Información general
       return this.validarPasoInformacionGeneral();
     case 1: // Aplica para
@@ -677,7 +678,7 @@ irAlSiguientePaso() {
 
   if (this.validarPasoActual()) {
     this.mostrarErrores = false;
-    this.cdkStepper.next();
+    this.activeTab ++;
   } else {
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
   }
