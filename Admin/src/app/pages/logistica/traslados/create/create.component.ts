@@ -37,6 +37,12 @@ export class CreateComponent implements OnInit {
   destinos: any[] = [];
   productos: any[] = [];
 
+  // ========== NUEVAS PROPIEDADES PARA BÚSQUEDA Y PAGINACIÓN ==========
+  busquedaProducto = '';
+  productosFiltrados: any[] = [];
+  paginaActual = 1;
+  productosPorPagina = 12;
+
   constructor(private http: HttpClient) {
     this.inicializar();
   }
@@ -81,9 +87,101 @@ export class CreateComponent implements OnInit {
           cantidad: 0,
           observaciones: ''
         }));
+        this.aplicarFiltros(); // Inicializar filtros
       },
       error: () => this.mostrarError('Error al cargar productos')
     });
+  }
+
+  // ========== MÉTODOS PARA BÚSQUEDA Y PAGINACIÓN ==========
+
+  buscarProductos(): void {
+    this.paginaActual = 1; // Resetear a primera página
+    this.aplicarFiltros();
+  }
+
+  limpiarBusqueda(): void {
+    this.busquedaProducto = '';
+    this.paginaActual = 1;
+    this.aplicarFiltros();
+  }
+
+  private aplicarFiltros(): void {
+    if (!this.busquedaProducto.trim()) {
+      this.productosFiltrados = [...this.productos];
+    } else {
+      const termino = this.busquedaProducto.toLowerCase().trim();
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.prod_Descripcion.toLowerCase().includes(termino)
+      );
+    }
+  }
+
+  getProductosFiltrados(): any[] {
+    return this.productosFiltrados;
+  }
+
+  getProductosPaginados(): any[] {
+    const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+    const fin = inicio + this.productosPorPagina;
+    return this.productosFiltrados.slice(inicio, fin);
+  }
+
+  getTotalPaginas(): number {
+    return Math.ceil(this.productosFiltrados.length / this.productosPorPagina);
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.getTotalPaginas()) {
+      this.paginaActual = pagina;
+    }
+  }
+
+  getPaginasVisibles(): number[] {
+    const totalPaginas = this.getTotalPaginas();
+    const paginaActual = this.paginaActual;
+    const paginas: number[] = [];
+
+    if (totalPaginas <= 5) {
+      // Si hay 5 o menos páginas, mostrar todas
+      for (let i = 1; i <= totalPaginas; i++) {
+        paginas.push(i);
+      }
+    } else {
+      // Lógica para mostrar páginas alrededor de la actual
+      if (paginaActual <= 3) {
+        // Mostrar primeras 5 páginas
+        for (let i = 1; i <= 5; i++) {
+          paginas.push(i);
+        }
+      } else if (paginaActual >= totalPaginas - 2) {
+        // Mostrar últimas 5 páginas
+        for (let i = totalPaginas - 4; i <= totalPaginas; i++) {
+          paginas.push(i);
+        }
+      } else {
+        // Mostrar páginas alrededor de la actual
+        for (let i = paginaActual - 2; i <= paginaActual + 2; i++) {
+          paginas.push(i);
+        }
+      }
+    }
+
+    return paginas;
+  }
+
+  getInicioRegistro(): number {
+    return (this.paginaActual - 1) * this.productosPorPagina + 1;
+  }
+
+  getFinRegistro(): number {
+    const fin = this.paginaActual * this.productosPorPagina;
+    return Math.min(fin, this.productosFiltrados.length);
+  }
+
+  // Método auxiliar para obtener el índice real del producto en la lista original
+  getProductoIndex(prodId: number): number {
+    return this.productos.findIndex(p => p.prod_Id === prodId);
   }
 
   // ========== MÉTODOS DE NAVEGACIÓN DE TABS ==========
@@ -155,24 +253,28 @@ export class CreateComponent implements OnInit {
     return this.productos.filter(producto => producto.cantidad > 0);
   }
 
-  // ========== MÉTODOS DE CANTIDAD (existentes) ==========
+  // ========== MÉTODOS DE CANTIDAD ==========
   
   aumentarCantidad(index: number): void {
-    this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
-    this.actualizarEstadoNavegacion();
+    if (index >= 0 && index < this.productos.length) {
+      this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
+      this.actualizarEstadoNavegacion();
+    }
   }
   
   disminuirCantidad(index: number): void {
-    if (this.productos[index].cantidad > 0) {
+    if (index >= 0 && index < this.productos.length && this.productos[index].cantidad > 0) {
       this.productos[index].cantidad--;
       this.actualizarEstadoNavegacion();
     }
   }
   
   validarCantidad(index: number): void {
-    const cantidad = this.productos[index].cantidad;
-    this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
-    this.actualizarEstadoNavegacion();
+    if (index >= 0 && index < this.productos.length) {
+      const cantidad = this.productos[index].cantidad;
+      this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
+      this.actualizarEstadoNavegacion();
+    }
   }
 
   private actualizarEstadoNavegacion(): void {
@@ -187,16 +289,16 @@ export class CreateComponent implements OnInit {
     }
   }
 
-obtenerProductosSeleccionados(): any[] {
-  return this.productos
-    .filter(producto => producto.cantidad > 0)
-    .map(producto => ({
-      prod_Id: producto.prod_Id,
-      prod_Descripcion: producto.prod_Descripcion,
-      cantidad: producto.cantidad,
-      observaciones: producto.observaciones || '' // Ya existe en tu código
-    }));
-}
+  obtenerProductosSeleccionados(): any[] {
+    return this.productos
+      .filter(producto => producto.cantidad > 0)
+      .map(producto => ({
+        prod_Id: producto.prod_Id,
+        prod_Descripcion: producto.prod_Descripcion,
+        cantidad: producto.cantidad,
+        observaciones: producto.observaciones || ''
+      }));
+  }
 
   // ========== MÉTODOS DE ACCIONES PRINCIPALES ==========
 
@@ -224,7 +326,7 @@ obtenerProductosSeleccionados(): any[] {
     this.crearTraslado(productosSeleccionados);
   }
 
-  // ========== MÉTODOS PRIVADOS (existentes con algunas modificaciones) ==========
+  // ========== MÉTODOS PRIVADOS ==========
 
   private limpiarFormulario(): void {
     this.limpiarAlertas();
@@ -235,6 +337,11 @@ obtenerProductosSeleccionados(): any[] {
     // Resetear estado de tabs
     this.tabActivo = 1;
     this.puedeAvanzarAResumen = false;
+    
+    // Resetear búsqueda y paginación
+    this.busquedaProducto = '';
+    this.paginaActual = 1;
+    this.aplicarFiltros();
   }
 
   private limpiarAlertas(): void {
