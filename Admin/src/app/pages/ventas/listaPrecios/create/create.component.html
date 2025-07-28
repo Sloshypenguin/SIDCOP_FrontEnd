@@ -285,13 +285,14 @@
                       <div [collapse]="!canal.open">
                         <div class="card-body">
                           <div class="row">
-                            <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6">
-                              <div class="d-flex align-items-start">
+                            <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6 mb-2">
+                              <div class="d-flex align-items-center">
                                 <input
                                   type="checkbox"
-                                  class="mt-1"
+                                  class="mt-0"
                                   [checked]="isClienteChecked(lista, cliente.clie_Id)"
                                   (change)="onChildCheckboxChange(lista, canal, cliente.clie_Id, $event)"
+                                  style="margin-top: 0.25rem;"
                                 >
                                 <div class="ms-2">
                                   <div>Cliente: {{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</div>
