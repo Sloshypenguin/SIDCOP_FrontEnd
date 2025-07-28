@@ -25,16 +25,34 @@
       <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
-  
+
   <div class="flex-grow-1">
-    <ng-stepper #cdkStepper [linear]="true" (selectionChange)="change($event)" class="step-arrow-nav wizard">
-      <cdk-step [optional]="false" >
-        <ng-template cdkStepLabel class="wizard-nav">
-          <button class="nav-link done" id="steparrow-gen-info-tab" data-bs-toggle="pill" type="button" aria-readonly="true" disabled="true">Informacion General</button>
-        </ng-template>
-        @if (cdkStepper.selectedIndex === 0) {
-            <div class="row">
-            <div class="col-md-6">
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 1" (click)="activeTab = 1" type="button" role="tab">
+          Informacion General
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2" type="button" role="tab">
+          Aplicar para
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3" type="button" role="tab">
+          Clientes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 4" (click)="activeTab = 4" type="button" role="tab">
+          Escalas
+        </button>
+      </li>
+    </ul>
+    
+    <div *ngIf="activeTab === 1">
+      <div class="row mx-lg-4">
+         <div class="col-md-6">
               <label  class="form-label">Descripcion<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
@@ -135,29 +153,34 @@
               
               </div>
             </div>
-          </div>
 
-        }
-        <div class="d-flex align-items-start gap-3 mt-4">
-           <button type="button" class="btn btn-primary gold" (click)="cancelar()">
-            <span class="btn-text">Cancelar</span>
-            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="cancelar()"
+          >
+            <i class="ri-close-circle-line"></i> Cancelar
           </button>
-          <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
-            nexttab" data-nexttab="steparrow-description-info-tab" >
-             <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+          <button style="background: none;border: none;"></button>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
-        </cdk-step>
-        <cdk-step [optional]="false">
-          <ng-template cdkStepLabel>
-            <button class="nav-link" id="steparrow-description-info-tab" type="button" aria-readonly="true" disabled>Aplica para</button>
-          </ng-template>
-        @if (cdkStepper.selectedIndex === 1) {
-             <div class="row">
+      </div>
+    </div>
+    </div>
 
-              <div class="col-md-12">
+      <div *ngIf="activeTab === 2">
+      <div class="row mx-lg-4">
+        <div class="col-md-12">
               <label  class="form-label">Aplicar a:</label>
               <div class="mb-3">
                 <div class="row">
@@ -206,28 +229,34 @@
               
               </div>
             </div>
-          </div>
-        }
-          <div class="d-flex align-items-start gap-3 mt-4">
-            <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
-              <span class="btn-text">Regresar</span>
-            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
-              
-            </button>
-            <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
-            nexttab" data-nexttab="steparrow-description-info-tab" >
-             <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
-          </button>
-          </div>
-        </cdk-step>
 
-        <cdk-step [optional]="false">
-          <ng-template cdkStepLabel>
-            <button class="nav-link" id="steparrow-descripcion-info-tab" type="button" aria-readonly="true" disabled>Clientes</button>
-          </ng-template>
-          @if (cdkStepper.selectedIndex === 2) {
-              <div class="row">
+         <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  
+  
+        <div *ngIf="activeTab === 3">
+      <div class="row mx-lg-4">
                 <div class="col-md-12">
                   <label  class="form-label">Aplicar para:</label>
                   <div class="mb-3">
@@ -266,28 +295,32 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              
-
-          }
-            <div class="d-flex align-items-start gap-3 mt-4">
-            <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
-              <span class="btn-text">Regresar</span>
-            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
-              
-            </button>
-             <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
-            nexttab" data-nexttab="steparrow-description-info-tab" >
-             <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+           
+               <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
           </button>
-            </div>
-          </cdk-step>
-          <cdk-step [optional]="false">
-            <ng-template cdkStepLabel>
-                <button class="nav-link"  type="button" aria-readonly="true" disabled>Escala</button>
-            </ng-template>
-            @if (cdkStepper.selectedIndex === 3) {
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+             <div *ngIf="activeTab === 4">
+                <div class="row mx-lg-4">
                 <div *ngFor="let escala of escalas; let i = index" class="row align-items-end mb-3">
 
                 <div class="col-md-4">
@@ -319,23 +352,31 @@
                           <span class="btn-icon"><i class="ri-add-line"></i></span>
                         </button>
               </div>
-    
-            }
-            <div class="d-flex align-items-start gap-3 mt-4">
-             <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
-              <span class="btn-text">Regresar</span>
-            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
-              
-            </button>
-             <button type="button" class="btn btn-primary right ms-auto nexttab
-                nexttab" (click)="guardar()">
-            <span class="btn-text">Guardar</span>
-            <span class="btn-icon"><i class="ri-save-line"></i></span>
-          </button>
-            </div>
-            </cdk-step>
-          </ng-stepper>
 
+
+               <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="guardar()"
+          >
+            Guardar <i class="ri-save-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+           
+    
 <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
     <i class="ri-alert-line me-3 align-middle fs-lg"></i>
     <strong>¡Atención!</strong> {{ mensajeWarning }}
