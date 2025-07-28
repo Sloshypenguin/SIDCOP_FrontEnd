@@ -243,7 +243,7 @@
               <div class="mb-3">
                 <label for="impu_Id" class="form-label">Impuesto</label>
                 <select id="impu_Id" class="form-select" [(ngModel)]="producto.impu_Id" [disabled]="!producto.prod_PagaImpuesto">
-                  <option value=0 disabled selected>Seleccione un impuesto</option>
+                  <option value="0" disabled selected>Seleccione un impuesto</option>
                   <option *ngFor="let imp of impuestos" [value]="imp.impu_Id">{{ imp.impu_Descripcion }}</option>
                 </select>
               </div>

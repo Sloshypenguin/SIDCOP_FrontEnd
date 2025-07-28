@@ -46,6 +46,7 @@ export class CreateComponent   {
   clientesAgrupados: { canal: string, clientes: any[] }[] = [];
 clientesSeleccionados: number[] = [];
 descuentosExistentes: any[] = [];
+activeTab: number = 1;
 change(event: any) {
   }
 
@@ -529,7 +530,7 @@ tieneAyudante: boolean = false;
             this.mostrarAlertaError = false;
             this.mensajeError = '';
           }, 5000);
-          return;
+          return; 
           
         }
 
@@ -708,14 +709,14 @@ tieneAyudante: boolean = false;
 }
 
 validarPasoActual(): boolean {
-  switch (this.cdkStepper.selectedIndex) {
-    case 0: // Información general
+  switch (this.activeTab) {
+    case 1: // Información general
       return this.validarPasoInformacionGeneral();
-    case 1: // Aplica para
+    case 2: // Aplica para
       return this.seleccionados.length > 0;
-    case 2: // Clientes
+    case 3: // Clientes
       return this.clientesSeleccionados.length > 0;
-    case 3: // Escalas
+    case 4: // Escalas
       return this.validarEscalas();
     default:
       return false;
@@ -744,7 +745,7 @@ irAlSiguientePaso() {
 
   if (this.validarPasoActual()) {
     this.mostrarErrores = false;
-    this.cdkStepper.next();
+    this.activeTab ++;
   } else {
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
   }

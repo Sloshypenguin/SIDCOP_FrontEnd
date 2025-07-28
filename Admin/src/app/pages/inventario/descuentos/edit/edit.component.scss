@@ -1,6 +1,5 @@
 
 
-
 .application-tabs {
 				display: flex;
 				gap: 0;
@@ -36,3 +35,66 @@
 			.tab-content.active {
 				display: block;
 			}
+
+
+.nav-tabs {
+	justify-content: space-between;
+  border-bottom: 2px solid #d5b58a;
+  background: #141a2f;
+  border-radius: 0.75rem 0.75rem 0 0;
+  padding: 0.25rem 0.5rem;
+}
+
+.nav-tabs .nav-link {
+  color: #d5b58a;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  margin-right: 0.25rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+  padding: 0.75rem 1.5rem;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(213,181,138,0.10);
+}
+
+.nav-tabs .nav-link.active::after {
+  content: '';
+  display: block;
+  height: 4px;
+  border-radius: 2px 2px 0 0;
+  background: #d6b68a;
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 0;
+}
+
+
+.btn-tab-custom {
+  min-width: 120px;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  background: #141a2feb;
+  color: #d5b58a;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  outline: none;
+}
+
+.btn-tab-custom:hover,
+.btn-tab-custom:focus {
+  background: #141a2f;
+  color: #ffffff;
+}
