@@ -22,7 +22,7 @@
   z-index: 2;
   background: rgba(20, 26, 47, 0.4);
   border-radius: 18px;
-  padding: 2rem 1.2rem 2.5rem 1.2rem; // menos margen top
+  padding: 2rem 0 2.5rem 0; // sin padding lateral
   min-width: 420px;
   max-width: 640px;
   width: 100%;
@@ -228,7 +228,7 @@
   .login-card {
     min-width: 98vw;
     max-width: 99vw;
-    padding: 0.7rem 0.2rem 1.2rem 0.2rem; // menos margen top en móvil
+    padding: 0.7rem 0 1.2rem 0; // sin padding lateral en móvil
     border-radius: 12px;
   }
   .login-title {
@@ -290,7 +290,7 @@
 
 .login-subtitle {
   color: #fff;
-  font-size: 1.08rem;
+  font-size: 1rem;
   margin-bottom: 1.5rem;
   text-align: center;
   opacity: 0.85;
