@@ -82,7 +82,7 @@ export class ListComponent implements OnInit {
     public floatingMenuService: FloatingMenuService // <-- Agrega el servicio aquí
   ) {
     this.cargardatos();
-    this.table.setConfig(['carg_Id', 'carg_Descripcion']);
+    this.table.setConfig(['secuencia', 'carg_Descripcion']);
   }
 
   cambiarPagina(nuevaPagina: number): void {
