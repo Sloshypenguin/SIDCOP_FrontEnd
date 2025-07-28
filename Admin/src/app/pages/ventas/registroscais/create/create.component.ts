@@ -30,20 +30,20 @@ export class CreateComponent {
   PE: any[] = [];
   Sucursales: any[] = []; // Lista de sucursales, se puede llenar con un servicio si es necesario
   cargarCAI() {
-      this.http.get<any>('https://localhost:7071/CaiS/Listar', {
+      this.http.get<any>(`${environment.apiBaseUrl}/CaiS/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe((data) => this.CAI = data);
     };
 
      cargarPE() {
-      this.http.get<any>('https://localhost:7071/PuntoEmision/Listar', {
+      this.http.get<any>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe((data) => this.PE = data);
     };
 
 
      cargarSucursales() {
-      this.http.get<any>('https://localhost:7071/Sucursales/Listar', {
+      this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe((data) => this.Sucursales = data);
     };

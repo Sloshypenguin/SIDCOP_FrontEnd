@@ -23,6 +23,9 @@ export class DetailsComponent implements OnChanges {
   referenciasLista = [];
   clientesLista = [];
   referenciasNombre : any[] = [];
+
+  
+  
  
 
   ngOnChanges(changes: SimpleChanges): void {
