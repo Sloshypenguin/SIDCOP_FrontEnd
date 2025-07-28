@@ -30,7 +30,8 @@ export class EditComponent implements OnChanges {
     usuarioCreacion : '', 
     carg_Estado: true,
     code_Status: 0,
-    message_Status: ''
+    message_Status: '',
+    secuencia : 0
   };
 
   cargoOriginal = '';
