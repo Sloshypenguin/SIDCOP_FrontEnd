@@ -49,7 +49,6 @@ export class ListComponent implements OnInit {
 
     // OBTENER ACCIONES DISPONIBLES DEL USUARIO
     this.cargarAccionesUsuario();
-    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   constructor(public table: ReactiveTableService<CuentaPorCobrar>, 
@@ -79,6 +78,9 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   cuentaPorCobrarAEliminar: CuentaPorCobrar | null = null;
+  
+  // Propiedad para mostrar overlay de carga
+  mostrarOverlayCarga = false;
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
@@ -90,7 +92,6 @@ export class ListComponent implements OnInit {
   }
 
   confirmarEliminar(cuentaPorCobrar: CuentaPorCobrar): void {
-    console.log('Solicitando confirmación para eliminar:', cuentaPorCobrar);
     this.cuentaPorCobrarAEliminar = cuentaPorCobrar;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
@@ -104,17 +105,14 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.cuentaPorCobrarAEliminar) return;
     
-    console.log('Eliminando cuenta por cobrar:', this.cuentaPorCobrarAEliminar);
     
     this.cuentasPorCobrarService.eliminarCuentaPorCobrar(this.cuentaPorCobrarAEliminar.cpCo_Id).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
         
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
-            console.log('Cuenta por cobrar eliminada exitosamente');
             this.mensajeExito = `Cuenta por cobrar eliminada exitosamente`;
             this.mostrarAlertaExito = true;
             
@@ -128,7 +126,6 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Cuenta por cobrar está siendo utilizada');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'No se puede eliminar: la cuenta por cobrar está siendo utilizada.';
             
@@ -141,7 +138,6 @@ export class ListComponent implements OnInit {
             this.cancelarEliminar();
           } else if (response.data.code_Status === 0) {
             // Error general
-            console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status || 'Error al eliminar la cuenta por cobrar.';
             
@@ -155,7 +151,6 @@ export class ListComponent implements OnInit {
           }
         } else {
           // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
           this.mensajeError = response.message || 'Error inesperado al eliminar la cuenta por cobrar.';
           
@@ -169,7 +164,6 @@ export class ListComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error al eliminar la cuenta por cobrar:', error);
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al comunicarse con el servidor. Por favor, inténtelo de nuevo más tarde.';
         
@@ -188,7 +182,6 @@ export class ListComponent implements OnInit {
   private cargarAccionesUsuario(): void {
     // OBTENEMOS PERMISOSJSON DEL LOCALSTORAGE
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try {
@@ -208,15 +201,12 @@ export class ListComponent implements OnInit {
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
-          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
-        console.error('Error al parsear permisosJson:', e);
       }
     } 
     // AQUI FILTRAMOS Y NORMALIZAMOS LAS ACCIONES
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
-    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   // Métodos para navegación desde el menú flotante
@@ -236,24 +226,48 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
+    // Mostrar overlay de carga
+    this.mostrarOverlayCarga = true;
+    
     this.cuentasPorCobrarService.obtenerCuentasPorCobrar(true, false).subscribe({
       next: (response: any) => {
+        // Ocultar overlay de carga
+        this.mostrarOverlayCarga = false;
+        
         if (response.success && response.data) {
           const data = response.data;
-          console.log('Datos recargados:', data);
+          
           // Agregar secuencia a cada elemento
           data.forEach((item: CuentaPorCobrar, index: number) => {
             item.secuencia = index + 1;
           });
-          this.table.setData(data);
+          
+          // Filtrar datos según permisos del usuario
+          const tienePermisoListar = this.accionPermitida('listar');
+          const userId = getUserId();
+          
+          
+          const datosFiltrados = tienePermisoListar
+            ? data // Si tiene permiso de listar, muestra todos los registros
+            : data.filter((item: CuentaPorCobrar) => {
+                // Si no tiene permiso de listar, solo muestra los creados por el usuario actual
+                return item.usua_Creacion === userId || item.usua_Creacion?.toString() === userId.toString();
+              });
+          
+          this.table.setData(datosFiltrados);
         } else {
-          console.error('Respuesta sin datos:', response);
           this.mostrarAlertaError = true;
           this.mensajeError = 'No se pudieron cargar los datos correctamente.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
         }
       },
       error: (error) => {
-        console.error('Error al cargar datos:', error);
+        // Ocultar overlay de carga incluso en caso de error
+        this.mostrarOverlayCarga = false;
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
         

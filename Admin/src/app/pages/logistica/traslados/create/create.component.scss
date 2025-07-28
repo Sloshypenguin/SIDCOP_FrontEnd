@@ -1,23 +1,63 @@
+// Contenedor de búsqueda
+.search-container {
+  .input-group {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    .search-icon {
+      background: linear-gradient(145deg, #f8f9fa, #ffffff);
+      border: 1px solid #e9ecef;
+      border-right: none;
+      color: #d4af37;
+      font-size: 1.1rem;
+    }
+    
+    .search-input {
+      border: 1px solid #e9ecef;
+      border-left: none;
+      border-right: none;
+      
+      &:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+      }
+    }
+    
+    .btn-outline-secondary {
+      border-color: #e9ecef;
+      color: #6c757d;
+      
+      &:hover {
+        background-color: #f8f9fa;
+        border-color: #d4af37;
+        color: #d4af37;
+      }
+    }
+  }
+}
+
+// Contenedor principal de productos
 .productos-container {
   max-height: 500px;
   overflow-y: auto;
   padding-right: 10px;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
+    background: #f8f9fa;
+    border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
+    background: linear-gradient(145deg, #d4af37, #f4d03f);
+    border-radius: 4px;
 
     &:hover {
-      background: #a8a8a8;
+      background: linear-gradient(145deg, #b8941f, #d4af37);
     }
   }
 
@@ -26,123 +66,954 @@
   }
 }
 
-.producto-card {
-  transition: all 0.3s ease;
-  border: 2px solid transparent !important;
-  background: #ffffff;
+// Tarjeta premium de producto - MÁS PEQUEÑA
+.producto-card-premium {
+  position: relative;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  height: 260px; // Reducido de 320px a 260px
+  cursor: pointer;
 
+  // Efecto hover
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
-    border-color: #e3f2fd !important;
+    transform: translateY(-6px) scale(1.01); // Menos dramático
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-color: rgba(212, 175, 55, 0.3);
 
-    .producto-imagen {
-      transform: scale(1.05);
+    .producto-img {
+      transform: scale(1.05); // Menos zoom
+    }
+
+    .card-header-premium::before {
+      opacity: 1;
     }
   }
 
-  &:has(.card-footer) {
-    border-color: #28a745 !important;
-    background: linear-gradient(145deg, #ffffff 0%, #f8fff9 100%);
+  // Estado seleccionado - SIN CAMBIO DE TAMAÑO
+  &:has(.card-footer-premium.visible) {
+    border-color: #d4af37;
+    background: linear-gradient(145deg, #ffffff 0%, #fffef7 100%);
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.15);
+    // REMOVIDO: transform y cambios de tamaño
+
+    .card-header-premium {
+      background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+      
+      &::after {
+        opacity: 1;
+      }
+    }
   }
 }
 
-.producto-imagen-container {
-  height: 120px;
+// Header de la tarjeta - MÁS PEQUEÑO
+.card-header-premium {
+  height: 40px; // Reducido de 50px a 40px
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border: none;
+  border-radius: 10px 10px 0 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px; // Reducido padding
+  transition: all 0.3s ease;
+
+  // Efecto de brillo en hover
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: all 0.6s ease;
+    opacity: 0;
+  }
+
+  // Textura sutil
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 15px 15px; // Más pequeño
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &.selected {
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  }
+}
+
+// Indicador de selección - MÁS PEQUEÑO
+.selection-indicator {
+  width: 20px; // Reducido de 24px a 20px
+  height: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
-  border-radius: 8px;
-  overflow: hidden;
+  color: #d4af37;
+  font-weight: bold;
+  font-size: 12px; // Reducido
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: bounceIn 0.5s ease;
+}
 
-  @media (max-width: 768px) {
-    height: 100px;
+// Body de la tarjeta - AJUSTADO
+.card-body-premium {
+  height: calc(100% - 80px); // Ajustado para nuevas alturas (40px header + 40px footer)
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px !important; // Reducido padding
+}
+
+// Contenedor de imagen premium - MÁS PEQUEÑO
+.producto-imagen-premium {
+  height: 80px; // Reducido de 100px a 80px
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 10px; // Ligeramente menor
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  margin-bottom: 12px !important; // Reducido margen
+}
+
+.producto-img {
+  max-width: 65px; // Reducido de 80px a 65px
+  max-height: 65px;
+  object-fit: cover;
+  border-radius: 6px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Overlay de imagen
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(212, 175, 55, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+
+  &.active {
+    opacity: 1;
+  }
+
+  .overlay-content {
+    color: white;
+    font-size: 20px; // Reducido de 24px
+    animation: pulse 1s infinite;
   }
 }
 
-.producto-imagen {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.producto-titulo {
-  font-size: 0.95rem;
+// Título del producto - MÁS COMPACTO
+.producto-titulo-premium {
+  font-size: 0.85rem; // Reducido de 0.9rem
   font-weight: 600;
   color: #2c3e50;
-  line-height: 1.3;
-  height: 2.6rem;
+  line-height: 1.2;
+  text-align: center;
+  height: 2.4rem; // Reducido de 2.6rem
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
 
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-    height: 2.4rem;
-  }
+  margin-bottom: 10px !important; // Reducido
+  flex-shrink: 0;
 }
 
-.cantidad-controls {
-  background: #f8f9fa;
-  padding: 10px;
-  border-radius: 8px;
+// Controles de cantidad premium
+.cantidad-controls-premium {
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
-.btn-cantidad {
-  width: 35px;
-  height: 35px;
+.form-label-premium {
+  font-size: 0.75rem; // Reducido de 0.8rem
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 6px; // Reducido
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Input group premium - MÁS COMPACTO
+.input-group-premium {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 10px; // Reducido
+  padding: 3px; // Reducido
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-cantidad-premium {
+  width: 28px; // Reducido de 32px
+  height: 28px;
+  border: none;
+  border-radius: 6px; // Reducido
   display: flex;
   align-items: center;
   justify-content: center;
-  border-color: #dee2e6;
-  transition: all 0.2s ease;
+  font-size: 12px; // Reducido
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 
-  &:hover {
-    background-color: #007bff;
-    border-color: #007bff;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover::before {
+    width: 100%;
+    height: 100%;
+  }
+
+  &.btn-minus {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
     color: white;
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(145deg, #c0392b, #a93226);
+      transform: scale(1.05); // Reducido de 1.1
+    }
+  }
+
+  &.btn-plus {
+    background: linear-gradient(145deg, #d4af37, #f4d03f);
+    color: white;
+    
+    &:hover {
+      background: linear-gradient(145deg, #f4d03f, #f7dc6f);
+      transform: scale(1.05); // Reducido de 1.1
+    }
   }
 
   &:disabled {
-    opacity: 0.5;
+    background: #e9ecef;
+    color: #6c757d;
     cursor: not-allowed;
-  }
+    opacity: 0.6;
 
-  @media (max-width: 768px) {
-    width: 32px;
-    height: 32px;
-  }
-}
-
-.cantidad-input {
-  font-weight: 600;
-  font-size: 1rem;
-  border-left: 0;
-  border-right: 0;
-  background: white;
-
-  &:focus {
-    box-shadow: none;
-    border-color: #dee2e6;
-  }
-}
-
-.observaciones-producto {
-  textarea {
-    resize: none;
-    border: 1px solid #e9ecef;
-    transition: border-color 0.2s ease;
-
-    &:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    &:hover {
+      transform: none;
     }
   }
 }
 
-.card-footer .badge {
-  font-size: 0.8rem;
+.cantidad-input-premium {
+  flex: 1;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem; // Reducido de 1.1rem
+  color: #2c3e50;
+  padding: 6px; // Reducido
+  margin: 0 3px; // Reducido
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// Footer de la tarjeta - MÁS PEQUEÑO
+.card-footer-premium {
+  height: 40px; // Reducido de 50px
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  border: none;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(15px); // Reducido
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(135deg, #d4af37, #f4d03f);
+  }
+}
+
+.cantidad-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px; // Reducido
+  color: white;
+  font-weight: 600;
+
+  .badge-text {
+    font-size: 1rem; // Reducido de 1.2rem
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 10px; // Reducido
+    border-radius: 15px; // Reducido
+    min-width: 35px; // Reducido
+    text-align: center;
+  }
+
+  .badge-label {
+    font-size: 0.8rem; // Reducido
+    opacity: 0.9;
+  }
+}
+
+// Estilos de paginación
+.pagination-info {
+  font-size: 0.9rem;
+}
+
+.pagination {
+  .page-link {
+    color: #d4af37;
+    border-color: #e9ecef;
+    padding: 0.5rem 0.75rem;
+    
+    &:hover {
+      color: #b8941f;
+      background-color: #f8f9fa;
+      border-color: #d4af37;
+    }
+  }
+  
+  .page-item.active .page-link {
+    background-color: #d4af37;
+    border-color: #d4af37;
+    color: white;
+  }
+  
+  .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #e9ecef;
+  }
+}
+
+// Animaciones
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15); // Reducido de 1.2
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05); // Reducido de 1.1
+  }
+}
+
+// Responsive design - ACTUALIZADO
+@media (max-width: 1200px) {
+  .producto-card-premium {
+    height: 240px; // Reducido de 300px
+  }
+}
+
+@media (max-width: 768px) {
+  .producto-card-premium {
+    height: 220px; // Reducido de 280px
+  }
+
+  .card-body-premium {
+    padding: 12px 10px !important; // Más compacto
+  }
+
+  .producto-imagen-premium {
+    height: 70px; // Reducido
+  }
+
+  .producto-img {
+    max-width: 55px; // Reducido
+    max-height: 55px;
+  }
+
+  .producto-titulo-premium {
+    font-size: 0.8rem; // Reducido
+    height: 2.2rem; // Reducido
+  }
+
+  .btn-cantidad-premium {
+    width: 26px; // Reducido
+    height: 26px;
+    font-size: 11px; // Reducido
+  }
+  
+  .card-header-premium {
+    height: 35px; // Reducido
+    padding: 0 10px;
+  }
+  
+  .card-footer-premium {
+    height: 35px; // Reducido
+  }
+  
+  .selection-indicator {
+    width: 18px; // Reducido
+    height: 18px;
+    font-size: 11px;
+  }
+}
+
+// Contenedor principal de tabs personalizados
+.custom-tabs {
+  background: linear-gradient(145deg, #2c3e50 0%, #34495e 100%);
+  border-radius: 12px 12px 0 0;
+  padding: 8px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  }
+}
+
+// Esto es para los tabs XD
+.custom-tab-link {
+  background: transparent !important;
+  border: none !important;
+  color: #d4af37 !important;
   font-weight: 500;
+  font-size: 1rem;
+  padding: 12px 24px;
+  margin: 0 4px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+
+  // Icono
+  i {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+  }
+
+  // Estado hover
+  &:hover:not(.disabled) {
+    color: #f4d03f !important;
+    background: rgba(212, 175, 55, 0.1) !important;
+    transform: translateY(-1px);
+    
+    i {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  // Estado activo
+  &.active {
+    color: #f4d03f !important;
+    background: rgba(212, 175, 55, 0.15) !important;
+    font-weight: 600;
+    position: relative;
+
+    // Línea inferior dorada
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #d4af37 0%, #f4d03f 100%);
+      border-radius: 2px 2px 0 0;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    // Brillo sutil en el tab activo
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(244, 208, 63, 0.1), transparent);
+      animation: shine 2s infinite;
+    }
+
+    i {
+      opacity: 1;
+      color: #f4d03f;
+      transform: scale(1.05);
+    }
+  }
+
+  // Estado deshabilitado
+  &.disabled {
+    color: #7f8c8d !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+    
+    &:hover {
+      background: transparent !important;
+      transform: none;
+    }
+
+    i {
+      opacity: 0.5;
+    }
+  }
+
+  // Focus para accesibilidad
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+  }
+}
+
+// Animaciones
+@keyframes slideIn {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .custom-tabs {
+    padding: 6px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .custom-tab-link {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    margin: 0 2px;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-tab-link {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+
+    // En móviles, ocultar el texto y mostrar solo iconos si es necesario
+    .tab-text {
+      display: none;
+    }
+
+    i {
+      margin-right: 0 !important;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Efecto adicional para el contenedor de tabs
+.nav-tabs.custom-tabs {
+  // Sombra interna sutil
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  // Gradiente de fondo mejorado
+  background: linear-gradient(145deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+  
+  // Textura sutil
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+  }
+}
+
+// Mejorar la transición del contenido de los tabs
+.tab-content {
+  border-radius: 0 0 12px 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+  border-top: none;
+}
+
+.tab-pane {
+  padding: 24px;
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// ======= ESTILOS PARA EL TAB DE RESUMEN =======
+
+// Cards del resumen con estilo premium
+.resumen-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Header del resumen con gradiente dorado
+.resumen-header {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border: none;
+  padding: 16px 24px;
+  position: relative;
+
+  // Efecto de textura sutil
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.8;
+  }
+}
+
+.resumen-title {
+  color: #d4af37;
+  font-weight: 600;
+  font-size: 1.1rem;
+  position: relative;
+  z-index: 1;
+
+  i {
+    color: #f4d03f;
+    font-size: 1.2rem;
+  }
+}
+
+// Body del resumen
+.resumen-body {
+  padding: 24px;
+  background: linear-gradient(145deg, #ffffff 0%, #fefefe 100%);
+}
+
+// Items de información
+.info-item {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.info-label {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  color: #34495e;
+  font-size: 1rem;
+  margin: 0;
+  padding: 8px 12px;
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+
+  &.highlight {
+    background: linear-gradient(145deg, #d4af37, #f4d03f);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  }
+
+  &:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Tabla del resumen
+.resumen-table {
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th, td {
+    border: none;
+    padding: 16px 12px;
+    vertical-align: middle;
+  }
+}
+
+.resumen-table-header {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  
+  th {
+    color: #d4af37;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    position: relative;
+
+    &:first-child {
+      border-radius: 8px 0 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 8px 0 0;
+    }
+
+    // Separadores entre columnas
+    &:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 25%;
+      height: 50%;
+      width: 1px;
+      background: rgba(212, 175, 55, 0.3);
+    }
+  }
+}
+
+.resumen-table-row {
+  background: linear-gradient(145deg, #ffffff, #fefefe);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(145deg, #f8f9fa, #ffffff);
+    transform: scale(1.01);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  &:nth-child(even) {
+    background: linear-gradient(145deg, #fefefe, #f8f9fa);
+
+    &:hover {
+      background: linear-gradient(145deg, #f8f9fa, #f0f0f0);
+    }
+  }
+
+  td {
+    border-top: 1px solid #f1f3f4;
+  }
+}
+
+.producto-name {
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.producto-image-small {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #d4af37;
+    transform: scale(1.1);
+  }
+}
+
+.cantidad-badge-resumen {
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+  min-width: 50px;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+  }
+}
+
+.observaciones-input {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+
+  &:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+    background: #ffffff;
+  }
+
+  &::placeholder {
+    color: #6c757d;
+    font-style: italic;
+  }
+}
+
+// Estado sin productos
+.no-productos {
+  padding: 40px 20px;
+}
+
+.no-productos-icon {
+  color: #d4af37;
+  opacity: 0.6;
+  font-size: 4rem;
+}
+
+// Responsive para el resumen
+@media (max-width: 768px) {
+  .resumen-body {
+    padding: 16px;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+
+  .resumen-table {
+    font-size: 0.85rem;
+    
+    th, td {
+      padding: 12px 8px;
+    }
+  }
+
+  .producto-image-small {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cantidad-badge-resumen {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    min-width: 40px;
+  }
+
+  .observaciones-input {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .resumen-header {
+    padding: 12px 16px;
+  }
+
+  .resumen-title {
+    font-size: 1rem;
+  }
+
+  .info-label {
+    font-size: 0.8rem;
+  }
+
+  .info-value {
+    font-size: 0.85rem;
+  }
+
+  .resumen-table-header th {
+    font-size: 0.8rem;
+    padding: 10px 6px;
+  }
+
+  .resumen-table-row td {
+    padding: 10px 6px;
+  }
 }
