@@ -81,11 +81,18 @@ export class CuentasPorCobrarService {
   /**
    * Anula un pago existente
    * @param pagoId ID del pago a anular
-   * @param motivo Motivo de la anulación
+   * @param usuaModificacion ID del usuario que realiza la anulación
+   * @param motivoAnulacion Motivo de la anulación
    * @returns Resultado de la operación
    */
-  anularPago(pagoId: number, motivo: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/PagosCuentasPorCobrar/Anular/${pagoId}`, { motivo }, {
+  anularPago(pagoId: number, usuaModificacion: number, motivoAnulacion: string): Observable<any> {
+    const payload = {
+      pago_Id: pagoId,
+      usua_Modificacion: usuaModificacion,
+      motivo_Anulacion: motivoAnulacion
+    };
+    
+    return this.http.post(`${this.apiUrl}/PagosCuentasPorCobrar/Anular`, payload, {
       headers: this.headers
     });
   }
