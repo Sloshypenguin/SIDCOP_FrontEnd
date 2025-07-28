@@ -221,6 +221,19 @@ export class CreateComponent {
 
   cerrarMapa() {
     this.mostrarMapa = false;
+    this.direccionPorCliente={
+      diCl_Id: 0,
+      clie_Id: 0,
+      colo_Id: 0,
+      diCl_DireccionExacta: '',
+      diCl_Observaciones: '',
+      diCl_Latitud: 0,
+      diCl_Longitud: 0,
+      usua_Creacion: 0,
+      diCl_FechaCreacion: new Date(),
+      usua_Modificacion: 0,
+      diCl_FechaModificacion: new Date()
+    }
   }
 
   constructor(private http: HttpClient) {
@@ -418,6 +431,7 @@ export class CreateComponent {
   };
   direccionEditandoIndex: number | null = null;
 
+  avalesPorCliente: Aval[] = [];
   aval: Aval = {
     aval_Id: 0,
     clie_Id: 0,
@@ -440,6 +454,7 @@ export class CreateComponent {
     usuarioModificacion: '',
     aval_FechaModificacion: new Date()
   };
+  avalesEditandoIndex: number | null = null;
 
   cancelar(): void {
     this.mostrarErrores = false;
