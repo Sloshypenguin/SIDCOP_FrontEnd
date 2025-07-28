@@ -960,15 +960,6 @@
       </div>
     </div>
 
-    <div class="row mx-lg-4">
-      <div class="col-md-12 d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-primary" (click)="guardarCliente()">
-            <span class="btn-text">Guardar</span>
-            <span class="btn-icon"><i class="ri-save-line"></i></span>
-          </button>
-      </div>
-    </div>
-
     <!-- Botones de navegación -->
     <div class="row mx-lg-4">
       <div class="col-md-12 d-flex justify-content-between gap-2">
@@ -976,9 +967,9 @@
           (click)="activeTab = activeTab - 1">
           <i class="ri-arrow-left-line"></i> Anterior
         </button>
-        <button *ngIf="activeTab < 5" type="button" class="btn-tab-custom btn-tab-next"
-          (click)="activeTab = activeTab + 1">
-          Siguiente <i class="ri-arrow-right-line"></i>
+        <button type="button" class="btn btn-primary" style="height: 100%;" (click)="guardarCliente()">
+          <span class="btn-text">Guardar</span>
+          <span class="btn-icon"><i class="ri-save-line"></i></span>
         </button>
       </div>
     </div>
