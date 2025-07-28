@@ -74,7 +74,7 @@
                                 style="height: 180px;"
                             />
 
-                            <div class="contenedor" style="position: absolute; top: 0px; right: 0px; z-index:1;" *ngIf="accionPermitida('editar') accionPermitida('detalles') || accionPermitida('eliminar')">
+                            <div class="contenedor" style="position: absolute; top: 0px; right: 0px; z-index:1;" *ngIf="accionPermitida('editar') || accionPermitida('detalles') || accionPermitida('eliminar')">
                                 <div class="dropdown-action-list" (document:click)="onDocumentClick($event, data.prod_Id)">
                                     <button class="buttonConfig"
                                         [attr.aria-expanded]="activeActionRow === data.prod_Id"
