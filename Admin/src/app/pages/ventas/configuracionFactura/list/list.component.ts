@@ -272,18 +272,37 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
   }
 
 
+private cargardatos(state: boolean): void {
+  this.mostrarOverlayCarga = state;
 
-  private cargardatos(state: boolean): void {
-      this.mostrarOverlayCarga = state;
-      this.http.get<ConfiguracionFactura[]>(`${environment.apiBaseUrl}/ConfiguracionFactura/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe(data => {
-        setTimeout(() => {
-          this.mostrarOverlayCarga = false;
-          this.table.setData(data);
-        },500);
-      });
+  this.http.get<ConfiguracionFactura[]>(`${environment.apiBaseUrl}/ConfiguracionFactura/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe({
+    next: (data) => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+      this.table.setData(datosFiltrados);
+    },
+    error: (error) => {
+      console.error('Error al cargar los datos:', error);
+      this.mostrarOverlayCarga = false;
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
+      this.table.setData([]);
+    },
+    complete: () => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+      }, 500);
     }
+  });
+}
+
 
   constructor(
     public table: ReactiveTableService<ConfiguracionFactura>,

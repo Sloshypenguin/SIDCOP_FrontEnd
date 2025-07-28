@@ -711,3 +711,28 @@
 ></div>
 
 <!-- end row -->
+
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenuService.data); floatingMenuService.close()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>

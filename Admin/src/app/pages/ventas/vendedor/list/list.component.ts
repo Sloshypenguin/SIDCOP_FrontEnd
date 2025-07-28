@@ -243,7 +243,7 @@ export class ListComponent implements OnInit {
       next: (response: any) => {
         setTimeout(() => {
         console.log('Respuesta del servidor:', response);
-        
+         this.mostrarOverlayCarga = false;
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {

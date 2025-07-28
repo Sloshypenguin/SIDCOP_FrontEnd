@@ -104,6 +104,7 @@
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 mx-auto">
           <div class="card card-empleado position-relative h-100">
             <div class="card-header p-0 position-relative header-bg" [ngStyle]="{ 'background-image': 'url(' + (cliente.clie_ImagenDelNegocio || 'assets/images/imagenes/full-logo.png') + ')' }">
+              <div style="height: 3px; background-color: #C5A97B; width: 100%; margin-top: 0.5rem; border-radius: 2px;"></div>
               <div class="header-overlay"></div>
 
               <div style="position: absolute; top: 10px; left: 18px; z-index:1;">
@@ -223,11 +224,18 @@
                 </div>
               </div>
             </div>
-
+  
+            <div style="height: 4.5px; background-color: #d6b58d; width: 100%; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;"></div>
+            
             <div class="card-body pt-5 mt-2 px-3 text-center">
-              <span class="badge fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem; background-color: #E7F3FF; color: #0B3E74;">
-                <i class="ri-user-3-fill" style="font-size: 0.6rem;"></i>
-                {{ cliente.clie_Codigo }}
+              <span class="badge fw-semibold mb-1 px-3 py-2 border" style="
+                  font-size: 1rem;
+                  background-color: #d6b58d; 
+                  color: #141a2f; 
+                  border-radius: 1.5rem; 
+                  border: 2px solid #000;"
+              >
+                  {{ cliente.clie_Codigo }}
               </span>
 
               <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.125rem;">

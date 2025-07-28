@@ -247,6 +247,52 @@
                     </span>
                   </th>
 
+                    <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('sucu_Descripcion')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Sucursal
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'sucu_Descripcion' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'sucu_Descripcion' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
                   <th
                     class="gridjs-th"
                     (click)="table.sortBy('estado')"
@@ -323,6 +369,7 @@
                   </td>
                   <td>{{ data.puEm_Codigo }}</td>
                    <td>{{ data.puEm_Descripcion }}</td>
+                    <td>{{ data.sucu_Descripcion }}</td>
                     <td>{{ data.estado }}</td>
                     
                 </tr>
@@ -446,7 +493,7 @@
               class="ri-alert-line me-2 custom-modal-alert-icon"
               (click)="cancelarEliminar()"
             ></i
-            >¿Está seguro(a) que desea eliminar el punto de emisión
+            > ¿Está seguro(a) que desea {{ PEEliminar?.estado === 'Activo' ? 'desactivar' : 'activar' }} el punto de emisión
             <strong>{{ PEEliminar?.puEm_Descripcion }}</strong
             >?
           </p>
@@ -462,13 +509,15 @@
           ><span class="btn-icon"><i class="ri-close-circle-line"></i></span>
         </button>
         <button
-          type="button"
-          class="btn btn-primary red btn-sm btn-minw-5"
-          (click)="eliminar()"
-        >
-          <span class="btn-text">Si</span>
-          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
-        </button>
+    type="button"
+    class="btn btn-primary {{ PEEliminar?.estado === 'Activo' ? 'red' : 'green' }} btn-sm btn-minw-5"
+    (click)="eliminar()"
+  >
+    <span class="btn-text">Si</span>
+    <span class="btn-icon">
+      <i [class]="PEEliminar?.estado === 'Activo' ? 'ri-close-circle-line' : 'ri-checkbox-circle-line'"></i>
+    </span>
+  </button>
       </div>
     </div>
   </div>
@@ -508,7 +557,9 @@
         confirmarEliminar(floatingMenuService.data); floatingMenuService.close()
       "
     >
-      Eliminar <i class="ri-delete-bin-line"></i>
+      {{ floatingMenuService.data?.estado === 'Activo' ? 'Desactivar' : 'Activar' }}
+      
+        <i [class]="floatingMenuService.data?.estado === 'Activo' ? 'ri-close-circle-line' : 'ri-checkbox-circle-line'"></i>
     </button>
   </li>
   <li *ngIf="accionPermitida('detalle')">
@@ -521,3 +572,15 @@
     </button>
   </li>
 </ul>
+
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+    <div class="typing-indicator">
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+    </div>
+</div>
+

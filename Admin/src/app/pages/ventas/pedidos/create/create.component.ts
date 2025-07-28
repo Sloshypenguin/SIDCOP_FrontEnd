@@ -29,20 +29,25 @@ export class CreateComponent {
   Clientes: any[] = [];
   Direccines: any[] = [];
   productos: any[] = [];
+  Math = Math; // para usar Math en la plantilla
+  productosFiltrados: any[] = []; // resultado después del filtro
+  productosPaginados: any[] = []; // productos que se muestran en la página actual
+  paginaActual: number = 1;
+  productosPorPagina: number = 6;
 
 
-  listarProductos(): void {
+
+listarProductos(): void {
   this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
     headers: { 'x-api-key': environment.apiKey }
   }).subscribe({
     next: (data) => {
-      
       this.productos = data.map((producto: any) => ({
         ...producto,
         cantidad: 0,
-        precio: producto.prod_PrecioUnitario || 0 // si aplica
+        precio: producto.prod_PrecioUnitario || 0
       }));
-      console.log('Productos cargados:', this.productos);
+      this.filtrarProductos(); // aplicar filtro inicial
     },
     error: () => {
       this.mostrarAlertaError = true;
@@ -50,6 +55,45 @@ export class CreateComponent {
     }
   });
 }
+
+
+
+searchQuery: string = ''; // Variable para almacenar la búsqueda
+
+  // Filtrar productos según el nombre
+filtrarProductos(): void {
+  const query = this.searchQuery.trim().toLowerCase();
+  if (query === '') {
+    this.productosFiltrados = [...this.productos];
+  } else {
+    this.productosFiltrados = this.productos.filter(producto =>
+      producto.prod_Descripcion.toLowerCase().includes(query)
+    );
+  }
+  this.paginaActual = 1; // reset a la página 1 tras filtrar
+  this.actualizarProductosPaginados();
+}
+
+
+actualizarProductosPaginados(): void {
+  const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+  const fin = inicio + this.productosPorPagina;
+  this.productosPaginados = this.productosFiltrados.slice(inicio, fin);
+}
+
+
+cambiarPagina(delta: number): void {
+  const totalPaginas = Math.ceil(this.productosFiltrados.length / this.productosPorPagina);
+  const nuevaPagina = this.paginaActual + delta;
+  if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+    this.paginaActual = nuevaPagina;
+    this.actualizarProductosPaginados();
+  }
+}
+
+
+
+
 
 aumentarCantidad(index: number): void {
   this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
@@ -157,6 +201,8 @@ onClienteSeleccionado(clienteId: number) {
   };
 
   cancelar(): void {
+    this.searchQuery = '';
+    this.filtrarProductos();
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
     this.mensajeExito = '';
