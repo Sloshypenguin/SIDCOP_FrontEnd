@@ -1,3 +1,15 @@
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+  <div class="typing-indicator">
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+  </div>
+</div>
+
+
 <!-- Pantalla para confirmar la nueva contraseña -->
 <div class="login-card login-card-grande" *ngIf="mostrarPantallaConfirmar">
   <div style="display: flex; flex-direction: column; align-items: center;">
@@ -85,17 +97,17 @@
       </ng-container>
 
     </div>
-    <div class="codigo-btn-row">
+<div class="codigo-btn-row" style="display: flex; justify-content: center; gap: 1rem;">
       <button type="button" class="btn btn-login" (click)="cancelarPantallaCodigo()">
         <i class="ri-arrow-left-line"></i>
         <span class="btn-text">Regresar</span>
       </button>
       <button type="button" class="btn btn-login gold" (click)="confirmarCodigo()">
-        <i class="ri-checkbox-line"></i>
+        <i class="ri-checkbox-circle-line"></i>
         <span class="btn-text">Confirmar</span>
       </button>
     </div>
-              <div class="login-forgot" *ngIf="mostrarPantallaCodigo">
+      <div class="login-forgot" *ngIf="mostrarPantallaCodigo">
         <a (click)="reenviarcodigo()" [ngStyle]="{'cursor': reenviarDisabled ? 'not-allowed' : 'pointer', 'color': reenviarDisabled ? '#aaa' : ''}" [class.disabled]="reenviarDisabled">
           Reenviar Código
           <span *ngIf="reenviarDisabled"> ({{ tiempoRestante }}s)</span>
@@ -107,7 +119,7 @@
   <div></div>
   <h2 class="login-title">Restablecer Contraseña</h2>
   <div class="login-subtitle">
-    Ingrese su usuario y así recibirá un correo con el código para reestablecer su contraseña
+    Ingrese su usuario y recibirá un correo con el código para reestablecer su contraseña
   </div>
   <form class="login-form">
     <div class="login-input-group">
@@ -120,7 +132,9 @@
         <small>El campo Usuario es requerido</small>
       </div>
     </div>
-    <div class="codigo-btn-row">
+
+  </form>
+      <div class="codigo-btn-row" style="display: flex; justify-content: center; gap: 1rem;">
       <button type="button" class="btn btn-login" (click)="verificarusuario()">
         <span class="btn-text">Enviar</span>
         <i class="ri-send-plane-2-line"></i>
@@ -130,7 +144,6 @@
         <span class="btn-text">Regresar</span>
       </button>
     </div>
-  </form>
 </div>
 
 

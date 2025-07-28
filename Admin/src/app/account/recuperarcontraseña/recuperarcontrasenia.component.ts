@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-recuperarcontrasenia',
@@ -59,6 +59,7 @@ export class RecuperarcontraseniaComponent {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   mostrarErrores = false;
+  mostrarOverlayCarga = false;
   correo = '';
 
   mostrarPantallaCodigo = false;
@@ -108,8 +109,10 @@ export class RecuperarcontraseniaComponent {
     message_Status:""
   }
     verificarusuario(): void {
+      
         this.mostrarErrores = true;
         if (this.usuario.usua_Usuario.trim()) {
+            this.mostrarOverlayCarga = true;
             this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/VerificarUsuario`, this.usuario, {
                 headers: { 
                     'X-Api-Key': environment.apiKey,
@@ -125,16 +128,18 @@ export class RecuperarcontraseniaComponent {
                         this.enviarcorreo();
                         console.log('Correo enviado a:', this.correo);
                     } else {
+                        this.mostrarOverlayCarga = false;
                         this.mostrarAlertaWarning = true;
                         this.mensajeWarning = 'No se encontró el usuario ingresado.';
                         setTimeout(() => {
                             this.mostrarAlertaWarning = false;
                             this.mensajeWarning = '';
                         }, 4000);
-                    }
+                    } 
                 },
                 error: (err) => {
                     this.mostrarAlertaError = true;
+                    this.mostrarOverlayCarga = false;
                     this.mensajeError = 'Ocurrió un error al verificar el usuario.';
                     console.error(err);
                     setTimeout(() => {
@@ -144,6 +149,7 @@ export class RecuperarcontraseniaComponent {
                 }
             });
         } else {
+              this.mostrarOverlayCarga = false
             console.log('El campo de usuario está vacío:', this.usuario.usua_Usuario);
             this.mostrarAlertaWarning = true;
             this.mensajeWarning = 'El campo Usuario es requerido.';
@@ -174,6 +180,7 @@ export class RecuperarcontraseniaComponent {
         next: (response) => {
           console.log('Respuesta de envío de correo:', response);
           if (response.mensaje && response.mensaje === 'Correo enviado exitosamente') {
+            this.mostrarOverlayCarga = false;
             this.mostrarAlertaExito = true;
             this.mensajeExito = '¡Correo enviado exitosamente!';
             if (!this.mostrarPantallaCodigo) {
@@ -185,6 +192,7 @@ export class RecuperarcontraseniaComponent {
             }, 4000);
             this.iniciarTemporizador(30); // 30 segundos
           } else {
+            this.mostrarOverlayCarga = false;
             this.mostrarAlertaError = true;
             this.mensajeError = 'No se pudo enviar el correo.';
             setTimeout(() => {
@@ -194,6 +202,7 @@ export class RecuperarcontraseniaComponent {
           }
         },
         error: (err) => {
+          this.mostrarOverlayCarga = false;
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al enviar el correo.';
           console.error('Error al enviar el correo:', err);
@@ -212,24 +221,30 @@ cancelarPantallaCodigo(): void {
 }
 
   confirmarCodigo(): void {
+    this.mostrarOverlayCarga = true;
     const codigoFinal = this.codigoIngresado.join('');
-    if (codigoFinal === this.codigoGenerado) {
-      this.mostrarAlertaExito = true;
-      this.mensajeExito = '¡Código correcto! Ahora puedes cambiar tu contraseña.';
-      this.mostrarPantallaCodigo = false;
-      this.mostrarPantallaConfirmar = true;
-      setTimeout(() => {
-        this.mostrarAlertaExito = false;
-        this.mensajeExito = '';
-      }, 4000);
-    } else {
-      this.mostrarAlertaError = true;
-      this.mensajeError = 'El código ingresado es incorrecto.';
-      setTimeout(() => {
-        this.mostrarAlertaError = false;
-        this.mensajeError = '';
-      }, 4000);
-    }
+    setTimeout(() => {
+      if (codigoFinal === this.codigoGenerado) {
+        this.mostrarErroresConfirmar = false;
+        this.mostrarAlertaExito = true;
+        this.mensajeExito = '¡Código correcto! Ahora puedes cambiar tu contraseña.';
+        this.mostrarPantallaCodigo = false;
+        this.mostrarPantallaConfirmar = true;
+        this.mostrarOverlayCarga = false;
+        setTimeout(() => {
+          this.mostrarAlertaExito = false;
+          this.mensajeExito = '';
+        }, 4000);
+      } else {
+        this.mostrarOverlayCarga = false;
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'El código ingresado es incorrecto.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 4000);
+      }
+    }, 1000);
 
   }
 
@@ -255,70 +270,72 @@ cancelarPantallaCodigo(): void {
       }, 4000);
       return;
     }
-    const usuarioActualizado = {
-      usua_Id: this.usuario.usua_Id,
-      usua_Usuario: '',
-      correo: '',
-      usua_Clave: this.nuevaContrasena,
-      role_Id: 0,
-      usua_IdPersona: 0,
-      usua_EsVendedor: false,
-      usua_EsAdmin: false,
-      usua_Imagen: '',
-      usua_Creacion: 0,
-      usua_FechaCreacion: new Date(),
-      usua_Modificacion: 1,
-      usua_FechaModificacion: new Date(),
-      usua_Estado: true,
-      permisosJson: ''
-    };
-    this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/RestablecerClave`, usuarioActualizado, {
-      headers: {
-        'X-Api-Key': environment.apiKey,
-        'Content-Type': 'application/json',
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response) => {
-        const codeStatus = response?.data?.code_Status;
-        const messageStatus = response?.data?.message_Status || 'No se pudo actualizar la contraseña.';
-        if (codeStatus === 1) {
-          this.mostrarAlertaExito = true;
-          this.mensajeExito = messageStatus;
-
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      const usuarioActualizado = {
+        usua_Id: this.usuario.usua_Id,
+        usua_Usuario: this.usuario.usua_Usuario || '',
+        usua_Clave: this.nuevaContrasena,
+        role_Id: 0,
+        role_Descripcion: '',
+        usua_IdPersona: 0,
+        usua_EsVendedor: false,
+        usua_EsAdmin: false,
+        usua_Imagen: '',
+        usua_Creacion: 0,
+        usua_FechaCreacion: new Date(),
+        usua_Modificacion: environment.usua_Id,
+        usua_FechaModificacion: new Date(),
+        usua_Estado: true,
+        permisosJson: ''
+      };
+      this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/RestablecerClave`, usuarioActualizado, {
+        headers: {
+          'X-Api-Key': environment.apiKey,
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        }
+      }).subscribe({
+        next: (response) => {
+          this.mostrarOverlayCarga = false;
+          const codeStatus = response?.data?.code_Status;
+          const messageStatus = response?.data?.message_Status || 'No se pudo actualizar la contraseña.';
+          if (codeStatus === 1) {
+            this.mostrarAlertaExito = true;
+            this.mensajeExito = messageStatus;
+            setTimeout(() => {
+              this.cancelar();
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 2000);
+          } else if (codeStatus === -1) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = messageStatus;
+          } else if (codeStatus === 0) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al actualizar la contraseña.';
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'No se pudo actualizar la contraseña.';
+          }
           setTimeout(() => {
-            this.cancelar();
             this.mostrarAlertaExito = false;
             this.mensajeExito = '';
-
-
-          }, 2000);
-        } else if (codeStatus === -1) {
-          this.mostrarAlertaError = true;
-          this.mensajeError = messageStatus;
-        } else if (codeStatus === 0) {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 4000);
+        },
+        error: (err) => {
+          this.mostrarOverlayCarga = false;
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al actualizar la contraseña.';
-        } else {
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'No se pudo actualizar la contraseña.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 4000);
         }
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-          this.mensajeExito = '';
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 4000);
-      },
-      error: (err) => {
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al actualizar la contraseña.';
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 4000);
-      }
-    });
+      });
+    }, 1000);
   }
 
   // temporizador
