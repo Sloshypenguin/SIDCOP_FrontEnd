@@ -185,10 +185,11 @@ constructor(public table: ReactiveTableService<Pedido>,
         
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
+          console.log('Respuesta exitosa del servidor:', response.data);
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             console.log('Punto de Emision exitosamente');
-            this.mensajeExito = `Punto de Emision "${this.PedidoEliminar!.pedi_FechaPedido}" eliminado exitosamente`;
+            this.mensajeExito = `Pedido de "${this.PedidoEliminar!.clie_NombreNegocio}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
