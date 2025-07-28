@@ -13,6 +13,13 @@ import { Proveedor } from 'src/app/Modelos/general/Proveedor.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 @Component({
   selector: 'app-list',
@@ -29,7 +36,39 @@ import { DetailsComponent } from '../details/details.component';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   // bread crumb items
@@ -44,6 +83,7 @@ export class ListComponent implements OnInit {
   showDetailsForm = false;
 
   // Propiedades para alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -65,7 +105,7 @@ export class ListComponent implements OnInit {
     private router: Router, 
     private route: ActivatedRoute
   ) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
 
   ngOnInit(): void {
@@ -159,12 +199,12 @@ export class ListComponent implements OnInit {
   }
 
   guardarProveedor(proveedor: Proveedor): void {
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormulario();
   }
 
   actualizarProveedor(proveedor: Proveedor): void {
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
   }
 
@@ -196,7 +236,7 @@ export class ListComponent implements OnInit {
           this.mostrarAlertaExito = false;
           this.mensajeExito = '';
         }, 3000);
-        this.cargardatos();
+        this.cargardatos(false);
         this.cancelarEliminar();
       },
       error: (error) => {
@@ -210,11 +250,34 @@ export class ListComponent implements OnInit {
     });
   }
 
-  private cargardatos(): void {
+  // Declaramos un estado en el cargarDatos, esto para hacer el overlay
+  // segun dicha funcion de recargar, ya que si vienes de hacer una accion
+  // es innecesario mostrar el overlay de carga
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Proveedor[]>(`${environment.apiBaseUrl}/Proveedor/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida && this.accionPermitida('listar');
+        const userId = typeof getUserId === 'function' ? getUserId() : null;
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(p => p.usua_Creacion?.toString() === userId?.toString());
+
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          this.table.setData(datosFiltrados);
+        }, 500);
+      },
+      error: error => {
+        console.error('Error al cargar proveedores:', error);
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          this.table.setData([]);
+        }, 500);
+      }
     });
   }
 }
