@@ -30,20 +30,20 @@ export class CreateComponent {
   PE: any[] = [];
   Sucursales: any[] = []; // Lista de sucursales, se puede llenar con un servicio si es necesario
   cargarCAI() {
-      this.http.get<any>('https://localhost:7071/CaiS/Listar', {
+      this.http.get<any>(`${environment.apiBaseUrl}/CaiS/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe((data) => this.CAI = data);
     };
 
      cargarPE() {
-      this.http.get<any>('https://localhost:7071/PuntoEmision/Listar', {
+      this.http.get<any>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe((data) => this.PE = data);
     };
 
 
      cargarSucursales() {
-      this.http.get<any>('https://localhost:7071/Sucursales/Listar', {
+      this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
         headers: { 'x-api-key': environment.apiKey }
       }).subscribe((data) => this.Sucursales = data);
     };
@@ -73,7 +73,7 @@ export class CreateComponent {
       regC_Estado: true,
     usua_Creacion: 0,
     usua_Modificacion: 0,
-   
+   estado: "",
     regC_FechaCreacion: new Date(),
     regC_FechaModificacion: new Date(),
     code_Status: 0,
@@ -143,22 +143,23 @@ export class CreateComponent {
         regC_Id: 0,
         regC_Descripcion: this.registroCai.regC_Descripcion.trim(),
         sucu_Id: this.registroCai.sucu_Id,
-        //sucu_Descripcion: this.registroCai.sucu_Descripcion.trim(),
+        sucu_Descripcion: "",
         puEm_Id: this.registroCai.puEm_Id,
        // puEm_Codigo: this.registroCai.puEm_Codigo.trim(),
-        //puEm_Descripcion: this.registroCai.puEm_Descripcion.trim(),
+        puEm_Descripcion: "",
         nCai_Id: this.registroCai.nCai_Id,
         //nCai_Codigo: this.registroCai.nCai_Codigo.trim(),
-        //nCai_Descripcion: this.registroCai.nCai_Descripcion.trim(),
+        nCai_Descripcion: "",
 
         regC_RangoInicial: this.registroCai.regC_RangoInicial.trim(),
         regC_RangoFinal: this.registroCai.regC_RangoFinal.trim(),
         regC_FechaInicialEmision: this.registroCai.regC_FechaInicialEmision,
         regC_FechaFinalEmision: this.registroCai.regC_FechaFinalEmision,
-
+secuencia: 0,
+        estado: "",
         code_Status: 0,
         message_Status: '',
-
+        regC_Estado: false,
         usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         regC_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,

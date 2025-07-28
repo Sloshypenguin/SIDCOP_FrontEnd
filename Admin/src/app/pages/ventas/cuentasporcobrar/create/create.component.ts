@@ -160,7 +160,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         this.enviando = false;
       },
       error: (error) => {
-        console.error('Error al registrar pago:', error);
+
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al registrar el pago. Por favor intente nuevamente.';
         this.enviando = false;

@@ -90,6 +90,8 @@ export class CreateComponent {
 
   ngOnInit() {
     this.producto.prod_EsPromo = this.producto.prod_EsPromo || 'N';
+    this.producto.prod_PagaImpuesto = this.producto.prod_PagaImpuesto || 'N';
+    this.producto.impu_Id = this.producto.impu_Id || 0;
     this.cargarCategorias();
     this.cargarSubcategorias(); // si usas todo el listado para algo
     if (this.categoria.cate_Id) {
@@ -110,7 +112,7 @@ export class CreateComponent {
 
   onPagaImpuestoChange() {
     if (!this.producto.prod_PagaImpuesto) {
-      this.producto.impu_Id = null; // O null, dependiendo cómo lo manejes
+      this.producto.impu_Id = 0;
     }
   }
 
@@ -299,7 +301,7 @@ export class CreateComponent {
             subc_Id: Number(this.producto.subc_Id),
             marc_Id: Number(this.producto.marc_Id),
             prov_Id: Number(this.producto.prov_Id),
-            impu_Id: this.producto.prod_PagaImpuesto ? Number(this.producto.impu_Id) : null,
+            impu_Id: this.producto.prod_PagaImpuesto ? Number(this.producto.impu_Id) : 0,
             prod_PrecioUnitario: Number(this.producto.prod_PrecioUnitario),
             prod_CostoTotal: Number(this.producto.prod_CostoTotal),
             prod_PagaImpuesto: this.producto.prod_PagaImpuesto ? 'S' : 'N',
@@ -335,6 +337,7 @@ export class CreateComponent {
             },
             error: (error) => {
               console.error('Error HTTP detectado:', error);
+              console.error('Error completo:', error);
               if (error.status === 400) {
                 console.error('400 Bad Request:', error.error); // posible detalle del error
               }

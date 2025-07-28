@@ -94,12 +94,17 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-              <button type="button" class="btn btn-secondary me-2" (click)="cancelar()" [disabled]="enviando">
-                Cancelar
+              <button type="button" class="btn btn-primary gold me-2" (click)="cancelar()" [disabled]="enviando">
+                <span class="btn-text">Cancelar</span>
+                <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
               </button>
               <button type="submit" class="btn btn-primary" [disabled]="enviando || pagoForm.invalid">
-                <span *ngIf="enviando" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                Registrar Pago
+                <span *ngIf="!enviando" class="btn-text">Registrar Pago</span>
+                <span *ngIf="!enviando" class="btn-icon"><i class="ri-save-line"></i></span>
+                <span *ngIf="enviando">
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Procesando...
+                </span>
               </button>
             </div>
           </form>

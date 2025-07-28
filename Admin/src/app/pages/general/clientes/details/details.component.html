@@ -1,1 +1,161 @@
-<p>details works!</p>
+<div class="details-container">
+  
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de error -->
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <!-- Botón de regresar -->
+  <div class="details-header-button">
+    <button type="button" class="btn btn-primary" (click)="cerrar()">
+      <span class="btn-text">Regresar</span>
+      <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+    </button>
+  </div>
+  
+  <!-- Contenido de detalles -->
+  <div *ngIf="!cargando && clienteDetalle" class="details-content">
+    
+    <!-- Header con descripción -->
+    <div class="details-header">
+        <img src="{{ clienteDetalle.clie_ImagenDelNegocio }}" alt="Cliente Icon" class="details-icon">
+
+        <div class="details-title">Detalles de Cliente</div>
+            <div class="details-id-row">
+                <div class="details-id">
+                    <div class="details-id-label">Nombre Negocio</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_NombreNegocio }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Código</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Codigo }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">País de Nacimiento</div>
+                    <div class="details-id-value">{{ clienteDetalle.pais_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">DNI</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_DNI }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Nombre Completo</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Nombres }} {{ clienteDetalle.clie_Apellidos }}</div>
+                </div>
+                
+                <div class="details-id">
+                    <div class="details-id-label">Teléfono</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Telefono }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Correo</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Correo }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Sexo</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Sexo }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Fecha de Nacimiento</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_FechaNacimiento }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Localidad</div>
+                    <div class="details-id-value">{{ clienteDetalle.tiVi_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Canal</div>
+                    <div class="details-id-value">{{ clienteDetalle.cana_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Ruta</div>
+                    <div class="details-id-value">{{ clienteDetalle.ruta_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Estado Civil</div>
+                    <div class="details-id-value">{{ clienteDetalle.esCv_Descripcion }}</div>
+                </div>
+
+            </div>
+       </div>
+     
+    <!-- SEPARACIÓN -->
+    <div class="details-title text-center">Detalles de su(s) Direcciones</div>
+    <div class="details-id-row">
+                <div class="details-id" *ngFor="let direccion of direcciones">
+                    <div class="details-id-label">Colonia</div>
+                    <div class="details-id-value">
+                        {{ obtenerDescripcionColonia(direccion.colo_Id) }}
+                    </div>
+                </div>
+                <div class="details-id" *ngFor="let direccion of direcciones">
+                    <div class="details-id-label">Referencia</div>
+                    <div class="details-id-value">
+                        {{ direccion.diCl_Observaciones }}
+                    </div>
+                </div>
+              
+               <!-- <div class="details-id-row">
+                    <div class="details-id" *ngFor="let direccion of direcciones">
+                        <div class="details-id-label">Latitud</div>
+                        <div class="details-id-value">{{ direccion.diCl_Latitud | number:'1.6-6' }}</div>
+                        <div class="details-id-label">Longitud</div>
+                        <div class="details-id-value">{{ direccion.diCl_Longitud | number:'1.6-6' }}</div>
+                    </div>
+                </div> -->
+
+                <div class="details-id" *ngFor="let direccion of direcciones">
+                    <div class="details-id-label">Latitud</div>
+                    <div class="details-id-value">
+                        {{ direccion.diCl_Latitud | number:'1.6-6' }}
+                    </div>
+                </div>
+
+    </div>
+     
+       <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+    
+    <!-- Tabla de auditoría -->
+    <div class="audit-table-container">
+      <div class="audit-table">
+        <div class="audit-header">
+          <div class="audit-col">Acción</div>
+          <div class="audit-col">Usuario</div>
+          <div class="audit-col">Fecha</div>
+        </div>
+      
+      <!-- Fila de creación -->
+      <div class="audit-row">
+        <div class="audit-col">
+          <span class="audit-action">Creador</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-user">{{ clienteDetalle.usuaC_Nombre || 'N/A' }}</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-date">{{ formatearFecha(clienteDetalle.clie_FechaCreacion) }}</span>
+        </div>
+      </div>
+      
+      <!-- Fila de modificación -->
+      <div class="audit-row">
+        <div class="audit-col">
+          <span class="audit-action">Modificación</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-user">{{ clienteDetalle.usuaM_Nombre || 'N/A' }}</span>
+        </div>
+        <div class="audit-col">
+          <span class="audit-date">{{ formatearFecha(clienteDetalle.clie_FechaModificacion?? null ) }}</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+  </div>
+</div>

@@ -3,6 +3,7 @@ export class PuntoEmision {
   puEm_Codigo: string = '';
   puEm_Descripcion: string = '';
   sucu_Id: number = 0;
+  sucu_Descripcion: string = '';
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
 

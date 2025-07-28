@@ -9,6 +9,7 @@ export class Cargos {
   usuarioCreacion: string = '';
   usuarioModificacion: string = '';
   code_Status: number = 0;
+  secuencia : number = 0;
   message_Status: string = '';
   constructor(init?: Partial<Cargos>) {
     Object.assign(this, init);

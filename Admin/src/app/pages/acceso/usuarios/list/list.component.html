@@ -93,7 +93,7 @@
                                                 <i class="ri-edit-line"></i></button>
                                         </li>
                                         <li *ngIf="accionPermitida('mostrar contraseña')">
-                                            <button class="dropdown-action-btn">Ver Clave
+                                            <button class="dropdown-action-btn" (click)="mostrarContrasena(data)">Ver Clave
                                                 <i class="ri-eye-fill"></i></button>
                                         </li>
                                         @if(data.usua_Estado){
@@ -288,7 +288,54 @@
             </div>
         </div>
 
-        <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+        <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar || mostrarConfirmacionRestablecer || mostrarModalContrasena }" *ngIf="mostrarConfirmacionEliminar || mostrarConfirmacionRestablecer || mostrarModalContrasena"></div>
+
+        <!-- Modal para mostrar contraseña -->
+        <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarModalContrasena }" [style.display]="mostrarModalContrasena ? 'block' : 'none'" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="text-center mt-3 mb-3">
+                        <i class="ri-lock-password-line" style="font-size: 3rem; color: #D6B68A;"></i>
+                    </div>
+                    <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+                        <i class=""></i>
+                        <h4>Verificación de Seguridad</h4>
+                        <i class="ri-close-line custom-modal-close" (click)="cancelarMostrarContrasena()"></i>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        <div class="text-center mb-3"> 
+                            <p class="mt-2 custom-modal-text">
+                                Para mostrar la contraseña del usuario <strong>{{ usuarioMostrarClave?.usua_Usuario }}</strong>, ingrese la clave de seguridad:
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <input type="password" class="form-control" [(ngModel)]="claveSeguridad" placeholder="Ingrese la clave de seguridad" />
+                            </div>
+                        </div>
+                        <div *ngIf="contrasenaObtenida" class="alert alert-success mt-3">
+                            <div class="d-flex align-items-center">
+                                <i class="ri-key-2-line me-2"></i>
+                                <strong>Contraseña:</strong>
+                                <div class="ms-2 flex-grow-1 position-relative">
+                                    <span>{{ contrasenaObtenida }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer custom-modal-footer">
+                        <button type="button" class="btn btn-primary gold" (click)="cancelarMostrarContrasena()">
+                            <span class="btn-text">Cancelar</span>
+                            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="obtenerContrasena()">
+                            <span class="btn-text">Verificar</span>
+                            <span class="btn-icon"><i class="ri-shield-check-line"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
