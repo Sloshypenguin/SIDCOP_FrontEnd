@@ -195,6 +195,27 @@
           </div>
         </div>
 
+        <!-- Tipos de Vivienda -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="esCv_Id" class="form-label">Localidad</label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center"></div>
+              <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
+                [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
+                <option value="0" disabled selected>
+                  Seleccione una localidad
+                </option>
+                <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
+                  {{ tipoVivienda.tiVi_Descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.tiVi_Id && mostrarErrores">
+              <small>El campo Localidad es requerido</small>
+            </div>
+        </div>
+
         <!-- Estado Civil -->
         <div class="col-md-6">
           <div class="mb-3">
@@ -379,27 +400,6 @@
               </select>
             </div>
           </div>
-        </div>
-
-        <!-- Tipos de Vivienda -->
-        <div class="col-md-6">
-          <div class="mb-3">
-            <label for="esCv_Id" class="form-label">Tipo de Vivienda</label>
-            <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            <div class="d-flex align-items-center"></div>
-              <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
-                [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
-                <option value="0" disabled selected>
-                  Seleccione un tipo de vivienda
-                </option>
-                <option *ngFor="let tipoVivienda of tiposDeVivienda" [value]="tipoVivienda.tiVi_Id">
-                  {{ tipoVivienda.tiVi_Descripcion }}
-                </option>
-              </select>
-            </div>
-            <div class="text-danger mt-1" *ngIf="!cliente.tiVi_Id && mostrarErrores">
-              <small>El campo Tipo de Vivienda es requerido</small>
-            </div>
         </div>
 
         <div style="display: flex; justify-content: space-between;" class="mb-2 mt-4">
