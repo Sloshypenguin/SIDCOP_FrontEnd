@@ -14,6 +14,14 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -30,7 +38,40 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
@@ -100,6 +141,7 @@ export class ListComponent implements OnInit {
   vendedorDetalle: Vendedor | null = null;
   
   // Propiedades para alertas
+    mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -112,7 +154,7 @@ export class ListComponent implements OnInit {
   vendedorEliminar: Vendedor | null = null;
 
   constructor(public table: ReactiveTableService<Vendedor>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
-    this.cargardatos();
+    this.cargardatos(true);
 
   }
 
@@ -147,16 +189,32 @@ export class ListComponent implements OnInit {
 
   guardarVendedor(vendedor: Vendedor): void {
     console.log('Vendedor guardado exitosamente desde create component:', vendedor);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+   this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Vendedor guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarVendedor(vendedor: Vendedor): void {
     console.log('Vendedor actualizado exitosamente desde edit component:', vendedor);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Vendedor actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(vendedor: Vendedor): void {
@@ -175,7 +233,7 @@ export class ListComponent implements OnInit {
     if (!this.vendedorEliminar) return;
     
     console.log('Eliminando Vendedor:', this.vendedorEliminar);
-    
+       this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Vendedores/Eliminar/${this.vendedorEliminar.vend_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -183,6 +241,7 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
+        setTimeout(() => {
         console.log('Respuesta del servidor:', response);
         
         // Verificar el código de estado en la respuesta
@@ -200,7 +259,7 @@ export class ListComponent implements OnInit {
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -243,6 +302,7 @@ export class ListComponent implements OnInit {
           // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
+        }, 1000);
       },
     });
   }
@@ -285,12 +345,23 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Vendedor[]>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+         const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+        this.table.setData(data);
+      },500);
     });
   }
 }

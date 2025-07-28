@@ -53,29 +53,7 @@
 }
 
 /* Estilos para la tabla de auditoría */
-.audit-table {
-  width: 100%;
-  border: 1px solid #e9ecef;
-  border-radius: 5px;
-  overflow: hidden;
-}
 
-.audit-header {
-  display: flex;
-  background-color: #f8f9fa;
-  font-weight: 600;
-  color: #495057;
-}
-
-.audit-row {
-  display: flex;
-  border-top: 1px solid #e9ecef;
-}
-
-.audit-col {
-  flex: 1;
-  padding: 10px 15px;
-}
 
 .audit-action {
   font-weight: 500;
@@ -151,3 +129,4 @@
     padding: 8px 15px;
   }
 }
+

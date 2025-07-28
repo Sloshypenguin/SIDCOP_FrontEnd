@@ -108,7 +108,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
         this.cargando = false;
       },
       error: (error) => {
-        console.error('Error al cargar datos de la cuenta por cobrar:', error);
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al cargar los datos de la cuenta por cobrar.';
         this.cargando = false;
@@ -166,7 +165,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
         this.enviando = false;
       },
       error: (error) => {
-        console.error('Error al registrar pago:', error);
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al registrar el pago. Por favor intente nuevamente.';
         this.enviando = false;
