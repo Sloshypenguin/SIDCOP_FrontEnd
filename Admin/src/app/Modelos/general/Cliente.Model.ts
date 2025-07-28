@@ -14,7 +14,7 @@ export class Cliente{
     clie_Telefono: string = '';
     clie_Correo: string = '';
     clie_Sexo: string = '';
-    clie_FechaNacimiento?: Date;
+    clie_FechaNacimiento?: Date | null;
     tiVi_Id: number = 0;
     tiVi_Descripcion: string = '';
     cana_Id: number = 0;

@@ -125,8 +125,27 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
-  tabuladores(){
-    
+  tabuladores(no:number){
+    if(no ==1){
+      this.mostrarErrores=true
+      if(this.cliente.clie_Codigo.trim() && this.cliente.clie_Nacionalidad.trim() &&
+        this.cliente.clie_RTN.trim() && this.cliente.clie_Nombres.trim() &&
+        this.cliente.clie_Apellidos.trim() && this.cliente.esCv_Id &&
+        this.cliente.clie_FechaNacimiento && this.cliente.tiVi_Id &&
+        this.cliente.clie_Telefono.trim())
+      {
+        this.mostrarErrores=false;
+        this.activeTab=2;
+      }
+      else{
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+    }
   }
 
   trackByIndex(index: number) { return index; }
@@ -299,7 +318,7 @@ export class CreateComponent {
     clie_Telefono: '',
     clie_Correo: '',
     clie_Sexo: 'M',
-    clie_FechaNacimiento: new Date(),
+    clie_FechaNacimiento: null,
     tiVi_Id: 0,
     tiVi_Descripcion: '',
     cana_Id: 0,

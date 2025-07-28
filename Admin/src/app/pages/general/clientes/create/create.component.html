@@ -64,9 +64,11 @@
             <label for="clienteCodigo" class="form-label">Código</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <div [ngStyle]="{ border: (!cliente.clie_Codigo.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
-                <i class="ri-attachment-line"></i>
-              </div>
+              <i class="ri-attachment-line" [ngStyle]="{
+                border: (!cliente.clie_Codigo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_Codigo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" [class.is-invalid]="
                   !cliente.clie_Codigo.trim() && mostrarErrores
                 " id="clienteCodigo" [(ngModel)]="cliente.clie_Codigo" placeholder="Ingrese el código del cliente"
@@ -84,6 +86,11 @@
             <label for="clie_Nacionalidad" class="form-label">Nacionalidad</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
+              <i class="ri-flag-line" [ngStyle]="{
+                border: (!cliente.clie_Nacionalidad.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_Nacionalidad.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <select id="clie_Nacionalidad" class="form-select" [(ngModel)]="cliente.clie_Nacionalidad"
                 [class.is-invalid]="
                   !cliente.clie_Nacionalidad && mostrarErrores
@@ -105,9 +112,11 @@
           <div class="mb-3">
             <label for="clienteDNI" class="form-label">DNI</label>
             <div class="d-flex align-items-center">
-              <div [ngStyle]="{ border: (!cliente.clie_Codigo.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
-                <i class="ri-attachment-line"></i>
-              </div>
+              <i class="ri-polaroid-2-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" id="clienteDNI" [(ngModel)]="cliente.clie_DNI"
                 placeholder="Ingrese el DNI del cliente" mask="0000-0000-00000" />
             </div>
@@ -120,9 +129,11 @@
             <label for="clienteRTN" class="form-label">RTN</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <div [ngStyle]="{ border: (!cliente.clie_RTN.trim() && mostrarErrores) ? '1px solid #fca4ad' : '1px solid #e5f0ff', backgroundColor: '#eef3ff', padding: '0.460rem 0.5rem', position: 'relative', left: '7px', borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' }" >
-                <i class="ri-newspaper-line"></i>
-              </div>
+              <i class="ri-newspaper-line" [ngStyle]="{
+                border: (!cliente.clie_RTN.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_RTN.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" [class.is-invalid]="!cliente.clie_RTN.trim() && mostrarErrores"
                 id="clienteRTN" [(ngModel)]="cliente.clie_RTN" placeholder="Ingrese el RTN del cliente" required />
             </div>
@@ -138,9 +149,11 @@
             <label for="clienteNombres" class="form-label">Nombres</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
-                <i class="ri-user-3-line"></i>
-              </div>
+              <i class="ri-user-4-line" [ngStyle]="{
+                border: (!cliente.clie_Nombres.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_Nombres.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" id="clienteNombres" [(ngModel)]="cliente.clie_Nombres"
                 [class.is-invalid]="
                   !cliente.clie_Nombres.trim() && mostrarErrores
@@ -158,9 +171,11 @@
             <label for="clienteApellidos" class="form-label">Apellidos</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
-                <i class="ri-user-3-line"></i>
-              </div>
+              <i class="ri-user-4-line" [ngStyle]="{
+                border: (!cliente.clie_Apellidos.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_Apellidos.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" id="clienteApellidos" [(ngModel)]="cliente.clie_Apellidos"
                 [class.is-invalid]="
                   !cliente.clie_Apellidos.trim() && mostrarErrores
@@ -175,8 +190,7 @@
         <!-- Sexo -->
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label d-block">Sexo</label>
-            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <label class="form-label">Sexo</label>
             <div class="sexo-toggle d-flex">
               <label class="sexo-option me-2" [class.selected]="cliente.clie_Sexo === 'M'">
                 <input type="radio" name="sexo" value="M" [(ngModel)]="cliente.clie_Sexo" required />
@@ -195,12 +209,17 @@
           </div>
         </div>
 
-        <!-- Tipos de Vivienda -->
+        <!-- Localidad -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Localidad</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
-            <div class="d-flex align-items-center"></div>
+            <div class="d-flex align-items-center">
+              <i class="ri-home-4-line" [ngStyle]="{
+                border: (!cliente.tiVi_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.tiVi_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.tiVi_Id"
                 [class.is-invalid]="!cliente.tiVi_Id && mostrarErrores" required>
                 <option value="0" disabled selected>
@@ -214,20 +233,33 @@
             <div class="text-danger mt-1" *ngIf="!cliente.tiVi_Id && mostrarErrores">
               <small>El campo Localidad es requerido</small>
             </div>
+          </div>
         </div>
 
         <!-- Estado Civil -->
         <div class="col-md-6">
           <div class="mb-3">
             <label for="esCv_Id" class="form-label">Estado Civil</label>
-            <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id">
-              <option value="0" disabled selected>
-                Seleccione un estado civil
-              </option>
-              <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">
-                {{ estadoCivil.esCv_Descripcion }}
-              </option>
-            </select>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <i class="ri-hand-heart-line" [ngStyle]="{
+                border: (!cliente.esCv_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.esCv_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+              <select id="esCv_Id" class="form-select" [(ngModel)]="cliente.esCv_Id"
+                [class.is-invalid]="!cliente.esCv_Id && mostrarErrores" required>
+                <option value="0" disabled selected>
+                  Seleccione un estado civil
+                </option>
+                <option *ngFor="let estadoCivil of estadosCiviles" [value]="estadoCivil.esCv_Id">
+                  {{ estadoCivil.esCv_Descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.esCv_Id && mostrarErrores">
+              <small>El campo Estado Civil es requerido</small>
+            </div>
           </div>
         </div>
 
@@ -235,12 +267,19 @@
         <div class="col-md-6">
           <div class="mb-3">
             <label for="clienteFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
-                <i class="ri-calendar-todo-fill"></i>
-              </div>
+              <i class="ri-calendar-todo-line" [ngStyle]="{
+                border: (!cliente.clie_FechaNacimiento && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_FechaNacimiento && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="date" id="clienteFechaNacimiento" class="form-control"
-                [(ngModel)]="cliente.clie_FechaNacimiento" />
+                [class.is-invalid]="!cliente.clie_FechaNacimiento && mostrarErrores"
+                [(ngModel)]="cliente.clie_FechaNacimiento" required/>
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_FechaNacimiento && mostrarErrores">
+              <small>El campo Fecha Nacimiento es requerido</small>
             </div>
           </div>
         </div>
@@ -251,9 +290,11 @@
             <label for="clienteTelefono" class="form-label">Teléfono</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
-              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
-                <i class="ri-phone-fill"></i>
-              </div>
+              <i class="ri-phone-line" [ngStyle]="{
+                border: (!cliente.clie_Telefono.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!cliente.clie_Telefono.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" [class.is-invalid]="
                   !cliente.clie_Telefono.trim() && mostrarErrores
                 " id="clienteTelefono" [(ngModel)]="cliente.clie_Telefono"
@@ -270,9 +311,11 @@
           <div class="mb-3">
             <label for="clienteCorreo" class="form-label">Correo</label>
             <div class="d-flex align-items-center">
-              <div style=" padding: 0.460rem 0.5rem; border: 1px solid #e5f0ff; position: relative; left: 7px; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #eef3ff;">
-                <i class="ri-mail-unread-line"></i>
-              </div>
+              <i class="ri-mail-unread-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
               <input type="text" class="form-control" id="clienteCorreo" [(ngModel)]="cliente.clie_Correo"
                 placeholder="Ingrese el correo del cliente" />
             </div>
@@ -295,7 +338,7 @@
             *ngIf="activeTab < 5"
             type="button"
             class="btn-tab-custom btn-tab-next"
-            (click)="activeTab = activeTab + 1"
+            (click)="tabuladores(1)"
           >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
