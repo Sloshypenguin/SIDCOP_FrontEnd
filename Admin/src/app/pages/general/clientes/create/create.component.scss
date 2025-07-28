@@ -307,3 +307,30 @@
 .uploaded-img-wrapper img {
   object-fit: cover;
 }
+
+.card-red {
+  width: 100%;
+  background-color: #ac09091a;
+  color: #fff;
+  border-radius: 5px;
+  padding: 16px;
+  position: relative;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  margin-bottom: 2em;
+  border: 1px solid #f1a3a3;
+}
+
+
+.card-info {
+  width: 100%;
+  background-color: #0986ac1a;
+  color: #fff;
+  border-radius: 5px;
+  padding: 16px;
+  position: relative;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  margin-bottom: 2em;
+  border: 1px solid #90c5e7;
+}

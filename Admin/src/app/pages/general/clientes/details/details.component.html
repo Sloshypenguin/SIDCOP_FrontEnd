@@ -23,68 +23,92 @@
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <div class="details-title">Detalles de Cliente</div>
-      <div class="details-id-row">
-  <div class="details-id">
-    <div class="details-id-label">Nombre Negocio</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_NombreNegocio }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Código</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_Codigo }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">País de Nacimiento</div>
-    <div class="details-id-value">{{ clienteDetalle.pais_Descripcion }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">DNI</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_DNI }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Nombre Completo</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_Nombres }} {{ clienteDetalle.clie_Apellidos }}</div>
-  </div>
- 
-  <div class="details-id">
-    <div class="details-id-label">Teléfono</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_Telefono }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Correo</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_Correo }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Sexo</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_Sexo }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Fecha de Nacimiento</div>
-    <div class="details-id-value">{{ clienteDetalle.clie_FechaNacimiento }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Localidad</div>
-    <div class="details-id-value">{{ clienteDetalle.tiVi_Descripcion }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Canal</div>
-    <div class="details-id-value">{{ clienteDetalle.cana_Descripcion }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Ruta</div>
-    <div class="details-id-value">{{ clienteDetalle.ruta_Descripcion }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Estado Civil</div>
-    <div class="details-id-value">{{ clienteDetalle.esCv_Descripcion }}</div>
-  </div>
+        <div class="details-title">Detalles de Cliente</div>
+            <div class="details-id-row">
+                <div class="details-id">
+                    <div class="details-id-label">Nombre Negocio</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_NombreNegocio }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Código</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Codigo }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">País de Nacimiento</div>
+                    <div class="details-id-value">{{ clienteDetalle.pais_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">DNI</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_DNI }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Nombre Completo</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Nombres }} {{ clienteDetalle.clie_Apellidos }}</div>
+                </div>
+                
+                <div class="details-id">
+                    <div class="details-id-label">Teléfono</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Telefono }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Correo</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Correo }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Sexo</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_Sexo }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Fecha de Nacimiento</div>
+                    <div class="details-id-value">{{ clienteDetalle.clie_FechaNacimiento }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Localidad</div>
+                    <div class="details-id-value">{{ clienteDetalle.tiVi_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Canal</div>
+                    <div class="details-id-value">{{ clienteDetalle.cana_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Ruta</div>
+                    <div class="details-id-value">{{ clienteDetalle.ruta_Descripcion }}</div>
+                </div>
+                <div class="details-id">
+                    <div class="details-id-label">Estado Civil</div>
+                    <div class="details-id-value">{{ clienteDetalle.esCv_Descripcion }}</div>
+                </div>
 
-</div>
+            </div>
+       </div>
+     
+    <!-- SEPARACIÓN -->
+    <div class="details-id-row">
+                <div class="details-id" *ngFor="let direccion of direcciones">
+                    <div class="details-id-label">Colonia</div>
+                    <div class="details-id-value">
+                        {{ obtenerDescripcionColonia(direccion.colo_Id) }}
+                    </div>
+                </div>
+                <div class="details-id" *ngFor="let direccion of direcciones">
+                    <div class="details-id-label">Referencia</div>
+                    <div class="details-id-value">
+                        {{ direccion.diCl_Observaciones }}
+                    </div>
+                </div>
+              
+               <div class="details-id-row">
+                    <div class="details-id" *ngFor="let direccion of direcciones">
+                        <div class="details-id-label">Latitud</div>
+                        <div class="details-id-value">{{ direccion.diCl_Latitud | number:'1.6-6' }}</div>
+                        <div class="details-id-label">Longitud</div>
+                        <div class="details-id-value">{{ direccion.diCl_Longitud | number:'1.6-6' }}</div>
+                    </div>
+                </div>
+
     </div>
-     <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
-    
-
-    
+     
+       <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
     
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">

@@ -10,7 +10,6 @@ import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component'
 import { Aval } from 'src/app/Modelos/general/Aval.Model';
 
 import { NgModule } from '@angular/core';
-import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente.Model';
 import { getUserId } from 'src/app/core/utils/user-utils';
 
@@ -18,7 +17,7 @@ import { getUserId } from 'src/app/core/utils/user-utils';
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective, MapaSelectorComponent, DropzoneModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgxMaskDirective, MapaSelectorComponent],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss',
   providers: [provideNgxMask()]
@@ -29,59 +28,6 @@ export class CreateComponent {
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
   entrando = true;
-
-
-  public dropzoneConfig: DropzoneConfigInterface = {
-    url: 'https://httpbin.org/post',
-    clickable: true,
-    addRemoveLinks: true,
-    previewsContainer: false,
-    paramName: 'file',
-    maxFilesize: 50,
-    acceptedFiles: 'image/*',
-  };
-
-  uploadedFiles: any[] = [];
-
-  onFileSelected(event: any): void {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        this.uploadFileToCloudinary(file);
-      }
-    }
-  }
-
-  uploadFileToCloudinary(file: File): void {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'subidas_usuarios');
-    formData.append('folder', 'subidas_usuarios');
-
-    this.http
-      .post<any>('https://api.cloudinary.com/v1_1/dbt7mxrwk/upload', formData)
-      .subscribe(
-        (response) => {
-          this.uploadedFiles.push({
-            name: file.name,
-            size: file.size,
-            dataURL: response.secure_url,
-          });
-          console.log(response)
-        },
-        (error) => {
-          console.error('Error al subir a Cloudinary:', error);
-        }
-      );
-  }
-
-  removeFile(file: any): void {
-    const index = this.uploadedFiles.indexOf(file);
-    if (index > -1) {
-      this.uploadedFiles.splice(index, 1);
-    }
-  }
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -138,6 +84,13 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
+  tieneDatosCredito(): boolean {
+  return (
+    !!this.cliente.clie_LimiteCredito &&
+    !!this.cliente.clie_DiasCredito
+  );
+}
+
   tabuladores(no:number){
     if(no == 1){
       this.mostrarErrores=true
@@ -147,26 +100,28 @@ export class CreateComponent {
         this.cliente.clie_FechaNacimiento && this.cliente.tiVi_Id &&
         this.cliente.clie_Telefono.trim())
       {
+        this.mostrarErrores=false;
+        this.activeTab=2;
+      }
+      else{
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
         setTimeout(() => {
           this.mostrarAlertaWarning = false;
           this.mensajeWarning = '';
         }, 3000);
-      }
-      else{
-        this.mostrarErrores=false;
-        this.activeTab=2;
       }
     }
 
     if(no == 2){
       this.mostrarErrores=true
-      if(this.cliente.clie_NombreNegocio.trim() && this.cliente.ruta_Id &&
-        this.cliente.cana_Id && this.direccionPorCliente.diCl_Observaciones.trim() &&
-        this.selectedDepa.trim() && this.nuevaColonia.muni_Codigo.trim() && this.aval.colo_Id &&
-        this.direccionPorCliente.diCl_DireccionExacta)
+      if(this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim() &&
+        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion>=1)
       {
+        this.mostrarErrores=false;
+        this.activeTab=3;
+      }
+      else{
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
         setTimeout(() => {
@@ -174,15 +129,76 @@ export class CreateComponent {
           this.mensajeWarning = '';
         }, 3000);
       }
-      else{
-        this.mostrarErrores=false;
-        this.activeTab=3;
-      }
     }
 
     if(no == 3){
+      if(this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito){
+        this.mostrarErrores=false;
+        this.activeTab=4;
+      }
+      if(!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito){
+        this.mostrarErrores=false;
+        this.activeTab=4;
+      }
+      else{
+        if(this.cliente.clie_LimiteCredito){
+          if(this.cliente.clie_DiasCredito){
+            this.mostrarErrores=false;
+            this.activeTab=4;
+          }else{
+            this.mostrarAlertaWarning = true;
+            this.mensajeWarning = 'Los Dias del Credito son obligatorios si asigno un crédito.';
+            setTimeout(() => {
+              this.mostrarAlertaWarning = false;
+              this.mensajeWarning = '';
+            }, 3000);
+          }
+        }
+        if(this.cliente.clie_DiasCredito){
+          if(this.cliente.clie_LimiteCredito){
+            this.mostrarErrores=false;
+            this.activeTab=4;
+          }else{
+            this.mostrarAlertaWarning = true;
+            this.mensajeWarning = 'Se asigno Dias de Credito, pero no un crédito.';
+            setTimeout(() => {
+              this.mostrarAlertaWarning = false;
+              this.mensajeWarning = '';
+            }, 3000);
+          }
+        }
+      }
+    }
+
+    if(no == 4){
+      this.mostrarErrores=true;
+      if (this.tieneDatosCredito()) {
+        if(this.aval.aval_DNI.trim() && this.aval.pare_Id &&
+          this.aval.aval_Nombres.trim() && this.aval.aval_Apellidos.trim() &&
+          this.aval.esCv_Id && this.aval.aval_Telefono.trim() && this.aval.tiVi_Id &&
+          this.selectedDepa.trim() && this.nuevaColonia.muni_Codigo.trim() && this.aval.colo_Id &&
+          this.aval.aval_DireccionExacta && this.aval.aval_FechaNacimiento)
+        {
+          this.mostrarErrores=false;
+          this.activeTab=5;
+        }
+        else{
+          this.mostrarAlertaWarning = true;
+          this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+          setTimeout(() => {
+            this.mostrarAlertaWarning = false;
+            this.mensajeWarning = '';
+          }, 3000);
+        }
+      }
+      else{
+        this.mostrarErrores=false;
+        this.activeTab=5;
+      }
+    }
+
+    if(no == 5){
       this.mostrarErrores=false;
-      this.activeTab=4;
     }
   }
 
@@ -486,6 +502,31 @@ export class CreateComponent {
     this.mensajeWarning = '';
   }
 
+  onImagenSeleccionada(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'subidas_usuarios');      
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
+
+      
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.cliente.clie_ImagenDelNegocio = data.secure_url;
+        console.log(this.cliente.clie_ImagenDelNegocio)
+      })
+      .catch(error => {
+        console.error('Error al subir la imagen a Cloudinary:', error);
+      });
+    }
+  }
+
   guardarCliente(): void {
     this.mostrarErrores = true;
     if (this.entrando) {
@@ -501,7 +542,7 @@ export class CreateComponent {
         clie_Nombres: this.cliente.clie_Nombres.trim(),
         clie_Apellidos: this.cliente.clie_Apellidos.trim(),
         clie_NombreNegocio: this.cliente.clie_NombreNegocio.trim(),
-        clie_ImagenDelNegocio: 'Imagen por definir',
+        clie_ImagenDelNegocio: this.cliente.clie_ImagenDelNegocio,
         clie_Telefono: this.cliente.clie_Telefono.trim(),
         clie_Correo: this.cliente.clie_Correo.trim(),
         clie_Sexo: this.cliente.clie_Sexo,
@@ -557,7 +598,7 @@ export class CreateComponent {
       });
     } else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = '1Por favor, complete todos los campos obligatorios.';
+      this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
       setTimeout(() => {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
@@ -565,7 +606,9 @@ export class CreateComponent {
     }
   }
 
+  validarDireccion: number = 0;
   agregarDireccion() {
+    this.validarDireccion+=1;
     if (this.direccionEditandoIndex !== null) {
       this.direccionesPorCliente[this.direccionEditandoIndex] = { ...this.direccionPorCliente };
       this.direccionEditandoIndex = null;
@@ -586,6 +629,7 @@ export class CreateComponent {
   }
 
   eliminarDireccion(index: number) {
+    this.validarDireccion-=1;
     this.direccionesPorCliente.splice(index, 1);
   }
 

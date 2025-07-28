@@ -355,20 +355,28 @@
         <div class="col-lg-6">
           <div class="mb-3">
             <label class="form-label">Imagen del negocio</label>
-            <div style="width: 100%;height: 220px;background-color: #ffffff;border: 2px dashed #dde1ef;border-radius: 10px;">
-              <div style="width: 100%; height: 100%; position: relative;">
-                <input type="file" accept="image/*"
-                  style="opacity: 0; position: absolute; width: 100%; height: 100%; left: 0; top: 0; cursor: pointer;" />
-                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                  <i class="ri-camera-line" style=" margin-right: 10px; font-size: 20px; font-weight: 200; color: #878c9c; margin-bottom: 0.3em;"></i><h5 class="text-muted">Seleccionar imagen</h5>
-                </div>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div [ngStyle]="{ border: '2px dashed ' + (!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores ? '#f9bcc4' : '#dde1ef'),
+            borderRadius: '10px', position: 'relative', overflow: 'hidden', width: '100%', height: '235px', backgroundColor: '#ffffff'}">
+              <input type="file" accept="image/*" (change)="onImagenSeleccionada($event)"
+                style="opacity: 0; position: absolute; width: 100%; height: 100%; left: 0; top: 0; cursor: pointer; z-index: 2;" />
+              <div *ngIf="!cliente.clie_ImagenDelNegocio" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;">
+                <i class="ri-camera-line" style=" margin-right: 10px; font-size: 20px; font-weight: 200; color: #878c9c; margin-bottom: 0.3em;"></i>
+                <h5 class="text-muted">Seleccionar imagen</h5>
               </div>
+              <img *ngIf="cliente.clie_ImagenDelNegocio"
+                [src]="cliente.clie_ImagenDelNegocio"
+                alt="Previsualización"
+                style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" />
+            </div>
+            <div class="text-danger mt-1" *ngIf="!cliente.clie_ImagenDelNegocio.trim() && mostrarErrores">
+              <small>La Imagen del negocio es requerida</small>
             </div>
           </div>
         </div>
 
         <div class="col-lg-6">
-          <div class="mb-3 col-12">
+          <div class="mb-2 col-12">
             <label for="clienteNombreNegocio" class="form-label">Nombre del Negocio</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
@@ -387,7 +395,7 @@
             </div>
           </div>
 
-          <div class="mb-3 col-12">
+          <div class="mb-2 col-12">
             <label for="cana_Id" class="form-label">Canal</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
@@ -409,7 +417,7 @@
             </div>
           </div>
 
-          <div class="mb-3 col-12">
+          <div class="mb-2 col-12">
             <label for="ruta_Id" class="form-label">Ruta</label>
             <span class="text-danger" *ngIf="mostrarErrores">*</span>
             <div class="d-flex align-items-center">
@@ -442,6 +450,10 @@
           </div>
         </div>
         <hr class="mb-4" />
+
+        <div class="card-red" *ngIf="validarDireccion<1">
+          <h4 style="color: #f1a3a3; margin-top: 0.5rem; font-weight: 600;">Agrega una direccion para poder continuar el fomulario</h4>
+        </div>
         
         <div *ngFor="let direccion of direccionesPorCliente; let i = index" class="ubicacion-card">
           <div class="card-actions">
@@ -481,7 +493,7 @@
             *ngIf="activeTab < 5"
             type="button"
             class="btn-tab-custom btn-tab-next"
-            (click)="activeTab = activeTab + 1"
+            (click)="tabuladores(2)"
           >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
@@ -537,6 +549,11 @@
             </div>
           </div>
         </div>
+
+        <div class="card-info">
+          <h4 style="color: #90c5e7; margin-top: 0.5rem; font-weight: 600;">Si creas un crédito, deberas crear el Aval.</h4>
+        </div>
+
       </div>
 
       <!-- Botones de navegación -->
@@ -554,7 +571,7 @@
             *ngIf="activeTab < 5"
             type="button"
             class="btn-tab-custom btn-tab-next"
-            (click)="activeTab = activeTab + 1"
+            (click)="tabuladores(3)"
           >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
@@ -567,6 +584,12 @@
     <!--=======================================-->
     <div *ngIf="activeTab === 4">
       <div class="row mx-lg-4">
+        <div class="card-info" *ngIf="!cliente.clie_DiasCredito">
+          <h4 style="color: #90c5e7; margin-top: 0.5rem; font-weight: 600;">No es necesario llenar este formulario.</h4>
+        </div>
+        <div class="card-red" *ngIf="cliente.clie_DiasCredito && !aval.aval_DNI.trim()">
+          <h4 style="color: #f1a3a3; margin-top: 0.5rem; font-weight: 600;">Completa el formulario para continuar.</h4>
+        </div>
         <!-- DNI -->
         <div class="col-md-6">
           <div class="mb-3">
@@ -805,7 +828,7 @@
               </div>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
-            <div class="text-danger mt-1" *ngIf="!(selectedMuniAval ?? '').trim() && mostrarErrores">
+            <div class="text-danger mt-1" *ngIf="!(nuevaColoniaAval.muni_Codigo ?? '').trim() && mostrarErrores">
               <small>El campo Municipio es requerido</small>
             </div>
           </div>
@@ -835,7 +858,7 @@
               </div>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
-            <div class="text-danger mt-1" *ngIf="!(selectedColoniaAval ?? '').trim() && mostrarErrores">
+            <div class="text-danger mt-1" *ngIf="!aval.colo_Id && mostrarErrores">
               <small>El campo Colonias es requerido</small>
             </div>
           </div>
@@ -903,7 +926,7 @@
             *ngIf="activeTab < 5"
             type="button"
             class="btn-tab-custom btn-tab-next"
-            (click)="activeTab = activeTab + 1"
+            (click)="tabuladores(4)"
           >
             Siguiente <i class="ri-arrow-right-line"></i>
           </button>
