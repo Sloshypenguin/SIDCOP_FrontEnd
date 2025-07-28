@@ -739,7 +739,6 @@
                   !aval.aval_Telefono.trim() && mostrarErrores
                 " id="avalTelefono" [(ngModel)]="aval.aval_Telefono" placeholder="Ingrese el teléfono del aval"
                 mask="0000-0000" required />
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!aval.aval_Telefono.trim() && mostrarErrores">
               <small>El campo Teléfono del Aval es requerido</small>
@@ -856,7 +855,6 @@
               <div *ngIf="cargandoColoniasAval" class="form-text text-muted">
                 Cargando Colonias...
               </div>
-              <span class="text-danger" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!aval.colo_Id && mostrarErrores">
               <small>El campo Colonias es requerido</small>
