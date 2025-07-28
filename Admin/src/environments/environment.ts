@@ -20,7 +20,7 @@ export const environment = {
   },
   apiBaseUrl: 'http://sidcop.somee.com', //cambiar si es necesario
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
-  usua_Id: idUsuario, // Ahora se obtiene del usuario de la sesión actual
+  usua_Id: idUsuario, 
 };
 
 

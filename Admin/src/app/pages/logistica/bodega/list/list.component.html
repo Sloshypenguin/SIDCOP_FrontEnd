@@ -53,7 +53,7 @@
     </div>
   </div>
 </div>
-
+      <div class="table-radius-container">
         <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <table class="table table-gridjs table-style">
             <thead>
@@ -87,171 +87,172 @@
                       </span>
                     </span>
                   </th>
-               <th class="gridjs-th" (click)="table.sortBy('bode_Capacidad')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Capacidad
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_Capacidad' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_Capacidad' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                <th class="gridjs-th" (click)="table.sortBy('bode_Capacidad')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Capacidad
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_Capacidad' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_Capacidad' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-               <th class="gridjs-th" (click)="table.sortBy('bode_Placa')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Placa
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_Placa' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_Placa' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                <th class="gridjs-th" (click)="table.sortBy('bode_Placa')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Placa
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_Placa' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_Placa' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                <th class="gridjs-th" (click)="table.sortBy('bode_TipoCamion')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Tipo Camión
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_TipoCamion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_TipoCamion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                  <th class="gridjs-th" (click)="table.sortBy('bode_TipoCamion')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Tipo Camión
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_TipoCamion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_TipoCamion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                <th class="gridjs-th" (click)="table.sortBy('bode_VIN')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      VIN
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_VIN' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'bode_VIN' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                  <th class="gridjs-th" (click)="table.sortBy('bode_VIN')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        VIN
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_VIN' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'bode_VIN' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                <th class="gridjs-th" (click)="table.sortBy('vend_Nombres')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Vendedor
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'vend_Nombres' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'vend_Nombres' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                  <th class="gridjs-th" (click)="table.sortBy('vend_Nombres')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Vendedor
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'vend_Nombres' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'vend_Nombres' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                <th class="gridjs-th" (click)="table.sortBy('sucu_Descripcion')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Sucursal
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'sucu_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'sucu_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                  <th class="gridjs-th" (click)="table.sortBy('sucu_Descripcion')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Sucursal
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'sucu_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'sucu_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                <th class="gridjs-th" (click)="table.sortBy('regC_Descripcion')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Registro Cai
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'regC_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'regC_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                  <th class="gridjs-th" (click)="table.sortBy('regC_Descripcion')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Registro Cai
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'regC_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'regC_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
-                <th class="gridjs-th" (click)="table.sortBy('mode_Descripcion')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Modelo
-                      <!-- iconos para ordenar -->
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                         <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'mode_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
-                      <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'mode_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                      </i>
+                    </th>
+                  <th class="gridjs-th" (click)="table.sortBy('mode_Descripcion')" style="cursor:pointer;">
+                      <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                        Modelo
+                        <!-- iconos para ordenar -->
+                        <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                          <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'mode_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'mode_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        </span>
                       </span>
-                    </span>
-                  </th>
+                    </th>
 
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                    <div class="dropdown-action-list">
-                      <button type="button"
-                    class="dropdown-toggle"
-                    [attr.aria-expanded]="false"
-                    (click)="floatingMenuService.open($event, data)">
-                    <span>Acciones</span>
-                    <i class="ri-settings-3-line"></i>
-                  </button>
-                  </div>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of table.paginated$ | async; let i = index">
+                  <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
+                      <div class="dropdown-action-list">
+                        <button type="button"
+                      class="dropdown-toggle"
+                      [attr.aria-expanded]="false"
+                      (click)="floatingMenuService.open($event, data)">
+                      <span>Acciones</span>
+                      <i class="ri-settings-3-line"></i>
+                    </button>
+                    </div>
+                    </td>
+                  <td><span class="fw-semibold">{{data.secuencia}}</span></td>
+                  <td>{{data.bode_Descripcion}}</td>
+                  <td>{{data.bode_Capacidad}}</td>
+                  <td>{{data.bode_Placa}}</td>
+                  <td>
+                    {{
+                      data.bode_TipoCamion === 'G' ? 'Grande' :
+                      data.bode_TipoCamion === 'M' ? 'Mediano' :
+                      data.bode_TipoCamion === 'P' ? 'Pequeño' :
+                      'N/A'
+                    }}
                   </td>
-                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
-                <td>{{data.bode_Descripcion}}</td>
-                <td>{{data.bode_Capacidad}}</td>
-                <td>{{data.bode_Placa}}</td>
-                <td>
-                  {{
-                    data.bode_TipoCamion === 'G' ? 'Grande' :
-                    data.bode_TipoCamion === 'M' ? 'Mediano' :
-                    data.bode_TipoCamion === 'P' ? 'Pequeño' :
-                    'N/A'
-                  }}
-                </td>
-                <td>{{data.bode_VIN}}</td>
-                <td>{{data.vend_Nombres}} {{data.vend_Apellidos}}</td>
-                <td>{{data.sucu_Descripcion}}</td>
-                <td>{{data.regC_Descripcion}}</td>
-                <td>{{data.mode_Descripcion}}</td>
-              
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="row justify-content-md-between align-items-md-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <ng-container *ngIf="(table.paginated$ | async) as paginados">
-            <div class="col-sm-12 col-md-5">
-              <div class="dataTables_info mb-2" role="status" aria-live="polite">
-                Mostrando
-                {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.  total$ | async }}
-                registros
+                  <td>{{data.bode_VIN}}</td>
+                  <td>{{data.vend_Nombres}} {{data.vend_Apellidos}}</td>
+                  <td>{{data.sucu_Descripcion}}</td>
+                  <td>{{data.regC_Descripcion}}</td>
+                  <td>{{data.mode_Descripcion}}</td>
+                
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row justify-content-md-between align-items-md-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+            <ng-container *ngIf="(table.paginated$ | async) as paginados">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info mb-2" role="status" aria-live="polite">
+                  Mostrando
+                  {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.  total$ | async }}
+                  registros
+                </div>
               </div>
-            </div>
-            <div class="col-sm-12 col-md-5">
-              <div class="text-md-right float-md-end gridjs-pagination">
-                <pagination [totalItems]="(table.total$ | async) || 0" [(ngModel)]="table.page" [itemsPerPage]="table.pageSizeValue" (pageChanged)="table.setPage($event.page)"></pagination>
+              <div class="col-sm-12 col-md-5">
+                <div class="text-md-right float-md-end gridjs-pagination">
+                  <pagination [totalItems]="(table.total$ | async) || 0" [(ngModel)]="table.page" [itemsPerPage]="table.pageSizeValue" (pageChanged)="table.setPage($event.page)"></pagination>
+                </div>
               </div>
-            </div>
-          </ng-container>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
