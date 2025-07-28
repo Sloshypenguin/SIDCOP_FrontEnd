@@ -15,7 +15,7 @@ export const environment = {
     measurementId: "G-1N6FB2GG55"
   },
   //apiBaseUrl: 'http://200.59.27.115:8091', // URL de producción para SIDCOP
-  apiBaseUrl: 'http://SIDCOP.somee.com', //cambiar si es necesario
+  apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
   usua_Id: idUsuario, // Se establecerá dinámicamente al iniciar sesión
 

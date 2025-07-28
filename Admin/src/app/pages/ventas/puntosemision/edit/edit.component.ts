@@ -5,11 +5,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
@@ -25,7 +26,7 @@ export class EditComponent implements OnChanges {
     usua_Creacion: 0,
     usua_Modificacion: 0,
     sucu_Id: 0,
-   
+    sucu_Descripcion:  '',
     puEm_FechaCreacion: new Date(),
     puEm_FechaModificacion: new Date(),
     code_Status: 0,
@@ -46,13 +47,34 @@ export class EditComponent implements OnChanges {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
+    ordenarPorMunicipioYDepartamento(sucursales: any[]): any[] {
+  return sucursales.sort((a, b) => {
+    if (a.depa_Descripcion < b.depa_Descripcion) return -1;
+    if (a.depa_Descripcion > b.depa_Descripcion) return 1;
+    if (a.muni_Descripcion < b.muni_Descripcion) return -1;
+    if (a.muni_Descripcion > b.muni_Descripcion) return 1;
+    return 0;
+  });
+}
+
+searchSucursal = (term: string, item: any) => {
+  term = term.toLowerCase();
+  return (
+    item.sucu_Descripcion?.toLowerCase().includes(term) ||
+    item.muni_Descripcion?.toLowerCase().includes(term) ||
+    item.depa_Descripcion?.toLowerCase().includes(term)
+  );
+};
+
+
+
   Sucursales: any[] = [];
 
-   cargarSucursales() {
-      this.http.get<any>('https://localhost:7071/Sucursales/Listar', {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.Sucursales = data);
-    };
+  cargarSucursales() {
+  this.http.get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe((data) => this.Sucursales = this.ordenarPorMunicipioYDepartamento(data));
+}
 
   constructor(private http: HttpClient) {
     this.cargarSucursales();
@@ -83,22 +105,33 @@ export class EditComponent implements OnChanges {
   }
 
   validarEdicion(): void {
-    this.mostrarErrores = true;
+  this.mostrarErrores = true;
 
-    if (this.puntoEmision.puEm_Descripcion.trim()) {
-      if (this.puntoEmision.puEm_Descripcion.trim() !== this.PEOriginal) {
-        this.mostrarConfirmacionEditar = true;
-      } else {
-        this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'No se han detectado cambios.';
-        setTimeout(() => this.cerrarAlerta(), 4000);
-      }
-    } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-      setTimeout(() => this.cerrarAlerta(), 4000);
-    }
+  if (
+    !this.puntoEmision.puEm_Codigo.trim() ||
+    !this.puntoEmision.puEm_Descripcion.trim() ||
+    !this.puntoEmision.sucu_Id
+  ) {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+    setTimeout(() => this.cerrarAlerta(), 4000);
+    return;
   }
+
+  const cambios =
+    this.puntoEmision.puEm_Codigo.trim() !== (this.PEData?.puEm_Codigo?.trim() ?? '') ||
+    this.puntoEmision.puEm_Descripcion.trim() !== (this.PEData?.puEm_Descripcion?.trim() ?? '') ||
+    this.puntoEmision.sucu_Id !== (this.PEData?.sucu_Id ?? 0);
+
+  if (cambios) {
+    this.mostrarConfirmacionEditar = true;
+  } else {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = 'No se han detectado cambios.';
+    setTimeout(() => this.cerrarAlerta(), 4000);
+  }
+}
+
 
   cancelarEdicion(): void {
     this.mostrarConfirmacionEditar = false;
@@ -121,6 +154,7 @@ export class EditComponent implements OnChanges {
         puEm_FechaCreacion: this.puntoEmision.puEm_FechaCreacion,
         usua_Modificacion: getUserId(),
         sucu_Id: this.puntoEmision.sucu_Id,
+        sucu_Descripcion: "", 
         puEm_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: '',

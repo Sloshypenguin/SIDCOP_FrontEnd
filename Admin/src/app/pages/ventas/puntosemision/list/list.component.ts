@@ -44,6 +44,8 @@ export class ListComponent implements OnInit {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 
+  
+
   ngOnInit(): void {
     /**
      * BreadCrumb
@@ -176,8 +178,24 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
     if (!this.PEEliminar) return;
     
     console.log('Eliminando estado civil:', this.PEEliminar);
+
+    const PEeliminado = {
+        puEm_Id: this.PEEliminar.puEm_Id,
+        puEm_Codigo: "",
+        puEm_Descripcion: "",
+        usua_Creacion: 0,
+        puEm_FechaCreacion: new Date().toISOString() ,
+        usua_Modificacion: getUserId(),
+        sucu_Id: 0 ,
+        sucu_Descripcion: "", 
+        puEm_FechaModificacion: new Date().toISOString(),
+        usuarioCreacion: '',
+        usuarioModificacion: '',
+        estado: '',
+        secuencia: 0,
+      };
     
-    this.http.post(`${environment.apiBaseUrl}/PuntoEmision/Eliminar/${this.PEEliminar.puEm_Id}`, {}, {
+    this.http.put(`${environment.apiBaseUrl}/PuntoEmision/Eliminar`, PEeliminado, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -191,7 +209,8 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             console.log('Punto de Emision exitosamente');
-            this.mensajeExito = `Punto de Emision "${this.PEEliminar!.puEm_Descripcion}" eliminado exitosamente`;
+             const accion = this.PEEliminar?.estado === 'Activo' ? 'desactivado' : 'activado';
+            this.mensajeExito = `Punto de Emision "${this.PEEliminar!.puEm_Descripcion}" ${accion} exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -205,9 +224,9 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Punto de emisión está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el punto de emisión está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -220,7 +239,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el punto de emisión.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -234,7 +253,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
           // Respuesta inesperada
           console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el estado civil.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar el punto de emision.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -286,12 +305,25 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
+
   private cargardatos(): void {
     this.http.get<PuntoEmision[]>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+      },
+      error: error => {
+        console.error('Error al cargar roles:', error);
+        this.table.setData([]);
+      }
     });
   }
 }
