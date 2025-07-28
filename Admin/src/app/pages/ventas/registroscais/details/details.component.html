@@ -28,6 +28,44 @@
     <div class="details-id-label">Código</div>
     <div class="details-id-value">{{ RegistroCAIDetalle.regC_Descripcion || 'N/A' }}</div>
   </div>
+
+  <!-- Sucursal -->
+<div class="details-id">
+  <div class="details-id-label">Sucursal</div>
+  <div class="details-id-value">{{ RegistroCAIDetalle.sucu_Descripcion || 'N/A' }}</div>
+</div>
+
+<!-- Punto de emisión -->
+<div class="details-id">
+  <div class="details-id-label">Punto de Emisión</div>
+  <div class="details-id-value">{{ RegistroCAIDetalle.puEm_Codigo }} - {{ RegistroCAIDetalle.puEm_Descripcion || 'N/A' }}</div>
+</div>
+
+<!-- Número CAI -->
+<div class="details-id">
+  <div class="details-id-label">Número CAI</div>
+  <div class="details-id-value">{{ RegistroCAIDetalle.nCai_Codigo }} - {{ RegistroCAIDetalle.nCai_Descripcion || 'N/A' }}</div>
+</div>
+
+<!-- Rango -->
+<div class="details-id">
+  <div class="details-id-label">Rango</div>
+  <div class="details-id-value">{{ RegistroCAIDetalle.regC_RangoInicial }} - {{ RegistroCAIDetalle.regC_RangoFinal }}</div>
+</div>
+
+<!-- Fecha inicial de emisión -->
+<div class="details-id">
+  <div class="details-id-label">Fecha Inicial de Emisión</div>
+  <div class="details-id-value">{{ formatearFecha(RegistroCAIDetalle.regC_FechaInicialEmision) }}</div>
+</div>
+
+<!-- Fecha final de emisión -->
+<div class="details-id">
+  <div class="details-id-label">Fecha Final de Emisión</div>
+  <div class="details-id-value">{{ formatearFecha(RegistroCAIDetalle.regC_FechaFinalEmision) }}</div>
+</div>
+
+
   
 </div>
     </div>
