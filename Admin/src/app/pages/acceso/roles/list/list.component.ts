@@ -133,7 +133,7 @@ export class ListComponent implements OnInit {
     public floatingMenuService: FloatingMenuService
   )
     {
-    this.cargardatos();
+    this.cargardatos(true);
     this.cargarPantallas();
   }   
 
@@ -173,13 +173,31 @@ export class ListComponent implements OnInit {
   }
 
   guardarRol(rol: Rol): void {
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Rol guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarRol(rol: Rol): void {
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Rol actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(rol: Rol): void {
@@ -196,6 +214,7 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.rolAEliminar) return;
         
+    this.mostrarOverlayCarga = true;
     this.http.put(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -218,7 +237,7 @@ export class ListComponent implements OnInit {
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -305,12 +324,14 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
-        const tienePermisoListar = this.accionPermitida('listar');
+    }).subscribe(data => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+         const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();
 
         const datosFiltrados = tienePermisoListar
@@ -318,11 +339,8 @@ export class ListComponent implements OnInit {
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
         this.table.setData(datosFiltrados);
-      },
-      error: error => {
-        console.error('Error al cargar roles:', error);
-        this.table.setData([]);
-      }
+        this.table.setData(data);
+      },500);
     });
   }
 
