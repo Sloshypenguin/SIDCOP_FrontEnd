@@ -13,6 +13,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-list',
@@ -98,7 +99,7 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   ) {
-    this.cargardatos(true);
+    this.cargardatos();
   }   
 
   activeActionRow: number | null = null;
@@ -144,7 +145,7 @@ export class ListComponent implements OnInit {
     this.mostrarOverlayCarga = true;
     setTimeout(() => {
       console.log('Traslado guardado exitosamente desde create component:', traslado);
-      this.cargardatos(false);
+      this.cargardatos();
       this.showCreateForm = false;
       this.mensajeExito = `Traslado guardado exitosamente`;
       this.mostrarAlertaExito = true;
@@ -159,7 +160,7 @@ export class ListComponent implements OnInit {
     this.mostrarOverlayCarga = true;
     setTimeout(() => {
       console.log('Traslado actualizado exitosamente desde edit component:', traslado);
-      this.cargardatos(false);
+      this.cargardatos();
       this.showEditForm = false;
       this.mensajeExito = `Traslado actualizado exitosamente`;
       this.mostrarAlertaExito = true;
@@ -223,7 +224,7 @@ export class ListComponent implements OnInit {
                 this.mensajeExito = '';
               }, 3000);
               
-              this.cargardatos(false);
+              this.cargardatos();
             } else if (response.data.code_Status === -1) {
               //result: está siendo utilizado
               console.log('El traslado está siendo utilizado');
@@ -319,16 +320,32 @@ export class ListComponent implements OnInit {
   // Declaramos un estado en el cargarDatos, esto para hacer el overlay
   // segun dicha funcion de recargar, ya que si vienes de hacer una accion
   // es innecesario mostrar el overlay de carga
-  private cargardatos(state: boolean): void {
-    this.mostrarOverlayCarga = state;
-    this.http.get<Traslado[]>(`${environment.apiBaseUrl}/Traslado/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
+private cargardatos(): void {
+  this.mostrarOverlayCarga = true;
+
+  this.http.get<Traslado[]>(`${environment.apiBaseUrl}/Traslado/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe({
+    next: data => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(t => t.usua_Creacion?.toString() === userId.toString());
+
       setTimeout(() => {
         this.mostrarOverlayCarga = false;
-        console.log('Datos recargados:', data);
-        this.table.setData(data);
+        console.log('Datos recargados:', datosFiltrados);
+        this.table.setData(datosFiltrados);
       }, 500);
-    });
-  }
+    },
+    error: error => {
+      console.error('Error al cargar traslados:', error);
+      this.mostrarOverlayCarga = false;
+      this.table.setData([]);
+    }
+  });
+}
+
 }
