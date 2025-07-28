@@ -5,6 +5,7 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  OnInit
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,28 +21,16 @@ import { getUserId } from 'src/app/core/utils/user-utils';
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss',
 })
-export class EditComponent implements OnChanges {
+export class EditComponent implements OnInit, OnChanges {
   @Input() PedidoData: Pedido | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Pedido>();
 
-  Clientes: any[] = [];
-  Direccines: any[] = [];
+  //Clientes: any[] = [];
+  //Direccines: any[] = [];
   productos: any[] = [];
 
-  cargarClientes() {
-    this.http
-      .get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
-        headers: { 'x-api-key': environment.apiKey },
-      })
-      .subscribe({
-        next: (data) => (this.Clientes = data),
-        error: () => {
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al cargar clientes.';
-        },
-      });
-  }
+  
 
   aumentarCantidad(index: number): void {
   this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
@@ -74,7 +63,7 @@ listarProductosDesdePedido(): void {
   }).subscribe({
     next: (data) => {
       this.productos = data.map((producto: any) => {
-        const detalle = this.pedido.detalles.find((d: any) => d.id == producto.prod_Id);
+        const detalle = this.pedidoEditada.detalles.find((d: any) => d.id == producto.prod_Id);
         return {
           ...producto,
           cantidad: detalle?.cantidad || 0,
@@ -91,26 +80,7 @@ listarProductosDesdePedido(): void {
   });
 }
 
-
-
-
-  cargarDirecciones(clienteId: number) {
-    this.http
-      .get<any>(
-        `${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${clienteId}`,
-        {
-          headers: { 'x-api-key': environment.apiKey },
-        }
-      )
-      .subscribe((data) => (this.Direccines = data));
-  }
-
-  onClienteSeleccionado(clienteId: number) {
-    this.cargarDirecciones(clienteId);
-    this.pedido.diCl_Id = 0;
-  }
-
-  pedido: Pedido = {
+  pedidoEditada: Pedido = {
     pedi_Id: 0,
     diCl_Id: 0,
     vend_Id: 0,
@@ -156,13 +126,20 @@ listarProductosDesdePedido(): void {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
-  Sucursales: any[] = [];
+ 
 
   Math = Math; // para usar Math en la plantilla
   productosFiltrados: any[] = []; // resultado después del filtro
   productosPaginados: any[] = []; // productos que se muestran en la página actual
   paginaActual: number = 1;
   productosPorPagina: number = 6;
+
+  TodasDirecciones: any;
+  Clientes: any;
+  Direcciones: any[] = [];
+
+  selectedCliente: number = 0;
+  selectedDireccion:  number = 0;
 
 
 
@@ -221,16 +198,8 @@ cambiarPagina(delta: number): void {
 }
 
 
-  cargarSucursales() {
-    this.http
-      .get<any>('https://localhost:7071/Sucursales/Listar', {
-        headers: { 'x-api-key': environment.apiKey },
-      })
-      .subscribe((data) => (this.Sucursales = data));
-  }
-
   constructor(private http: HttpClient) {
-    this.cargarSucursales();
+ 
   }
 
   formatearFecha(fecha: Date | string): string {
@@ -242,51 +211,42 @@ cambiarPagina(delta: number): void {
 }
 
 get fechaInicioFormato(): string {
-  return new Date(this.pedido.pedi_FechaEntrega).toISOString().split('T')[0];
+  return new Date(this.pedidoEditada.pedi_FechaEntrega).toISOString().split('T')[0];
 }
 
 set fechaInicioFormato(value: string) {
-  this.pedido.pedi_FechaEntrega = new Date(value);
+  this.pedidoEditada.pedi_FechaEntrega = new Date(value);
 }
+
+ ngOnInit(): void {
+    this.cargarListados();
+  }
 
 
  ngOnChanges(changes: SimpleChanges): void {
   if (changes['PedidoData'] && changes['PedidoData'].currentValue) {
-    this.pedido = { ...changes['PedidoData'].currentValue };
-    this.PEOriginal = this.pedido.muni_Descripcion || '';
-    this.mostrarErrores = false;
-    this.cerrarAlerta();
+    this.pedidoEditada = { ...changes['PedidoData'].currentValue };
+    this.PEOriginal = this.pedidoEditada.clie_NombreNegocio || '';
+      this.mostrarErrores = false;
+    
+    this.pedidoEditada.pedi_FechaPedido = new Date(this.formatearFecha(this.pedidoEditada.pedi_FechaPedido));
+    this.pedidoEditada.pedi_FechaEntrega = new Date(this.formatearFecha(this.pedidoEditada.pedi_FechaEntrega));
 
-  this.pedido.pedi_FechaPedido = new Date(this.formatearFecha(this.pedido.pedi_FechaPedido));
-  this.pedido.pedi_FechaEntrega = new Date(this.formatearFecha(this.pedido.pedi_FechaEntrega));
 
-
-    // Parsear detallesJson y asignar a this.pedido.detalles
     try {
-      this.pedido.detalles = JSON.parse(this.pedido.detallesJson || '[]');
+      this.pedidoEditada.detalles = JSON.parse(this.pedidoEditada.detallesJson || '[]');
     } catch (e) {
       console.error('Error al parsear detallesJson:', e);
-      this.pedido.detalles = [];
+      this.pedidoEditada.detalles = [];
     }
 
     // Cargar productos con cantidades desde los detalles
     this.listarProductosDesdePedido();
-
-    
-
-    // ✅ NUEVO: Cargar clientes si no están cargados aún
-    if (this.Clientes.length === 0) {
-      this.cargarClientes();
-    }
-
-    // ✅ NUEVO: Cargar direcciones del cliente si existe
-    if (this.pedido.clie_Id) {
-      this.cargarDirecciones(this.pedido.clie_Id);
-    }
+    this.cargarListados();
+    this.cerrarAlerta();
 
   }
 }
-
 
 
   cancelar(): void {
@@ -306,8 +266,8 @@ set fechaInicioFormato(value: string) {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.pedido.muni_Descripcion.trim()) {
-      if (this.pedido.depa_Descripcion.trim() !== this.PEOriginal) {
+    if (this.pedidoEditada.muni_Descripcion.trim()) {
+      if (this.pedidoEditada.depa_Descripcion.trim() !== this.PEOriginal) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -335,14 +295,14 @@ set fechaInicioFormato(value: string) {
     this.mostrarErrores = true;
      const productosSeleccionados = this.obtenerProductosSeleccionados();
 
-    if (this.pedido.diCl_Id && this.pedido.pedi_FechaEntrega && productosSeleccionados.length > 0) {
+    if (this.pedidoEditada.diCl_Id && this.pedidoEditada.pedi_FechaEntrega && productosSeleccionados.length > 0) {
       const PEActualizar = {
          
-        pedi_Id: this.pedido.pedi_Id,
-        diCl_Id: this.pedido.diCl_Id,
+        pedi_Id: this.pedidoEditada.pedi_Id,
+        diCl_Id: this.pedidoEditada.diCl_Id,
         vend_Id: getUserId(), // Asumiendo que el usuario actual es el vendedor
         pedi_FechaPedido: new Date().toISOString(),
-        pedi_FechaEntrega: this.pedido.pedi_FechaEntrega,
+        pedi_FechaEntrega: this.pedidoEditada.pedi_FechaEntrega,
         clie_Codigo: '',
         clie_Id: 0,
         clie_NombreNegocio: '',
@@ -374,13 +334,13 @@ set fechaInicioFormato(value: string) {
         })
         .subscribe({
           next: (response) => {
-            this.mensajeExito = `Punto de Emision "${this.pedido.clie_NombreNegocio}" actualizado exitosamente`;
+            this.mensajeExito = `Pedido "${this.pedidoEditada.clie_NombreNegocio}" actualizado exitosamente`;
             this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
 
             setTimeout(() => {
               this.mostrarAlertaExito = false;
-              this.onSave.emit(this.pedido);
+              this.onSave.emit(this.pedidoEditada);
               this.cancelar();
             }, 3000);
           },
@@ -399,4 +359,40 @@ set fechaInicioFormato(value: string) {
       setTimeout(() => this.cerrarAlerta(), 4000);
     }
   }
+
+  cargarListados(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (cliente) => {
+        this.Clientes = cliente;
+          console.log('Clientes cargados:', this.Clientes);
+        this.http.get<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
+          headers: { 'x-api-key': environment.apiKey }
+        }).subscribe({
+          next: (direcciones) => {
+            console.log('Direcciones cargadas:', direcciones);
+            this.TodasDirecciones = direcciones;
+            this.configurarUbicacionInicial();
+          }
+        });
+      }
+    });
+  }
+
+  configurarUbicacionInicial(): void {
+      const direccion = this.TodasDirecciones.find((m: any) => m.diCl_Id === this.pedidoEditada.diCl_Id);
+      if (direccion) {
+        this.selectedCliente = direccion.clie_Id;
+        this.selectedDireccion = direccion.diCl_Id;
+        this.Direcciones = this.TodasDirecciones.filter((m: any) => m.clie_Id === this.selectedCliente);
+      }
+    }
+
+    cargarMunicipios(codigoDepa: number): void {
+    this.Direcciones = this.TodasDirecciones.filter((m: any) => m.clie_Id === codigoDepa);
+    this.selectedDireccion = 0;
+  }
+
+
 }

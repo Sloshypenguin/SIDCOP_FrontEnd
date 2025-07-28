@@ -55,65 +55,54 @@
 
   <div class="flex-grow-1">
     <div class="row">
-      <!-- Select de Cliente -->
-      <div class="col-md-6">
-        <label for="cliente" class="form-label">
-          Cliente <span class="text-danger">*</span>
-        </label>
+
+
+       <div class="col-md-6">
         <div class="mb-3">
-          <select
-            id="cliente"
-            name="cliente"
-            class="form-select"
-            [(ngModel)]="pedido.clie_Id"
-            (change)="onClienteSeleccionado(pedido.clie_Id)"
-            [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
-            required
-          >
-            <option value="" disabled selected>Seleccione un cliente</option>
-            <option *ngFor="let cliente of Clientes" [value]="cliente.clie_Id">
-              {{ cliente.clie_NombreNegocio }}
-            </option>
+          <label for="clie_Id" class="form-label">Departamento</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+          <select 
+            id="clie_Id" 
+            name="clie_Id" 
+            class="form-select" 
+            [(ngModel)]="selectedCliente" 
+            (change)="cargarMunicipios(selectedCliente)"
+            required>
+            <option value="" disabled selected>Seleccione un Departamento</option>
+            <option *ngFor="let depa of Clientes" [value]="depa.clie_Id">{{ depa.clie_NombreNegocio }}</option>
           </select>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!pedido.clie_Codigo && mostrarErrores"
-          >
-            <small>El campo Cliente es requerido</small>
+          
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
+         
         </div>
       </div>
 
-      <!-- Select de Dirección -->
+
       <div class="col-md-6">
-        <label for="direccion" class="form-label">
-          Dirección <span class="text-danger">*</span>
-        </label>
         <div class="mb-3">
-          <select
-            id="direccion"
-            name="direccion"
-            class="form-select"
-            [(ngModel)]="pedido.diCl_Id"
-            [class.is-invalid]="!pedido.diCl_Id && mostrarErrores"
-            required
-          >
-            <option value="" disabled selected>Seleccione una dirección</option>
-            <option
-              *ngFor="let direccion of Direccines"
-              [value]="direccion.diCl_Id"
-            >
-              {{ direccion.diCl_DireccionExacta }}
-            </option>
+          <label for="diCl_Id" class="form-label">Municipio</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+          <select 
+            id="diCl_Id" 
+            name="diCl_Id" 
+            class="form-select" 
+            [(ngModel)]="pedidoEditada.diCl_Id" 
+            required>
+            <option value="" disabled selected>Seleccione un Municipio</option>
+            <option *ngFor="let muni of Direcciones" [value]="muni.diCl_Id">{{ muni.diCl_DireccionExacta }}</option>
           </select>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!pedido.diCl_Id && mostrarErrores"
-          >
-            <small>El campo Dirección es requerido</small>
+         
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" >
+            <small>El campo Municipio es requerido</small>
           </div>
         </div>
       </div>
+      
 
       <div class="col-md-6">
         <div class="mb-3">
@@ -125,13 +114,13 @@
             id="inicial-input"
             [(ngModel)]="fechaInicioFormato"
             class="form-control"
-            [class.is-invalid]="!pedido.pedi_FechaEntrega && mostrarErrores"
+            [class.is-invalid]="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
             placeholder="Seleccione la fecha de entrega"
             required
           />
           <div
             class="text-danger"
-            *ngIf="!pedido.pedi_FechaEntrega && mostrarErrores"
+            *ngIf="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
           >
             <small>La fecha de entrega es requerida</small>
           </div>
