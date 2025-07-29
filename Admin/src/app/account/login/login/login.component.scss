@@ -233,7 +233,7 @@
     padding: 0.15rem 0.5rem;
   }
   .login-header {
-    height: 120px;
+    height: 180px;
     min-width: 100vw;
   }
   .login-logo {
@@ -243,6 +243,9 @@
   .btn-login {
     font-size: 0.95rem;
     padding: 0.7em 1.2em;
+    min-width: 12.5rem !important;
+
+    width: 10.5rem !important;
   }
 }
 
