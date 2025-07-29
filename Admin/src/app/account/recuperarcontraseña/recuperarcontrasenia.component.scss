@@ -21,15 +21,13 @@
   position: relative;
   z-index: 2;
   background: rgba(20, 26, 47, 0.4);
-  .btn-login {
-    margin-left: 0;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 12.5rem !important;
-    width: 10.5rem !important;
-  }
+  border-radius: 18px;
+  padding: 2rem 0 2.5rem 0; // sin padding lateral
+  min-width: 420px;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(20, 26, 47, 0.32);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,13 +191,14 @@
 }
 
 .login-logo {
+  height: 80px;
   max-width: 420px;
   object-fit: contain;
 }
 
 .login-header-curve {
   width: 100vw;
-    font-size: 1.5em; /* Adjusted to remove !important */
+  height: 193px;
   display: block;
   position: absolute;
   left: 0;
@@ -256,14 +255,17 @@
     height: 48px;
     max-width: 220px;
   }
-
+  .btn-login {
+    font-size: 0.95rem;
+    padding: 0.7em 1.2em;
+  }
 }
 
 .codigo-card {
   @extend .login-card;
   max-width: 640px;
   min-width: 420px;
-  padding: 0.5rem 2.5rem 3rem 2.5rem;
+  padding: 3.5rem 2.5rem 3rem 2.5rem;
 }
 
 .codigo-card-content {
@@ -276,8 +278,7 @@
 .codigo-icon {
   font-size: 3rem;
   color: #d6b68a;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin-bottom: 1.5rem;
 }
 
 .login-title {
@@ -299,8 +300,7 @@
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin-bottom: 2rem;
 }
 
 .codigo-input {
