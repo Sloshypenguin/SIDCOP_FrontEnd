@@ -183,7 +183,7 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.productoAEliminar) return;
     
-    console.log('Eliminando estado civil:', this.productoAEliminar);
+    console.log('Eliminando Producto:', this.productoAEliminar);
     
     this.http.post(`${environment.apiBaseUrl}/Productos/Eliminar/${this.productoAEliminar.prod_Id}`, {}, {
       headers: { 
@@ -253,6 +253,40 @@ export class ListComponent implements OnInit {
           this.cancelarEliminar();
         }
       },
+      error: (error: any) => {
+        console.error('Error al eliminar producto:', error);
+        
+        // Manejar errores de red o errores del servidor
+        this.mostrarAlertaError = true;
+        
+        if (error.status === 400 && error.error) {
+          // Estructura exacta del error según la documentación:
+          // { "code": 500, "success": false, "message": "Error al realizar la operacion.", 
+          //   "data": { "code_Status": -1, "message_Status": "No se puede eliminar, el producto está siendo utilizado.", "data": null, "tras_Id": null } }
+          
+          if (error.error.data && error.error.data.message_Status) {
+            // Estructura principal donde está el mensaje detallado
+            this.mensajeError = error.error.data.message_Status;
+          } else if (error.error.message) {
+            // Mensaje general de error
+            this.mensajeError = error.error.message;
+          } else {
+            // Mensaje predeterminado si no se encuentra ninguna estructura esperada
+            this.mensajeError = 'No se puede eliminar: el producto está siendo utilizado.';
+          }
+        } else {
+          this.mensajeError = 'Error de conexión. Por favor, intente nuevamente.';
+        }
+        
+        // Mostrar la alerta por 5 segundos
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        
+        // Cerrar el modal de confirmación
+        this.cancelarEliminar();
+      }
     });
   }
 
