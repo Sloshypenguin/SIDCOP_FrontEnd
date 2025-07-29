@@ -57,29 +57,44 @@
     <div class="row">
       <!-- Select de Cliente -->
       <div class="col-md-6">
-        <label for="cliente" class="form-label">
+        <label class="form-label">
           Cliente <span class="text-danger">*</span>
         </label>
         <div class="mb-3">
-          <select
-            id="cliente"
-            name="cliente"
-            class="form-select"
-            [(ngModel)]="pedido.clie_Id"
-            (change)="onClienteSeleccionado(pedido.clie_Id)"
-            [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
-            required
-          >
-            <option value="" disabled selected>Seleccione un cliente</option>
-            <option *ngFor="let cliente of Clientes" [value]="cliente.clie_Id">
-              {{ cliente.clie_NombreNegocio }}
-            </option>
-          </select>
+          <div class="d-flex align-items-center">
+             <i class="ri-user-3-line" [ngStyle]="{
+                border: (!pedido.clie_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedido.clie_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+            <ng-select
+              class="w-100"
+              [items]="Clientes"
+              bindLabel="puEm_Descripcion"
+              bindValue="clie_Id"
+              [(ngModel)]="pedido.clie_Id"
+              [searchable]="true"
+              [clearable]="false"
+              [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
+              placeholder="Seleccione un cliente"
+              required
+              [searchFn]="searchCliente"
+               (change)="onClienteSeleccionado($event?.clie_Id)"
+            >
+              <ng-template ng-label-tmp let-item="item">
+               {{ item.clie_Codigo }} - {{ item.clie_Nombres }} {{ item.clie_Apellidos }} - {{ item.clie_NombreNegocio }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+               {{ item.clie_Codigo }} - {{ item.clie_Nombres }} {{ item.clie_Apellidos }} - {{ item.clie_NombreNegocio }}
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
           <div
             class="text-danger mt-1"
-            *ngIf="!pedido.clie_Codigo && mostrarErrores"
+            *ngIf="!pedido.clie_Id && mostrarErrores"
           >
-            <small>El campo Cliente es requerido</small>
+            <small>El campo cliente es requerido</small>
           </div>
         </div>
       </div>
@@ -90,6 +105,12 @@
           Dirección <span class="text-danger">*</span>
         </label>
         <div class="mb-3">
+           <div class="d-flex align-items-center">  
+            <i class="ri-map-pin-user-line" [ngStyle]="{
+                border: (!pedido.diCl_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedido.diCl_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <select
             id="direccion"
             name="direccion"
@@ -106,6 +127,7 @@
               {{ direccion.diCl_DireccionExacta }}
             </option>
           </select>
+          </div>
           <div
             class="text-danger mt-1"
             *ngIf="!pedido.diCl_Id && mostrarErrores"
@@ -120,6 +142,12 @@
           <label for="inicial-input" class="form-label"
             >Fecha Entrega<span class="text-danger">*</span></label
           >
+          <div class="d-flex align-items-center"> 
+          <i class="ri-calendar-event-line" [ngStyle]="{
+                border: (!pedido.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedido.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input
             type="date"
             id="inicial-input"
@@ -129,6 +157,7 @@
             placeholder="Seleccione la fecha de entrega"
             required
           />
+           </div>
           <div
             class="text-danger"
             *ngIf="!pedido.pedi_FechaEntrega && mostrarErrores"
@@ -144,6 +173,12 @@
 
           <div class="col-md-12 mb-3">
             <label for="buscador" class="form-label">Seleccionar los Productos</label>
+            <div class="d-flex align-items-center">  
+             <i class="ri-search-2-line"  [ngStyle]="{
+                border: (!pedido.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedido.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}" >
+              </i>
             <input
               type="text"
               id="buscador"
@@ -152,6 +187,7 @@
               [(ngModel)]="searchQuery"
               (input)="filtrarProductos()"
             />
+            </div>
           </div>
 
           <!-- Contenedor de tarjetas de productos -->

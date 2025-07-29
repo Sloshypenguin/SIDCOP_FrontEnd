@@ -12,6 +12,7 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
+import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
 
 @Component({
   selector: 'app-create',
@@ -35,6 +36,7 @@ export class CreateComponent {
 
   productosLista: any[] = [];
   clientesLista: any[] = [];
+  clientesListaCrear: any[] = [];
   canalesLista: any[] = [];
   listasAgrupadas: any[] = [];
   nocreando : boolean = true;
@@ -73,6 +75,14 @@ export class CreateComponent {
   mostrarConfirmacionGuardar = false;
 listaAGuardar: any = null;
 
+// Propiedades para confirmación de eliminación
+  mostrarConfirmacionEliminar = false;
+
+  listaAEliminar = {
+    listaId: 0,
+    prod_Id: 0,
+  };
+
 abrirModalGuardarCambios(lista: any) {
   this.listaAGuardar = lista;
   this.mostrarConfirmacionGuardar = true;
@@ -81,6 +91,12 @@ abrirModalGuardarCambios(lista: any) {
 cancelarGuardarCambios() {
   this.mostrarConfirmacionGuardar = false;
   this.listaAGuardar = null;
+}
+
+cancelarNuevaLista() {
+  this.isCreatingNewLista = false;
+  this.nocreando = true;
+  this.createError = '';
 }
 
 confirmarGuardarCambios() {
@@ -114,7 +130,16 @@ confirmarGuardarCambios() {
     this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
-      next: (data) => { this.productosLista = data; },
+      next: (data) => { 
+        this.productosLista = data; 
+        
+        const productosdata = data;
+        this.productosLista = productosdata.map((producto: any) => ({
+          ...producto,
+          prod_Display: producto.prod_CodigoBarra +'  '+ producto.prod_Descripcion
+          
+        }));
+      },
       error: (error) => console.error('Error cargando productos:', error)
     });
   }
@@ -164,12 +189,13 @@ confirmarGuardarCambios() {
             listaId: grupo.listaId,
             prod_Id: grupo.items[0].prod_Id,
             prod_Descripcion: grupo.items[0].nombreProducto || '',
+            prod_CodigoBarra: grupo.items[0].prod_CodigoBarras,
             precioContado: grupo.items[0].preP_PrecioContado,
             precioCredito: grupo.items[0].preP_PrecioCredito,
             inicioEscala: grupo.items[0].preP_InicioEscala,
             finEscala: grupo.items[0].preP_FinEscala,
             clientesChecked,
-            isCollapsed: false
+            isCollapsed: true
           };
         });
         this.noListasMsg = this.listasAgrupadas.length === 0 ? 'Este producto no tiene ninguna lista todavía.' : '';
@@ -238,6 +264,7 @@ confirmarGuardarCambios() {
 
   onProductoChange(event: any) {
     this.cargarListasPrecios();
+    this.nocreando = true;
     this.isCreatingNewLista = false;
     this.createError = '';
     this.noListasMsg = '';
@@ -368,10 +395,40 @@ confirmarGuardarCambios() {
       usua_Creacion: 1, // Replace with actual user ID
       preP_FechaCreacion: new Date().toISOString()
     };
-    this.http.post<any>(`${environment.apiBaseUrl}/PreciosPorProducto/Insertar`, payload, {
+    this.http.post<any>(`${environment.apiBaseUrl}/PreciosPorProducto/InsertarLista`, payload, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
+
+        console.log('Lista creada:', data);
+
+
+        if(data.data.code_Status == 1){
+
+          this.mensajeExito = data.data.message_Status || 'Lista creada exitosamente.';
+          this.mostrarAlertaExito = true;
+
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+
+        }else {
+          this.mostrarAlertaError = true;
+          this.mensajeError = data.data.message_Status || 'Error al eliminar insertar lista.';
+
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+
+          
+        }
+
+        if(data.data.code_Status == -1) {
+            return;
+          }
+
         this.isCreatingNewLista = false;
         this.cargarListasPrecios();
         this.nocreando = true;
@@ -418,9 +475,6 @@ confirmarGuardarCambios() {
 
 
   guardarCambios(lista: any) {
-    if (!confirm(`¿Seguro que deseas guardar cambios en lista #${lista.listaId}?`)) {
-      return;
-    }
 
     if (!this.validateListaEdicion(lista)) {
       this.mostrarAlertaWarning = true;
@@ -436,18 +490,45 @@ confirmarGuardarCambios() {
       preP_PrecioCredito: lista.precioCredito,
       preP_InicioEscala: lista.inicioEscala,
       preP_FinEscala: lista.finEscala,
-      usua_Modificacion: getUserId(),
-      preP_FechaModificacion: new Date().toISOString(),
+      usua_Creacion: getUserId(),
+      preP_FechaCreacion: new Date().toISOString(),
       preP_ListaPrecios: lista.listaId
     };
 
-    this.http.post<any>(`${environment.apiBaseUrl}/PreciosPorProducto/Editar`, payload, {
+    this.http.post<any>(`${environment.apiBaseUrl}/PreciosPorProducto/ActualizarLista`, payload, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (response) => {
-        this.mostrarAlertaExito = true;
-        this.mensajeExito = `Lista #${lista.listaId} actualizada exitosamente.`;
-        setTimeout(() => this.cerrarAlerta(), 3000);
+
+        console.log('Lista actualizada:', response);
+
+        if(response.data.code_Status == 1){
+
+          this.mensajeExito = response.data.message_Status || 'Lista creada exitosamente.';
+          this.mostrarAlertaExito = true;
+
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+
+        }else {
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'Error al eliminar insertar lista.';
+
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+        }
+
+        if(response.data.code_Status == -1) {
+            return;
+          }
+
+        // this.mostrarAlertaExito = true;
+        // this.mensajeExito = `Lista #${lista.listaId} actualizada exitosamente.`;
+        // setTimeout(() => this.cerrarAlerta(), 3000);
         this.cargarListasPrecios();
       },
       error: (error) => {
@@ -457,4 +538,113 @@ confirmarGuardarCambios() {
       }
     });
   }
+
+
+  confirmarEliminar(listaId: any, prod_Id: number): void {
+    console.log('Solicitando confirmación para eliminar: lista ', listaId, ', de producto ', prod_Id);
+    this.listaAEliminar.listaId = listaId;
+    this.listaAEliminar.prod_Id = prod_Id;
+
+    this.mostrarConfirmacionEliminar = true;
+  }
+
+  cancelarEliminar(): void {
+    this.mostrarConfirmacionEliminar = false;
+    this.listaAEliminar = {listaId: 0, prod_Id: 0};
+  }
+
+  eliminar(): void {
+  if (!this.listaAEliminar) return;
+
+  console.log('Eliminando Subcategoria:', this.listaAEliminar);
+
+  const payload = {
+    preP_ListaPrecios: this.listaAEliminar.listaId,
+    prod_Id: this.listaAEliminar.prod_Id,
+    clientesXml: '', 
+    preP_PrecioContado: 0,
+    preP_PrecioCredito: 0,
+    preP_InicioEscala: 0,
+    preP_FinEscala: 0,
+    usua_Creacion: getUserId(),
+    preP_FechaCreacion: new Date().toISOString(),
+    
+  };
+
+  this.http.post<any>(`${environment.apiBaseUrl}/PreciosPorProducto/EliminarLista`, payload, {
+    headers: { 
+      'x-api-key': environment.apiKey,
+      'accept': '*/*'
+    }
+  }).subscribe({
+    next: (response: any) => {
+      console.log('Respuesta del servidor:', response);
+
+      if (response.success && response.data) {
+        if (response.data.code_Status === 1) {
+          // Éxito: eliminado correctamente
+          console.log('lista de Precios eliminada exitosamente');
+          this.mensajeExito = `Lista de Precios "${this.listaAEliminar.listaId}" eliminada exitosamente`;
+          this.mostrarAlertaExito = true;
+
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+
+          this.cargarListasPrecios();
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === -1) {
+          // Está siendo utilizado
+          console.log('Lista de Precios está siendo utilizado');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status;
+
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === 0) {
+          // Error general
+          console.log('Error general al eliminar');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'Error al eliminar la lista de Precios.';
+
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+
+          this.cancelarEliminar();
+        }
+      } else {
+        // Respuesta inesperada
+        console.log('Respuesta inesperada del servidor');
+        this.mostrarAlertaError = true;
+        this.mensajeError = response.message || 'Error inesperado al eliminar el Subcategoria.';
+
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+
+        this.cancelarEliminar();
+      }
+    },
+    error: (error) => {
+      console.error('Error en la petición de eliminación:', error);
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al eliminar el Subcategoria. Por favor, intente nuevamente.';
+
+      setTimeout(() => {
+        this.mostrarAlertaError = false;
+        this.mensajeError = '';
+      }, 5000);
+
+      this.cancelarEliminar();
+    }
+  });
+}
 }
