@@ -14,6 +14,15 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
+
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -29,7 +38,39 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]  
 })
 export class ListComponent implements OnInit {
   // bread crumb items
@@ -54,7 +95,7 @@ export class ListComponent implements OnInit {
 
     // OBTENER ACCIONES DISPONIBLES DEL USUARIO
     this.cargarAccionesUsuario();
-    console.log('Acciones disponibles:', this.accionesDisponibles);
+    // console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   crear(): void {
@@ -92,7 +133,7 @@ export class ListComponent implements OnInit {
     public floatingMenuService: FloatingMenuService
   )
     {
-    this.cargardatos();
+    this.cargardatos(true);
     this.cargarPantallas();
   }   
 
@@ -107,6 +148,7 @@ export class ListComponent implements OnInit {
   rolDetalle: Rol | null = null;
   
   mostrarAlertaExito = false;
+  mostrarOverlayCarga = false;
   mensajeExito = '';
   mostrarAlertaError = false;
   mensajeError = '';
@@ -131,13 +173,31 @@ export class ListComponent implements OnInit {
   }
 
   guardarRol(rol: Rol): void {
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Rol guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarRol(rol: Rol): void {
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Rol actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(rol: Rol): void {
@@ -154,48 +214,65 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.rolAEliminar) return;
         
-    this.http.put(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          console.log('Respuesta del servidor:', response);
         
-       if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            this.mensajeExito = `Rol "${this.rolAEliminar!.role_Descripcion}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              // Éxito: eliminado correctamente
+              this.mensajeExito = `Rol "${this.rolAEliminar!.role_Descripcion}" eliminado exitosamente`;
+              this.mostrarAlertaExito = true;
+              
+              // Ocultar la alerta después de 3 segundos
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+              
 
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Rol está siendo utilizado');
+              this.cargardatos(false);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === -1) {
+              //result: está siendo utilizado
+              console.log('Rol está siendo utilizado');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: el rol está siendo utilizado.';
+              
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+              
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === 0) {
+              // Error general
+              console.log('Error general al eliminar');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar el rol.';
+              
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+              
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            }
+          } else {
+            // Respuesta inesperada
+            console.log('Respuesta inesperada del servidor');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el rol está siendo utilizado.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el rol.';
+            this.mensajeError = response.message || 'Error inesperado al eliminar el rol.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -205,20 +282,7 @@ export class ListComponent implements OnInit {
             // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el rol.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
+        })
       },
     });
   }
@@ -252,7 +316,7 @@ export class ListComponent implements OnInit {
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
-          console.log('Acciones del módulo:', accionesArray);
+          // console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
@@ -260,15 +324,17 @@ export class ListComponent implements OnInit {
     } 
     // AQUI FILTRAMOS Y NORMALIZAMOS LAS ACCIONES
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
-    console.log('Acciones finales:', this.accionesDisponibles);
+    // console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
-        const tienePermisoListar = this.accionPermitida('listar');
+    }).subscribe(data => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+         const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();
 
         const datosFiltrados = tienePermisoListar
@@ -276,11 +342,8 @@ export class ListComponent implements OnInit {
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
         this.table.setData(datosFiltrados);
-      },
-      error: error => {
-        console.error('Error al cargar roles:', error);
-        this.table.setData([]);
-      }
+        this.table.setData(data);
+      },500);
     });
   }
 
@@ -297,7 +360,7 @@ export class ListComponent implements OnInit {
             data = `[${data}]`;
           }
           const parsed = JSON.parse(data);
-          console.log('Pantallas cargadas:', parsed);
+          // console.log('Pantallas cargadas:', parsed);
           // Aquí podrías hacer algo con los datos de las pantallas si es necesario
         } catch (e) {
           console.error('No se pudo parsear la respuesta de pantallas:', e, raw);

@@ -47,14 +47,44 @@ const accionesPorPantalla = [
   { AcPa_Id: 37, Pant_Id: 14, Acci_Id: 3 }, { AcPa_Id: 38, Pant_Id: 14, Acci_Id: 5 }, { AcPa_Id: 39, Pant_Id: 15, Acci_Id: 1 }, { AcPa_Id: 40, Pant_Id: 15, Acci_Id: 2 },
   { AcPa_Id: 41, Pant_Id: 15, Acci_Id: 3 }, { AcPa_Id: 42, Pant_Id: 15, Acci_Id: 5 }, { AcPa_Id: 43, Pant_Id: 16, Acci_Id: 1 }, { AcPa_Id: 44, Pant_Id: 16, Acci_Id: 2 },
   { AcPa_Id: 45, Pant_Id: 16, Acci_Id: 3 }, { AcPa_Id: 46, Pant_Id: 16, Acci_Id: 5 }, { AcPa_Id: 47, Pant_Id: 17, Acci_Id: 1 }, { AcPa_Id: 48, Pant_Id: 17, Acci_Id: 2 },
-  { AcPa_Id: 49, Pant_Id: 17, Acci_Id: 3 }, { AcPa_Id: 50, Pant_Id: 17, Acci_Id: 5 }, { AcPa_Id: 156, Pant_Id: 17, Acci_Id: 4 }, { AcPa_Id: 157, Pant_Id: 53, Acci_Id: 4 }, { AcPa_Id: 158, Pant_Id: 52, Acci_Id: 4 }, { AcPa_Id: 159, Pant_Id: 49, Acci_Id: 4 },
-  { AcPa_Id: 160, Pant_Id: 22, Acci_Id: 4 }, { AcPa_Id: 161, Pant_Id: 34, Acci_Id: 4 }, { AcPa_Id: 162, Pant_Id: 34, Acci_Id: 9 }, { AcPa_Id: 188, Pant_Id: 18, Acci_Id: 4 }, { AcPa_Id: 189, Pant_Id: 19, Acci_Id: 4 }, { AcPa_Id: 190, Pant_Id: 20, Acci_Id: 4 },
-  { AcPa_Id: 191, Pant_Id: 21, Acci_Id: 4 }, { AcPa_Id: 192, Pant_Id: 23, Acci_Id: 4 }, { AcPa_Id: 193, Pant_Id: 24, Acci_Id: 4 }, { AcPa_Id: 194, Pant_Id: 25, Acci_Id: 4 }, { AcPa_Id: 195, Pant_Id: 26, Acci_Id: 4 }, { AcPa_Id: 196, Pant_Id: 27, Acci_Id: 4 },
-  { AcPa_Id: 197, Pant_Id: 28, Acci_Id: 4 }, { AcPa_Id: 198, Pant_Id: 29, Acci_Id: 4 }, { AcPa_Id: 199, Pant_Id: 30, Acci_Id: 4 }, { AcPa_Id: 200, Pant_Id: 31, Acci_Id: 4 }, { AcPa_Id: 201, Pant_Id: 32, Acci_Id: 4 }, { AcPa_Id: 202, Pant_Id: 33, Acci_Id: 4 },
-  { AcPa_Id: 203, Pant_Id: 35, Acci_Id: 4 }, { AcPa_Id: 204, Pant_Id: 36, Acci_Id: 4 }, { AcPa_Id: 205, Pant_Id: 37, Acci_Id: 4 }, { AcPa_Id: 206, Pant_Id: 38, Acci_Id: 4 }, { AcPa_Id: 207, Pant_Id: 39, Acci_Id: 4 }, { AcPa_Id: 208, Pant_Id: 40, Acci_Id: 4 },
-  { AcPa_Id: 209, Pant_Id: 41, Acci_Id: 4 }, { AcPa_Id: 210, Pant_Id: 42, Acci_Id: 4 }, { AcPa_Id: 211, Pant_Id: 43, Acci_Id: 4 }, { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 6, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 7, Acci_Id: 4 },
-  { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 }, { AcPa_Id: 216, Pant_Id: 9, Acci_Id: 4 }, { AcPa_Id: 217, Pant_Id: 10, Acci_Id: 4 }, { AcPa_Id: 218, Pant_Id: 11, Acci_Id: 4 }, { AcPa_Id: 219, Pant_Id: 12, Acci_Id: 4 }, { AcPa_Id: 220, Pant_Id: 13, Acci_Id: 4 },
-  { AcPa_Id: 221, Pant_Id: 14, Acci_Id: 4 }, { AcPa_Id: 222, Pant_Id: 15, Acci_Id: 4 }, { AcPa_Id: 223, Pant_Id: 16, Acci_Id: 4 }
+  { AcPa_Id: 49, Pant_Id: 17, Acci_Id: 3 }, { AcPa_Id: 50, Pant_Id: 17, Acci_Id: 5 }, { AcPa_Id: 51, Pant_Id: 18, Acci_Id: 1 }, { AcPa_Id: 52, Pant_Id: 18, Acci_Id: 2 },
+  { AcPa_Id: 53, Pant_Id: 18, Acci_Id: 3 }, { AcPa_Id: 54, Pant_Id: 18, Acci_Id: 5 }, { AcPa_Id: 55, Pant_Id: 19, Acci_Id: 1 }, { AcPa_Id: 56, Pant_Id: 19, Acci_Id: 2 },
+  { AcPa_Id: 57, Pant_Id: 19, Acci_Id: 3 }, { AcPa_Id: 58, Pant_Id: 19, Acci_Id: 5 }, { AcPa_Id: 59, Pant_Id: 20, Acci_Id: 1 }, { AcPa_Id: 60, Pant_Id: 20, Acci_Id: 2 },
+  { AcPa_Id: 61, Pant_Id: 20, Acci_Id: 3 }, { AcPa_Id: 62, Pant_Id: 20, Acci_Id: 5 }, { AcPa_Id: 63, Pant_Id: 21, Acci_Id: 1 }, { AcPa_Id: 64, Pant_Id: 21, Acci_Id: 2 },
+  { AcPa_Id: 65, Pant_Id: 21, Acci_Id: 3 }, { AcPa_Id: 66, Pant_Id: 21, Acci_Id: 5 }, { AcPa_Id: 67, Pant_Id: 22, Acci_Id: 1 }, { AcPa_Id: 68, Pant_Id: 22, Acci_Id: 2 },
+  { AcPa_Id: 69, Pant_Id: 22, Acci_Id: 3 }, { AcPa_Id: 70, Pant_Id: 22, Acci_Id: 5 }, { AcPa_Id: 71, Pant_Id: 23, Acci_Id: 1 }, { AcPa_Id: 72, Pant_Id: 23, Acci_Id: 2 },
+  { AcPa_Id: 73, Pant_Id: 23, Acci_Id: 3 }, { AcPa_Id: 74, Pant_Id: 23, Acci_Id: 5 }, { AcPa_Id: 75, Pant_Id: 24, Acci_Id: 1 }, { AcPa_Id: 76, Pant_Id: 24, Acci_Id: 2 },
+  { AcPa_Id: 77, Pant_Id: 24, Acci_Id: 3 }, { AcPa_Id: 78, Pant_Id: 24, Acci_Id: 5 }, { AcPa_Id: 79, Pant_Id: 25, Acci_Id: 1 }, { AcPa_Id: 80, Pant_Id: 25, Acci_Id: 2 },
+  { AcPa_Id: 81, Pant_Id: 25, Acci_Id: 3 }, { AcPa_Id: 82, Pant_Id: 25, Acci_Id: 5 }, { AcPa_Id: 83, Pant_Id: 26, Acci_Id: 1 }, { AcPa_Id: 84, Pant_Id: 26, Acci_Id: 2 },
+  { AcPa_Id: 85, Pant_Id: 26, Acci_Id: 3 }, { AcPa_Id: 86, Pant_Id: 26, Acci_Id: 5 }, { AcPa_Id: 87, Pant_Id: 27, Acci_Id: 1 }, { AcPa_Id: 88, Pant_Id: 27, Acci_Id: 2 },
+  { AcPa_Id: 89, Pant_Id: 27, Acci_Id: 3 }, { AcPa_Id: 90, Pant_Id: 27, Acci_Id: 5 }, { AcPa_Id: 91, Pant_Id: 28, Acci_Id: 1 }, { AcPa_Id: 92, Pant_Id: 28, Acci_Id: 2 },
+  { AcPa_Id: 93, Pant_Id: 28, Acci_Id: 3 }, { AcPa_Id: 94, Pant_Id: 28, Acci_Id: 5 }, { AcPa_Id: 95, Pant_Id: 29, Acci_Id: 1 }, { AcPa_Id: 96, Pant_Id: 29, Acci_Id: 2 },
+  { AcPa_Id: 97, Pant_Id: 29, Acci_Id: 3 }, { AcPa_Id: 98, Pant_Id: 29, Acci_Id: 5 }, { AcPa_Id: 99, Pant_Id: 30, Acci_Id: 1 }, { AcPa_Id: 100, Pant_Id: 30, Acci_Id: 2 },
+  { AcPa_Id: 101, Pant_Id: 30, Acci_Id: 3 }, { AcPa_Id: 102, Pant_Id: 30, Acci_Id: 5 }, { AcPa_Id: 103, Pant_Id: 31, Acci_Id: 1 }, { AcPa_Id: 104, Pant_Id: 31, Acci_Id: 2 },
+  { AcPa_Id: 105, Pant_Id: 31, Acci_Id: 3 }, { AcPa_Id: 106, Pant_Id: 31, Acci_Id: 5 }, { AcPa_Id: 107, Pant_Id: 32, Acci_Id: 1 }, { AcPa_Id: 108, Pant_Id: 32, Acci_Id: 2 },
+  { AcPa_Id: 109, Pant_Id: 32, Acci_Id: 5 }, { AcPa_Id: 110, Pant_Id: 32, Acci_Id: 6 }, { AcPa_Id: 111, Pant_Id: 33, Acci_Id: 1 }, { AcPa_Id: 112, Pant_Id: 33, Acci_Id: 2 },
+  { AcPa_Id: 113, Pant_Id: 33, Acci_Id: 3 }, { AcPa_Id: 114, Pant_Id: 33, Acci_Id: 5 }, { AcPa_Id: 118, Pant_Id: 34, Acci_Id: 5 },
+  { AcPa_Id: 119, Pant_Id: 35, Acci_Id: 1 }, { AcPa_Id: 120, Pant_Id: 35, Acci_Id: 2 }, { AcPa_Id: 121, Pant_Id: 35, Acci_Id: 3 }, { AcPa_Id: 122, Pant_Id: 35, Acci_Id: 5 },
+  { AcPa_Id: 123, Pant_Id: 36, Acci_Id: 1 }, { AcPa_Id: 124, Pant_Id: 36, Acci_Id: 2 }, { AcPa_Id: 125, Pant_Id: 36, Acci_Id: 3 }, { AcPa_Id: 126, Pant_Id: 36, Acci_Id: 5 },
+  { AcPa_Id: 127, Pant_Id: 37, Acci_Id: 2 }, { AcPa_Id: 128, Pant_Id: 38, Acci_Id: 1 }, { AcPa_Id: 129, Pant_Id: 38, Acci_Id: 2 }, { AcPa_Id: 130, Pant_Id: 38, Acci_Id: 3 },
+  { AcPa_Id: 131, Pant_Id: 38, Acci_Id: 5 }, { AcPa_Id: 132, Pant_Id: 39, Acci_Id: 1 }, { AcPa_Id: 133, Pant_Id: 39, Acci_Id: 2 }, { AcPa_Id: 134, Pant_Id: 39, Acci_Id: 3 },
+  { AcPa_Id: 135, Pant_Id: 39, Acci_Id: 5 }, { AcPa_Id: 136, Pant_Id: 40, Acci_Id: 1 }, { AcPa_Id: 137, Pant_Id: 40, Acci_Id: 2 }, { AcPa_Id: 138, Pant_Id: 40, Acci_Id: 5 },
+  { AcPa_Id: 139, Pant_Id: 40, Acci_Id: 6 }, { AcPa_Id: 140, Pant_Id: 41, Acci_Id: 1 }, { AcPa_Id: 141, Pant_Id: 41, Acci_Id: 2 }, { AcPa_Id: 142, Pant_Id: 41, Acci_Id: 5 },
+  { AcPa_Id: 143, Pant_Id: 41, Acci_Id: 6 }, { AcPa_Id: 144, Pant_Id: 42, Acci_Id: 1 }, { AcPa_Id: 145, Pant_Id: 42, Acci_Id: 2 }, { AcPa_Id: 146, Pant_Id: 42, Acci_Id: 3 },
+  { AcPa_Id: 147, Pant_Id: 42, Acci_Id: 5 }, { AcPa_Id: 148, Pant_Id: 43, Acci_Id: 1 }, { AcPa_Id: 149, Pant_Id: 43, Acci_Id: 2 }, { AcPa_Id: 150, Pant_Id: 43, Acci_Id: 3 },
+  { AcPa_Id: 151, Pant_Id: 43, Acci_Id: 5 }, { AcPa_Id: 152, Pant_Id: 45, Acci_Id: 1 }, { AcPa_Id: 153, Pant_Id: 45, Acci_Id: 2 }, { AcPa_Id: 154, Pant_Id: 45, Acci_Id: 3 },
+  { AcPa_Id: 155, Pant_Id: 45, Acci_Id: 5 }, { AcPa_Id: 156, Pant_Id: 17, Acci_Id: 4 }, { AcPa_Id: 157, Pant_Id: 53, Acci_Id: 4 }, { AcPa_Id: 158, Pant_Id: 52, Acci_Id: 4 },
+  { AcPa_Id: 159, Pant_Id: 49, Acci_Id: 4 }, { AcPa_Id: 160, Pant_Id: 22, Acci_Id: 4 }, { AcPa_Id: 161, Pant_Id: 34, Acci_Id: 4 }, { AcPa_Id: 162, Pant_Id: 34, Acci_Id: 9 },
+  { AcPa_Id: 188, Pant_Id: 18, Acci_Id: 4 }, { AcPa_Id: 189, Pant_Id: 19, Acci_Id: 4 }, { AcPa_Id: 190, Pant_Id: 20, Acci_Id: 4 }, { AcPa_Id: 191, Pant_Id: 21, Acci_Id: 4 },
+  { AcPa_Id: 192, Pant_Id: 23, Acci_Id: 4 }, { AcPa_Id: 193, Pant_Id: 24, Acci_Id: 4 }, { AcPa_Id: 194, Pant_Id: 25, Acci_Id: 4 }, { AcPa_Id: 195, Pant_Id: 26, Acci_Id: 4 },
+  { AcPa_Id: 196, Pant_Id: 27, Acci_Id: 4 }, { AcPa_Id: 197, Pant_Id: 28, Acci_Id: 4 }, { AcPa_Id: 198, Pant_Id: 29, Acci_Id: 4 }, { AcPa_Id: 199, Pant_Id: 30, Acci_Id: 4 },
+  { AcPa_Id: 200, Pant_Id: 31, Acci_Id: 4 }, { AcPa_Id: 201, Pant_Id: 32, Acci_Id: 4 }, { AcPa_Id: 202, Pant_Id: 33, Acci_Id: 4 }, { AcPa_Id: 203, Pant_Id: 35, Acci_Id: 4 },
+  { AcPa_Id: 204, Pant_Id: 36, Acci_Id: 4 }, { AcPa_Id: 205, Pant_Id: 37, Acci_Id: 4 }, { AcPa_Id: 206, Pant_Id: 38, Acci_Id: 4 }, { AcPa_Id: 207, Pant_Id: 39, Acci_Id: 4 },
+  { AcPa_Id: 208, Pant_Id: 40, Acci_Id: 4 }, { AcPa_Id: 209, Pant_Id: 41, Acci_Id: 4 }, { AcPa_Id: 210, Pant_Id: 42, Acci_Id: 4 }, { AcPa_Id: 211, Pant_Id: 43, Acci_Id: 4 },
+  { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 6, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 7, Acci_Id: 4 }, { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 },
+  { AcPa_Id: 216, Pant_Id: 9, Acci_Id: 4 }, { AcPa_Id: 217, Pant_Id: 10, Acci_Id: 4 }, { AcPa_Id: 218, Pant_Id: 11, Acci_Id: 4 }, { AcPa_Id: 219, Pant_Id: 12, Acci_Id: 4 },
+  { AcPa_Id: 220, Pant_Id: 13, Acci_Id: 4 }, { AcPa_Id: 221, Pant_Id: 14, Acci_Id: 4 }, { AcPa_Id: 222, Pant_Id: 15, Acci_Id: 4 }, { AcPa_Id: 223, Pant_Id: 16, Acci_Id: 4 },
+  { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }
 ];
 
 
@@ -249,6 +279,7 @@ export class CreateComponent {
   }
 
   guardar(): void {
+    this.mostrarErrores = true;
     if (!this.rol.role_Descripcion.trim()) {
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos.';
@@ -327,7 +358,7 @@ export class CreateComponent {
 
             // Enviar los permisos uno por uno
             permisos.forEach(permiso => {
-              console.log('Permiso enviado:', permiso);
+              // console.log('Permiso enviado:', permiso);
               this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
@@ -349,7 +380,7 @@ export class CreateComponent {
               this.mostrarAlertaExito = false;
               this.onSave.emit(ultimoRol);
               this.cancelar();
-            }, 3000);
+            }, 300);
           },
           error: () => {
             this.mostrarAlertaError = true;
