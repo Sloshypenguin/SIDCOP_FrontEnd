@@ -78,7 +78,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="prod_Descripcion" class="form-label">Descripción<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="prod_Descripcion" [(ngModel)]="producto.prod_Descripcion" [class.is-invalid]="!producto.prod_Descripcion.trim() && mostrarErrores" placeholder="Ingrese la descripción" required/>
+                <input type="text" class="form-control ri-attachment-line" id="prod_Descripcion" [(ngModel)]="producto.prod_Descripcion" [class.is-invalid]="!producto.prod_Descripcion.trim() && mostrarErrores" placeholder="Ingrese la descripción" required/>
                 <div class="text-danger mt-1" *ngIf="!producto.prod_Descripcion.trim() && mostrarErrores">
                   <small>El campo Descripción es requerido</small>
                 </div>
