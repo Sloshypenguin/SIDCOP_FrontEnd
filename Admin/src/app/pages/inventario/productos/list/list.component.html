@@ -74,7 +74,7 @@
                                 style="height: 180px;"
                             />
 
-                            <div class="contenedor" style="position: absolute; top: 0px; right: 0px; z-index:1;" *ngIf="accionPermitida('editar') || accionPermitida('detalles') || accionPermitida('eliminar')">
+                            <div class="contenedor" style="position: absolute; top: 0px; right: 0px; z-index:1;" *ngIf="accionPermitida('editar') || accionPermitida('detalle') || accionPermitida('eliminar')">
                                 <div class="dropdown-action-list" (document:click)="onDocumentClick($event, data.prod_Id)">
                                     <button class="buttonConfig"
                                         [attr.aria-expanded]="activeActionRow === data.prod_Id"
@@ -103,20 +103,34 @@
 
 
                         <div class="card-body p-3">
-                            <h6 class="fs-md text-truncate text-dark mt-3">{{ data.prod_Codigo }}</h6>
-                            <h4 class="fs-lg mb-3">L. {{ data.prod_PrecioUnitario | number: '1.2-2' }}</h4>
-                            <a [routerLink]="['/inventario/productos/details', data.prod_Id]"><h6 class="fw-bold mb-2 text-dark" style="font-size: 1.125rem;">
-                                {{ data.prod_DescripcionCorta }}
-                            </h6></a>
-                            <p class="mb-2">{{ data.marc_Descripcion }}</p>
-                            <ul class="list-unstyled ps-0">
-                                <li class="d-flex" style="gap: 4px;">
-                                    <span class="text-muted text-break">Categoria:</span><span>{{ data.cate_Descripcion }}</span>
-                                </li>
-                                <li class="d-flex" style="gap: 4px;">
-                                    <span class="text-muted text-break">Subcategoria:</span><span>{{ data.subc_Descripcion }}</span>
-                                </li>
-                            </ul>
+                            <a (click)="detalles(data)" *ngIf="accionPermitida('detalle')" >
+                                <h6 class="fs-md text-truncate text-dark mt-3">{{ data.prod_Codigo }}</h6>
+                                <h4 class="fs-lg mb-3">L. {{ data.prod_PrecioUnitario | number: '1.2-2' }}</h4>
+                                <h6 class="fw-bold mb-2 text-dark" style="font-size: 1.125rem;">{{ data.prod_DescripcionCorta }}</h6>
+                                <p class="mb-2">{{ data.marc_Descripcion }}</p>
+                                <ul class="list-unstyled ps-0">
+                                    <li class="d-flex" style="gap: 4px;">
+                                        <span class="text-muted text-break">Categoria:</span><span>{{ data.cate_Descripcion }}</span>
+                                    </li>
+                                    <li class="d-flex" style="gap: 4px;">
+                                        <span class="text-muted text-break">Subcategoria:</span><span>{{ data.subc_Descripcion }}</span>
+                                    </li>
+                                </ul>
+                            </a>
+                            <a *ngIf="!accionPermitida('detalle')" >
+                                <h6 class="fs-md text-truncate text-dark mt-3">{{ data.prod_Codigo }}</h6>
+                                <h4 class="fs-lg mb-3">L. {{ data.prod_PrecioUnitario | number: '1.2-2' }}</h4>
+                                <h6 class="fw-bold mb-2 text-dark" style="font-size: 1.125rem;">{{ data.prod_DescripcionCorta }}</h6>
+                                <p class="mb-2">{{ data.marc_Descripcion }}</p>
+                                <ul class="list-unstyled ps-0">
+                                    <li class="d-flex" style="gap: 4px;">
+                                        <span class="text-muted text-break">Categoria:</span><span>{{ data.cate_Descripcion }}</span>
+                                    </li>
+                                    <li class="d-flex" style="gap: 4px;">
+                                        <span class="text-muted text-break">Subcategoria:</span><span>{{ data.subc_Descripcion }}</span>
+                                    </li>
+                                </ul>
+                            </a>
                         </div>
                         <div style="margin-left: 93%; margin-bottom: 2%;">{{ data.secuencia }}</div>
                     </div>
@@ -191,5 +205,14 @@
 
 <!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
-
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+    <div class="typing-indicator">
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+    </div>
+</div>
 <!-- end row -->

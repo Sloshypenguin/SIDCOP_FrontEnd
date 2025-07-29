@@ -321,7 +321,7 @@ export class ListComponent implements OnInit {
   private cargarAccionesUsuario(): void {
     // Obtener permisosJson del localStorage
     const permisosRaw = localStorage.getItem('permisosJson');
-    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
+    // console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try {
