@@ -116,6 +116,20 @@
                           </span>
                         </span>
                       </th>
+                      <th class="gridjs-th" (click)="table.sortBy('desc_TipoFactura')" style="cursor:pointer;">
+                        <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                          Tipo De Factura
+                          <!-- iconos para ordenar -->
+                          <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                            <i class="ri-arrow-up-s-line icon-sort"
+                            [ngStyle]="table.sortField === 'desc_TipoFactura' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                          </i>
+                          <i class="ri-arrow-down-s-line icon-sort"
+                            [ngStyle]="table.sortField === 'desc_TipoFactura' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                          </i>
+                          </span>
+                        </span>
+                      </th>
                     <th class="gridjs-th" (click)="table.sortBy('desc_FechaInicio')" style="cursor:pointer;">
                         <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
                           Inicio
@@ -178,6 +192,7 @@
                           <td>{{data.desc_Descripcion}}</td>
                           <td>{{data.desc_Tipo == true? 'Monto Fijo' : 'Porcentaje'}}</td>
                           <td>{{data.desc_Aplicar == 'M'? 'Marcas' : data.desc_Aplicar == 'C'? 'Categorias' : data.desc_Aplicar == 'S'? 'Subcategoria' : 'Productos' }}</td>
+                          <td>{{data.desc_TipoFactura == 'CR'? 'Credito' : data.desc_TipoFactura == 'CO'? 'Contado' : data.desc_TipoFactura == 'AM'? 'Ambas' : 'N/A' }}</td>
                           <td>{{data.desc_FechaInicio}}</td>
                           <td>{{data.desc_FechaFin}}</td>
                           <td>{{data.desc_Observaciones}}</td>
