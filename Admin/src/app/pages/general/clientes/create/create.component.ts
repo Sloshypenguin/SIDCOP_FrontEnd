@@ -94,19 +94,25 @@ export class CreateComponent {
   }
 
   esAvalValido(aval: Aval): boolean {
+    let fechaValida = false;
+    if (aval.aval_FechaNacimiento) {
+      const fecha = typeof aval.aval_FechaNacimiento === 'string'
+        ? new Date(aval.aval_FechaNacimiento)
+        : aval.aval_FechaNacimiento;
+      fechaValida = fecha instanceof Date && !isNaN(fecha.getTime());
+    }
+
     return (
       typeof aval.aval_DNI === 'string' && aval.aval_DNI.trim().length > 0 &&
-      typeof aval.pare_Id === 'number' && aval.pare_Id > 0 &&
+      !isNaN(Number(aval.pare_Id)) && Number(aval.pare_Id) > 0 &&
       typeof aval.aval_Nombres === 'string' && aval.aval_Nombres.trim().length > 0 &&
       typeof aval.aval_Apellidos === 'string' && aval.aval_Apellidos.trim().length > 0 &&
-      typeof aval.esCv_Id === 'number' && aval.esCv_Id > 0 &&
+      !isNaN(Number(aval.esCv_Id)) && Number(aval.esCv_Id) > 0 &&
       typeof aval.aval_Telefono === 'string' && aval.aval_Telefono.trim().length > 0 &&
-      typeof aval.tiVi_Id === 'number' && aval.tiVi_Id > 0 &&
-      typeof this.selectedDepaAval === 'string' && this.selectedDepaAval.trim().length > 0 &&
-      typeof this.nuevaColoniaAval.muni_Codigo === 'string' && this.nuevaColoniaAval.muni_Codigo.trim().length > 0 &&
-      typeof aval.colo_Id === 'number' && aval.colo_Id > 0 &&
+      !isNaN(Number(aval.tiVi_Id)) && Number(aval.tiVi_Id) > 0 &&
+      !isNaN(Number(aval.colo_Id)) && Number(aval.colo_Id) > 0 &&
       typeof aval.aval_DireccionExacta === 'string' && aval.aval_DireccionExacta.trim().length > 0 &&
-      aval.aval_FechaNacimiento instanceof Date && !isNaN(aval.aval_FechaNacimiento.getTime())
+      fechaValida
     );
   }
 
@@ -195,13 +201,13 @@ export class CreateComponent {
     if (no == 4) {
       this.mostrarErrores = true;
       if (this.tieneDatosCredito()) {
-        if (this.avales.some(aval => this.esAvalValido(aval))) {
+        if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
           this.mostrarErrores = false;
           this.activeTab = 5;
-        }
-        else {
+        } else {
+          this.mostrarErrores = true;
           this.mostrarAlertaWarning = true;
-          this.mensajeWarning = 'Por favor registre al menos un Aval.';
+          this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
           setTimeout(() => {
             this.mostrarAlertaWarning = false;
             this.mensajeWarning = '';

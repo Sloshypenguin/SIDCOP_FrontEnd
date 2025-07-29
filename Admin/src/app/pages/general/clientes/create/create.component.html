@@ -590,7 +590,10 @@
           <i class="ri-arrow-left-s-line"></i>
         </button>
         <div class="aval-tabs-scroll">
-          <div class="aval-tab" *ngFor="let aval of avales; let i = index" [class.active]="i === avalActivoIndex" (click)="seleccionarAval(i)">
+          <div class="aval-tab" *ngFor="let aval of avales; let i = index" 
+            [class.active]="i === avalActivoIndex" 
+            [class.invalido]="mostrarErrores && !esAvalValido(aval)"
+            (click)="seleccionarAval(i)">
             Registro {{ i + 1 }}
             <button *ngIf="avales.length > 1" class="btn-aval-delete"
               (click)="eliminarAval(i); $event.stopPropagation();" title="Eliminar aval">
