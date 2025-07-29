@@ -286,6 +286,7 @@ export class EditComponent implements OnChanges {
 
     const camposRequeridos = [
       this.producto.prod_Codigo.trim(),
+      this.producto.prod_CodigoBarra.trim(),
       this.producto.prod_Descripcion.trim(),
       this.producto.prod_DescripcionCorta.trim(),
       this.producto.prod_CostoTotal > 0,
