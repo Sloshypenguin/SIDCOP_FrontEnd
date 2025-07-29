@@ -134,28 +134,22 @@
       </div>
 
       <div class="col-md-6">
-        <label  class="form-label">Sexo<span class="text-danger">*</span></label>
         <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <ng-select
-                class="w-100"
-                [items]="sexos"
-                bindLabel="label"
-                bindValue="value"
-                [(ngModel)]="vendedor.vend_Sexo"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Seleccione sexo"
-                required
-              >
-                <ng-template ng-option-tmp let-item="item">
-                  <i [class]="item.icon"></i> {{ item.label }}
-                </ng-template>
-              </ng-select>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <label class="form-label d-block">Sexo <span class="text-danger">*</span></label>
+            <div class="sexo-toggle d-flex">
+              <label class="sexo-option me-2" [class.selected]="vendedor.vend_Sexo === 'M'">
+                <input type="radio" name="sexo" value="M" [(ngModel)]="vendedor.vend_Sexo" required />
+                <i class="ri-men-line sexo-icon"></i>
+                <span>Masculino</span>
+              </label>
+              <label class="sexo-option" [class.selected]="vendedor.vend_Sexo === 'F'">
+                <input type="radio" name="sexo" value="F" [(ngModel)]="vendedor.vend_Sexo" />
+                <i class="ri-women-line sexo-icon"></i>
+                <span>Femenino</span>
+              </label>
           </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
-            <small>El campo correo es requerido</small>
+          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Sexo.trim() && mostrarErrores">
+            <small>El campo sexo es requerido</small>
           </div>
         </div>
       </div>
