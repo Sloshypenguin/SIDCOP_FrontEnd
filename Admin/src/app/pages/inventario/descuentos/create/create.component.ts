@@ -50,6 +50,24 @@ activeTab: number = 1;
 change(event: any) {
   }
 
+  seleccionContado: boolean = false;
+seleccionCredito: boolean = false;
+formaPago: string = ''; // Aquí se guardará "CO", "CR" o "AM"
+
+actualizarFormaPago(): void {
+  if (this.seleccionContado && this.seleccionCredito) {
+    this.formaPago = 'AM'; // Ambos
+  } else if (this.seleccionContado) {
+    this.formaPago = 'CO'; // Solo contado
+  } else if (this.seleccionCredito) {
+    this.formaPago = 'CR'; // Solo crédito
+  } else {
+    this.formaPago = ''; // Ninguno seleccionado
+  }
+
+  console.log('Forma de pago seleccionada:', this.formaPago);
+}
+
 get itemsDisponibles(): any[] {
   switch (this.seccionVisible) {
     case 'productos': return this.productos;
@@ -160,7 +178,10 @@ seleccionarTodos(event: any) {
   usuarioCreacion:  '',
   usuarioModificacion: '',
   code_Status:  0,
-  message_Status:''
+  message_Status:'',
+    clientes: '',
+  referencias: '',
+  escalas: '',
   }
 
   descuentoDetalle: DescuentoDetalle = {
@@ -420,6 +441,22 @@ seleccionarTodosClientes(grupo: any, seleccionar: boolean): void {
   });
 }
 
+get fechaInicioFormato(): string {
+  return new Date(this.descuento.desc_FechaInicio).toISOString().split('T')[0];
+}
+
+set fechaInicioFormato(value: string) {
+  this.descuento.desc_FechaInicio = new Date(value);
+}
+
+get fechaFinFormato(): string {
+  return new Date(this.descuento.desc_FechaFin).toISOString().split('T')[0];
+}
+
+set fechaFinFormato(value: string) {
+  this.descuento.desc_FechaFin = new Date(value);
+}
+
 
 
 
@@ -500,7 +537,8 @@ tieneAyudante: boolean = false;
       escalas: '',
       clientes: '',
       referencias: '',
-      escalas_Json: this.escalas
+      escalas_Json: this.escalas,
+      desc_TipoFactura: this.formaPago
 
     };
 
@@ -534,155 +572,25 @@ tieneAyudante: boolean = false;
           
         }
 
-          this.descuentoDetalle.desc_Id = response.data.code_Status;
-          this.descuentoPorCliente.desc_Id = response.data.code_Status;
-          this.descuentoPorEscala.desc_Id = response.data.code_Status;
-
-          const DescuentoDetalleGuardar: any = {
-          desc_Id:  this.descuentoDetalle.desc_Id,
-          idReferencias:  this.descuentoDetalle.idReferencias,
-          usua_Creacion:  getUserId(),
-          desD_FechaCreacion:  new Date(),
-          desD_Id:  0,
-          desD_IdReferencia: 0,
-          usua_Modificacion: 0,
-          desD_FechaModificacion: new Date(),
-          desD_Estado: false,
-          usuarioCreacion:  '',
-          usuarioModificacion: '',
-          };
-
-          const DescuentoPorClienteGuardar: any = {
-          desc_Id:  this.descuentoPorCliente.desc_Id,
-          idClientes:  this.clientesSeleccionados,
-          usua_Creacion:  getUserId(),
-          deEs_FechaCreacion:  new Date(),
-          deCl_Id:  0,
-          clie_Id: 0, 
-          usua_Modificacion: 0,
-          deEs_FechaModificacion: new Date(),
-          deCl_Estado: false,
-          usuarioCreacion:  '',
-          usuarioModificacion: '',
-          };
-
-          const DescuentoPorEscalaGuardar: any = {
-          desc_Id:  this.descuentoPorEscala.desc_Id,
-          escalas:  this.escalas,
-          usua_Creacion:  getUserId(),
-          deEs_FechaCreacion:  new Date(),
-          deEs_Id:  0,
-          deEs_InicioEscala: 0, 
-          deEs_FinEscala: 0, 
-          deEs_Valor: 0, 
-          escalas_JSON: '',
-          usua_Modificacion: 0,
-          deEs_FechaModificacion: new Date(),
-          deEs_Estado: false,
-          usuarioCreacion:  '',
-          usuarioModificacion: '',
-          };
-
-          this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/InsertarDetalle`, DescuentoDetalleGuardar, {
-            headers: {
-              'X-Api-Key': environment.apiKey,
-              'Content-Type': 'application/json',
-              'accept': '*/*'
-            }
-            }).subscribe({
-                next: (response) => {
-              if(response?.data?.code_Status <= 0)
-              {
-                this.mostrarAlertaError = true;
-                this.mensajeError = 'Error al guardar el Descuento. Por favor, intente nuevamente.';
-                this.mostrarAlertaExito = false;
-
-                setTimeout(() => {
-                  this.mostrarAlertaError = false;
-                  this.mensajeError = '';
-                }, 5000);
-                return;
-
-                
-              }
-              this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/InsertarDetalleCliente`, DescuentoPorClienteGuardar, {
-                  headers: {
-                    'X-Api-Key': environment.apiKey,
-                    'Content-Type': 'application/json',
-                    'accept': '*/*'
-                  }
-                }).subscribe({
-                    next: (response) => {
-                  if(response?.data?.code_Status <= 0)
-                  {
-                    this.mostrarAlertaError = true;
-                    this.mensajeError = 'Error al guardar el Descuento. Por favor, intente nuevamente.';
-                    this.mostrarAlertaExito = false;
-
-                    setTimeout(() => {
-                      this.mostrarAlertaError = false;
-                      this.mensajeError = '';
-                    }, 5000);
-
-                    return;
-                    
-                  }
-                  this.http.post<any>(`${environment.apiBaseUrl}/Descuentos/InsertarDetalleEscala`, DescuentoPorEscalaGuardar, {
-                    headers: {
-                      'X-Api-Key': environment.apiKey,
-                      'Content-Type': 'application/json',
-                      'accept': '*/*'
-                    }
-                  }).subscribe({
-                      next: (response) => {
-                    if(response?.data?.code_Status <= 0)
-                    {
-                      this.mostrarAlertaError = true;
-                      this.mensajeError = 'Error al guardar el Descuento. Por favor, intente nuevamente.';
-                      this.mostrarAlertaExito = false;
-
-                      setTimeout(() => {
-                        this.mostrarAlertaError = false;
-                        this.mensajeError = '';
-                      }, 5000);
-                    return;
-                      
-                    }
-                    this.mensajeExito = `Descuento "${this.descuento.desc_Descripcion}" guardado exitosamente`;
-                    this.mostrarAlertaExito = true;
-                    this.mostrarErrores = false;
+          
+          this.mensajeExito = `Descuento "${this.descuento.desc_Descripcion}" guardado exitosamente`;
+          this.mostrarAlertaExito = true;
+          this.mostrarErrores = false;
                     
                     // Ocultar la alerta después de 3 segundos
-                    setTimeout(() => {
-                      this.mostrarAlertaExito = false;
-                      this.onSave.emit(this.descuento);
-                      this.clientesSeleccionados = [];
-                      this.seleccionados = [];
-                      this.escalas = [];
-                      this.cancelar();
-                    }, 3000);
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.onSave.emit(this.descuento);
+            this.clientesSeleccionados = [];
+            this.seleccionados = [];
+            this.escalas = [];
+            this.cancelar();
+          }, 3000);
 
                   
 
 
-                    }},
-
-                  )
-                
-
-
-                  }},
-
-              )
-            
-
-
-              }},
-            )
-
-            
-        
-      },
+      } ,     
       error: (error) => {
         console.error('Error al guardar Vendedor:', error);
         this.mostrarAlertaError = true;
@@ -729,7 +637,7 @@ validarPasoInformacionGeneral(): boolean {
   return !!d.desc_Descripcion?.trim() &&
          d.desc_Tipo !== null &&
          !!d.desc_FechaInicio &&
-         !!d.desc_FechaFin;
+         !!d.desc_FechaFin && !!this.formaPago?.trim();
 }
 
 validarEscalas(): boolean {
