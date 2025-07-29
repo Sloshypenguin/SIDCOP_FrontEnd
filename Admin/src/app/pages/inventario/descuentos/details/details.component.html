@@ -43,6 +43,13 @@
 </div>
   </div>
 
+   <div class="details-id">
+    <div class="details-id-label">Tipo de Factura</div>
+    <div class="details-id-value"> {{descuentoDetalle.desc_TipoFactura == 'CR'? 'Credito' : descuentoDetalle.desc_TipoFactura == 'CO'? 'Contado' : descuentoDetalle.desc_TipoFactura == 'AM'? 'Ambas' : 'N/A' }}</div>
+
+   
+  </div>
+
   <div class="details-id">
     <div class="details-id-label">Validez</div>
     <div class="details-id-value"> {{ formatearFecha(descuentoDetalle.desc_FechaInicio ) || 'N/A' }} al {{ formatearFecha(descuentoDetalle.desc_FechaFin ) || 'N/A' }}</div>

@@ -971,9 +971,6 @@ bs-dropdown-container {
 #page-topbar {
   z-index: 100;
 }
-.gridjs-pagination .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
-  display: none !important;
-}
 
 .gridjs-pagination .pagination .page-item .page-link {
   background-color: #ffffff;
@@ -982,7 +979,7 @@ bs-dropdown-container {
   padding: 6px 17px;
   font-size: 12px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease ;
 }
 
 .gridjs-pagination .pagination .page-item .page-link:hover {
@@ -993,14 +990,13 @@ bs-dropdown-container {
 }
 
 .gridjs-pagination .pagination .page-item.active .page-link {
-  background-color: #64748B !important;
+  background-color: rgb(20, 26, 47) !important;
   color: #ffffff !important;
   box-shadow: 0 3px 6px rgba(75, 75, 75, 0.4);
 }
 
 .gridjs-pagination .pagination .page-item.disabled .page-link {
   background-color: #f8f9fa;
-  border-color: #dee2e6;
   color: #adb5bd;
   opacity: 0.6;
   cursor: not-allowed;
