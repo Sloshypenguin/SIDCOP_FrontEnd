@@ -96,6 +96,36 @@
               </div>
             </div>
 
+             <div class="col-md-6">
+              <label  class="form-label">Tipo Factura<span class="text-danger">*</span></label>
+              <div class="mb-3">
+            
+                <div class="toggle-group">
+                  <div class="toggle-option">
+                    <input
+                      type="checkbox"
+                      id="contado"
+                      [(ngModel)]="seleccionContado"
+                      (change)="actualizarFormaPago()"
+                    />
+                    <label for="contado">Contado</label>
+                  </div>
+                  <div class="toggle-option">
+                    <input
+                      type="checkbox"
+                      id="credito"
+                      [(ngModel)]="seleccionCredito"
+                      (change)="actualizarFormaPago()"
+                    />
+                    <label for="credito">Crédito</label>
+                  </div>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!formaPago && mostrarErrores">
+                  <small>El tipo de factura es requerida</small>
+                </div>
+              </div>
+            </div>
+
             <div class="col-md-6">
               <label  class="form-label">Fecha Inicio<span class="text-danger">*</span></label>
               <div class="mb-3">
@@ -105,7 +135,7 @@
                     class="form-control" 
                     [class.is-invalid]="!descuento.desc_FechaInicio && mostrarErrores"
                     id="desc_FechaInicio"
-                    [(ngModel)]="descuento.desc_FechaInicio"
+                    [(ngModel)]="fechaInicioFormato"
                     placeholder="Ingrese la Fecha Inicio del descuento"
                     required>
                   <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -125,7 +155,7 @@
                     class="form-control" 
                     [class.is-invalid]="!descuento.desc_FechaFin && mostrarErrores"
                     id="desc_FechaFin"
-                    [(ngModel)]="descuento.desc_FechaFin"
+                    [(ngModel)]="fechaFinFormato"
                     placeholder="Ingrese la Fecha Fin del descuento"
                     required>
                   <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
