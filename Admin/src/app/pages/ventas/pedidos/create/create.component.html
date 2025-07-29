@@ -57,29 +57,39 @@
     <div class="row">
       <!-- Select de Cliente -->
       <div class="col-md-6">
-        <label for="cliente" class="form-label">
+        <label class="form-label">
           Cliente <span class="text-danger">*</span>
         </label>
         <div class="mb-3">
-          <select
-            id="cliente"
-            name="cliente"
-            class="form-select"
-            [(ngModel)]="pedido.clie_Id"
-            (change)="onClienteSeleccionado(pedido.clie_Id)"
-            [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
-            required
-          >
-            <option value="" disabled selected>Seleccione un cliente</option>
-            <option *ngFor="let cliente of Clientes" [value]="cliente.clie_Id">
-              {{ cliente.clie_NombreNegocio }}
-            </option>
-          </select>
+          <div class="d-flex align-items-center">
+            <ng-select
+              class="w-100"
+              [items]="Clientes"
+              bindLabel="puEm_Descripcion"
+              bindValue="clie_Id"
+              [(ngModel)]="pedido.clie_Id"
+              [searchable]="true"
+              [clearable]="false"
+              [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
+              placeholder="Seleccione un cliente"
+              required
+              [searchFn]="searchCliente"
+               (change)="onClienteSeleccionado($event?.clie_Id)"
+            >
+              <ng-template ng-label-tmp let-item="item">
+               {{ item.clie_Codigo }} - {{ item.clie_Nombres }} {{ item.clie_Apellidos }} - {{ item.clie_NombreNegocio }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+               {{ item.clie_Codigo }} - {{ item.clie_Nombres }} {{ item.clie_Apellidos }} - {{ item.clie_NombreNegocio }}
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
           <div
             class="text-danger mt-1"
-            *ngIf="!pedido.clie_Codigo && mostrarErrores"
+            *ngIf="!pedido.clie_Id && mostrarErrores"
           >
-            <small>El campo Cliente es requerido</small>
+            <small>El campo cliente es requerido</small>
           </div>
         </div>
       </div>

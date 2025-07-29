@@ -326,20 +326,9 @@ set fechaInicioFormato(value: string) {
         })
         .subscribe({
           next: (response) => {
-            // Obtener el nombre del cliente para el mensaje
-            const clienteNombre = direccionSeleccionada ? 
-              direccionSeleccionada.clie_NombreNegocio || `${direccionSeleccionada.clie_Nombres} ${direccionSeleccionada.clie_Apellidos}` : 
-              'Cliente';
-              
-            this.mensajeExito = `Pedido para "${clienteNombre}" actualizado exitosamente`;
-            this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
-
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.onSave.emit(this.pedidoEditada);
-              this.cancelar();
-            }, 3000);
+            this.onSave.emit(this.pedidoEditada);
+            this.cancelar();
           },
           error: (error) => {
             console.error('Error al actualizar Pedido:', error);

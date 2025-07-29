@@ -193,7 +193,7 @@ export class EditComponent implements OnChanges {
           },
           error: (error) => {
             this.mostrarAlertaError = true;
-            this.mensajeError = 'Error al guardar la bodega';
+            this.mensajeError = 'Error al guardar el punto de emision';
             this.mostrarAlertaExito = false;
             setTimeout(() => {
               this.mostrarAlertaError = false;
