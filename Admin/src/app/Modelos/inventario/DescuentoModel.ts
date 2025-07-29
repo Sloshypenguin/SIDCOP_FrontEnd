@@ -22,7 +22,8 @@ export class Descuento{
   escalas?: string ='';
   escalas_Json?: EscalaViewModel[] = [];
   idClientes?: number[] = [] ; 
-  idReferencias?: number[] = [] ; 
+  idReferencias?: number[] = [] ;
+  desc_TipoFactura: string=''; 
 
 
 

@@ -20,7 +20,7 @@ export class RecuperarcontraseniaComponent {
   mostrarPassword1: boolean = false;
   mostrarPassword2: boolean = false;
 
-  onInputKeyUp(event: Event, idx: number): void {
+  onInputKeyUp(event: Event, idx: number, inputRef: HTMLInputElement): void {
     const input = event.target as HTMLInputElement;
     let value = input.value;
     if (!/^([a-zA-Z0-9]?)$/.test(value)) {
@@ -31,23 +31,20 @@ export class RecuperarcontraseniaComponent {
     // Store character or clear
     this.codigoIngresado[idx] = value;
     if (value.length === 1 && idx < 5) {
-      setTimeout(() => {
-        const nextInput = document.querySelector<HTMLInputElement>(`input[name='codigo${idx+1}']`);
-        if (nextInput) {
-          nextInput.focus();
-          nextInput.select();
-        }
-      }, 0);
+      // Move to next input using Angular template reference
+      const nextInput = inputRef.parentElement?.querySelectorAll('input')[idx + 1] as HTMLInputElement;
+      if (nextInput) {
+        nextInput.focus();
+        nextInput.select();
+      }
     }
-
     if (!value && idx > 0) {
-      setTimeout(() => {
-        const prevInput = document.querySelector<HTMLInputElement>(`input[name='codigo${idx-1}']`);
-        if (prevInput) {
-          prevInput.focus();
-          prevInput.select();
-        }
-      }, 0);
+      // Move to previous input using Angular template reference
+      const prevInput = inputRef.parentElement?.querySelectorAll('input')[idx - 1] as HTMLInputElement;
+      if (prevInput) {
+        prevInput.focus();
+        prevInput.select();
+      }
     }
   }
     @Output() onCancel = new EventEmitter<void>();
