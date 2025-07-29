@@ -279,6 +279,7 @@ export class CreateComponent {
   }
 
   guardar(): void {
+    this.mostrarErrores = true;
     if (!this.rol.role_Descripcion.trim()) {
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos.';
@@ -357,7 +358,7 @@ export class CreateComponent {
 
             // Enviar los permisos uno por uno
             permisos.forEach(permiso => {
-              console.log('Permiso enviado:', permiso);
+              // console.log('Permiso enviado:', permiso);
               this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
@@ -379,7 +380,7 @@ export class CreateComponent {
               this.mostrarAlertaExito = false;
               this.onSave.emit(ultimoRol);
               this.cancelar();
-            }, 3000);
+            }, 300);
           },
           error: () => {
             this.mostrarAlertaError = true;
