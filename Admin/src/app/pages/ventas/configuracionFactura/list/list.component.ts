@@ -322,8 +322,7 @@ private cargardatos(state: boolean): void {
         : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
       this.table.setData(datosFiltrados);
-      
-      // AGREGAR ESTA LÍNEA: Actualizar si tiene registros
+     
       this.tieneRegistros = datosFiltrados.length > 0;
     },
     error: (error) => {
@@ -332,7 +331,7 @@ private cargardatos(state: boolean): void {
       this.mostrarAlertaError = true;
       this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
       this.table.setData([]);
-      this.tieneRegistros = false; // AGREGAR ESTA LÍNEA
+      this.tieneRegistros = false; 
     },
     complete: () => {
       setTimeout(() => {
@@ -381,10 +380,9 @@ private cargardatos(state: boolean): void {
     if (permisosRaw) {
       try {
         const permisos = JSON.parse(permisosRaw);
-        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        // Buscar el módulo (
         let modulo = null;
         if (Array.isArray(permisos)) {
-          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
           modulo = permisos.find((m: any) => m.Pant_Id === 33);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
