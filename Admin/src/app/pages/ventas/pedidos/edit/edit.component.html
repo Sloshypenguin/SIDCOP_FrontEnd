@@ -62,6 +62,11 @@
           <label for="clie_Id" class="form-label">Cliente</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
+             <i class="ri-user-3-line" [ngStyle]="{
+                border: (!pedidoEditada.clie_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.clie_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <select 
             id="clie_Id" 
             name="clie_Id" 
@@ -85,6 +90,11 @@
           <label for="diCl_Id" class="form-label">Dirección</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
+             <i class="ri-map-pin-user-line" [ngStyle]="{
+                border: (!pedidoEditada.diCl_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.diCl_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <select 
             id="diCl_Id" 
             name="diCl_Id" 
@@ -113,6 +123,12 @@
           <label for="inicial-input" class="form-label"
             >Fecha Entrega<span class="text-danger">*</span></label
           >
+            <div class="d-flex align-items-center">
+             <i class="ri-calendar-event-line" [ngStyle]="{
+                border: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input
             type="date"
             id="inicial-input"
@@ -122,6 +138,7 @@
             placeholder="Seleccione la fecha de entrega"
             required
           />
+          </div>
           <div
             class="text-danger"
             *ngIf="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
@@ -136,6 +153,12 @@
          
           <div class="col-md-12 mb-3">
             <label for="buscador" class="form-label">Seleccionar los Productos</label>
+             <div class="d-flex align-items-center">  
+             <i class="ri-search-2-line"  [ngStyle]="{
+                border: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}" >
+              </i>
             <input
               type="text"
               id="buscador"
@@ -144,6 +167,7 @@
               [(ngModel)]="searchQuery"
               (input)="filtrarProductos()"
             />
+            </div>
           </div>
 
           <!-- Contenedor de tarjetas de productos -->

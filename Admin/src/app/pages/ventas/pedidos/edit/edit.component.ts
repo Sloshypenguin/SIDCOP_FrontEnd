@@ -254,6 +254,16 @@ set fechaInicioFormato(value: string) {
     this.onCancel.emit();
   }
 
+  searchCliente = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.clie_Codigo?.toLowerCase().includes(term) ||
+      item.clie_Nombres?.toLowerCase().includes(term) ||
+      item.clie_Apellidos?.toLowerCase().includes(term) ||
+      item.clie_NombreNegocio?.toLowerCase().includes(term)
+    );
+  };
+
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
     this.mensajeExito = '';
@@ -334,21 +344,15 @@ set fechaInicioFormato(value: string) {
         })
         .subscribe({
           next: (response) => {
-            this.mensajeExito = `Pedido "${this.pedidoEditada.clie_NombreNegocio}" actualizado exitosamente`;
-            this.mostrarAlertaExito = true;
-            this.mostrarErrores = false;
-
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.onSave.emit(this.pedidoEditada);
-              this.cancelar();
-            }, 3000);
+             this.mostrarErrores = false;
+            this.onSave.emit(this.pedidoEditada);
+            this.cancelar();
           },
           error: (error) => {
             console.error('Error al actualizar Punto de Emision:', error);
             this.mostrarAlertaError = true;
             this.mensajeError =
-              'Error al actualizar el Punto de Emision. Por favor, intente nuevamente.';
+              'Error al actualizar el Pedido. Por favor, intente nuevamente.';
             setTimeout(() => this.cerrarAlerta(), 5000);
           },
         });
