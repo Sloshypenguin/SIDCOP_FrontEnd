@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 
 @Component({
@@ -131,9 +132,9 @@ export class CreateComponent {
         usua_EsVendedor: this.usuario.usua_EsVendedor,
         usua_EsAdmin: this.usuario.usua_EsAdmin,
         usua_Imagen: this.usuario.usua_Imagen,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         usua_FechaCreacion: new Date().toISOString(),
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         usua_FechaModificacion: new Date().toISOString(),
         usua_Estado: true,
         permisosJson:"",
@@ -151,14 +152,9 @@ export class CreateComponent {
       }).subscribe({
         next: (response) => {
           if (response.data.code_Status === 1) {
-            this.mensajeExito = `Usuario "${this.usuario.usua_Usuario}" guardado exitosamente`;
-            this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.onSave.emit(this.usuario);
-              this.cancelar();
-            }, 3000);
+            this.onSave.emit(this.usuario);
+            this.cancelar();
           } else {
             this.mostrarAlertaError = true;
             this.mensajeError = 'Error al guardar el usuario, ' + response.data.message_Status;
@@ -202,7 +198,7 @@ export class CreateComponent {
       formData.append('upload_preset', 'subidas_usuarios');
       //Subidas usuarios Carpeta identificadora en Cloudinary
       //dwiprwtmo es el nombre de la cuenta de Cloudinary
-      const url = 'https://api.cloudinary.com/v1_1/dwiprwtmo/upload';
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
 
       
       fetch(url, {

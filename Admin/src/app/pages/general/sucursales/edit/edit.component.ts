@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -13,6 +14,8 @@ import { environment } from 'src/environments/environment';
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   @Input() sucursalData: Sucursales | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Sucursales>();
@@ -186,10 +189,11 @@ export class EditComponent implements OnChanges {
     ) {
       const sucursalActualizar = {
         ...this.sucursal,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         sucu_FechaModificacion: new Date().toISOString()
       };
 
+      this.mostrarOverlayCarga = true;
       this.http.put<any>(`${environment.apiBaseUrl}/Sucursales/Actualizar`, sucursalActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -198,6 +202,7 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
+          this.mostrarOverlayCarga = false;
           if (response?.data?.code_Status === 1) {
             this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" actualizada exitosamente`;
             this.mostrarAlertaExito = true;
@@ -220,6 +225,7 @@ export class EditComponent implements OnChanges {
           }
         },
         error: (error) => {
+          this.mostrarOverlayCarga = false;
           this.mostrarAlertaError = true;
           this.mensajeError = error?.error?.data?.message_Status || 'Error al actualizar la sucursal. Por favor, intente nuevamente.';
           this.mostrarAlertaExito = false;

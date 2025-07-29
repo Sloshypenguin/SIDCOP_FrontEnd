@@ -14,18 +14,21 @@ export class ConfiguracionFactura {
   coFa_FechaModificacion?: Date;
   coFa_Estado: boolean = true;
 
-  secuencia?: number;
 
-      colo_Descripcion: string = '';
-      muni_Codigo: string = '';
-      muni_Descripcion: string = '';
-      depa_Codigo: string = '';
-      depa_Descripcion: string = '';  
-      usuarioCreacion: string = '';
-      usuarioModificacion: string = '';
+  //not mapped
+  secuencia?: number;
+  colo_Descripcion: string = '';
+  muni_Codigo: string = '';
+  muni_Descripcion: string = '';
+  depa_Codigo: string = '';
+  depa_Descripcion: string = '';  
+  usuarioCreacion: string = '';
+  usuarioModificacion: string = '';
 
 
   constructor(init?: Partial<ConfiguracionFactura>) {
     Object.assign(this, init);
   }
 }
+
+

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MarcasVehiculos } from 'src/app/Modelos/general/MarcasVehiculos.model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -102,7 +103,7 @@ export class EditComponent implements OnChanges {
         maVe_Marca: this.marcasVehiculos.maVe_Marca.trim(),
         usua_Creacion: this.marcasVehiculos.usua_Creacion,
         maVe_FechaCreacion: this.marcasVehiculos.maVe_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         maVe_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: ''

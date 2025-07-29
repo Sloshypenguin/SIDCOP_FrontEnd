@@ -10,114 +10,222 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
+<!-- OPCIÓN 3: Mostrar mensaje informativo cuando existe registro -->
+<div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+  <div>
+    <button *ngIf="accionPermitida('crear') && !tieneRegistros" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
+      <span class="btn-text">Nuevo</span>
+      <span class="btn-icon"><i class="ri-add-line"></i></span>
+    </button>
+<div *ngIf="tieneRegistros" 
+     class="alert d-inline-flex align-items-center me-2 mb-2 px-3" 
+     style="
+       margin-bottom: 0.5rem !important; background-color: #e3d0b7; border-color: #e6caa4; 
+       color: #5a4a3a; border-radius: 50px; padding-top: 0.2rem; padding-bottom: 0.2rem;">
+       
+  <i class="ri-information-line me-2"></i>
+  <small>Solo se permite una configuración de factura</small>
+</div>
 
-        <!-- Botones de acción y buscador -->
-      <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
-            <span class="btn-text">Nuevo</span>
-            <span class="btn-icon"><i class="ri-add-line"></i></span>
-          </button>
-          <div class="search-box mb-2">
-            <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
-            <i class="ri-search-line search-icon"></i>
-          </div>
-        </div>
+  </div>
+  
+  <div class="search-box mb-2">
+    <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
+    <i class="ri-search-line search-icon"></i>
+  </div>
+</div>
+        <!-- Collapse para el formulario de creación -->
 
-        <!-- Formulario de creación -->
-<div class="collapse" [ngClass]="{ 'show': showCreateForm }">
-  <div class="card card-body mb-3" style="min-height: 300px; padding: 2rem;">
-    <div class="container-fluid">
-      <!-- Llamas al componente de creación -->
-      <app-create></app-create>
-     
- 
+      <div *ngIf="showCreateForm" [@fadeExpand]>
+  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+    <div class="container-fluid flex-grow-1">
+      <app-create 
+      (onCancel)="cerrarFormulario()" (onSave)="guardarConfiguracioFactura($event)">
+      </app-create>
+     </div>
+  </div>
+</div>
+
+        <!-- Collapse para el formulario de edición -->
+
+      <div *ngIf="showEditForm" [@fadeExpand]> 
+  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
+    <div class="container-fluid flex-grow-1">
+      <app-edit-config-factura 
+        [configFacturaData]="ConfiguracioFacturaEditando" 
+        (onCancel)="cerrarFormularioEdicion()" 
+        (onSave)="actualizarConfiguracioFactura($event)">
+      </app-edit-config-factura>
     </div>
   </div>
 </div>
 
-
-        <!-- Formulario de edición-->
-<!-- Mostrar cuando se edita -->
-<app-edit-config-factura
-  *ngIf="showEditForm && impuestoEditando"
-  [configFacturaData]="impuestoEditando"
-  (onCancel)="cerrarFormularioEdicion()"
-  (onSave)="actualizarImpuesto($event)">
-</app-edit-config-factura>
-
-
-
-      <!-- Collapse para mostrar detalles -->
-
         <!-- Collapse para el formulario de detalles -->
-<div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+<div *ngIf="showDetailsForm" [@fadeExpand]> 
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
-        [configuracionFacturaData]="impuestoDetalle" 
+        [configuracionFacturaData]="ConfiguracioFacturaDetalle" 
         (onClose)="cerrarFormularioDetalles()">
       </app-details>
     </div>
   </div>
 </div>
 
-        <!-- Tabla -->
-        <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-                <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th>No.</th>
-                <th>Empresa</th>
-                <th>Dirección</th>
-                <th>RTN</th>
-                <th>Correo</th>
-                <th>Teléfono 1</th>
-                  <th>Teléfono 2</th>
-                   <th>Logo</th>
-              </tr>
-            </thead>
-           <!-- En la tabla -->
-<tbody>
-   <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                  <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('eliminar')">
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('detalle')">
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-            
-    <td>{{ data.secuencia }}</td>
-    <td>{{ data.coFa_NombreEmpresa }}</td>
-    <td>{{ data.coFa_DireccionEmpresa }}</td>
-    <td>{{ data.coFa_RTN }}</td>
-    <td>{{ data.coFa_Correo }}</td>
-    <td>{{ data.coFa_Telefono1 }}</td>
-    <td>{{ data.coFa_Telefono2 }}</td>
-    <td>{{ data.coFa_Logo }}</td>
-  </tr>
-</tbody>
 
-          </table>
+
+
+
+       <div class="table-radius-container">
+          <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
+                  <!-- no es necesario ordenar todas la columnas-->
+                  <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                    <span class="table-header-flex">
+                      No.
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column;">
+                       <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('coFa_NombreEmpresa')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Empresa
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_NombreEmpresa' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_NombreEmpresa' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                   <th class="gridjs-th" (click)="table.sortBy('coFa_DireccionEmpresa')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Dirección
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_DireccionEmpresa' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_DireccionEmpresa' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                   <th class="gridjs-th" (click)="table.sortBy('coFa_RTN')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      RTN
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_RTN' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_RTN' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                   <th class="gridjs-th" (click)="table.sortBy('coFa_Correo')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Correo
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Correo' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Correo' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                   <th class="gridjs-th" (click)="table.sortBy('coFa_Telefono1')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                   Telefono 1
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Telefono1' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Telefono1' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                   
+                   <th class="gridjs-th" (click)="table.sortBy('coFa_Telefono2')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Telefono 2
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Telefono2' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Telefono2' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('coFa_Logo')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Logo
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                         <i class="ri-arrow-up-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Logo' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      <i class="ri-arrow-down-s-line icon-sort"
+                        [ngStyle]="table.sortField === 'coFa_Logo' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      </i>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr class="gridjs-th" *ngFor="let data of table.paginated$ | async; let i = index">
+                  <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
+                    <div class="dropdown-action-list">
+                      <button type="button"
+                    class="dropdown-toggle"
+                    [attr.aria-expanded]="false"
+                    (click)="floatingMenuService.open($event, data)">
+                    <span>Acciones</span>
+                    <i class="ri-settings-3-line"></i>
+                  </button>
+                  </div>
+                  </td>
+                  <td><span class="fw-semibold">{{data.secuencia}}</span></td>
+                  <td>{{data.coFa_NombreEmpresa}}</td>
+                  <td>{{data.coFa_DireccionEmpresa}}</td>
+                  <td>{{data.coFa_RTN}}</td>
+                  <td>{{data.coFa_Correo}}</td>
+                  <td>{{data.coFa_Telefono1}}</td>
+                  <td>{{data.coFa_Telefono2}}</td>
+                  <td>
+                       <img
+                        [src]="data.coFa_Logo" (error)="onImgError($event)" alt="Logo"
+                        class="avatar-img rounded-circle"
+                        style="width: 64px; height: 64px; object-fit: cover; display: block;"/>
+                  </td>
+                </tr>
+                </thead>
+            </table>
+          </div>
         </div>
 
         <!-- Paginación -->
@@ -125,7 +233,9 @@
           <ng-container *ngIf="(table.paginated$ | async) as paginados">
             <div class="col-sm-12 col-md-5">
               <div class="dataTables_info mb-2" role="status" aria-live="polite">
-                Mostrando {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.total$ | async }} registros
+                Mostrando
+                {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.total$ | async }}
+                registros
               </div>
             </div>
             <div class="col-sm-12 col-md-5">
@@ -146,52 +256,89 @@
   </div>
 </div>
 
-<!-- Alertas -->
+<!-- Contenedor de alertas flotantes -->
 <div class="alert-container">
-  <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert">
-    <i class="ri-check-double-line me-3"></i>
+  <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
     <strong>¡Éxito!</strong> {{ mensajeExito }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 
-  <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert">
-    <i class="ri-alert-line me-3"></i>
+  <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
     <strong>¡Atención!</strong> {{ mensajeWarning }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 
-  <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert">
-    <i class="ri-error-warning-line me-3"></i>
+  <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
     <strong>¡Error!</strong> {{ mensajeError }}
     <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
   </div>
 </div>
 
-<!-- Modal confirmación -->
-<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
+<!-- Modal de confirmación para eliminar -->
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" [style.display]="mostrarConfirmacionEliminar ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header custom-modal-header">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
         <span>Confirmación</span>
         <i class="ri-close-line custom-modal-close" (click)="cancelarEliminar()"></i>
       </div>
       <hr class="custom-modal-divider">
-      <div class="modal-body custom-modal-body text-center">
-        <p class="mt-2 custom-modal-text">
-          <i class="ri-alert-line me-2 custom-modal-alert-icon"></i>¿Está seguro(a) que desea eliminar la configuración de factura <strong>{{ configuracionAEliminar?.coFa_NombreEmpresa }}</strong>?
-        </p>
+      <div class="modal-body custom-modal-body">
+        <div class="text-center"> 
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la configuración de factura <strong>{{ configuracionAEliminar?.coFa_NombreEmpresa }}</strong>?
+          </p>
+        </div>
       </div>
       <div class="modal-footer custom-modal-footer">
-        <button type="button" class="btn btn-primary gray btn-sm" (click)="cancelarEliminar()">
-          <span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span>
-        </button>
+        <button type="button" class="btn btn-primary gray btn-sm btn-minw-5" (click)="cancelarEliminar()"><span class="btn-text">No</span><span class="btn-icon"><i class="ri-close-circle-line"></i></span></button>
         <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
           <span class="btn-text">Si</span>
           <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
         </button>
-      </div>
+      </div> 
     </div>
   </div>
 </div>
 
+<!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+
+<!-- Menú flotante -->
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenuService.data); floatingMenuService.close()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+    <div class="typing-indicator">
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+        <div class="typing-shadow"></div>
+    </div>
+</div>

@@ -69,7 +69,7 @@
               "
               id="PECod"
               [(ngModel)]="registroCai.regC_Descripcion"
-              placeholder="Ingrese el Codigo del Punto de Emision"
+              placeholder="Ingrese la Descripcion"
               required
             />
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -84,91 +84,116 @@
       </div>
 
       <div class="col-md-6">
-        <label for="nombres-input" class="form-label"
+        <label class="form-label"
           >Sucursal<span class="text-danger">*</span></label
         >
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <select
-              id="sucursalId"
-              name="sucursalId"
-              class="form-select"
-              [class.is-invalid]="!registroCai.sucu_Id && mostrarErrores"
+            <ng-select
+              class="w-100"
+              [items]="Sucursales"
+              bindLabel="sucu_Descripcion"
+              bindValue="sucu_Id"
               [(ngModel)]="registroCai.sucu_Id"
+              [searchable]="true"
+              [clearable]="false"
+              [class.is-invalid]="!registroCai.sucu_Id && mostrarErrores"
+              placeholder="Seleccione una sucursal"
               required
+              [searchFn]="searchSucursal"
             >
-              <option value="" disabled selected>Seleccione una opción</option>
-              <option *ngFor="let Depa of Sucursales" [value]="Depa.sucu_Id">
-                {{ Depa.sucu_Descripcion }}
-              </option>
-            </select>
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} -
+                {{ item.depa_Descripcion }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} -
+                {{ item.depa_Descripcion }}
+              </ng-template>
+            </ng-select>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
           <div
             class="text-danger mt-1"
             *ngIf="!registroCai.sucu_Id && mostrarErrores"
           >
-            <small>El campo Sucursal es requerido</small>
+            <small>El campo sucursal es requerido</small>
           </div>
         </div>
       </div>
 
-      <div class="col-md-6">
-        <label for="nombres-input" class="form-label"
-          >CAI<span class="text-danger">*</span></label
-        >
+     <div class="col-md-6">
+        <label class="form-label">
+          CAI <span class="text-danger">*</span>
+        </label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <select
-              id="caiId"
-              name="caiId"
-              class="form-select"
-              [class.is-invalid]="!registroCai.nCai_Id && mostrarErrores"
+            <ng-select
+              class="w-100"
+              [items]="CAI"
+              bindLabel="nCai_Descripcion"
+              bindValue="nCai_Id"
               [(ngModel)]="registroCai.nCai_Id"
+              [searchable]="true"
+              [clearable]="false"
+              [class.is-invalid]="!registroCai.nCai_Id && mostrarErrores"
+              placeholder="Seleccione un CAI"
               required
+              [searchFn]="searchCAI"
             >
-              <option value="" disabled selected>Seleccione una opción</option>
-              <option *ngFor="let Depa of CAI" [value]="Depa.nCai_Id">
-                {{ Depa.nCai_Descripcion }}
-              </option>
-            </select>
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.nCai_Codigo }} - {{ item.nCai_Descripcion }} 
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                  {{ item.nCai_Codigo }} - {{ item.nCai_Descripcion }} 
+              </ng-template>
+            </ng-select>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
           <div
             class="text-danger mt-1"
             *ngIf="!registroCai.nCai_Id && mostrarErrores"
           >
-            <small>El campo CAI es requerido</small>
+            <small>El campo punto CAI es requerido</small>
           </div>
         </div>
       </div>
 
       <div class="col-md-6">
-        <label for="nombres-input" class="form-label"
-          >Punto de Emision<span class="text-danger">*</span></label
-        >
+        <label class="form-label">
+          Punto de Emisión <span class="text-danger">*</span>
+        </label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <select
-              id="puntoemisionId"
-              name="puntoemisionId"
-              class="form-select"
-              [class.is-invalid]="!registroCai.puEm_Id && mostrarErrores"
+            <ng-select
+              class="w-100"
+              [items]="PE"
+              bindLabel="puEm_Descripcion"
+              bindValue="puEm_Id"
               [(ngModel)]="registroCai.puEm_Id"
+              [searchable]="true"
+              [clearable]="false"
+              [class.is-invalid]="!registroCai.puEm_Id && mostrarErrores"
+              placeholder="Seleccione un punto de emisión"
               required
+              [searchFn]="searchPuntoEmision"
             >
-              <option value="" disabled selected>Seleccione una opción</option>
-              <option *ngFor="let Depa of PE" [value]="Depa.puEm_Id">
-                {{ Depa.puEm_Descripcion }}
-              </option>
-            </select>
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.puEm_Codigo }} - {{ item.puEm_Descripcion }} -
+                {{ item.sucu_Descripcion }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.puEm_Codigo }} - {{ item.puEm_Descripcion }} -
+                {{ item.sucu_Descripcion }}
+              </ng-template>
+            </ng-select>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
           <div
             class="text-danger mt-1"
             *ngIf="!registroCai.puEm_Id && mostrarErrores"
           >
-            <small>El campo Punto de Emision es requerido</small>
+            <small>El campo punto de emisión es requerido</small>
           </div>
         </div>
       </div>
@@ -187,7 +212,7 @@
               "
               id="RInicial"
               [(ngModel)]="registroCai.regC_RangoInicial"
-              placeholder="Ingrese el Codigo del Punto de Emision"
+              placeholder="Ingrese el Rango Inicial"
               required
             />
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -215,7 +240,7 @@
               "
               id="RInicial"
               [(ngModel)]="registroCai.regC_RangoFinal"
-              placeholder="Ingrese el Codigo del Punto de Emision"
+              placeholder="Ingrese el Rango Final"
               required
             />
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>

@@ -29,6 +29,7 @@
   <div class="flex-grow-1">
     <div class="row">
          <div class="col-md-6">
+          <label  class="form-label">Código<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
             <input  
@@ -48,6 +49,7 @@
       </div>
 
       <div class="col-md-6">
+        <label  class="form-label">Descripción<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
             <input  
@@ -65,6 +67,39 @@
           </div>
         </div>
       </div>
+
+      <div class="col-md-6">
+        <label  class="form-label">Sucursal<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <ng-select
+              class="w-100"
+                [items]="Sucursales"
+                bindLabel="sucu_Descripcion"
+                bindValue="sucu_Id"
+                [(ngModel)]="puntoEmision.sucu_Id"
+                [searchable]="true"
+                [clearable]="false"
+                [class.is-invalid]="!puntoEmision.sucu_Id && mostrarErrores"
+                placeholder="Seleccione una sucursal"
+                required
+                [searchFn]="searchSucursal"
+              >
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!puntoEmision.sucu_Id && mostrarErrores">
+            <small>El campo sucursal es requerido</small>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   
@@ -99,7 +134,7 @@
         <div class="text-center">
           <p class="mt-2 custom-modal-text">
             <i class="ri-edit-line me-2 custom-modal-alert-icon" (click)="cancelarEdicion()"></i>
-            ¿Estás seguro que deseas editar el estado civil <strong>"{{ PEOriginal }}"</strong> por <strong>"{{ puntoEmision.puEm_Descripcion }}"</strong>?
+            ¿Estás seguro que deseas editar el punto de emisión <strong>"{{ PEOriginal }}"</strong> por <strong>"{{ puntoEmision.puEm_Descripcion }}"</strong>?
           </p>
         </div>
       </div>

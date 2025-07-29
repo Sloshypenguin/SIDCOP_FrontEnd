@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { CAIs } from 'src/app/Modelos/ventas/CAIs.Model';
 
 @Component({
@@ -30,7 +31,7 @@ export class CreateComponent {
     nCai_Id: 0,
     nCai_Codigo: '',
     nCai_Descripcion: '',
-    usua_Creacion: environment.usua_Id,
+    usua_Creacion: getUserId(),
     nCai_FechaCreacion: new Date(),
     usuarioCreacion: '',
     usuarioModificacion: '',
@@ -44,7 +45,7 @@ export class CreateComponent {
       nCai_Id: 0,
       nCai_Codigo: '',
       nCai_Descripcion: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       nCai_FechaCreacion: new Date(),
       usuarioCreacion: '',
       usuarioModificacion: '',
@@ -70,7 +71,7 @@ export class CreateComponent {
       const caiGuardar = {
         nCai_Codigo: this.cai.nCai_Codigo.trim(),
         nCai_Descripcion: this.cai.nCai_Descripcion.trim(),
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         nCai_FechaCreacion: new Date().toISOString()
       };
 

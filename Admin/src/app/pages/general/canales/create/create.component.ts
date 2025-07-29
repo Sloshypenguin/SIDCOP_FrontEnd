@@ -1,7 +1,8 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { Canal } from 'src/app/Modelos/general/Canal.Model';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -67,13 +68,13 @@ export class CreateComponent {
         cana_Id: 0,
         cana_Descripcion: this.canal.cana_Descripcion.trim(),
         cana_Observaciones: this.canal.cana_Observaciones.trim(),
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         cana_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         cana_FechaModificacion: new Date().toISOString(),
         cana_Estado: true,
-        usuaC_Nombre: '',
-        usuaM_Nombre: ''
+        UsuarioCreacion: '',
+        UsuarioModificacion: ''
       };
 
       this.http.post<any>(`${environment.apiBaseUrl}/Canal/Insertar`, canalGuardar, {

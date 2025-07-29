@@ -5,13 +5,22 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 import { CreateComponent as CreateUsuarioComponent } from '../create/create.component';
-import { EditComponent } from '../edit/edit.component';
+import { EditComponent as EditUsuarioComponent} from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { set } from 'lodash';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 @Component({
   selector: 'app-list',
@@ -24,11 +33,43 @@ import { DetailsComponent } from '../details/details.component';
     TableModule,
     PaginationModule,
     CreateUsuarioComponent,
-    EditComponent,
+    EditUsuarioComponent,
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrl: './list.component.scss',
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent {
   breadCrumbItems!: Array<{}>;
@@ -36,6 +77,29 @@ export class ListComponent {
 
   busqueda: string = '';
   usuariosFiltrados: any[] = [];
+
+  confirmaciondePassword: string = '';
+  usuario: Usuario = {
+    secuencia: 0,
+    usua_Id: 0,
+    usua_Usuario: '',
+    usua_Clave: '',
+    role_Id: 0,
+    usua_IdPersona: 0,
+    usua_EsVendedor: false,
+    usua_EsAdmin: false,
+    usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
+    usua_Creacion: 0,
+    usua_FechaCreacion: new Date(),
+    usua_Modificacion: 0,
+    usua_FechaModificacion: new Date(),
+    usua_Estado: true,
+    permisosJson: '',
+    role_Descripcion: '',
+    nombreCompleto: '',
+    code_Status: 0,
+    message_Status: '',
+  };
 
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
@@ -48,7 +112,7 @@ export class ListComponent {
     ];
 
     this.cargarAccionesUsuario();
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onDocumentClick(event: MouseEvent, rowIndex: number) {
@@ -96,6 +160,8 @@ export class ListComponent {
   usuarioDetalles: Usuario | null = null;
 
   //Propiedades para las alertas
+  mostrarErrores = false;
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -106,9 +172,18 @@ export class ListComponent {
   mostrarConfirmacionEliminar = false;
   usuarioEliminar: Usuario | null = null;
 
+  mostrarConfirmacionRestablecer = false;
+  usuarioRestablecer: Usuario | null = null;
+
+  // Propiedades para mostrar contraseña
+  mostrarModalContrasena = false;
+  usuarioMostrarClave: Usuario | null = null;
+  claveSeguridad: string = '';
+  contrasenaObtenida: string | null = null;
+
 
   constructor(public table: ReactiveTableService<Usuario>, private http: HttpClient, private router: Router, private route: ActivatedRoute){
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -129,14 +204,123 @@ export class ListComponent {
     this.usuarioDetalles = null;
   }
 
+  // Métodos para mostrar contraseña
+  mostrarContrasena(usuario: Usuario): void {
+    this.usuarioMostrarClave = { ...usuario };
+    this.mostrarModalContrasena = true;
+    this.claveSeguridad = '';
+    this.contrasenaObtenida = null;
+    this.activeActionRow = null;
+  }
+
+  cancelarMostrarContrasena(): void {
+    this.mostrarModalContrasena = false;
+    this.usuarioMostrarClave = null;
+    this.claveSeguridad = '';
+    this.contrasenaObtenida = null;
+  }
+
+  obtenerContrasena(): void {
+    if (!this.claveSeguridad || !this.usuarioMostrarClave) {
+      this.mensajeWarning = 'Debe ingresar la clave de seguridad';
+      this.mostrarAlertaWarning = true;
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+      }, 3000);
+      return;
+    }
+
+    this.mostrarOverlayCarga = true;
+
+    const apiUrl = `${environment.apiBaseUrl}/Usuarios/MostrarContrasena?usuaId=${this.usuarioMostrarClave.usua_Id}&claveSeguridad=${encodeURIComponent(this.claveSeguridad)}`;
+    
+    this.http.get(apiUrl, {
+      headers: {
+        'X-Api-Key': environment.apiKey
+      }
+    }).subscribe({
+      next: (response: any) => {
+        this.mostrarOverlayCarga = false;
+        
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Contraseña obtenida correctamente
+            this.contrasenaObtenida = response.data.data;
+          } else if (response.data.message_Status === 'Usuario no encontrado o sin contraseña.') {
+            // Usuario no encontrado o sin contraseña
+            this.mensajeWarning = 'Usuario no encontrado o sin contraseña';
+            this.mostrarAlertaWarning = true;
+            setTimeout(() => {
+              this.mostrarAlertaWarning = false;
+            }, 3000);
+          } else {
+            // Contraseña de seguridad incorrecta u otro error
+            this.mensajeError = response.data.message_Status || 'Contraseña de seguridad incorrecta';
+            this.mostrarAlertaError = true;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+            }, 3000);
+          }
+        } else {
+          this.mensajeError = 'Error al obtener la contraseña';
+          this.mostrarAlertaError = true;
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+          }, 3000);
+        }
+      },
+      error: (error) => {
+        this.mostrarOverlayCarga = false;
+        this.mensajeError = 'Error al conectar con el servidor';
+        this.mostrarAlertaError = true;
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+        }, 3000);
+        console.error('Error al obtener la contraseña:', error);
+      }
+    });
+  }
+
   guardarUsuario(usuario: Usuario): void {
-    this.cargarDatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargarDatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Usuario guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    },1000);
   }
 
   actualizarUsuario(usuario: Usuario): void {
-    this.cargarDatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargarDatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Usuario actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    },1000);
+  }
+
+  restablecer(usuario: Usuario): void{
+    this.usuarioRestablecer = usuario;
+    this.mostrarConfirmacionRestablecer = true;
+    this.activeActionRow = null;
+  }
+  
+  cancelarRestablecer(): void {
+    this.mostrarConfirmacionRestablecer = false;
+    this.usuarioRestablecer = null;
+    this.usuario.usua_Clave = '';
+    this.confirmaciondePassword = '';
+    this.mostrarErrores = false;
   }
 
   confirmarEliminar(usuario: Usuario): void {
@@ -150,16 +334,158 @@ export class ListComponent {
     this.usuarioEliminar = null;
   }
 
+  restablecerClave(): void {
+    if(!this.usuarioRestablecer) return
+    this.mostrarErrores = true;
+    if (!this.usuario.usua_Clave.trim() || !this.confirmaciondePassword.trim()) {
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Debe ingresar y confirmar la nueva contraseña.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+      return;
+    }
+    if (this.usuario.usua_Clave !== this.confirmaciondePassword) {
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Las contraseñas no coinciden.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+      return;
+    }
+    const usuarioRestablecer: Usuario = {
+      secuencia: 0,
+      usua_Id: this.usuarioRestablecer.usua_Id,
+      usua_Usuario: '',
+      usua_Clave: this.confirmaciondePassword.trim(),
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: getUserId(),
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: getUserId(),
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson:"",
+      role_Descripcion: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: '',
+    };
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Usuarios/RestablecerClave`, usuarioRestablecer, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response: any) => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              this.mensajeExito = `Clave del usuario restablecida exitosamente`;
+              this.mostrarAlertaExito = true;
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+              this.cargarDatos(false);
+            } else if (response.data.code_Status === -1) {
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status;
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            }
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.message || 'Error inesperado al restablecer la clave del usuario.';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
+          this.cancelarRestablecer();
+        }, 1000);
+      }
+    });
+  }
+
   eliminar(): void {
     if(!this.usuarioEliminar) return;
-
-    this.http.post(`${environment.apiBaseUrl}/Usuarios/Eliminar/${this.usuarioEliminar.usua_Id}`, {},{
+    const usuarioEliminar: Usuario = {
+      secuencia: 0,
+      usua_Id: this.usuarioEliminar.usua_Id,
+      usua_Usuario: '',
+      usua_Clave: '',
+      role_Id: 0,
+      usua_IdPersona: 0,
+      usua_EsVendedor: false,
+      usua_EsAdmin: false,
+      usua_Imagen: '',
+      usua_Creacion: getUserId(),
+      usua_FechaCreacion: new Date(),
+      usua_Modificacion: getUserId(),
+      usua_FechaModificacion: new Date(),
+      usua_Estado: true,
+      permisosJson:"",
+      role_Descripcion: '',
+      nombreCompleto: '',
+      code_Status: 0,
+      message_Status: '',
+    }
+    this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Usuarios/CambiarEstado`, usuarioEliminar,{
       headers:{
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
+      next: (response: any) =>{
+        setTimeout(() =>{
+          this.mostrarOverlayCarga = false;
+          if(response.success && response.data){
+            if(response.data.code_Status === 1){
+              if(this.usuarioEliminar!.usua_Estado) {
+                this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" desactivado exitosamente`;
+                this.mostrarAlertaExito = true;
+              }
+              if(!this.usuarioEliminar!.usua_Estado) {
+                this.mensajeExito = `Usuario "${this.usuarioEliminar!.usua_Usuario}" activado exitosamente`;
+                this.mostrarAlertaExito = true;
+              }
 
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+
+              this.cargarDatos(false);
+              this.cancelarEliminar();
+            }else if (response.data.code_Status === -1){
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status;
+
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+
+              this.cancelarEliminar();
+            }
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.message || 'Error inesperado al cambiar el estado al usuario.';
+
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+
+            this.cancelarEliminar();
+          }
+        },1000)
+      }
     })
   }
 
@@ -210,18 +536,22 @@ export class ListComponent {
     }
   }
 
-  private cargarDatos(): void {
+  private cargarDatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Usuario[]>(`${environment.apiBaseUrl}/Usuarios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.usuarioGrid = data || [];
-      this.usuarios = this.usuarioGrid.slice(0, 10);
-      this.filtradorUsuarios();
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        this.usuarioGrid = data || [];
+        this.usuarios = this.usuarioGrid.slice(0, 12);
+        this.filtradorUsuarios();
+      },500);
     });
   }
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 12;
 
   get startIndex(): number {
     return this.usuarioGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;

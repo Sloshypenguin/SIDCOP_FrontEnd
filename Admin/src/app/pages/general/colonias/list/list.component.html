@@ -5,7 +5,7 @@
     { label: 'Colonias', active: true }
   ]"
 >
-  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
+  <img class="icon-breadcrumb" style="width: 10vh; height: 10vh;" src="assets/images/svg/neighborhood.svg" alt="breadcrumb icon" />
 </app-breadcrumbs>
 
 <div class="row">
@@ -24,16 +24,16 @@
         </div>
         <!-- Colonias -->
         <!-- Collapse para el formulario de creación -->
-<div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
-    <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
-        <div class="container-fluid flex-grow-1">
-            <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarColonias($event)"></app-create>
-        </div>
+<div *ngIf="showCreateForm" [@fadeExpand]>
+  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+    <div class="container-fluid flex-grow-1">
+      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarColonias($event)"></app-create>
     </div>
+  </div>
 </div>
 
         <!-- Collapse para el formulario de edición -->
-<div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
+<div *ngIf="showEditForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
     <div class="container-fluid flex-grow-1">
       <app-edit 
@@ -46,7 +46,7 @@
 </div>
 
         <!-- Collapse para el formulario de detalles -->
-<div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+<div *ngIf="showDetailsForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
@@ -62,38 +62,50 @@
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles')">Acciones</th>
-                <th class="gridjs-th">Codigo</th>
-                <th class="gridjs-th">Descripción</th>
+                <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                  <span class="table-header-flex">
+                    No.
+                    <!-- iconos para ordenar -->
+                    <span style="display: flex; flex-direction: column;">
+                     <i class="ri-arrow-up-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    <i class="ri-arrow-down-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    </span>
+                  </span>
+                </th>
+                <th class="gridjs-th" (click)="table.sortBy('colo_Descripcion')" style="cursor:pointer;">
+                  <span class="table-header-flex">
+                    Descripción
+                    <!-- iconos para ordenar -->
+                    <span style="display: flex; flex-direction: column;">
+                     <i class="ri-arrow-up-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'colo_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    <i class="ri-arrow-down-s-line icon-sort"
+                      [ngStyle]="table.sortField === 'colo_Descripcion' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                    </i>
+                    </span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
                 <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles')">
                   <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('eliminar')">
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('detalles')">
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
+                    <button type="button"
+                    class="dropdown-toggle"
+                    [attr.aria-expanded]="false"
+                    (click)="floatingMenuService.open($event, data)">
+                    <span>Acciones</span>
+                    <i class="ri-settings-3-line"></i>
+                  </button>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.colo_Id}}</span></td>
+                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                 <td>{{data.colo_Descripcion}}</td>
               </tr>
             </tbody>
@@ -180,3 +192,48 @@
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
 
 <!-- end row -->
+
+
+
+
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenuService.data); floatingMenuService.close()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>
+
+
+
+
+
+
+<!-- Overlay de carga -->
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+  <div class="typing-indicator">
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+  </div>
+</div>

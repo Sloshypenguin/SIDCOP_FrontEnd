@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Proveedor } from 'src/app/Modelos/general/Proveedor.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { provideRouter } from '@angular/router';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
-  templateUrl: './edit.component.html',
+  templateUrl:'./edit.component.html',
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
@@ -179,7 +180,7 @@ export class EditComponent implements OnChanges {
         this.proveedor.prov_Correo.trim() && this.proveedor.prov_Observaciones.trim()) {
       const proveedorActualizar = {
         ...this.proveedor,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         prov_FechaModificacion: new Date().toISOString()
       };
       this.http.put<any>(`${environment.apiBaseUrl}/Proveedor/Actualizar`, proveedorActualizar, {

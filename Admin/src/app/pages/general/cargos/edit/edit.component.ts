@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -29,7 +30,8 @@ export class EditComponent implements OnChanges {
     usuarioCreacion : '', 
     carg_Estado: true,
     code_Status: 0,
-    message_Status: ''
+    message_Status: '',
+    secuencia : 0
   };
 
   cargoOriginal = '';
@@ -103,7 +105,7 @@ export class EditComponent implements OnChanges {
         carg_Descripcion: this.cargo.carg_Descripcion.trim(),
         usua_Creacion: this.cargo.usua_Creacion,
         carg_FechaCreacion: this.cargo.carg_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         // numero: this.cargo..secuencia || '',
         carg_FechaModificacion: new Date().toISOString(),
         carg_Estado: true,
@@ -131,7 +133,7 @@ export class EditComponent implements OnChanges {
           }, 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar cargo:', error);
+          // console.error('Error al actualizar cargo:', error);
           this.mostrarAlertaError = true;
           this.mensajeError = 'Error al actualizar el cargo. Por favor, intente nuevamente.';
           setTimeout(() => this.cerrarAlerta(), 5000);

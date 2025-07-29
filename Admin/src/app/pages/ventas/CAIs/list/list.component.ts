@@ -5,13 +5,15 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CAIs } from 'src/app/Modelos/ventas/CAIs.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -56,22 +58,6 @@ export class ListComponent implements OnInit {
     console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
-  // Cierra el dropdown si se hace click fuera
-  onDocumentClick(event: MouseEvent, rowIndex: number) {
-    const target = event.target as HTMLElement;
-    // Busca el dropdown abierto
-    const dropdowns = document.querySelectorAll('.dropdown-action-list');
-    let clickedInside = false;
-    dropdowns.forEach((dropdown, idx) => {
-      if (dropdown.contains(target) && this.activeActionRow === rowIndex) {
-        clickedInside = true;
-      }
-    });
-    if (!clickedInside && this.activeActionRow === rowIndex) {
-      this.activeActionRow = null;
-    }
-  }
-
   // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
     console.log('Toggleando formulario de creación...');
@@ -105,6 +91,16 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
+  constructor(
+    public table: ReactiveTableService<CAIs>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  ) {
+    this.cargarDatos();
+  }
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -126,19 +122,6 @@ export class ListComponent implements OnInit {
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   caiAEliminar: CAIs | null = null;
-
-  constructor(
-    public table: ReactiveTableService<CAIs>, 
-    private http: HttpClient, 
-    private router: Router, 
-    private route: ActivatedRoute
-  ) {
-    this.cargarDatos();
-  }
-
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
@@ -185,7 +168,7 @@ export class ListComponent implements OnInit {
     
     console.log('Eliminando CAI:', this.caiAEliminar);
     
-    this.http.post(`${environment.apiBaseUrl}/CaiS/Eliminar${this.caiAEliminar.nCai_Id}`, {}, {
+    this.http.post(`${environment.apiBaseUrl}/CAIs/Eliminar/${this.caiAEliminar.nCai_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -290,14 +273,16 @@ export class ListComponent implements OnInit {
         let modulo = null;
         if (Array.isArray(permisos)) {
           // Buscar por ID de pantalla - ajusta este ID según corresponda a CAIs
-          modulo = permisos.find((m: any) => m.Pant_Id === 15); // Cambia el ID según tu configuración
+          modulo = permisos.find((m: any) => m.Pant_Id === 16); // Cambia el ID según tu configuración
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
           modulo = permisos['CAIs'] || permisos['cais'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
+          console.log('Acciones del módulo:', modulo.Acciones);
           // Extraer solo el nombre de la acción
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -110,7 +111,7 @@ ngOnChanges(changes: SimpleChanges): void {
   impu_Valor: this.impuestos.impu_Valor, 
   usua_Creacion: this.impuestos.usua_Creacion,
   impu_FechaCreacion: this.impuestos.impu_FechaCreacion,
-  usua_Modificacion: environment.usua_Id,
+  usua_Modificacion: getUserId(),
   impu_FechaModificacion: new Date().toISOString(),
   usuarioCreacion: '',
   usuarioModificacion: ''

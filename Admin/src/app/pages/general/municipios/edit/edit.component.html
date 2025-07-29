@@ -33,6 +33,11 @@
           <label for="muni_Descripcion" class="form-label">Descripción</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
+            <i class="ri-newspaper-line" [ngStyle]="{
+              border: !(municipio.muni_Descripcion && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+              backgroundColor: !(municipio.muni_Descripcion && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+              padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+            </i>
             <input  
               type="text" 
               class="form-control" 
@@ -87,11 +92,11 @@
         </div>
       </div>
       <div class="modal-footer custom-modal-footer">
-        <button type="button" class="btn btn-primary  btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
+        <button type="button" class="btn btn-primary btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
           <span class="btn-text">No</span>
           <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
         </button>
-        <button type="button" class="btn btn-primary  btn-minw-5 btn-sm" (click)="confirmarEdicion()">
+        <button type="button" class="btn btn-primary btn-minw-5 btn-sm" (click)="confirmarEdicion()">
           <span class="btn-text">Si</span>
           <span class="btn-icon"><i class="ri-save-line"></i></span>
         </button>

@@ -1,11 +1,15 @@
 <app-breadcrumbs
-  [title]="'Punto de Emisión'"
-  [breadcrumbItems]="breadCrumbItems"
+  [title]="'Puntos de Emisión'"
+  [breadcrumbItems]="[
+    { label: 'Ventas' },
+    { label: 'Puntos de Emisión', active: true }
+  ]"
 >
   <img
-    class="breadcrumbs-icon ms-2 icon-breadcrumb"
-    src="assets/images/imagenes/Vector.svg"
-    alt="icono breadcrumb"
+    class="icon-breadcrumb"
+    style="width: 10vh; height: 10vh"
+    src="assets/images/svg/Vector.svg"
+    alt="breadcrumb icon"
   />
 </app-breadcrumbs>
 
@@ -18,6 +22,7 @@
           *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
         >
           <button
+            *ngIf="accionPermitida('crear')"
             type="button"
             class="btn btn-primary me-2 mb-2"
             (click)="crear()"
@@ -37,91 +42,318 @@
           </div>
         </div>
 
-            <!-- Collapse para el formulario de creación -->
-<div class="collapse" [ngClass]="{ 'show': showCreateForm }" id="createFormCollapse">
-  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
-    <div class="container-fluid flex-grow-1">
-      <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarPE($event)"></app-create>
-    </div>
-  </div>
-</div>
+        <!-- Collapse para el formulario de creación -->
+       <div *ngIf="showCreateForm" [@fadeExpand]>
+         <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+            <div class="container-fluid flex-grow-1">
+              <app-create
+                (onCancel)="cerrarFormulario()"
+                (onSave)="guardarPE($event)"
+              ></app-create>
+            </div>
+          </div>
+        </div>
 
         <!-- Collapse para el formulario de edición -->
-<div class="collapse" [ngClass]="{ 'show': showEditForm }" id="editFormCollapse">
+       <div *ngIf="showEditForm" [@fadeExpand]>
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
-    <div class="container-fluid flex-grow-1">
-      <app-edit 
-        [PEData]="PEEditando" 
-        (onCancel)="cerrarFormularioEdicion()" 
-        (onSave)="actualizarPE($event)">
-      </app-edit>
-    </div>
-  </div>
-</div>
+            <div class="container-fluid flex-grow-1">
+              <app-edit
+                [PEData]="PEEditando"
+                (onCancel)="cerrarFormularioEdicion()"
+                (onSave)="actualizarPE($event)"
+              >
+              </app-edit>
+            </div>
+          </div>
+        </div>
 
         <!-- Collapse para el formulario de detalles -->
-<div class="collapse" [ngClass]="{ 'show': showDetailsForm }" id="detailsFormCollapse">
+       <div *ngIf="showDetailsForm" [@fadeExpand]> 
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
-    <div class="container-fluid flex-grow-1">
-      <app-details 
-        [PEData]="PEDetalle" 
-        (onClose)="cerrarFormularioDetalles()">
-      </app-details>
-    </div>
-  </div>
-</div>
-
-        <div
-          class="table-responsive"
-          *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
-        >
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">Id</th>
-                <th class="gridjs-th">Codigo</th>
-                <th class="gridjs-th">Descripcion</th>
-         
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
-                  <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
-                      <span>Acciones</span>
-                      <i class="ri-settings-3-line"></i>
-                    </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('eliminar')">
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('detalle')">
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-                <td>
-                  <span class="fw-semibold">{{ data.puEm_Id }}</span>
-                </td>
-                <td>{{ data.puEm_Codigo }}</td>
-                 <td>{{ data.puEm_Descripcion }}</td>
-      
-              </tr>
-            </tbody>
-          </table>
+            <div class="container-fluid flex-grow-1">
+              <app-details
+                [PEData]="PEDetalle"
+                (onClose)="cerrarFormularioDetalles()"
+              >
+              </app-details>
+            </div>
+          </div>
         </div>
+
+        <!--Tabla-->
+        <div class="table-radius-container">
+          <div
+            class="table-responsive"
+            *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
+          >
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th
+                    class="gridjs-th"
+                    *ngIf="
+                      accionPermitida('editar') ||
+                      accionPermitida('eliminar') ||
+                      accionPermitida('detalle')
+                    "
+                  >
+                    Acciones
+                  </th>
+                  <!-- no es necesario ordenar todas la columnas-->
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('secuencia')"
+                    style="cursor: pointer"
+                  >
+                    <span class="table-header-flex">
+                      No.
+                      <!-- iconos para ordenar -->
+                      <span style="display: flex; flex-direction: column">
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'secuencia' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'secuencia' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('puEm_Codigo')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Código
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'puEm_Codigo' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'puEm_Codigo' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('puEm_Descripcion')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Descripción
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'puEm_Descripcion' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'puEm_Descripcion' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('sucu_Descripcion')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Sucursal
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'sucu_Descripcion' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'sucu_Descripcion' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                  <th
+                    class="gridjs-th"
+                    (click)="table.sortBy('estado')"
+                    style="cursor: pointer"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 4px;
+                      "
+                    >
+                      Estado
+                      <!-- iconos para ordenar -->
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          margin-left: 6px;
+                        "
+                      >
+                        <i
+                          class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'estado' &&
+                            table.sortDirection === 'asc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                        <i
+                          class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="
+                            table.sortField === 'estado' &&
+                            table.sortDirection === 'desc'
+                              ? { color: '#D6B68A' }
+                              : { color: 'white' }
+                          "
+                        >
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr
+                  class="gridjs-th"
+                  *ngFor="let data of table.paginated$ | async; let i = index"
+                >
+                  <td
+                    class="position-relative"
+                    *ngIf="
+                      accionPermitida('editar') ||
+                      accionPermitida('eliminar') ||
+                      accionPermitida('detalle')
+                    "
+                  >
+                    <div class="dropdown-action-list">
+                      <button
+                        type="button"
+                        class="dropdown-toggle"
+                        [attr.aria-expanded]="false"
+                        (click)="floatingMenuService.open($event, data)"
+                      >
+                        <span>Acciones</span>
+                        <i class="ri-settings-3-line"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="fw-semibold">{{ data.secuencia }}</span>
+                  </td>
+                  <td>{{ data.puEm_Codigo }}</td>
+                  <td>{{ data.puEm_Descripcion }}</td>
+                  <td>{{ data.sucu_Descripcion }}</td>
+                  <td>{{ data.estado }}</td>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+
         <div
           class="row justify-content-md-between align-items-md-center"
           *ngIf="!showCreateForm && !showEditForm && !showDetailsForm"
@@ -233,9 +465,10 @@
             <i
               class="ri-alert-line me-2 custom-modal-alert-icon"
               (click)="cancelarEliminar()"
-            ></i
-            >¿Está seguro(a) que desea eliminar el punto de emisión
-            <strong>{{ PEEliminar?.puEm_Descripcion }}</strong
+            ></i>
+            ¿Está seguro(a) que desea
+            {{ PEEliminar?.estado === "Activo" ? "desactivar" : "activar" }} el
+            punto de emisión <strong>{{ PEEliminar?.puEm_Descripcion }}</strong
             >?
           </p>
         </div>
@@ -251,11 +484,21 @@
         </button>
         <button
           type="button"
-          class="btn btn-primary red btn-sm btn-minw-5"
+          class="btn btn-primary {{
+            PEEliminar?.estado === 'Activo' ? 'red' : 'green'
+          }} btn-sm btn-minw-5"
           (click)="eliminar()"
         >
           <span class="btn-text">Si</span>
-          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+          <span class="btn-icon">
+            <i
+              [class]="
+                PEEliminar?.estado === 'Activo'
+                  ? 'ri-close-circle-line'
+                  : 'ri-checkbox-circle-line'
+              "
+            ></i>
+          </span>
         </button>
       </div>
     </div>
@@ -270,3 +513,63 @@
 ></div>
 
 <!-- end row -->
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }"
+>
+  <li *ngIf="accionPermitida('editar')">
+    <button
+      type="button"
+      class="dropdown-action-btn"
+      (click)="editar(floatingMenuService.data); floatingMenuService.close()"
+    >
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button
+      type="button"
+      class="dropdown-action-btn"
+      (click)="
+        confirmarEliminar(floatingMenuService.data); floatingMenuService.close()
+      "
+    >
+      {{
+        floatingMenuService.data?.estado === "Activo" ? "Desactivar" : "Activar"
+      }}
+
+      <i
+        [class]="
+          floatingMenuService.data?.estado === 'Activo'
+            ? 'ri-close-circle-line'
+            : 'ri-checkbox-circle-line'
+        "
+      ></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button
+      type="button"
+      class="dropdown-action-btn"
+      (click)="detalles(floatingMenuService.data); floatingMenuService.close()"
+    >
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>
+
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+  <div class="typing-indicator">
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+  </div>
+</div>

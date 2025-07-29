@@ -28,30 +28,42 @@
     <div class="row">
       <div class="col-md-6">
         <div class="mb-3">
-          <label for="colo_Descripcion" class="form-label">Descripción</label>
+          <label for="muni_Codigo" class="form-label">Municipio</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
-            <input 
-            type="text" 
-            id="colo_Descripcion" 
-            name="colo_Descripcion" 
-            class="form-control" 
-            [class.is-invalid]="!(nuevaColonia.colo_Descripcion ?? '').trim() && mostrarErrores"
-            [(ngModel)]="nuevaColonia.colo_Descripcion" 
-            placeholder="Ingrese la descripción" 
+          <i class="ri-user-4-line" [ngStyle]="{
+            border: !(selectedMuni && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+            backgroundColor: !(selectedMuni && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+            padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+          </i>
+          <select 
+            id="muni_Codigo" 
+            name="muni_Codigo" 
+            class="form-select" 
+            [(ngModel)]="nuevaColonia.muni_Codigo" 
             required>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <option value="" disabled selected>Seleccione un Municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
+          </select>
+          <div *ngIf="cargando" class="form-text text-muted">Cargando Municipios...</div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" *ngIf="!(nuevaColonia.colo_Descripcion ?? '').trim() && mostrarErrores">
-            <small>El campo Descripción de la Colonia es requerido</small>
+          <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
+            <small>El campo Municipio es requerido</small>
           </div>
         </div>
       </div>
+      
       <div class="col-md-6">
         <div class="mb-3">
           <label for="depa_Codigo" class="form-label">Departamento</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
+          <i class="ri-pin-distance-line" [ngStyle]="{
+            border: !(selectedDepa && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+            backgroundColor: !(selectedDepa && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+            padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+          </i>
           <select 
             id="depa_Codigo" 
             name="depa_Codigo" 
@@ -72,41 +84,51 @@
       </div>
     </div>
     <div class="row">
+
       <div class="col-md-6">
         <div class="mb-3">
-          <label for="muni_Codigo" class="form-label">Municipio</label>
+          <label for="colo_Descripcion" class="form-label">Descripción</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
-          <select 
-            id="muni_Codigo" 
-            name="muni_Codigo" 
-            class="form-select" 
-            [(ngModel)]="nuevaColonia.muni_Codigo" 
+            <i class="ri-newspaper-line" [ngStyle]="{
+              border: !(nuevaColonia.colo_Descripcion && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+              backgroundColor: !(nuevaColonia.colo_Descripcion && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+              padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+            </i>
+            <input 
+            type="text" 
+            id="colo_Descripcion" 
+            name="colo_Descripcion" 
+            class="form-control" 
+            [class.is-invalid]="!(nuevaColonia.colo_Descripcion ?? '').trim() && mostrarErrores"
+            [(ngModel)]="nuevaColonia.colo_Descripcion" 
+            placeholder="Ingrese la descripción" 
             required>
-            <option value="" disabled selected>Seleccione un Municipio</option>
-            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
-          </select>
-          <div *ngIf="cargando" class="form-text text-muted">Cargando Municipios...</div>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div class="text-danger mt-1" *ngIf="!(selectedMuni ?? '').trim() && mostrarErrores">
-            <small>El campo Municipio es requerido</small>
+          <div class="text-danger mt-1" *ngIf="!(nuevaColonia.colo_Descripcion ?? '').trim() && mostrarErrores">
+            <small>El campo Descripción de la Colonia es requerido</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Separador y Botones -->
-    <hr class="my-4">
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-primary gold" (click)="cancelar()">
-        <span class="btn-text">Cancelar</span>
-        <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
-      </button>
-      <button type="button" class="btn btn-primary" (click)="guardar()">
-        <span class="btn-text">Guardar</span>
-        <span class="btn-icon"><i class="ri-save-line"></i></span>
-      </button>
+    <!--Botones -->
+    <div class="mt-auto pt-3" >
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+              <span class="btn-text">Cancelar</span>
+              <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+            </button>
+            <button type="button" class="btn btn-primary" (click)="guardar()">
+              <span class="btn-text">Guardar</span>
+              <span class="btn-icon"><i class="ri-save-line"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
 </div>

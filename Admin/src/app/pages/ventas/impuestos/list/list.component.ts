@@ -5,13 +5,15 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Impuestos } from 'src/app/Modelos/ventas/Impuestos.Model';
 import { EditComponent } from '../edit/edit.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
-
+ import { trigger,  state,  style,  transition,  animate} from '@angular/animations';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -25,8 +27,43 @@ import { EditComponent } from '../edit/edit.component';
     EditComponent,
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+
+animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
+
+
 export class ListComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
   accionesDisponibles: string[] = [];
@@ -59,56 +96,46 @@ export class ListComponent implements OnInit {
   }
 
   crear(): void {
-    this.showCreateForm = !this.showCreateForm;
+
     this.showEditForm = false;
-    this.showDetailsForm = false;
     this.activeActionRow = null;
   }
 
   editar(impuesto: Impuestos ): void {
     this.impuestoEditando = { ...impuesto };
     this.showEditForm = true;
-    this.showCreateForm = false;
-    this.showDetailsForm = false;
+
     this.activeActionRow = null;
   }
 
 
   activeActionRow: number | null = null;
   showEdit = true;
-  showDetails = true;
-  showDelete = true;
-  showCreateForm = false;
   showEditForm = false;
   showDetailsForm = false;
   impuestoEditando: Impuestos | null = null;
-
-
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
-
   mostrarConfirmacionEliminar = false;
   impuestoAEliminar: Impuestos | null = null;
+  mostrarOverlayCarga = false;
 
   constructor(
     public table: ReactiveTableService<Impuestos>,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
 
   onActionMenuClick(rowIndex: number) {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
-  }
-
-  cerrarFormulario(): void {
-    this.showCreateForm = false;
   }
 
   cerrarFormularioEdicion(): void {
@@ -117,16 +144,9 @@ export class ListComponent implements OnInit {
   }
 
 
-
-  guardarImpuesto(impuesto: Impuestos): void {
-    console.log('Impuesto guardado exitosamente desde create component:', impuesto);
-    this.cargardatos();
-    this.cerrarFormulario();
-  }
-
   actualizarImpuesto(impuesto: Impuestos): void {
     console.log('Impuesto actualizado exitosamente desde edit component:', impuesto);
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
   }
 
@@ -165,11 +185,41 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
-    this.http.get<Impuestos[]>(`${environment.apiBaseUrl}/Impuestos/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
-    });
-  }
+
+private cargardatos(state: boolean): void {
+  this.mostrarOverlayCarga = state;
+
+  this.http.get<Impuestos[]>(`${environment.apiBaseUrl}/Impuestos/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe({
+    next: (data) => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+      this.table.setData(datosFiltrados);
+    },
+    error: (error) => {
+      console.error('Error al cargar los datos:', error);
+      this.mostrarOverlayCarga = false;
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
+      this.table.setData([]);
+    },
+    complete: () => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+      }, 500);
+    }
+  });
+}
+
+
+
+
+
+
 }

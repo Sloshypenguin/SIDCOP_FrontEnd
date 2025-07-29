@@ -1,0 +1,176 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
+  <!-- Título -->
+  <h5 class="card-title mb-4">Editar Rol</h5>
+
+  <!-- Contenedor alertas flotantes -->
+  <div class="alert-container">
+    <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+
+    <div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+
+    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <form (ngSubmit)="validarEdicion()" #formRol="ngForm" class="flex-grow-1 d-flex flex-column">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="rolDescripcion" class="form-label">Rol<span class="text-danger">*</span></label>
+        <div class="d-flex align-items-center">
+          <i class="ri-attachment-line" [ngStyle]="{
+            border: (!rol.role_Descripcion) && (mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+            backgroundColor: (!rol.role_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+            padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+          </i>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="rolDescripcion" 
+            name="rolDescripcion" 
+            [(ngModel)]="rol.role_Descripcion" 
+            #descripcion="ngModel" 
+            [class.is-invalid]="!rol.role_Descripcion.trim() && mostrarErrores" 
+            placeholder="Ingrese la descripción del rol" 
+            required 
+          />
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!rol.role_Descripcion.trim() && mostrarErrores">
+          <small>El campo Descripción del rol es requerido</small>
+        </div>
+      </div>
+
+      <!-- Botones junto al input -->
+      <div class="col-md-6 d-flex align-items-center d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+          <span class="btn-text">Cancelar</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <span class="btn-text">Guardar</span>
+          <span class="btn-icon"><i class="ri-save-line"></i></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TreeView de Pantallas y Acciones -->
+    <label class="form-label d-flex  align-items-center">
+      Pantallas y Acciones <label class="text-danger">*</label>
+    </label>
+    <div class="tree-container">
+      <div class="row justify-content-lg-end">
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-sm btn-outline-dark" (click)="alternarDesplegables()">
+            <i [class.ri-folder-reduce-line]="hayExpandido" 
+              [class.ri-folder-add-line]="!hayExpandido"></i>
+            {{ hayExpandido ? 'Contraer Todo' : 'Expandir Todo' }}
+          </button>
+        </div>
+      </div>
+      <div class="tree-item" *ngFor="let esquema of treeData">
+        <div class="tree-node" (click)="toggleExpand(esquema)">
+          <div class="tree-toggle" *ngIf="esquema.children?.length">
+            <i class="ri-arrow-down-s-line" [ngClass]="{ 'ri-arrow-right-s-line': !esquema.expanded }"></i>
+          </div>
+          <label (click)="$event.stopPropagation()" style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" 
+                  [checked]="esquema.selected" 
+                  (change)="toggleSelection(esquema); $event.stopPropagation()"
+                  [attr.data-id]="esquema.id">
+            <span>{{ esquema.name }}</span>
+          </label>
+        </div>
+        <div class="tree-children" *ngIf="esquema.expanded">
+          <div class="tree-item" *ngFor="let pantalla of esquema.children">
+            <div class="tree-node" (click)="toggleExpand(pantalla)">
+              <div class="tree-toggle" *ngIf="pantalla.children?.length">
+                <i class="ri-arrow-down-s-line" [ngClass]="{ 'ri-arrow-right-s-line': !pantalla.expanded }"></i>
+              </div>
+              <label (click)="$event.stopPropagation()" style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" 
+                      [checked]="pantalla.selected" 
+                      (change)="toggleSelection(pantalla); $event.stopPropagation()" 
+                      [attr.data-id]="pantalla.id">
+                <span>{{ pantalla.name }}</span>
+              </label>
+            </div>
+            <div class="tree-children" *ngIf="pantalla.expanded">
+              <div class="tree-item" *ngFor="let accion of pantalla.children">
+                <div class="tree-node">
+                  <label (click)="$event.stopPropagation()" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" 
+                          [checked]="accion.selected" 
+                          (change)="toggleSelection(accion); $event.stopPropagation()" 
+                          [attr.data-id]="accion.id">
+                    <span>{{ accion.name }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-auto pt-3">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Modal de confirmación para editar -->
+  <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEditar }" [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'" tabindex="-1" role="dialog" aria-modal="true" [attr.aria-hidden]="!mostrarConfirmacionEditar">  
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+          <span>Confirmación</span>
+          <i class="ri-close-line custom-modal-close" (click)="cancelarEdicion()" style="cursor:pointer"></i>
+        </div>
+        <hr class="custom-modal-divider">
+        <div class="modal-body custom-modal-body">
+          <div class="text-center">
+            <p class="mt-2 custom-modal-text">
+              <i class="ri-edit-line me-2 custom-modal-alert-icon"></i>
+              ¿Estás seguro que deseas modificar el rol <strong>"{{ rolOriginal }}"</strong> por <strong>"{{ rol.role_Descripcion }}"</strong>?
+            </p>
+            <div *ngIf="hayCambiosPermisos">
+              <p>Además, se detectaron cambios en los permisos asignados.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer custom-modal-footer">
+          <button type="button" class="btn btn-primary btn-minw-5 gray btn-sm" (click)="cancelarEdicion()">
+            <span class="btn-text">No</span> <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary btn-minw-5 btn-sm" (click)="confirmarEdicion()">
+            <span class="btn-text">Sí</span> <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Overlay para el modal -->
+  <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEditar }" *ngIf="mostrarConfirmacionEditar"></div>
+</div>

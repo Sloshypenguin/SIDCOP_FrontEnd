@@ -1,0 +1,302 @@
+<app-breadcrumbs
+  [title]="'Registrar Pago'"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Registrar Pago</h4>
+
+          <!-- Alertas -->
+          <div
+            *ngIf="mostrarAlertaError"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <i class="mdi mdi-alert-circle-outline me-2"></i>
+            {{ mensajeError }}
+            <button
+              type="button"
+              class="btn-close"
+              (click)="cerrarAlertaError()"
+            ></button>
+          </div>
+
+          <div
+            *ngIf="mostrarAlertaExito"
+            class="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            <i class="mdi mdi-check-circle-outline me-2"></i>
+            {{ mensajeExito }}
+            <button
+              type="button"
+              class="btn-close"
+              (click)="cerrarAlertaExito()"
+            ></button>
+          </div>
+
+          <!-- Información de la cuenta -->
+          <div *ngIf="cuentaPorCobrar" class="mb-4">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h5 class="card-title">Información de la Cuenta</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p>
+                      <strong>Cliente:</strong>
+                      {{
+                        cuentaPorCobrar.clie_NombreNegocio ||
+                          cuentaPorCobrar.clie_Nombres +
+                            " " +
+                            cuentaPorCobrar.clie_Apellidos
+                      }}
+                    </p>
+                    <p>
+                      <strong>Teléfono:</strong>
+                      {{ cuentaPorCobrar.clie_Telefono || "N/A" }}
+                    </p>
+                    <p>
+                      <strong>Fecha de Emisión:</strong>
+                      {{ formatearFecha(cuentaPorCobrar.cpCo_FechaEmision) }}
+                    </p>
+                  </div>
+                  <div class="col-md-6">
+                    <p>
+                      <strong>Valor Total:</strong>
+                      {{ formatearMoneda(cuentaPorCobrar.cpCo_Valor) }}
+                    </p>
+                    <p>
+                      <strong>Saldo Pendiente:</strong>
+                      {{ formatearMoneda(cuentaPorCobrar.cpCo_Saldo) }}
+                    </p>
+                    <p>
+                      <strong>Fecha de Vencimiento:</strong>
+                      {{
+                        formatearFecha(cuentaPorCobrar.cpCo_FechaVencimiento)
+                      }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spinner de carga -->
+          <div *ngIf="cargando" class="d-flex justify-content-center my-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+
+          <!-- Formulario de pago -->
+          <form
+            *ngIf="!cargando && cuentaPorCobrar"
+            [formGroup]="pagoForm"
+            (ngSubmit)="onSubmit()"
+          >
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="pago_Monto" class="form-label"
+                  >Monto del Pago</label
+                >
+                <span class="text-danger">*</span>
+                <div class="d-flex align-items-center">
+                  <i
+                    class="ri-money-dollar-circle-line"
+                    [ngStyle]="{
+                      border:
+                        pagoForm.get('pago_Monto')?.invalid &&
+                        pagoForm.get('pago_Monto')?.touched
+                          ? '1px solid #f9bcc4'
+                          : '1px solid #e9ecf5',
+                      backgroundColor:
+                        pagoForm.get('pago_Monto')?.invalid &&
+                        pagoForm.get('pago_Monto')?.touched
+                          ? '#fff5f6'
+                          : '#f2f3f9',
+                      padding: '0.525rem 0.525rem',
+                      position: 'relative',
+                      left: '7px',
+                      borderTopLeftRadius: '8px',
+                      borderBottomLeftRadius: '8px'
+                    }"
+                  >
+                  </i>
+                  <input
+                    type="number"
+                    id="pago_Monto"
+                    formControlName="pago_Monto"
+                    class="form-control"
+                    [class.is-invalid]="
+                      pagoForm.get('pago_Monto')?.invalid &&
+                      pagoForm.get('pago_Monto')?.touched
+                    "
+                    [max]="cuentaPorCobrar.cpCo_Saldo"
+                    step="0.01"
+                  />
+                </div>
+                <div
+                  *ngIf="
+                    pagoForm.get('pago_Monto')?.invalid &&
+                    pagoForm.get('pago_Monto')?.touched
+                  "
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngIf="pagoForm.get('pago_Monto')?.errors?.['required']">
+                    El monto es requerido.
+                  </div>
+                  <div *ngIf="pagoForm.get('pago_Monto')?.errors?.['min']">
+                    El monto debe ser mayor a 0.
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="pago_FormaPago" class="form-label"
+                  >Forma de Pago</label
+                >
+                <span class="text-danger">*</span>
+                <div class="d-flex align-items-center">
+                  <i
+                    class="ri-bank-card-line"
+                    [ngStyle]="{
+                      border:
+                        pagoForm.get('pago_FormaPago')?.invalid &&
+                        pagoForm.get('pago_FormaPago')?.touched
+                          ? '1px solid #f9bcc4'
+                          : '1px solid #e9ecf5',
+                      backgroundColor:
+                        pagoForm.get('pago_FormaPago')?.invalid &&
+                        pagoForm.get('pago_FormaPago')?.touched
+                          ? '#fff5f6'
+                          : '#f2f3f9',
+                      padding: '0.525rem 0.525rem',
+                      position: 'relative',
+                      left: '7px',
+                      borderTopLeftRadius: '8px',
+                      borderBottomLeftRadius: '8px'
+                    }"
+                  >
+                  </i>
+                  <select
+                    id="pago_FormaPago"
+                    formControlName="pago_FormaPago"
+                    class="form-select"
+                    [class.is-invalid]="
+                      pagoForm.get('pago_FormaPago')?.invalid &&
+                      pagoForm.get('pago_FormaPago')?.touched
+                    "
+                  >
+                    <option *ngFor="let forma of formasPago" [value]="forma">
+                      {{ forma }}
+                    </option>
+                  </select>
+                </div>
+                <div
+                  *ngIf="
+                    pagoForm.get('pago_FormaPago')?.invalid &&
+                    pagoForm.get('pago_FormaPago')?.touched
+                  "
+                  class="invalid-feedback"
+                >
+                  La forma de pago es requerida.
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="pago_NumeroReferencia" class="form-label"
+                  >Número de Referencia</label
+                >
+                <div class="d-flex align-items-center">
+                  <i
+                    class="ri-hashtag"
+                    [ngStyle]="{
+                      border: '1px solid #e9ecf5',
+                      backgroundColor: '#f2f3f9',
+                      padding: '0.525rem 0.525rem',
+                      position: 'relative',
+                      left: '7px',
+                      borderTopLeftRadius: '8px',
+                      borderBottomLeftRadius: '8px'
+                    }"
+                  >
+                  </i>
+                  <input
+                    type="text"
+                    id="pago_NumeroReferencia"
+                    formControlName="pago_NumeroReferencia"
+                    class="form-control"
+                    placeholder="Número de cheque, transferencia, etc."
+                  />
+                </div>
+                
+                <div
+                  *ngIf="
+                    pagoForm.get('pago_Observaciones')?.invalid &&
+                    pagoForm.get('pago_Observaciones')?.touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Las observaciones no pueden exceder 500 caracteres.
+                </div>
+                
+              </div>
+              <div class="col-md-12">
+                <label for="pago_Observaciones" class="form-label"
+                  >Observaciones</label
+                >
+                <textarea
+                  id="pago_Observaciones"
+                  formControlName="pago_Observaciones"
+                  class="form-control"
+                  [class.is-invalid]="
+                    pagoForm.get('pago_Observaciones')?.invalid &&
+                    pagoForm.get('pago_Observaciones')?.touched
+                  "
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+              <button
+                type="button"
+                class="btn btn-primary gold me-2"
+                (click)="cancelar()"
+                [disabled]="enviando"
+              >
+                <span class="btn-text">Cancelar</span>
+                <span class="btn-icon"
+                  ><i class="ri-close-circle-line"></i
+                ></span>
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="enviando || pagoForm.invalid"
+              >
+                <span *ngIf="!enviando" class="btn-text">Registrar Pago</span>
+                <span *ngIf="!enviando" class="btn-icon"
+                  ><i class="ri-save-line"></i
+                ></span>
+                <span *ngIf="enviando">
+                  <span
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Procesando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

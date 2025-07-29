@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -94,7 +95,7 @@ export class CreateComponent {
         muni_Codigo: this.municipio.muni_Codigo.trim(),
         muni_Descripcion: this.municipio.muni_Descripcion.trim(),
         depa_Codigo: this.municipio.depa_Codigo.trim(),
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         muni_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 

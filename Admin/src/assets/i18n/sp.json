@@ -6,7 +6,8 @@
     "ACCESO": {
       "TEXT": "Acceso",
       "LIST": {
-        "USUARIOS": "Usuarios"
+        "USUARIOS": "Usuarios",
+        "ROLES": "Roles"
       }
     },
     "GENERAL": {
@@ -39,13 +40,16 @@
         "CAIS": "CAIS",
         "VENDEDORES": "Vendedores",
         "REGISTROCAIS": "Registros CAI",
-        "PUNTOSEMISION": "Puntos Emision"
+        "PUNTOSEMISION": "Puntos Emision",
+        "CUENTASPORCOBRAR": "Cuentas por Cobrar",
+        "PEDIDOS": "Pedidos"
       }
     },
     "LOGISTICA": {
       "TEXT": "Logistica",
       "LIST": {
-        "BODEGAS": "Bodegas"
+        "BODEGAS": "Bodegas",
+        "TRASLADOS": "Traslados"
       }
     },
     "DASHBOARD": {

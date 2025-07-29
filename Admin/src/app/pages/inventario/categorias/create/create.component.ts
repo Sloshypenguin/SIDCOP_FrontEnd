@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 
 @Component({
@@ -89,7 +90,7 @@ export class CreateComponent {
       const estadoCivilGuardar = {
         cate_Id: 0,
         cate_Descripcion: this.categoria.cate_Descripcion.trim(),
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         cate_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 

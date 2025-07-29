@@ -2,7 +2,8 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit-config-factura',
@@ -120,16 +121,33 @@ export class EditConfigFacturaComponent implements OnChanges {
     this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === muniCodigo);
   }
 
-  onImageSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+
+  onImagenSeleccionada(event: any) {
+    // Obtenemos el archivo seleccionado desde el input tipo file
+    const file = event.target.files[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        this.configFactura.coFa_Logo = e.target?.result as string;
-        this.logoSeleccionado = true;
-      };
-      reader.readAsDataURL(file);
+      // para enviar la imagen a Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'configuracion_empresa');
+      //Subidas usuarios Carpeta identificadora en Cloudinary
+      //dbt7mxrwk es el nombre de la cuenta de Cloudinary
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
+
+      
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json() )
+      .then(data => {
+        console.log('Imagen subida a Cloudinary:', data);
+        this.configFactura.coFa_Logo = data.secure_url;
+      })
+      .catch(error => {
+        console.error('Error al subir la imagen a Cloudinary:', error);
+      });
     }
   }
 
@@ -192,7 +210,7 @@ export class EditConfigFacturaComponent implements OnChanges {
   private guardar(): void {
     const body = {
       ...this.configFactura,
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       coFa_FechaModificacion: new Date().toISOString()
     };
 
