@@ -37,7 +37,12 @@ export class CreateComponent implements OnInit {
   destinos: any[] = [];
   productos: any[] = [];
 
-  // ========== NUEVAS PROPIEDADES PARA BÚSQUEDA Y PAGINACIÓN ==========
+  // ========== NUEVAS PROPIEDADES PARA INVENTARIO ==========
+  inventarioSucursal: any[] = [];
+  cargandoInventario = false;
+  origenSeleccionadoAnterior: number = 0;
+
+  // ========== PROPIEDADES PARA BÚSQUEDA Y PAGINACIÓN ==========
   busquedaProducto = '';
   productosFiltrados: any[] = [];
   paginaActual = 1;
@@ -85,18 +90,208 @@ export class CreateComponent implements OnInit {
         this.productos = data.map((producto: any) => ({
           ...producto,
           cantidad: 0,
-          observaciones: ''
+          observaciones: '',
+          stockDisponible: 0, // Stock disponible en la sucursal seleccionada
+          tieneStock: false   // Si tiene stock en la sucursal
         }));
-        this.aplicarFiltros(); // Inicializar filtros
+        this.aplicarFiltros();
       },
       error: () => this.mostrarError('Error al cargar productos')
     });
   }
 
+  // ========== MÉTODOS PARA MANEJO DE INVENTARIO ==========
+
+  /**
+   * Se ejecuta cuando cambia la sucursal de origen
+   */
+  onOrigenChange(): void {
+    // Si cambió la sucursal, limpiar cantidades seleccionadas
+    if (this.origenSeleccionadoAnterior !== this.traslado.tras_Origen) {
+      this.limpiarCantidadesSeleccionadas();
+      this.origenSeleccionadoAnterior = this.traslado.tras_Origen;
+    }
+
+    if (this.traslado.tras_Origen && this.traslado.tras_Origen > 0) {
+      this.cargarInventarioSucursal();
+    } else {
+      this.limpiarInventario();
+    }
+  }
+
+  /**
+   * Carga el inventario de la sucursal seleccionada
+   */
+  /**
+ * Carga el inventario de la sucursal seleccionada
+ */
+private cargarInventarioSucursal(): void {
+  this.cargandoInventario = true;
+  this.limpiarAlertas();
+  
+  const headers = { 'x-api-key': environment.apiKey };
+  
+  // CORRECCIÓN: Agregar tras_Origen después del punto
+  this.http.get<any[]>(`${environment.apiBaseUrl}/InventarioSucursales/Buscar/${this.traslado.tras_Origen}`, { headers })
+    .subscribe({
+      next: (inventario) => {
+        this.inventarioSucursal = inventario;
+        this.actualizarStockProductos();
+        this.validarProductosConStock();
+        this.cargandoInventario = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar inventario:', error);
+        this.mostrarError('Error al cargar el inventario de la sucursal');
+        this.cargandoInventario = false;
+        this.limpiarInventario();
+      }
+    });
+}
+
+  /**
+   * Actualiza el stock disponible de cada producto
+   */
+  private actualizarStockProductos(): void {
+    this.productos.forEach(producto => {
+      const inventarioItem = this.inventarioSucursal.find(inv => inv.prod_Id === producto.prod_Id);
+      
+      if (inventarioItem) {
+        producto.stockDisponible = inventarioItem.inSu_Cantidad;
+        producto.tieneStock = inventarioItem.inSu_Cantidad > 0;
+      } else {
+        producto.stockDisponible = 0;
+        producto.tieneStock = false;
+      }
+    });
+    
+    this.aplicarFiltros(); // Refiltrar productos
+  }
+
+  /**
+   * Valida si hay productos con stock en la sucursal
+   */
+  private validarProductosConStock(): void {
+    const productosConStock = this.productos.filter(p => p.tieneStock);
+    
+    if (productosConStock.length === 0) {
+      this.mostrarWarning('La sucursal seleccionada no tiene productos disponibles en inventario');
+    }
+  }
+
+  /**
+   * Limpia las cantidades seleccionadas cuando cambia la sucursal
+   */
+  private limpiarCantidadesSeleccionadas(): void {
+    this.productos.forEach(producto => {
+      producto.cantidad = 0;
+    });
+    this.actualizarEstadoNavegacion();
+  }
+
+  /**
+   * Limpia los datos de inventario
+   */
+  private limpiarInventario(): void {
+    this.inventarioSucursal = [];
+    this.productos.forEach(producto => {
+      producto.stockDisponible = 0;
+      producto.tieneStock = false;
+    });
+  }
+
+  /**
+   * Obtiene el stock disponible de un producto
+   */
+  getStockDisponible(prodId: number): number {
+    const producto = this.productos.find(p => p.prod_Id === prodId);
+    return producto ? producto.stockDisponible : 0;
+  }
+
+  /**
+   * Verifica si un producto tiene stock
+   */
+  tieneStockDisponible(prodId: number): boolean {
+    const producto = this.productos.find(p => p.prod_Id === prodId);
+    return producto ? producto.tieneStock : false;
+  }
+
+  // ========== MÉTODOS DE CANTIDAD CON VALIDACIÓN DE INVENTARIO ==========
+  
+  aumentarCantidad(index: number): void {
+    if (index >= 0 && index < this.productos.length) {
+      const producto = this.productos[index];
+      
+      // Validar que hay sucursal seleccionada
+      if (!this.traslado.tras_Origen || this.traslado.tras_Origen === 0) {
+        this.mostrarWarning('Debe seleccionar una sucursal de origen primero');
+        return;
+      }
+
+      // Validar que el producto tiene stock
+      if (!producto.tieneStock) {
+        this.mostrarWarning(`El producto "${producto.prod_Descripcion}" no tiene stock disponible en esta sucursal`);
+        return;
+      }
+
+      // Validar que no exceda el stock disponible
+      if (producto.cantidad >= producto.stockDisponible) {
+        this.mostrarWarning(`Stock insuficiente. Solo hay ${producto.stockDisponible} unidades disponibles de "${producto.prod_Descripcion}"`);
+        return;
+      }
+
+      producto.cantidad = (producto.cantidad || 0) + 1;
+      this.actualizarEstadoNavegacion();
+    }
+  }
+  
+  disminuirCantidad(index: number): void {
+    if (index >= 0 && index < this.productos.length && this.productos[index].cantidad > 0) {
+      this.productos[index].cantidad--;
+      this.actualizarEstadoNavegacion();
+    }
+  }
+  
+  validarCantidad(index: number): void {
+    if (index >= 0 && index < this.productos.length) {
+      const producto = this.productos[index];
+      let cantidad = producto.cantidad || 0;
+
+      // Validar rango básico
+      cantidad = Math.max(0, Math.min(999, cantidad));
+
+      // Validar contra stock disponible
+      if (cantidad > 0) {
+        // Validar que hay sucursal seleccionada
+        if (!this.traslado.tras_Origen || this.traslado.tras_Origen === 0) {
+          this.mostrarWarning('Debe seleccionar una sucursal de origen primero');
+          producto.cantidad = 0;
+          return;
+        }
+
+        // Validar que el producto tiene stock
+        if (!producto.tieneStock) {
+          this.mostrarWarning(`El producto "${producto.prod_Descripcion}" no tiene stock disponible en esta sucursal`);
+          producto.cantidad = 0;
+          return;
+        }
+
+        // Validar que no exceda el stock disponible
+        if (cantidad > producto.stockDisponible) {
+          this.mostrarWarning(`Stock insuficiente. Solo hay ${producto.stockDisponible} unidades disponibles de "${producto.prod_Descripcion}"`);
+          cantidad = producto.stockDisponible;
+        }
+      }
+
+      producto.cantidad = cantidad;
+      this.actualizarEstadoNavegacion();
+    }
+  }
+
   // ========== MÉTODOS PARA BÚSQUEDA Y PAGINACIÓN ==========
 
   buscarProductos(): void {
-    this.paginaActual = 1; // Resetear a primera página
+    this.paginaActual = 1;
     this.aplicarFiltros();
   }
 
@@ -143,24 +338,19 @@ export class CreateComponent implements OnInit {
     const paginas: number[] = [];
 
     if (totalPaginas <= 5) {
-      // Si hay 5 o menos páginas, mostrar todas
       for (let i = 1; i <= totalPaginas; i++) {
         paginas.push(i);
       }
     } else {
-      // Lógica para mostrar páginas alrededor de la actual
       if (paginaActual <= 3) {
-        // Mostrar primeras 5 páginas
         for (let i = 1; i <= 5; i++) {
           paginas.push(i);
         }
       } else if (paginaActual >= totalPaginas - 2) {
-        // Mostrar últimas 5 páginas
         for (let i = totalPaginas - 4; i <= totalPaginas; i++) {
           paginas.push(i);
         }
       } else {
-        // Mostrar páginas alrededor de la actual
         for (let i = paginaActual - 2; i <= paginaActual + 2; i++) {
           paginas.push(i);
         }
@@ -179,7 +369,6 @@ export class CreateComponent implements OnInit {
     return Math.min(fin, this.productosFiltrados.length);
   }
 
-  // Método auxiliar para obtener el índice real del producto en la lista original
   getProductoIndex(prodId: number): number {
     return this.productos.findIndex(p => p.prod_Id === prodId);
   }
@@ -253,33 +442,7 @@ export class CreateComponent implements OnInit {
     return this.productos.filter(producto => producto.cantidad > 0);
   }
 
-  // ========== MÉTODOS DE CANTIDAD ==========
-  
-  aumentarCantidad(index: number): void {
-    if (index >= 0 && index < this.productos.length) {
-      this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
-      this.actualizarEstadoNavegacion();
-    }
-  }
-  
-  disminuirCantidad(index: number): void {
-    if (index >= 0 && index < this.productos.length && this.productos[index].cantidad > 0) {
-      this.productos[index].cantidad--;
-      this.actualizarEstadoNavegacion();
-    }
-  }
-  
-  validarCantidad(index: number): void {
-    if (index >= 0 && index < this.productos.length) {
-      const cantidad = this.productos[index].cantidad;
-      this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
-      this.actualizarEstadoNavegacion();
-    }
-  }
-
   private actualizarEstadoNavegacion(): void {
-    // Si estamos en el tab de resumen y cambian las cantidades, 
-    // revalidamos si se puede mantener ahí
     if (this.tabActivo === 2) {
       this.puedeAvanzarAResumen = this.validarDatosBasicos();
       if (!this.puedeAvanzarAResumen) {
@@ -312,12 +475,10 @@ export class CreateComponent implements OnInit {
   }
 
   guardar(): void {
-    // Validación final antes de guardar
     this.mostrarErrores = true;
     const productosSeleccionados = this.obtenerProductosSeleccionados();
     
     if (!this.validarFormularioCompleto(productosSeleccionados)) {
-      // Si la validación falla, volver al primer tab
       this.tabActivo = 1;
       return;
     }
@@ -331,7 +492,12 @@ export class CreateComponent implements OnInit {
   private limpiarFormulario(): void {
     this.limpiarAlertas();
     this.traslado = new Traslado();
-    this.productos.forEach(p => { p.cantidad = 0; p.observaciones = ''; });
+    this.productos.forEach(p => { 
+      p.cantidad = 0; 
+      p.observaciones = '';
+      p.stockDisponible = 0;
+      p.tieneStock = false;
+    });
     this.inicializarFechaActual();
     
     // Resetear estado de tabs
@@ -342,6 +508,10 @@ export class CreateComponent implements OnInit {
     this.busquedaProducto = '';
     this.paginaActual = 1;
     this.aplicarFiltros();
+
+    // Resetear inventario
+    this.inventarioSucursal = [];
+    this.origenSeleccionadoAnterior = 0;
   }
 
   private limpiarAlertas(): void {
@@ -407,7 +577,6 @@ export class CreateComponent implements OnInit {
     const datos = response?.data;
     if (!datos || datos.code_Status !== 1) return 0;
     
-    // Buscar ID en ubicaciones posibles
     const ids = [datos.Tras_Id, datos.tras_Id, datos.id, datos.data];
     const id = ids.find(id => id && Number(id) > 0);
     
