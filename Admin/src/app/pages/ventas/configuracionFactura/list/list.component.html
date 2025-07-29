@@ -12,7 +12,7 @@
       <div class="card-body">
 
         <!-- Botones de acción y buscador -->
-      <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+      <!-- <div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>
@@ -21,8 +21,26 @@
             <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
             <i class="ri-search-line search-icon"></i>
           </div>
-        </div>
-
+        </div> -->
+<!-- OPCIÓN 3: Mostrar mensaje informativo cuando existe registro -->
+<div class="d-flex justify-content-between mb-3 flex-wrap" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+  <div>
+    <button *ngIf="accionPermitida('crear') && !tieneRegistros" type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
+      <span class="btn-text">Nuevo</span>
+      <span class="btn-icon"><i class="ri-add-line"></i></span>
+    </button>
+    
+    <div *ngIf="tieneRegistros" class="alert alert-info d-inline-flex align-items-center me-2 mb-2 py-2 px-3" style="margin-bottom: 0.5rem !important;">
+      <i class="ri-information-line me-2"></i>
+      <small>Solo se permite una configuración de factura</small>
+    </div>
+  </div>
+  
+  <div class="search-box mb-2">
+    <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
+    <i class="ri-search-line search-icon"></i>
+  </div>
+</div>
         <!-- Collapse para el formulario de creación -->
 
       <div *ngIf="showCreateForm" [@fadeExpand]>

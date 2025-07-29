@@ -24,157 +24,202 @@
   <!-- Formulario -->
   <div class="flex-grow-1">
     <div class="row">
-
-      <!-- Nombre Empresa -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="nombreEmpresa" class="form-label me-2">Nombre de la Empresa</label>
-          <span class="text-danger">*</span>
+      <!-- NOMBRE DE LA EMPRESA -->
+      <div class="col-md-6 mb-3">
+              <label   class="form-label me-2">Nombre de la Empresa</label>
+             <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+            <i class="ri-contacts-line" [ngStyle]="{
+                border: (!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input type="text" class="form-control" placeholder="Nombre de la Empresa"
             [(ngModel)]="configFactura.coFa_NombreEmpresa"
             [class.is-invalid]="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores"
             required />
-          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores">
-            <small>El campo Nombre de la Empresa es requerido</small>
-          </div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_NombreEmpresa.trim() && mostrarErrores">
+          <small>El campo Nombre de la Empresa es requerido</small>
         </div>
       </div>
 
-      <!-- Dirección -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="direccion" class="form-label me-2">Dirección de la Empresa</label>
-          <span class="text-danger">*</span>
+      
+      <!-- DIRECCIÓN DE LA EMPRESA -->
+      <div class="col-md-6 mb-3">
+              <label   class="form-label me-2">Dirección de la Empresa</label>
+             <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+          <i class="ri-map-pin-2-line" [ngStyle]="{
+                border: (!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input type="text" class="form-control" placeholder="Dirección de la Empresa"
             [(ngModel)]="configFactura.coFa_DireccionEmpresa"
             [class.is-invalid]="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores"
             required />
-          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores">
-            <small>El campo Dirección de la Empresa es requerido</small>
-          </div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_DireccionEmpresa.trim() && mostrarErrores">
+          <small>El campo Dirección de la Empresa es requerido</small>
         </div>
       </div>
 
-      <!-- RTN -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="rtn" class="form-label me-2">RTN</label>
-          <span class="text-danger">*</span>
-          <input type="text" class="form-control" placeholder="RTN"
-            [(ngModel)]="configFactura.coFa_RTN"
-            [class.is-invalid]="!configFactura.coFa_RTN.trim() && mostrarErrores"
-            required />
-          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_RTN.trim() && mostrarErrores">
-            <small>El campo RTN es requerido</small>
+  
+ <!-- RTN -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">RTN</label>
+            <span class="text-danger" *ngIf="mostrarErrores">*</span>
+            <div class="d-flex align-items-center">
+              <i class="ri-newspaper-line" [ngStyle]="{
+                border: (!configFactura.coFa_RTN.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!configFactura.coFa_RTN.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+              <input type="text" class="form-control" [class.is-invalid]="!configFactura.coFa_RTN.trim() && mostrarErrores"
+                id="clienteRTN" [(ngModel)]="configFactura.coFa_RTN" placeholder="Ingrese el RTN del cliente" 
+                mask="00000000000000" required />
+            </div>
+            <div class="text-danger mt-1" *ngIf="!configFactura.coFa_RTN.trim() && mostrarErrores">
+              <small>El campo RTN es requerido</small>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Correo -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="correo" class="form-label me-2">Correo Electrónico</label>
-          <span class="text-danger">*</span>
+        </div> 
+   <!-- CORREO ELECTRÓNICO -->
+      <div class="col-md-6 mb-3">
+        <label   class="form-label me-2">Correo Electrónico</label>
+        <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+           <i class="ri-mail-unread-line" [ngStyle]="{
+                border: (!configFactura.coFa_Correo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!configFactura.coFa_Correo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input type="email" class="form-control" placeholder="Correo Electrónico"
             [(ngModel)]="configFactura.coFa_Correo"
             [class.is-invalid]="!configFactura.coFa_Correo.trim() && mostrarErrores"
             required />
-          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Correo.trim() && mostrarErrores">
-            <small>El campo Correo Electrónico es requerido</small>
-          </div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Correo.trim() && mostrarErrores">
+          <small>El campo Correo Electrónico es requerido</small>
         </div>
       </div>
 
-      <!-- Teléfono 1 -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="telefono1" class="form-label me-2">Teléfono 1</label>
-          <span class="text-danger">*</span>
+      <!-- TELÉFONO 1 -->
+      <div class="col-md-6 mb-3">
+        <label   class="form-label me-2">Teléfono 1</label>
+        <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+          <i class="ri-phone-fill" [ngStyle]="{
+                border: (!configFactura.coFa_Telefono1.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!configFactura.coFa_Telefono1.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input type="text" class="form-control" placeholder="Teléfono 1"
             [(ngModel)]="configFactura.coFa_Telefono1"
             [class.is-invalid]="!configFactura.coFa_Telefono1.trim() && mostrarErrores"
             required />
-          <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Telefono1.trim() && mostrarErrores">
-            <small>El campo Teléfono 1 es requerido</small>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!configFactura.coFa_Telefono1.trim() && mostrarErrores">
+          <small>El campo Teléfono 1 es requerido</small>
+        </div>
+      </div>
+
+
+      <!-- TELÉFONO 2 (OPCIONAL) -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="telefono2" class="form-label">Teléfono 2 (opcional)</label>
+          <div class="d-flex align-items-center">
+            <i class="ri-phone-fill" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+              <input type="text" class="form-control"  [(ngModel)]="configFactura.coFa_Telefono2"
+                placeholder="Ingrese el teléfono 2" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Teléfono 2 (opcional) -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="telefono2" class="form-label me-2">Teléfono 2 (opcional)</label>
-          <span class="text-danger">*</span>
-          <input type="text" class="form-control" placeholder="Teléfono 2 (opcional)"
-            [(ngModel)]="configFactura.coFa_Telefono2" />
-        </div>
-      </div>
         
-
-      <!-- Departamento -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="departamento" class="form-label me-2">Departamento</label>
-          <span class="text-danger">*</span>
-          <select class="form-select"
-            [(ngModel)]="selectedDepa"
-            (change)="cargarMunicipios(selectedDepa)"
+  <!-- DEPARTAMENTO -->
+      <div class="col-md-6 mb-3">
+        <label for="departamento" class="form-label me-2">Departamento</label>
+        <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+          <i class="ri-map-pin-2-line" [ngStyle]="{
+                border: (!selectedDepa && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!selectedDepa && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select class="form-select" [(ngModel)]="selectedDepa" (change)="cargarMunicipios(selectedDepa)"
             [class.is-invalid]="!selectedDepa && mostrarErrores"
             required>
-            <option value="" disabled>Seleccione Departamento</option>
-            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">
-              {{ depa.depa_Descripcion }}
-            </option>
+            <option value="" disabled selected>Seleccione Departamento</option>
+            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion }}</option>
           </select>
-          <div class="text-danger mt-1" *ngIf="!selectedDepa && mostrarErrores">
-            <small>El campo Departamento es requerido</small>
-          </div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!selectedDepa && mostrarErrores">
+          <small>El campo Departamento es requerido</small>
         </div>
       </div>
 
       <!-- Municipio -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="municipio" class="form-label me-2">Municipio</label>
-          <span class="text-danger">*</span>
-          <select class="form-select"
-            [(ngModel)]="selectedMuni"
-            (change)="cargarColonias(selectedMuni)"
+      <div class="col-md-6 mb-3">
+        <label for="municipio" class="form-label me-2">Municipio</label>
+        <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+          <i class="ri-map-pin-2-line" [ngStyle]="{
+                border: (!selectedMuni && mostrarErrores && selectedDepa) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!selectedMuni && mostrarErrores && selectedDepa) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select class="form-select" [(ngModel)]="selectedMuni" (change)="cargarColonias(selectedMuni)" 
             [disabled]="!selectedDepa"
             [class.is-invalid]="!selectedMuni && mostrarErrores && selectedDepa"
             required>
-            <option value="" disabled>Seleccione Municipio</option>
-            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">
-              {{ muni.muni_Descripcion }}
-            </option>
+            <option value="" disabled selected>Seleccione Municipio</option>
+            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion }}</option>
           </select>
-          <div class="text-danger mt-1" *ngIf="!selectedMuni && mostrarErrores && selectedDepa">
-            <small>El campo Municipio es requerido</small>
-          </div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores && selectedDepa">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="!selectedMuni && mostrarErrores && selectedDepa">
+          <small>El campo Municipio es requerido</small>
         </div>
       </div>
 
-      <!-- Colonia -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="colonia" class="form-label me-2">Colonia</label>
-          <span class="text-danger">*</span>
-          <select class="form-select"
-            [(ngModel)]="configFactura.colo_Id"
+
+      
+  <!-- COLONIA -->
+      <div class="col-md-6 mb-3">
+        <label for="colonia" class="form-label me-2">Colonia</label>
+        <span class="text-danger">*</span>
+        <div class="d-flex align-items-center">
+          <i class="ri-map-pin-2-line" [ngStyle]="{
+                border: (configFactura.colo_Id === 0 && mostrarErrores && selectedMuni) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (configFactura.colo_Id === 0 && mostrarErrores && selectedMuni) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select class="form-select" [(ngModel)]="configFactura.colo_Id" 
             [disabled]="!selectedMuni"
             [class.is-invalid]="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni"
             required>
-            <option value="0" disabled>Seleccione Colonia</option>
-            <option *ngFor="let col of Colonias" [value]="col.colo_Id">
-              {{ col.colo_Descripcion }}
-            </option>
+            <option value="0" disabled selected>Seleccione Colonia</option>
+            <option *ngFor="let col of Colonias" [value]="col.colo_Id">{{ col.colo_Descripcion }}</option>
           </select>
-          <div class="text-danger mt-1" *ngIf="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni">
-            <small>El campo Colonia es requerido</small>
-          </div>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores && selectedMuni">*</span>
+        </div>
+        <div class="text-danger mt-1" *ngIf="configFactura.colo_Id === 0 && mostrarErrores && selectedMuni">
+          <small>El campo Colonia es requerido</small>
         </div>
       </div>
-
 
 <div class="col-md-6 mb-3">
         <div style="position: relative; display: inline-block;">
