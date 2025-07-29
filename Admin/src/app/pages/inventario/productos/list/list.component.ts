@@ -13,6 +13,9 @@ import { Producto } from 'src/app/Modelos/inventario/Producto.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -29,7 +32,39 @@ import { DetailsComponent } from '../details/details.component';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   // bread crumb items
@@ -123,13 +158,14 @@ export class ListComponent implements OnInit {
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
+  mostrarOverlayCarga = false;
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
   productoAEliminar: Producto | null = null;
 
   constructor(public table: ReactiveTableService<Producto>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
   
   onActionMenuClick(rowIndex: number) {
@@ -155,17 +191,31 @@ export class ListComponent implements OnInit {
   }
   
   guardarProducto(producto: Producto): void {
-    console.log('Estado civil guardado exitosamente desde create component:', producto);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = 'Producto guardado exitosamente';
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarProducto(producto: Producto): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', producto);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+     this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = 'Producto actualizado exitosamente';
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
   
   confirmarEliminar(producto: Producto): void {
@@ -182,7 +232,8 @@ export class ListComponent implements OnInit {
 
   eliminar(): void {
     if (!this.productoAEliminar) return;
-    
+
+    this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Productos/Eliminar/${this.productoAEliminar.prod_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -190,42 +241,57 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          console.log('Respuesta del servidor:', response);
         
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Producto eliminado exitosamente');
-            this.mensajeExito = `Producto "${this.productoAEliminar!.prod_DescripcionCorta}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              // Éxito: eliminado correctamente
+              this.mensajeExito = `Producto "${this.productoAEliminar!.prod_DescripcionCorta}" eliminado exitosamente`;
+              this.mostrarAlertaExito = true;
+              
+              // Ocultar la alerta después de 3 segundos
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+              
 
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Producto está siendo utilizado');
+              this.cargardatos(false);
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === -1) {
+              //result: está siendo utilizado
+              console.log('Rol está siendo utilizado');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: el rol está siendo utilizado.';
+              
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+              
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            } else if (response.data.code_Status === 0) {
+              // Error general
+              console.log('Error general al eliminar');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar el rol.';
+              
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+              
+              // Cerrar el modal de confirmación
+              this.cancelarEliminar();
+            }
+          } else {
+            // Respuesta inesperada
+            console.log('Respuesta inesperada del servidor');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el producto está siendo utilizado.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el producto.';
+            this.mensajeError = response.message || 'Error inesperado al eliminar el rol.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -235,41 +301,8 @@ export class ListComponent implements OnInit {
             // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
-          this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el producto.';
-          
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
+        })
       },
-      error: (err) => {
-        console.log('Respuesta completa:', err);
-this.mensajeExito = JSON.stringify(err, null, 2);
-this.mostrarAlertaExito = true;
-        const codeStatus = err?.error?.data?.code_Status;
-        const messageStatus = err?.error?.data?.message_Status;
-        this.mostrarAlertaError = true;
-        if (codeStatus === -1) {
-          this.mensajeError = messageStatus || 'No se puede eliminar: el producto está siendo utilizado.';
-        } else if (codeStatus === 0) {
-          this.mensajeError = messageStatus || 'Error al eliminar el producto.';
-        } else {
-          this.mensajeError = err?.error?.message || 'Error al eliminar el producto. Intenta de nuevo.';
-        }
-        setTimeout(() => {  
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
-        this.cancelarEliminar();
-      }
     });
   }
 
@@ -328,13 +361,24 @@ this.mostrarAlertaExito = true;
     }
   }
 
-  private cargardatos(): void {
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Producto[]>(`${environment.apiBaseUrl}/Productos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.productoGrid = data || [];
-      this.productos = this.productoGrid.slice(0, 10);
-      this.filtradorProductos();
+      
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+         const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+        this.productoGrid = datosFiltrados || [];
+        this.productos = this.productoGrid.slice(0, 12);
+        this.filtradorProductos();
+      },500);
     });
   }
 
