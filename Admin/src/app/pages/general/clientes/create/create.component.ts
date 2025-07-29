@@ -84,26 +84,49 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
+  //Es una funcion creada para el if 4 que es de corroborar
+  //que haya un credito para que el aval sea obligatorio
   tieneDatosCredito(): boolean {
-  return (
-    !!this.cliente.clie_LimiteCredito &&
-    !!this.cliente.clie_DiasCredito
-  );
-}
+    return (
+      !!this.cliente.clie_LimiteCredito &&
+      !!this.cliente.clie_DiasCredito
+    );
+  }
 
-  tabuladores(no:number){
-    if(no == 1){
-      this.mostrarErrores=true
-      if(this.cliente.clie_Codigo.trim() && this.cliente.clie_Nacionalidad.trim() &&
+  esAvalValido(aval: Aval): boolean {
+    return (
+      typeof aval.aval_DNI === 'string' && aval.aval_DNI.trim().length > 0 &&
+      typeof aval.pare_Id === 'number' && aval.pare_Id > 0 &&
+      typeof aval.aval_Nombres === 'string' && aval.aval_Nombres.trim().length > 0 &&
+      typeof aval.aval_Apellidos === 'string' && aval.aval_Apellidos.trim().length > 0 &&
+      typeof aval.esCv_Id === 'number' && aval.esCv_Id > 0 &&
+      typeof aval.aval_Telefono === 'string' && aval.aval_Telefono.trim().length > 0 &&
+      typeof aval.tiVi_Id === 'number' && aval.tiVi_Id > 0 &&
+      typeof this.selectedDepaAval === 'string' && this.selectedDepaAval.trim().length > 0 &&
+      typeof this.nuevaColoniaAval.muni_Codigo === 'string' && this.nuevaColoniaAval.muni_Codigo.trim().length > 0 &&
+      typeof aval.colo_Id === 'number' && aval.colo_Id > 0 &&
+      typeof aval.aval_DireccionExacta === 'string' && aval.aval_DireccionExacta.trim().length > 0 &&
+      aval.aval_FechaNacimiento instanceof Date && !isNaN(aval.aval_FechaNacimiento.getTime())
+    );
+  }
+
+  get avalesValidos(): boolean {
+    return this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval));
+  }
+
+  //Parametros para evaluar antes de pasar al siguiente tabulador
+  tabuladores(no: number) {
+    if (no == 1) {
+      this.mostrarErrores = true
+      if (this.cliente.clie_Codigo.trim() && this.cliente.clie_Nacionalidad.trim() &&
         this.cliente.clie_RTN.trim() && this.cliente.clie_Nombres.trim() &&
         this.cliente.clie_Apellidos.trim() && this.cliente.esCv_Id &&
         this.cliente.clie_FechaNacimiento && this.cliente.tiVi_Id &&
-        this.cliente.clie_Telefono.trim())
-      {
-        this.mostrarErrores=false;
-        this.activeTab=2;
+        this.cliente.clie_Telefono.trim()) {
+        this.mostrarErrores = false;
+        this.activeTab = 2;
       }
-      else{
+      else {
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
         setTimeout(() => {
@@ -113,15 +136,14 @@ export class CreateComponent {
       }
     }
 
-    if(no == 2){
-      this.mostrarErrores=true
-      if(this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim() &&
-        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion>=1)
-      {
-        this.mostrarErrores=false;
-        this.activeTab=3;
+    if (no == 2) {
+      this.mostrarErrores = true
+      if (this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim() &&
+        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion >= 1) {
+        this.mostrarErrores = false;
+        this.activeTab = 3;
       }
-      else{
+      else {
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
         setTimeout(() => {
@@ -131,21 +153,21 @@ export class CreateComponent {
       }
     }
 
-    if(no == 3){
-      if(this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito){
-        this.mostrarErrores=false;
-        this.activeTab=4;
+    if (no == 3) {
+      if (this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito) {
+        this.mostrarErrores = false;
+        this.activeTab = 4;
       }
-      if(!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito){
-        this.mostrarErrores=false;
-        this.activeTab=4;
+      if (!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito) {
+        this.mostrarErrores = false;
+        this.activeTab = 4;
       }
-      else{
-        if(this.cliente.clie_LimiteCredito){
-          if(this.cliente.clie_DiasCredito){
-            this.mostrarErrores=false;
-            this.activeTab=4;
-          }else{
+      else {
+        if (this.cliente.clie_LimiteCredito) {
+          if (this.cliente.clie_DiasCredito) {
+            this.mostrarErrores = false;
+            this.activeTab = 4;
+          } else {
             this.mostrarAlertaWarning = true;
             this.mensajeWarning = 'Los Dias del Credito son obligatorios si asigno un crédito.';
             setTimeout(() => {
@@ -154,11 +176,11 @@ export class CreateComponent {
             }, 3000);
           }
         }
-        if(this.cliente.clie_DiasCredito){
-          if(this.cliente.clie_LimiteCredito){
-            this.mostrarErrores=false;
-            this.activeTab=4;
-          }else{
+        if (this.cliente.clie_DiasCredito) {
+          if (this.cliente.clie_LimiteCredito) {
+            this.mostrarErrores = false;
+            this.activeTab = 4;
+          } else {
             this.mostrarAlertaWarning = true;
             this.mensajeWarning = 'Se asigno Dias de Credito, pero no un crédito.';
             setTimeout(() => {
@@ -170,39 +192,34 @@ export class CreateComponent {
       }
     }
 
-    if(no == 4){
-      this.mostrarErrores=true;
+    if (no == 4) {
+      this.mostrarErrores = true;
       if (this.tieneDatosCredito()) {
-        if(this.aval.aval_DNI.trim() && this.aval.pare_Id &&
-          this.aval.aval_Nombres.trim() && this.aval.aval_Apellidos.trim() &&
-          this.aval.esCv_Id && this.aval.aval_Telefono.trim() && this.aval.tiVi_Id &&
-          this.selectedDepa.trim() && this.nuevaColonia.muni_Codigo.trim() && this.aval.colo_Id &&
-          this.aval.aval_DireccionExacta && this.aval.aval_FechaNacimiento)
-        {
-          this.mostrarErrores=false;
-          this.activeTab=5;
+        if (this.avales.some(aval => this.esAvalValido(aval))) {
+          this.mostrarErrores = false;
+          this.activeTab = 5;
         }
-        else{
+        else {
           this.mostrarAlertaWarning = true;
-          this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+          this.mensajeWarning = 'Por favor registre al menos un Aval.';
           setTimeout(() => {
             this.mostrarAlertaWarning = false;
             this.mensajeWarning = '';
           }, 3000);
         }
       }
-      else{
-        this.mostrarErrores=false;
-        this.activeTab=5;
+      else {
+        this.mostrarErrores = false;
+        this.activeTab = 5;
       }
     }
 
-    if(no == 5){
-      this.mostrarErrores=false;
+    if (no == 5) {
+      this.mostrarErrores = false;
     }
   }
 
-  
+
 
   trackByIndex(index: number) { return index; }
 
@@ -221,7 +238,7 @@ export class CreateComponent {
 
   cerrarMapa() {
     this.mostrarMapa = false;
-    this.direccionPorCliente={
+    this.direccionPorCliente = {
       diCl_Id: 0,
       clie_Id: 0,
       colo_Id: 0,
@@ -431,30 +448,32 @@ export class CreateComponent {
   };
   direccionEditandoIndex: number | null = null;
 
-  avalesPorCliente: Aval[] = [];
-  aval: Aval = {
-    aval_Id: 0,
-    clie_Id: 0,
-    aval_Nombres: '',
-    aval_Apellidos: '',
-    pare_Id: 0,
-    aval_DNI: '',
-    aval_Telefono: '',
-    tiVi_Id: 0,
-    aval_Observaciones: '',
-    aval_DireccionExacta: '',
-    colo_Id: 0,
-    aval_FechaNacimiento: null,
-    esCv_Id: 0,
-    aval_Sexo: 'M',
-    usua_Creacion: getUserId(),
-    usuarioCreacion: '',
-    aval_FechaCreacion: new Date(),
-    usua_Modificacion: 0,
-    usuarioModificacion: '',
-    aval_FechaModificacion: new Date()
+  avales: Aval[] = [this.nuevoAval()];
+  avalActivoIndex: number = 0;
+  nuevoAval(): Aval {
+    return {
+      aval_Id: 0,
+      clie_Id: 0,
+      aval_Nombres: '',
+      aval_Apellidos: '',
+      pare_Id: 0,
+      aval_DNI: '',
+      aval_Telefono: '',
+      tiVi_Id: 0,
+      aval_Observaciones: '',
+      aval_DireccionExacta: '',
+      colo_Id: 0,
+      aval_FechaNacimiento: null,
+      esCv_Id: 0,
+      aval_Sexo: 'M',
+      usua_Creacion: getUserId(),
+      usuarioCreacion: '',
+      aval_FechaCreacion: new Date(),
+      usua_Modificacion: 0,
+      usuarioModificacion: '',
+      aval_FechaModificacion: new Date()
+    };
   };
-  avalesEditandoIndex: number | null = null;
 
   cancelar(): void {
     this.mostrarErrores = false;
@@ -524,22 +543,22 @@ export class CreateComponent {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('upload_preset', 'subidas_usuarios');      
+      formData.append('upload_preset', 'subidas_usuarios');
       const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
 
-      
+
       fetch(url, {
         method: 'POST',
         body: formData
       })
-      .then(response => response.json())
-      .then(data => {
-        this.cliente.clie_ImagenDelNegocio = data.secure_url;
-        console.log(this.cliente.clie_ImagenDelNegocio)
-      })
-      .catch(error => {
-        console.error('Error al subir la imagen a Cloudinary:', error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          this.cliente.clie_ImagenDelNegocio = data.secure_url;
+          console.log(this.cliente.clie_ImagenDelNegocio)
+        })
+        .catch(error => {
+          console.error('Error al subir la imagen a Cloudinary:', error);
+        });
     }
   }
 
@@ -600,7 +619,7 @@ export class CreateComponent {
           if (response.data.data) {
             this.idDelCliente = response.data.data;
             this.guardarDireccionesPorCliente(this.idDelCliente);
-            this.guardarAval(this.idDelCliente);
+            this.guardarAvales(this.idDelCliente);
           }
         },
         error: (error) => {
@@ -624,7 +643,7 @@ export class CreateComponent {
 
   validarDireccion: number = 0;
   agregarDireccion() {
-    this.validarDireccion+=1;
+    this.validarDireccion += 1;
     if (this.direccionEditandoIndex !== null) {
       this.direccionesPorCliente[this.direccionEditandoIndex] = { ...this.direccionPorCliente };
       this.direccionEditandoIndex = null;
@@ -645,7 +664,7 @@ export class CreateComponent {
   }
 
   eliminarDireccion(index: number) {
-    this.validarDireccion-=1;
+    this.validarDireccion -= 1;
     this.direccionesPorCliente.splice(index, 1);
   }
 
@@ -697,35 +716,39 @@ export class CreateComponent {
     }
   }
 
+  agregarAval() {
+    this.avales.push(this.nuevoAval());
+    this.avalActivoIndex = this.avales.length - 1;
+  }
 
-  guardarAval(clie_Id: number): void {
-    this.mostrarErrores = true;
-    if (this.entrando) {
-      this.mostrarAlertaWarning = false;
-      this.mostrarAlertaError = false;
+  eliminarAval(index: number) {
+    this.avales.splice(index, 1);
+    if (this.avalActivoIndex >= this.avales.length) {
+      this.avalActivoIndex = this.avales.length - 1;
+    }
+  }
+
+  seleccionarAval(index: number) {
+    this.avalActivoIndex = index;
+  }
+
+  cambiarAval(direccion: number) {
+    const nuevoIndex = this.avalActivoIndex + direccion;
+    if (nuevoIndex >= 0 && nuevoIndex < this.avales.length) {
+      this.avalActivoIndex = nuevoIndex;
+    }
+  }
+
+  guardarAvales(clie_Id: number): void {
+    for (const aval of this.avales) {
       const avalGuardar = {
-        aval_Id: 0,
+        ...aval,
         clie_Id: clie_Id,
-        aval_Nombres: this.aval.aval_Nombres.trim(),
-        aval_Apellidos: this.aval.aval_Apellidos.trim(),
-        pare_Id: this.aval.pare_Id,
-        aval_DNI: this.aval.aval_DNI.trim(),
-        aval_Telefono: this.aval.aval_Telefono.trim(),
-        tiVi_Id: this.aval.tiVi_Id,
-        tiVi_Descripcion: '',
-        aval_Observaciones: this.aval.aval_Observaciones.trim(),
-        aval_DireccionExacta: this.aval.aval_DireccionExacta.trim(),
-        colo_Id: this.aval.colo_Id,
-        aval_FechaNacimiento: new Date(),
-        esCv_Id: this.aval.esCv_Id,
-        aval_Sexo: this.aval.aval_Sexo,
         usua_Creacion: environment.usua_Id,
-        usuarioCreacion: this.aval.usuarioCreacion.trim(),
         aval_FechaCreacion: new Date(),
         usua_Modificacion: environment.usua_Id,
-        usuarioModificacion: this.aval.usuarioModificacion.trim(),
         aval_FechaModificacion: new Date()
-      } 
+      };
       this.http.post<any>(`${environment.apiBaseUrl}/Aval/Insertar`, avalGuardar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -734,7 +757,7 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          console.log(response);
+          // Puedes manejar la respuesta aquí
         },
         error: (error) => {
           this.mostrarAlertaError = true;
@@ -745,30 +768,6 @@ export class CreateComponent {
           }, 3000);
         }
       });
-    } 
-    else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = '3Por favor, complete todos los campos obligatorios.';
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 3000);
     }
   }
-
-  avalTieneDatos(): boolean {
-    return (
-      !!this.aval.aval_Nombres &&
-      !!this.aval.aval_Apellidos &&
-      !!this.aval.aval_Sexo &&
-      !!this.aval.pare_Id &&
-      !!this.aval.aval_DNI &&
-      !!this.aval.aval_Telefono &&
-      !!this.aval.tiVi_Id &&
-      !!this.aval.aval_Observaciones &&
-      !!this.aval.aval_DireccionExacta
-    );  
-  }
-
 }
-  
