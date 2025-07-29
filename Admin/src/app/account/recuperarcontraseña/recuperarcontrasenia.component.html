@@ -84,18 +84,22 @@
       Ingrese el código enviado a su correo electrónico para continuar el restablecimiento de contraseña
     </div>
     <div class="codigo-inputs d-flex justify-content-center flex-wrap gap-2" style="max-width: 350px; margin: 0 auto;">
-      <ng-container *ngFor="let i of [0,1,2,3,4,5]; let idx = index">
-        <input
-          maxlength="1"
-          class="codigo-input"
-          type="text"
-          [(ngModel)]="codigoIngresado[i]"
-          name="codigo{{i}}"
-          #codeInput{{i}}
-          [value]="codigoIngresado[i] === '0' ? '' : codigoIngresado[i]"
-          (input)="onInputKeyUp($event, i)"
-        />
-      </ng-container>
+      <div class="input-group justify-content-center">
+        <ng-container *ngFor="let i of [0,1,2,3,4,5]; let idx = index">
+          <input
+            maxlength="1"
+            class="codigo-input form-control text-center mx-1 rounded"
+            type="text"
+            [(ngModel)]="codigoIngresado[i]"
+            name="codigo{{i}}"
+            [attr.tabindex]="i+1"
+            #codeInput
+            [value]="codigoIngresado[i] === '0' ? '' : codigoIngresado[i]"
+            (input)="onInputKeyUp($event, i, codeInput)"
+            style="  font-size: 1.7rem;"
+          />
+        </ng-container>
+      </div>
 
     </div>
 <div class="codigo-btn-row d-flex flex-column flex-sm-row justify-content-center align-items-center gap-2 gap-sm-3 w-100 mt-3">
