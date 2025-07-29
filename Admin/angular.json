@@ -23,49 +23,30 @@
             "outputPath": "dist/steex",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
-              "node_modules/prismjs/themes/prism.css",
-              "node_modules/flatpickr/dist/flatpickr.css",
-              "node_modules/@ctrl/ngx-emoji-mart/picker.css",
               "node_modules/ngx-toastr/toastr.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css",
               "node_modules/ngx-ui-switch/ui-switch.component.css",
               "node_modules/slick-carousel/slick/slick.scss",
               "node_modules/slick-carousel/slick/slick-theme.scss",
-              "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
               "src/assets/scss/bootstrap.scss",
               "src/assets/scss/app.scss",
               "src/assets/scss/icons.scss",
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/prismjs/prism.js",
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/slick-carousel/slick/slick.min.js"
             ],
             "allowedCommonJsDependencies": [
-              "leaflet",
-              "apexcharts",
-              "ev-emitter/ev-emitter",
-              "can-use-dom",
-              "moment",
               "@ckeditor/ckeditor5-build-classic",
-              "lottie-web",
               "sweetalert2",
-              "polylabel",
-              "dropzone",
-              "prismjs",
-              "lodash"
+              "lodash",
+              "ev-emitter/ev-emitter",
+              "lottie-web"
             ]
           },
           "configurations": {
@@ -78,8 +59,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "8kb",
+                  "maximumError": "10kb"
                 }
               ],
               "fileReplacements": [
@@ -95,7 +76,8 @@
                   "minify": true,
                   "inlineCritical": false
                 }
-              }
+              },
+              "sourceMap": true
             },
             "development": {
               "buildOptimizer": false,
@@ -106,7 +88,7 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -130,19 +112,11 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         }

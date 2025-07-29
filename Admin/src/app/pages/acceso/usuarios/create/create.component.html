@@ -1,24 +1,6 @@
 <div class="d-flex flex-column" style="height: 100%; min-height: 250px;">
   <h5 class="card-title mb-4">Crear Nuevo Usuario</h5>
 
-  <div class="d-flex justify-content-center mb-4">
-    <div style="position: relative;">
-      <img
-        [src]="usuario.usua_Imagen"
-        alt="Foto de usuario"
-        class="rounded-circle"
-        style="width: 96px; height: 96px; object-fit: cover; border: 3px solid #d6b68a; background: #f5f5f5;"
-      />
-      <label for="inputImagen" style="position: absolute; bottom: 0; right: 0; background: #fff; border-radius: 50%; border: 1px solid #d6b68a; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-        <i class="ri-add-line" style="font-size: 1.5rem; color: #d6b68a;"></i>
-        <input id="inputImagen" type="file" accept="image/*" (change)="onImagenSeleccionada($event)" style="display: none;" />
-      </label>
-    </div>
-  </div>
-  <div class="text-center mb-3" style="font-size: 0.9rem;">
-    <label for="usua_Usuario" class="form-label">Usuario</label>
-  </div>
-
   <div class="alert-container">
     <div *ngIf="mostrarAlertaExito" class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
@@ -37,8 +19,27 @@
     </div>
   </div>
 
+  <div class="d-flex justify-content-center mb-4">
+    <div style="position: relative;">
+      <img
+        [src]="usuario.usua_Imagen"
+        alt="Foto de usuario"
+        class="rounded-circle"
+        style="width: 96px; height: 96px; object-fit: cover; border: 3px solid #d6b68a; background: #f5f5f5;"
+      />
+      <label for="inputImagen" style="position: absolute; bottom: 0; right: 0; background: #fff; border-radius: 50%; border: 1px solid #d6b68a; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <i class="ri-add-line" style="font-size: 1.5rem; color: #d6b68a;"></i>
+        <input id="inputImagen" type="file" accept="image/*" (change)="onImagenSeleccionada($event)" style="display: none;" />
+      </label>
+    </div>
+  </div>
+  <div class="text-center mb-3" style="font-size: 0.9rem;">
+    <label for="usua_Usuario" class="form-label">Usuario</label>
+  </div>
+
   <div class="flex-grow-1">
     <div class="row">
+
       <!-- Usuario -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -50,6 +51,7 @@
           </div>
         </div>
       </div>
+
       <!-- Clave -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -61,13 +63,14 @@
           </div>
         </div>
       </div>
+
       <!-- Rol -->
       <div class="col-md-6">
         <div class="mb-3">
           <label for="role_Id" class="form-label">Rol</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <select id="role_Id" class="form-select" [(ngModel)]="usuario.role_Id" [class.is-invalid]="!usuario.role_Id && mostrarErrores" required>
-            <option value="" disabled selected>Seleccione un rol</option>
+            <option value=0 disabled selected>Seleccione un rol</option>
             <option *ngFor="let rol of roles" [value]="rol.role_Id">{{ rol.role_Descripcion }}</option>
           </select>
           <div class="text-danger mt-1" *ngIf="!usuario.role_Id && mostrarErrores">
@@ -75,21 +78,47 @@
           </div>
         </div>
       </div>
+
       <!-- Empleado -->
       <div class="col-md-6">
         <div class="mb-3">
-          <label for="usua_IdPersona" class="form-label">Empleado</label>
-          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required
-          >
-            <option value="" disabled selected>Seleccione un empleado</option>
-            <option *ngFor="let emp of empleados" [value]="emp.empl_Id">{{ emp.Nombres }}</option>
-          </select>
-          <div class="text-danger mt-1" *ngIf="!usuario.usua_IdPersona && mostrarErrores">
-            <small>El campo Empleado es requerido</small>
+          <div class="col-12" style="display: flex;">
+            <div style="width: auto; margin-right: 10px;">
+              <label class="form-label">¿Es Vendedor?</label>
+              <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+            </div>
+            <div class="form-check form-switch mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="usua_EsVendedor"
+                [(ngModel)]="usuario.usua_EsVendedor"
+              />
+            </div>
+          </div>
+
+          <div *ngIf="!usuario.usua_EsVendedor">
+            <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required>
+              <option value=0 disabled selected>Seleccione un empleado</option>
+              <option *ngFor="let emp of empleados" [value]="emp.empl_Id">{{ emp.empl_Nombres }}</option>
+            </select>
+            <div class="text-danger mt-1" *ngIf="!usuario.usua_IdPersona && mostrarErrores">
+              <small>El campo Empleado es requerido</small>
+            </div>
+          </div>
+
+          <div *ngIf="usuario.usua_EsVendedor">
+            <select id="usua_IdPersona" class="form-select" [(ngModel)]="usuario.usua_IdPersona" [class.is-invalid]="!usuario.usua_IdPersona && mostrarErrores" required>
+              <option value=0 disabled selected>Seleccione un vendedor</option>
+              <option *ngFor="let ven of vendedores" [value]="ven.vend_Id">{{ ven.vend_Nombres }}</option>
+            </select>
+            <div class="text-danger mt-1" *ngIf="!usuario.usua_IdPersona && mostrarErrores">
+              <small>El campo Vendedor es requerido</small>
+            </div>
           </div>
         </div>
       </div>
+
       <!-- Es Admin -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -107,9 +136,6 @@
           </div>
         </div>
       </div>
-      
-      <input type="hidden" [(ngModel)]="usuario.usua_EsVendedor" />
-
     </div>
   </div>
 
