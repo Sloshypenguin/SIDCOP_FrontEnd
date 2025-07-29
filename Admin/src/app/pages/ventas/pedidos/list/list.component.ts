@@ -14,6 +14,14 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -30,7 +38,40 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   // bread crumb items
@@ -101,6 +142,8 @@ export class ListComponent implements OnInit {
   PedidoDetalle: Pedido | null = null;
   
   // Propiedades para alertas
+
+      mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -119,7 +162,7 @@ constructor(public table: ReactiveTableService<Pedido>,
     public floatingMenuService: FloatingMenuService
   )
     {
-    this.cargardatos();
+    this.cargardatos(true);
   }   
 
 
@@ -144,17 +187,33 @@ constructor(public table: ReactiveTableService<Pedido>,
   }
 
   guardarPedido(pedido: Pedido): void {
-    console.log('Estado civil guardado exitosamente desde create component:', pedido);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Pedido guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarPedido(pedido: Pedido): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', pedido);
+    console.log('Pedido actualizado exitosamente desde edit component:', pedido);
     // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Pedido actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(pedido: Pedido): void {
@@ -173,7 +232,7 @@ constructor(public table: ReactiveTableService<Pedido>,
     if (!this.PedidoEliminar) return;
     
     console.log('Eliminando estado civil:', this.PedidoEliminar);
-    
+     this.mostrarOverlayCarga = true;
     this.http.post(`${environment.apiBaseUrl}/Pedido/Eliminar/${this.PedidoEliminar.pedi_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
@@ -199,13 +258,13 @@ constructor(public table: ReactiveTableService<Pedido>,
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Pedido está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el pedido está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -218,7 +277,7 @@ constructor(public table: ReactiveTableService<Pedido>,
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el pedido.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -284,12 +343,24 @@ constructor(public table: ReactiveTableService<Pedido>,
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
-    this.http.get<Pedido[]>(`${environment.apiBaseUrl}/Pedido/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
-    });
-  }
+
+   private cargardatos(state: boolean): void {
+       this.mostrarOverlayCarga = state;
+      this.http.get<Pedido[]>(`${environment.apiBaseUrl}/Pedido/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe(data => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+           const tienePermisoListar = this.accionPermitida('listar');
+          const userId = getUserId();
+  
+          const datosFiltrados = tienePermisoListar
+            ? data
+            : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+  
+          this.table.setData(datosFiltrados);
+          this.table.setData(data);
+        },500);
+      });
+    }
 }

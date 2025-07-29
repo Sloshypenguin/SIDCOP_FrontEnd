@@ -1,6 +1,6 @@
 <div class="d-flex flex-column" style="height: 100%; min-height: 250px">
   <!-- Título del componente -->
-  <h5 class="card-title mb-4">Editar Punto de Emision</h5>
+  <h5 class="card-title mb-4">Editar Pedido</h5>
 
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
@@ -55,83 +55,93 @@
 
   <div class="flex-grow-1">
     <div class="row">
-      <!-- Select de Cliente -->
-      <div class="col-md-6">
-        <label for="cliente" class="form-label">
-          Cliente <span class="text-danger">*</span>
-        </label>
+
+
+       <div class="col-md-6">
         <div class="mb-3">
-          <select
-            id="cliente"
-            name="cliente"
-            class="form-select"
-            [(ngModel)]="pedido.clie_Id"
-            (change)="onClienteSeleccionado(pedido.clie_Id)"
-            [class.is-invalid]="!pedido.clie_Id && mostrarErrores"
-            required
-          >
-            <option value="" disabled selected>Seleccione un cliente</option>
-            <option *ngFor="let cliente of Clientes" [value]="cliente.clie_Id">
-              {{ cliente.clie_NombreNegocio }}
-            </option>
+          <label for="clie_Id" class="form-label">Cliente</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+             <i class="ri-user-3-line" [ngStyle]="{
+                border: (!pedidoEditada.clie_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.clie_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select 
+            id="clie_Id" 
+            name="clie_Id" 
+            class="form-select" 
+            [(ngModel)]="selectedCliente" 
+            (change)="cargarMunicipios(selectedCliente)"
+            required>
+            <option [ngValue]="0" disabled selected>{{ Clientes && Clientes.length > 0 ? 'Seleccione un Cliente' : 'Cargando clientes...' }}</option>
+            <option *ngFor="let cliente of Clientes" [ngValue]="cliente.clie_Id">{{ cliente.clie_NombreNegocio }}</option>
           </select>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!pedido.clie_Codigo && mostrarErrores"
-          >
-            <small>El campo Cliente es requerido</small>
+          
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
+         
         </div>
       </div>
 
-      <!-- Select de Dirección -->
+
       <div class="col-md-6">
-        <label for="direccion" class="form-label">
-          Dirección <span class="text-danger">*</span>
-        </label>
         <div class="mb-3">
-          <select
-            id="direccion"
-            name="direccion"
-            class="form-select"
-            [(ngModel)]="pedido.diCl_Id"
-            [class.is-invalid]="!pedido.diCl_Id && mostrarErrores"
-            required
-          >
-            <option value="" disabled selected>Seleccione una dirección</option>
-            <option
-              *ngFor="let direccion of Direccines"
-              [value]="direccion.diCl_Id"
-            >
-              {{ direccion.diCl_DireccionExacta }}
-            </option>
+          <label for="diCl_Id" class="form-label">Dirección</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+             <i class="ri-map-pin-user-line" [ngStyle]="{
+                border: (!pedidoEditada.diCl_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.diCl_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select 
+            id="diCl_Id" 
+            name="diCl_Id" 
+            class="form-select" 
+            [(ngModel)]="pedidoEditada.diCl_Id" 
+            [disabled]="!selectedCliente || Direcciones.length === 0"
+            required>
+            <option [ngValue]="0" disabled selected>{{ Direcciones.length > 0 ? 'Seleccione una Dirección' : 'No hay direcciones disponibles' }}</option>
+            <option *ngFor="let dir of Direcciones" [ngValue]="dir.diCl_Id">{{ dir.diCl_DireccionExacta }}</option>
           </select>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!pedido.diCl_Id && mostrarErrores"
-          >
-            <small>El campo Dirección es requerido</small>
+         
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && selectedCliente && !pedidoEditada.diCl_Id">
+            <small>Por favor seleccione una dirección de entrega</small>
+          </div>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && selectedCliente && Direcciones.length === 0">
+            <small>Este cliente no tiene direcciones registradas</small>
           </div>
         </div>
       </div>
+      
 
       <div class="col-md-6">
         <div class="mb-3">
           <label for="inicial-input" class="form-label"
             >Fecha Entrega<span class="text-danger">*</span></label
           >
+            <div class="d-flex align-items-center">
+             <i class="ri-calendar-event-line" [ngStyle]="{
+                border: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
           <input
             type="date"
             id="inicial-input"
             [(ngModel)]="fechaInicioFormato"
             class="form-control"
-            [class.is-invalid]="!pedido.pedi_FechaEntrega && mostrarErrores"
+            [class.is-invalid]="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
             placeholder="Seleccione la fecha de entrega"
             required
           />
+          </div>
           <div
             class="text-danger"
-            *ngIf="!pedido.pedi_FechaEntrega && mostrarErrores"
+            *ngIf="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
           >
             <small>La fecha de entrega es requerida</small>
           </div>
@@ -143,6 +153,12 @@
          
           <div class="col-md-12 mb-3">
             <label for="buscador" class="form-label">Seleccionar los Productos</label>
+             <div class="d-flex align-items-center">  
+             <i class="ri-search-2-line"  [ngStyle]="{
+                border: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}" >
+              </i>
             <input
               type="text"
               id="buscador"
@@ -151,6 +167,7 @@
               [(ngModel)]="searchQuery"
               (input)="filtrarProductos()"
             />
+            </div>
           </div>
 
           <!-- Contenedor de tarjetas de productos -->
@@ -315,9 +332,7 @@
               class="ri-edit-line me-2 custom-modal-alert-icon"
               (click)="cancelarEdicion()"
             ></i>
-            ¿Estás seguro que deseas editar el Pedido
-            <strong>VER PEDI</strong> por
-            <strong>VER</strong>?
+            ¿Estás seguro que deseas guardar los cambios en este pedido?
           </p>
         </div>
       </div>
