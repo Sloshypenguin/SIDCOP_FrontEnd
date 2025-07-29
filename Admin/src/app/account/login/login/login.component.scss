@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 170px;
+  padding-top: 100px; // menos padding top
 }
 
 .login-overlay {
@@ -21,13 +21,12 @@
   position: relative;
   z-index: 2;
   background: rgba(20, 26, 47, 0.4);
-  
   border-radius: 18px;                
   padding: 2.3rem 2rem 2.3rem 2rem;    
   min-width: 320px;
   max-width: 550px;
   width: 100%;
-  margin: 0 auto;                      
+  margin: -10px auto 0 auto; // sube la card visualmente
   box-shadow: 0 8px 32px rgba(20, 26, 47, 0.32); 
   display: flex;
   flex-direction: column;
@@ -235,6 +234,7 @@
   }
   .login-header {
     height: 120px;
+    height: 180px;
     min-width: 100vw;
   }
   .login-logo {
@@ -244,6 +244,8 @@
   .btn-login {
     font-size: 0.95rem;
     padding: 0.7em 1.2em;
+    min-width: 12.5rem !important;
+
+    width: 10.5rem !important;
   }
 }
-

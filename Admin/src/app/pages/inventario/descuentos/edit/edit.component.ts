@@ -154,6 +154,7 @@ seleccionarTodos(event: any) {
   clientes: '',
   referencias: '',
   escalas: '',
+  desc_TipoFactura: '',
   }
 
   descuentoDetalle: DescuentoDetalle = {
@@ -429,7 +430,23 @@ set fechaFinFormato(value: string) {
   this.descuento.desc_FechaFin = new Date(value);
 }
 
+ seleccionContado: boolean = false;
+seleccionCredito: boolean = false;
+formaPago: string = ''; // Aquí se guardará "CO", "CR" o "AM"
 
+actualizarFormaPago(): void {
+  if (this.seleccionContado && this.seleccionCredito) {
+    this.formaPago = 'AM'; // Ambos
+  } else if (this.seleccionContado) {
+    this.formaPago = 'CO'; // Solo contado
+  } else if (this.seleccionCredito) {
+    this.formaPago = 'CR'; // Solo crédito
+  } else {
+    this.formaPago = ''; // Ninguno seleccionado
+  }
+
+  console.log('Forma de pago seleccionada:', this.formaPago);
+}
 
 
 tieneAyudante: boolean = false;
@@ -467,7 +484,24 @@ tieneAyudante: boolean = false;
       this.escalas = escalasLista;
       this.clientesSeleccionados = clientesIds;
       this.seleccionados = referenciasIds;
+      this.formaPago = this.descuento.desc_TipoFactura
 
+      switch (this.formaPago) {
+        case 'CO':
+          this.seleccionContado = true;
+          break;
+        case 'CR':
+          this.seleccionCredito = true;
+          break;
+        case 'AM':
+          this.seleccionCredito = true;
+          this.seleccionContado = true;
+          break;
+        default:
+          this.seleccionCredito = false;
+          this.seleccionContado = false;
+          break;
+      }
 
       switch (this.descuento.desc_Aplicar) {
         case 'P':
@@ -521,7 +555,8 @@ tieneAyudante: boolean = false;
   usuarioCreacion:  '',
   usuarioModificacion: '',
   code_Status:  0,
-  message_Status:''
+  message_Status:'',
+  desc_TipoFactura:'',
 
     };
     this.seleccionados = [];
@@ -602,7 +637,9 @@ tieneAyudante: boolean = false;
     escalas: '',
     clientes: '',
     referencias: '',
-    escalas_Json: this.escalas
+    escalas_Json: this.escalas,
+    desc_TipoFactura: this.formaPago
+
 
   };
 
@@ -617,8 +654,7 @@ tieneAyudante: boolean = false;
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `El Descuento "${this.descuento.desc_Aplicar}" actualizado exitosamente`;
-          this.mostrarAlertaExito = true;
+     
           this.mostrarErrores = false;
 
           setTimeout(() => {

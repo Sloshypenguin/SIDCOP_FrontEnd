@@ -32,6 +32,11 @@
         <label  class="form-label">Descripción<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class="ri-attachment-line" [ngStyle]="{
+                border: (!bodega.bode_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.bode_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -52,6 +57,11 @@
         <label  class="form-label">VIN<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class=" ri-article-line" [ngStyle]="{
+                border: (!bodega.bode_VIN.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.bode_VIN.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -72,6 +82,11 @@
         <label  class="form-label">Placa<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class=" ri-barcode-box-line" [ngStyle]="{
+                border: (!bodega.bode_Placa.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.bode_Placa.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -92,6 +107,11 @@
         <label  class="form-label">Tipo de Camion<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class="ri-truck-line" [ngStyle]="{
+                border: (!bodega.bode_TipoCamion && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.bode_TipoCamion && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
              <select 
                 id="tipoCamion" 
                 name="tipoCamion" 
@@ -117,6 +137,11 @@
         <label  class="form-label">Capacidad<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class=" ri-code-line" [ngStyle]="{
+                border: (!bodega.bode_Capacidad && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.bode_Capacidad && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="number" 
               class="form-control" 
@@ -137,6 +162,11 @@
         <label  class="form-label">Sucursal<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class=" ri-pin-distance-line" [ngStyle]="{
+                border: (!bodega.sucu_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.sucu_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <select 
                 id="sucursalId" 
                 name="sucursalId" 
@@ -164,6 +194,11 @@
         <label  class="form-label">Registro Cai<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class=" ri-bill-line" [ngStyle]="{
+                border: (!bodega.regC_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.regC_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <select 
                 id="registroCaiId" 
                 name="registroCaiId" 
@@ -191,6 +226,11 @@
         <label  class="form-label">Vendedor<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class="ri-user-line" [ngStyle]="{
+                border: (!bodega.vend_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.vend_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <select 
                 id="vendedorId" 
                 name="vendedorId" 
@@ -218,6 +258,11 @@
         <label  class="form-label">Modelo<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class=" ri-steering-fill" [ngStyle]="{
+                border: (!bodega.mode_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!bodega.mode_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <select 
                 id="modeloId" 
                 name="modeloId" 
@@ -241,7 +286,7 @@
         </div>
       </div>
 
-      
+
     </div>
   </div>
   
