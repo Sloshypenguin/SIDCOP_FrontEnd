@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
 import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
+import { TreeKeyManager } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-create',
@@ -34,12 +35,16 @@ import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
 })
 export class CreateComponent {
 
+  Math: any = Math;
+
   productosLista: any[] = [];
   clientesLista: any[] = [];
   clientesListaCrear: any[] = [];
   canalesLista: any[] = [];
   listasAgrupadas: any[] = [];
   nocreando : boolean = true;
+
+  listaClientesConflicto: any[] = [];
 
   productoSeleccionado: any;
   breadCrumbItems!: Array<{}>;
@@ -77,6 +82,8 @@ listaAGuardar: any = null;
 
 // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
+
+  mostrarClientesConflicto = false;
 
   listaAEliminar = {
     listaId: 0,
@@ -426,6 +433,14 @@ confirmarGuardarCambios() {
         }
 
         if(data.data.code_Status == -1) {
+
+          const stringClientesConflicto = data.data.data;
+          this.listaClientesConflicto = stringClientesConflicto.split(',');
+          this.mostrarClientesConflicto =true;
+
+          // this.mostrarAlertaError = true;
+
+          
             return;
           }
 
@@ -523,6 +538,11 @@ confirmarGuardarCambios() {
         }
 
         if(response.data.code_Status == -1) {
+
+          const stringClientesConflicto = response.data.data;
+          this.listaClientesConflicto = stringClientesConflicto.split(',');
+          this.mostrarClientesConflicto =true;
+
             return;
           }
 
@@ -551,6 +571,11 @@ confirmarGuardarCambios() {
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
     this.listaAEliminar = {listaId: 0, prod_Id: 0};
+  }
+
+  cancelarClientesConflicto(): void {
+    this.mostrarClientesConflicto = false;
+    this.listaClientesConflicto = [];
   }
 
   eliminar(): void {
