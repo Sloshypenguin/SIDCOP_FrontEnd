@@ -39,3 +39,16 @@
 .sexo-option:last-child.selected .sexo-icon {
   color: #e91e63;
 }
+
+
+ng-select {
+  height: 38px; /* altura típica de .form-control */
+}
+
+ng-select .ng-select-container {
+  height: 100%;
+  min-height: 38px;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 1rem;
+}
