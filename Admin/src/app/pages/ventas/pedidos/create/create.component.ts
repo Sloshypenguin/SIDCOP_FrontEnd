@@ -7,7 +7,6 @@ import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { getDate } from 'ngx-bootstrap/chronos/utils/date-getters';
 
 @Component({
   selector: 'app-create',
@@ -263,8 +262,6 @@ onClienteSeleccionado(clienteId: number) {
     };
     this.onCancel.emit();
   }
-
-  
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
