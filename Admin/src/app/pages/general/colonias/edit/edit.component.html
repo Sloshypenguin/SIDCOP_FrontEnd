@@ -34,7 +34,15 @@
       <!-- Descripcion -->
       <div class="col-md-6">
         <div class="mb-3">
+
           <label for="edit_colo_Descripcion" class="form-label">Descripción</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+          <i class="ri-newspaper-line" [ngStyle]="{
+            border: !(coloniaEditada.colo_Descripcion && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+            backgroundColor: !(coloniaEditada.colo_Descripcion && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+            padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+          </i>
           <input 
             type="text" 
             id="edit_colo_Descripcion" 
@@ -42,6 +50,10 @@
             class="form-control" 
             [(ngModel)]="coloniaEditada.colo_Descripcion" 
             required>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!(coloniaEditada.colo_Descripcion ?? '').trim() && mostrarErrores">
+            <small>El campo Descripción de la Colonia es requerido</small>
+          </div>
         </div>
       </div>
 
@@ -51,6 +63,11 @@
           <label for="depa_Codigo" class="form-label">Departamento</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
+            <i class="ri-pin-distance-line " [ngStyle]="{
+              border: !(selectedDepa && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+              backgroundColor: !(selectedDepa && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+              padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+            </i>
           <select 
             id="depa_Codigo" 
             name="depa_Codigo" 
@@ -81,6 +98,11 @@
           <label for="muni_Codigo" class="form-label">Municipio</label>
           <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           <div class="d-flex align-items-center">
+            <i class="ri-user-4-line" [ngStyle]="{
+              border: !(selectedMuni && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+              backgroundColor: !(selectedMuni && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+              padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+            </i>
           <select 
             id="muni_Codigo" 
             name="muni_Codigo" 

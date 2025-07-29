@@ -68,7 +68,6 @@ export class CreateComponent {
     prod_PrecioUnitario: 0,
     prod_CostoTotal: 0,
     prod_PagaImpuesto: "",
-    prod_PromODesc: 0,
     prod_EsPromo: "",
     prod_Estado: true,
     usua_Creacion: 0,
@@ -252,7 +251,6 @@ export class CreateComponent {
       prod_PrecioUnitario: 0,
       prod_CostoTotal: 0,
       prod_PagaImpuesto: "",
-      prod_PromODesc: 0,
       prod_EsPromo: "",
       prod_Estado: true,
       usua_Creacion: 0,
@@ -284,7 +282,7 @@ export class CreateComponent {
         console.log('guardar() llamado');
         this.mostrarErrores = true;
         if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id
-          && this.producto.prod_PrecioUnitario != null && this.producto.prod_CostoTotal != null)
+          && (this.producto.prod_PrecioUnitario != null && this.producto.prod_PrecioUnitario >= 0) && (this.producto.prod_CostoTotal != null && this.producto.prod_CostoTotal >= 0) && this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal)
         {
           this.mostrarAlertaWarning = false;
           this.mostrarAlertaError = false;
@@ -305,7 +303,6 @@ export class CreateComponent {
             prod_PrecioUnitario: Number(this.producto.prod_PrecioUnitario),
             prod_CostoTotal: Number(this.producto.prod_CostoTotal),
             prod_PagaImpuesto: this.producto.prod_PagaImpuesto ? 'S' : 'N',
-            prod_PromODesc: 0,
             prod_EsPromo: 'N',
             prod_Estado: true,
             usua_Creacion: environment.usua_Id,
@@ -333,7 +330,14 @@ export class CreateComponent {
           }).subscribe({
             next: (response) => {
               console.log('Respuesta del servidor:', response);
-              // tu lógica de éxito
+
+              this.mostrarAlertaExito = true;
+              this.mensajeExito = `Producto creado exitosamente.`;
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.cancelar();
+                this.onSave.emit(response);
+              }, 1000);
             },
             error: (error) => {
               console.error('Error HTTP detectado:', error);

@@ -196,8 +196,11 @@
                 <div class="text-danger mt-1" *ngIf="producto.prod_PrecioUnitario && !precioFormatoValido">
                   <small>Máximo permitido: 10 enteros y 2 decimales</small>
                 </div>
-                <div class="text-danger mt-1" *ngIf="producto.prod_PrecioUnitario && producto.prod_PrecioUnitario <= 8.20">
-                  <small>El precio debe ser mayor a 8</small>
+                <div class="text-danger mt-1" *ngIf="producto.prod_PrecioUnitario && producto.prod_PrecioUnitario < 0">
+                  <small>El precio debe ser mayor o igual 0</small>
+                </div>
+                <div class="text-danger mt-1" *ngIf="producto.prod_PrecioUnitario < producto.prod_CostoTotal">
+                  <small>El precio debe ser mayor o igual al costo total</small>
                 </div>
               </div>
             </div>
@@ -215,6 +218,9 @@
                 </div>
                 <div class="text-danger mt-1" *ngIf="producto.prod_CostoTotal && !precioFormatoValido">
                   <small>Máximo permitido: 10 enteros y 2 decimales</small>
+                </div>
+                <div class="text-danger mt-1" *ngIf="producto.prod_CostoTotal && producto.prod_CostoTotal < 0">
+                  <small>El costo debe ser mayor o igual 0</small>
                 </div>
               </div>
             </div>
@@ -243,7 +249,7 @@
               <div class="mb-3">
                 <label for="impu_Id" class="form-label">Impuesto</label>
                 <select id="impu_Id" class="form-select" [(ngModel)]="producto.impu_Id" [disabled]="!producto.prod_PagaImpuesto">
-                  <option value="null" disabled selected>Seleccione un impuesto</option>
+                  <option value="0" disabled selected>Seleccione un impuesto</option>
                   <option *ngFor="let imp of impuestos" [value]="imp.impu_Id">{{ imp.impu_Descripcion }}</option>
                 </select>
               </div>
