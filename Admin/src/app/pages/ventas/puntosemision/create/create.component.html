@@ -5,51 +5,27 @@
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
     <!-- Alerta de éxito -->
-    <div
-      *ngIf="mostrarAlertaExito"
-      class="alert alert-success alert-border-left alert-dismissible fade show floating-alert"
-      role="alert"
-    >
+    <div *ngIf="mostrarAlertaExito"
+      class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
       <strong>¡Éxito!</strong> {{ mensajeExito }}
-      <button
-        type="button"
-        class="btn-close"
-        (click)="cerrarAlerta()"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
 
     <!-- Alerta de advertencia -->
-    <div
-      *ngIf="mostrarAlertaWarning"
-      class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert"
-      role="alert"
-    >
+    <div *ngIf="mostrarAlertaWarning"
+      class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-alert-line me-3 align-middle fs-lg"></i>
       <strong>¡Atención!</strong> {{ mensajeWarning }}
-      <button
-        type="button"
-        class="btn-close"
-        (click)="cerrarAlerta()"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
 
     <!-- Alerta de error -->
-    <div
-      *ngIf="mostrarAlertaError"
-      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert"
-      role="alert"
-    >
+    <div *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
       <strong>¡Error!</strong> {{ mensajeError }}
-      <button
-        type="button"
-        class="btn-close"
-        (click)="cerrarAlerta()"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
 
@@ -58,23 +34,18 @@
       <div class="col-md-6">
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <input
-              type="text"
-              class="form-control"
-              [class.is-invalid]="
+             <i class="ri-attachment-line" [ngStyle]="{
+                border: (!puntoEmision.puEm_Codigo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!puntoEmision.puEm_Codigo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+            <input type="text" class="form-control" [class.is-invalid]="
                 !puntoEmision.puEm_Codigo.trim() && mostrarErrores
-              "
-              id="PECod"
-              [(ngModel)]="puntoEmision.puEm_Codigo"
-              placeholder="Ingrese el Codigo del Punto de Emision"
-              required
-            />
+              " id="PECod" [(ngModel)]="puntoEmision.puEm_Codigo" placeholder="Ingrese el Codigo del Punto de Emision"
+              required />
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!puntoEmision.puEm_Codigo.trim() && mostrarErrores"
-          >
+          <div class="text-danger mt-1" *ngIf="!puntoEmision.puEm_Codigo.trim() && mostrarErrores">
             <small>El campo Codigo del Punto de Emision es requerido</small>
           </div>
         </div>
@@ -83,49 +54,36 @@
       <div class="col-md-6">
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <input
-              type="text"
-              class="form-control"
-              [class.is-invalid]="
+            <i class="ri-attachment-line" [ngStyle]="{
+                border: (!puntoEmision.puEm_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!puntoEmision.puEm_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+            <input type="text" class="form-control" [class.is-invalid]="
                 !puntoEmision.puEm_Descripcion.trim() && mostrarErrores
-              "
-              id="PEDescripcion"
-              [(ngModel)]="puntoEmision.puEm_Descripcion"
-              placeholder="Ingrese la Descripción del Punto de Emision"
-              required
-            />
+              " id="PEDescripcion" [(ngModel)]="puntoEmision.puEm_Descripcion"
+              placeholder="Ingrese la Descripción del Punto de Emision" required />
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!puntoEmision.puEm_Descripcion.trim() && mostrarErrores"
-          >
-            <small
-              >El campo Descripción del Punto de Emision es requerido</small
-            >
+          <div class="text-danger mt-1" *ngIf="!puntoEmision.puEm_Descripcion.trim() && mostrarErrores">
+            <small>El campo Descripción del Punto de Emision es requerido</small>
           </div>
         </div>
       </div>
 
       <div class="col-md-6">
-        <label class="form-label"
-          >Sucursal<span class="text-danger">*</span></label
-        >
+        <label class="form-label">Sucursal<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
-            <ng-select
-              class="w-100"
-              [items]="Sucursales"
-              bindLabel="sucu_Descripcion"
-              bindValue="sucu_Id"
-              [(ngModel)]="puntoEmision.sucu_Id"
-              [searchable]="true"
-              [clearable]="false"
-              [class.is-invalid]="!puntoEmision.sucu_Id && mostrarErrores"
-              placeholder="Seleccione una sucursal"
-              required
-              [searchFn]="searchSucursal"
-            >
+            <i class="ri-building-2-line" [ngStyle]="{
+                border: (!puntoEmision.sucu_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!puntoEmision.sucu_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+            <ng-select class="w-100" [items]="Sucursales" bindLabel="sucu_Descripcion" bindValue="sucu_Id"
+              [(ngModel)]="puntoEmision.sucu_Id" [searchable]="true" [clearable]="false"
+              [class.is-invalid]="!puntoEmision.sucu_Id && mostrarErrores" placeholder="Seleccione una sucursal"
+              required [searchFn]="searchSucursal">
               <ng-template ng-label-tmp let-item="item">
                 {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} -
                 {{ item.depa_Descripcion }}
@@ -137,15 +95,12 @@
             </ng-select>
             <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
-          <div
-            class="text-danger mt-1"
-            *ngIf="!puntoEmision.sucu_Id && mostrarErrores"
-          >
+          <div class="text-danger mt-1" *ngIf="!puntoEmision.sucu_Id && mostrarErrores">
             <small>El campo sucursal es requerido</small>
           </div>
         </div>
       </div>
-      
+
     </div>
   </div>
 
@@ -153,11 +108,7 @@
     <div class="row">
       <div class="col-12">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            class="btn btn-primary gold"
-            (click)="cancelar()"
-          >
+          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
             <span class="btn-text">Cancelar</span>
             <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
           </button>

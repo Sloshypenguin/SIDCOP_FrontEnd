@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -25,9 +25,11 @@ import { getUserId } from 'src/app/core/utils/user-utils';
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cliente>();
+  @ViewChild('tabsScroll', { static: false }) tabsScroll!: ElementRef<HTMLDivElement>;
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
   entrando = true;
+  tabActual = 1;
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -84,6 +86,123 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
+  scrollToAval(index: number) {
+    const container = this.tabsScroll.nativeElement;
+    const avalElements = container.querySelectorAll('.aval-tab');
+    
+    if (avalElements[index]) {
+      const target = avalElements[index] as HTMLElement;
+      const offsetLeft = target.offsetLeft;
+      const containerWidth = container.clientWidth;
+    
+      container.scrollTo({
+        left: offsetLeft - containerWidth / 4,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  tabDeArriba(no: number) {
+    if (no === this.activeTab) return;
+
+    if (this.activeTab > no) {
+      this.activeTab -= 1;
+      return
+    }
+
+    if (this.activeTab < no) {
+      no = this.activeTab;
+    }
+
+    if (no === 1) {
+      this.mostrarErrores = true;
+      if (
+        this.cliente.clie_Codigo.trim() &&
+        this.cliente.clie_Nacionalidad.trim() &&
+        this.cliente.clie_RTN.trim() &&
+        this.cliente.clie_Nombres.trim() &&
+        this.cliente.clie_Apellidos.trim() &&
+        this.cliente.esCv_Id &&
+        this.cliente.clie_FechaNacimiento &&
+        this.cliente.tiVi_Id &&
+        this.cliente.clie_Telefono.trim()
+      ) {
+        this.mostrarErrores = false;
+        this.activeTab = 2;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios de los Datos Personales.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      return;
+    }
+
+    if (no === 2) {
+      this.mostrarErrores = true;
+      if (
+        this.cliente.clie_NombreNegocio.trim() &&
+        this.cliente.clie_ImagenDelNegocio.trim() &&
+        this.cliente.ruta_Id &&
+        this.cliente.cana_Id &&
+        this.validarDireccion >= 1
+      ) {
+        this.mostrarErrores = false;
+        this.activeTab = 3;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios del negocio.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      return;
+    }
+
+    if (no === 3) {
+      this.mostrarErrores = true;
+      if (
+        (!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito) ||
+        (this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito)
+      ) {
+        this.mostrarErrores = false;
+        this.activeTab = 4;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Complete correctamente los datos de crédito.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      return;
+    }
+
+    if (no === 4) {
+      this.mostrarErrores = true;
+      if (this.tieneDatosCredito()) {
+        if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
+          this.mostrarErrores = false;
+          this.activeTab = 5;
+        } else {
+          this.mostrarAlertaWarning = true;
+          this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
+          setTimeout(() => {
+            this.mostrarAlertaWarning = false;
+            this.mensajeWarning = '';
+          }, 3000);
+        }
+      } else {
+        this.mostrarErrores = false;
+        this.activeTab = 5;
+      }
+      return;
+    }
+  }
+
   //Es una funcion creada para el if 4 que es de corroborar
   //que haya un credito para que el aval sea obligatorio
   tieneDatosCredito(): boolean {
@@ -131,6 +250,7 @@ export class CreateComponent {
         this.cliente.clie_Telefono.trim()) {
         this.mostrarErrores = false;
         this.activeTab = 2;
+        this.tabActual = 2;
       }
       else {
         this.mostrarAlertaWarning = true;
@@ -252,6 +372,8 @@ export class CreateComponent {
       diCl_Observaciones: '',
       diCl_Latitud: 0,
       diCl_Longitud: 0,
+      muni_Descripcion: '',
+      depa_Descripcion:  '',
       usua_Creacion: 0,
       diCl_FechaCreacion: new Date(),
       usua_Modificacion: 0,
@@ -447,6 +569,8 @@ export class CreateComponent {
     diCl_Observaciones: '',
     diCl_Latitud: 0,
     diCl_Longitud: 0,
+    muni_Descripcion: '',
+  depa_Descripcion: '',
     usua_Creacion: 0,
     diCl_FechaCreacion: new Date(),
     usua_Modificacion: 0,
@@ -472,6 +596,11 @@ export class CreateComponent {
       aval_FechaNacimiento: null,
       esCv_Id: 0,
       aval_Sexo: 'M',
+      pare_Descripcion:  '',
+      esCv_Descripcion: '',
+      tiVi_Descripcion: '',
+      muni_Descripcion: '',
+      depa_Descripcion: '',
       usua_Creacion: getUserId(),
       usuarioCreacion: '',
       aval_FechaCreacion: new Date(),
@@ -502,7 +631,7 @@ export class CreateComponent {
       clie_ImagenDelNegocio: '',
       clie_Telefono: '',
       clie_Correo: '',
-      clie_Sexo: '',
+      clie_Sexo: 'M',
       clie_FechaNacimiento: new Date(),
       tiVi_Id: 0,
       tiVi_Descripcion: '',
@@ -531,6 +660,8 @@ export class CreateComponent {
       usuaM_Nombre: '',
     };
     this.direccionesPorCliente = [];
+    this.avales = [];
+    this.activeTab = 1;
     this.onCancel.emit();
   }
 
@@ -622,10 +753,23 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
+          if(response.data.code_Status === -1) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status;
+            this.activeTab = 1;
+            this.cliente.clie_Codigo = '';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 3000);
+            return;
+          }
           if (response.data.data) {
             this.idDelCliente = response.data.data;
             this.guardarDireccionesPorCliente(this.idDelCliente);
             this.guardarAvales(this.idDelCliente);
+            this.onSave.emit(this.cliente);
+            this.cancelar();
           }
         },
         error: (error) => {
@@ -683,6 +827,8 @@ export class CreateComponent {
       diCl_Observaciones: '',
       diCl_Latitud: 0,
       diCl_Longitud: 0,
+      muni_Descripcion: '',
+      depa_Descripcion: '',
       usua_Creacion: 0,
       diCl_FechaCreacion: new Date(),
       usua_Modificacion: 0,
@@ -740,8 +886,10 @@ export class CreateComponent {
 
   cambiarAval(direccion: number) {
     const nuevoIndex = this.avalActivoIndex + direccion;
+
     if (nuevoIndex >= 0 && nuevoIndex < this.avales.length) {
       this.avalActivoIndex = nuevoIndex;
+      this.scrollToAval(nuevoIndex);
     }
   }
 
