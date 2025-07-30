@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -31,7 +32,18 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({ opacity: 0, height: 0 }),
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1, height: '*' }))
+      ]),
+      transition(':leave', [
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 0, height: 0 }))
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   // Overlay de carga animado
