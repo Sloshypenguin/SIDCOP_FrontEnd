@@ -38,7 +38,7 @@ export class CreateComponent {
     usua_IdPersona: 0,
     usua_EsVendedor: false,
     usua_EsAdmin: false,
-    usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
+    usua_Imagen: 'assets/images/users/32/user-svg.svg',
     usua_Creacion: 0,
     usua_FechaCreacion: new Date(),
     usua_Modificacion: 0,
