@@ -118,8 +118,9 @@
                 [(ngModel)]="sucursal.sucu_Telefono1"
                 name="sucu_Telefono1"
                 placeholder="Ingrese el teléfono 1"
-                maxlength="10"
-                required />
+                maxlength="9"
+                required
+                (input)="onTelefonoInput($event, 'sucu_Telefono1')" />
               <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
             </div>
             <div class="text-danger mt-1" *ngIf="!sucursal.sucu_Telefono1.trim() && mostrarErrores">
@@ -215,7 +216,8 @@
                 [(ngModel)]="sucursal.sucu_Telefono2"
                 name="sucu_Telefono2"
                 placeholder="Ingrese el teléfono 2"
-                maxlength="10">
+                maxlength="9"
+                (input)="onTelefonoInput($event, 'sucu_Telefono2')" >
             </div>
           </div>
         </div>

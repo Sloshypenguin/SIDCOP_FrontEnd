@@ -14,6 +14,22 @@ import { getUserId } from 'src/app/core/utils/user-utils';
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
+  aplicarMascaraTelefono(valor: string): string {
+    valor = valor.replace(/[^\d]/g, '').slice(0, 8);
+    let resultado = '';
+    for (let i = 0; i < valor.length; i += 4) {
+      if (resultado) resultado += '-';
+      resultado += valor.substring(i, i + 4);
+    }
+    return resultado;
+  }
+
+  onTelefonoInput(event: Event, campo: 'sucu_Telefono1' | 'sucu_Telefono2') {
+    const input = event.target as HTMLInputElement;
+    if (input && input.value !== undefined) {
+      this.sucursal[campo] = this.aplicarMascaraTelefono(input.value);
+    }
+  }
   // Overlay de carga animado
   mostrarOverlayCarga = false;
   @Input() sucursalData: Sucursales | null = null;
