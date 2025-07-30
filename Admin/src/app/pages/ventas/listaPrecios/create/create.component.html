@@ -491,26 +491,18 @@
   <table class="table table-bordered align-middle mb-0">
     <thead class="text-white" style="background: #141a2e">
       <tr class="text-white">
-        <th class="text-white">Cliente</th>
-        <th class="text-white">Lista Actual</th>
-        <th class="text-white">Cliente</th>
-        <th class="text-white">Lista Actual</th>
+        <th class="text-white" style="width: 30%">Cliente</th>
+        <th class="text-white" style="width: 10%">Lista Actual</th>
+        <th class="text-white" style="width: 30%">Cliente</th>
+        <th class="text-white" style="width: 10%">Lista Actual</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let i of [].constructor(Math.ceil(listaClientesConflicto.length / 2)); let idx = index">
-        <td>
-          {{ listaClientesConflicto[idx * 2]?.split(':')[0] || '' }}
-        </td>
-        <td>
-          {{ listaClientesConflicto[idx * 2]?.split(':')[1] || '' }}
-        </td>
-        <td>
-          {{ listaClientesConflicto[idx * 2 + 1]?.split(':')[0] || '' }}
-        </td>
-        <td>
-          {{ listaClientesConflicto[idx * 2 + 1]?.split(':')[1] || '' }}
-        </td>
+        <td>{{ listaClientesConflicto[idx * 2]?.split(':')[0] || '' }}</td>
+        <td>{{ listaClientesConflicto[idx * 2]?.split(':')[1] || '' }}</td>
+        <td>{{ listaClientesConflicto[idx * 2 + 1]?.split(':')[0] || '' }}</td>
+        <td>{{ listaClientesConflicto[idx * 2 + 1]?.split(':')[1] || '' }}</td>
       </tr>
     </tbody>
   </table>
