@@ -34,7 +34,8 @@
         "CATEGORIAS": "Categorias",
         "SUBCATEGORIAS": "Subcategorias",
         "PRODUCTOS": "Productos",
-        "DESCUENTOS": "Descuentos"
+        "DESCUENTOS": "Descuentos",
+        "PROMOCIONES": "Promociones"
       }
     },
     "VENTAS": {
