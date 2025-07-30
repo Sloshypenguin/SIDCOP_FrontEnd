@@ -28,6 +28,7 @@ export class CreateComponent {
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
   entrando = true;
+  tabActual = 1;
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -84,6 +85,107 @@ export class CreateComponent {
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
 
+  tabDeArriba(no: number) {
+    if (no === this.activeTab) return;
+
+    if (this.activeTab > no) {
+      this.activeTab -= 1;
+      return
+    }
+
+    if (this.activeTab < no) {
+      no = this.activeTab;
+    }
+
+    if (no === 1) {
+      this.mostrarErrores = true;
+      if (
+        this.cliente.clie_Codigo.trim() &&
+        this.cliente.clie_Nacionalidad.trim() &&
+        this.cliente.clie_RTN.trim() &&
+        this.cliente.clie_Nombres.trim() &&
+        this.cliente.clie_Apellidos.trim() &&
+        this.cliente.esCv_Id &&
+        this.cliente.clie_FechaNacimiento &&
+        this.cliente.tiVi_Id &&
+        this.cliente.clie_Telefono.trim()
+      ) {
+        this.mostrarErrores = false;
+        this.activeTab = 2;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios de los Datos Personales.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      return;
+    }
+
+    if (no === 2) {
+      this.mostrarErrores = true;
+      if (
+        this.cliente.clie_NombreNegocio.trim() &&
+        this.cliente.clie_ImagenDelNegocio.trim() &&
+        this.cliente.ruta_Id &&
+        this.cliente.cana_Id &&
+        this.validarDireccion >= 1
+      ) {
+        this.mostrarErrores = false;
+        this.activeTab = 3;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios del negocio.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      return;
+    }
+
+    if (no === 3) {
+      this.mostrarErrores = true;
+      if (
+        (!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito) ||
+        (this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito)
+      ) {
+        this.mostrarErrores = false;
+        this.activeTab = 4;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Complete correctamente los datos de crédito.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
+      return;
+    }
+
+    if (no === 4) {
+      this.mostrarErrores = true;
+      if (this.tieneDatosCredito()) {
+        if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
+          this.mostrarErrores = false;
+          this.activeTab = 5;
+        } else {
+          this.mostrarAlertaWarning = true;
+          this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
+          setTimeout(() => {
+            this.mostrarAlertaWarning = false;
+            this.mensajeWarning = '';
+          }, 3000);
+        }
+      } else {
+        this.mostrarErrores = false;
+        this.activeTab = 5;
+      }
+      return;
+    }
+  }
+
   //Es una funcion creada para el if 4 que es de corroborar
   //que haya un credito para que el aval sea obligatorio
   tieneDatosCredito(): boolean {
@@ -131,6 +233,7 @@ export class CreateComponent {
         this.cliente.clie_Telefono.trim()) {
         this.mostrarErrores = false;
         this.activeTab = 2;
+        this.tabActual = 2;
       }
       else {
         this.mostrarAlertaWarning = true;

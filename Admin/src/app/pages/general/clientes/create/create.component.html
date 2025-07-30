@@ -27,27 +27,27 @@
   <div class="flex-grow-1">
     <ul class="nav nav-tabs mb-3" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="activeTab === 1" (click)="activeTab = 1" type="button" role="tab">
+        <button class="nav-link" [class.active]="activeTab === 1" (click)="tabDeArriba(1)" type="button" role="tab">
           Datos Personales
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2" type="button" role="tab">
+        <button class="nav-link" [class.active]="activeTab === 2" (click)="tabDeArriba(2)" type="button" role="tab">
           Datos Del Negocio
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3" type="button" role="tab">
+        <button class="nav-link" [class.active]="activeTab === 3" (click)="tabDeArriba(3)" type="button" role="tab">
           Datos Politicos o Del Credito
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="activeTab === 4" (click)="activeTab = 4" type="button" role="tab">
+        <button class="nav-link" [class.active]="activeTab === 4" (click)="tabDeArriba(4)" type="button" role="tab">
           Aval
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="activeTab === 5" (click)="activeTab = 5" type="button" role="tab">
+        <button class="nav-link" [class.active]="activeTab === 5" (click)="tabDeArriba(5)" type="button" role="tab">
           Estado del Cliente
         </button>
       </li>
@@ -590,10 +590,8 @@
           <i class="ri-arrow-left-s-line"></i>
         </button>
         <div class="aval-tabs-scroll">
-          <div class="aval-tab" *ngFor="let aval of avales; let i = index" 
-            [class.active]="i === avalActivoIndex" 
-            [class.invalido]="mostrarErrores && !esAvalValido(aval)"
-            (click)="seleccionarAval(i)">
+          <div class="aval-tab" *ngFor="let aval of avales; let i = index" [class.active]="i === avalActivoIndex"
+            [class.invalido]="mostrarErrores && !esAvalValido(aval)" (click)="seleccionarAval(i)">
             Registro {{ i + 1 }}
             <button *ngIf="avales.length > 1" class="btn-aval-delete"
               (click)="eliminarAval(i); $event.stopPropagation();" title="Eliminar aval">
