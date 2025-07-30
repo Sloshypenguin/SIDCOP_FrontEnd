@@ -622,7 +622,7 @@ export class CreateComponent {
       clie_ImagenDelNegocio: '',
       clie_Telefono: '',
       clie_Correo: '',
-      clie_Sexo: '',
+      clie_Sexo: 'M',
       clie_FechaNacimiento: new Date(),
       tiVi_Id: 0,
       tiVi_Descripcion: '',
@@ -651,6 +651,8 @@ export class CreateComponent {
       usuaM_Nombre: '',
     };
     this.direccionesPorCliente = [];
+    this.avales = [];
+    this.activeTab = 1;
     this.onCancel.emit();
   }
 
@@ -742,10 +744,23 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
+          if(response.data.code_Status === -1) {
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status;
+            this.activeTab = 1;
+            this.cliente.clie_Codigo = '';
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 3000);
+            return;
+          }
           if (response.data.data) {
             this.idDelCliente = response.data.data;
             this.guardarDireccionesPorCliente(this.idDelCliente);
             this.guardarAvales(this.idDelCliente);
+            this.onSave.emit(this.cliente);
+            this.cancelar();
           }
         },
         error: (error) => {
