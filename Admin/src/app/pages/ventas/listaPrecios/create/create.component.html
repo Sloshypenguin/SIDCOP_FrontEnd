@@ -130,7 +130,26 @@
                   </div>
                   <div [collapse]="!newLista.canalesOpen[canal.cana_Id]">
                     <div class="card-body">
+
                       <div class="row">
+                        <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6 mb-2">
+                          <div class="d-flex align-items-center">
+                            <input
+                              type="checkbox"
+                              class="mt-0"
+                              [checked]="newLista.clientesChecked.includes(cliente.clie_Id)"
+                              (change)="toggleNewChildCheckbox(cliente.clie_Id, $event)"
+                              style="margin-top: 0.25rem;"
+                            >
+                            <div class="ms-2">
+                              <div><strong>Cliente: </strong> {{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</div>
+                              <div><strong>Negocio: </strong> {{ cliente.clie_NombreNegocio }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- <div class="row">
                         <div *ngFor="let cliente of getClientesPorCanal(canal.cana_Id)" class="col-md-6">
                           <div class="form-check">
                             <input type="checkbox"
@@ -139,7 +158,7 @@
                             <span class="ms-2">{{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</span>
                           </div>
                         </div>
-                      </div>
+                      </div> -->
                       <!-- <div *ngIf="inputErrors.clientesChecked" class="text-danger mt-1">
                         {{ inputErrors.clientesChecked }}
                       </div> -->
@@ -295,8 +314,8 @@
                                   style="margin-top: 0.25rem;"
                                 >
                                 <div class="ms-2">
-                                  <div>Cliente: {{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</div>
-                                  <div>Negocio: {{ cliente.clie_NombreNegocio }}</div>
+                                  <div><strong>Cliente: </strong> {{ cliente.clie_Nombres }} {{ cliente.clie_Apellidos }}</div>
+                                  <div><strong>Negocio: </strong> {{ cliente.clie_NombreNegocio }}</div>
                                 </div>
                               </div>
                             </div>
@@ -413,5 +432,95 @@
   </div>
 </div>
 
+
 <!-- Overlay para el modal -->
-<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+<div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar||mostrarClientesConflicto }" *ngIf="mostrarConfirmacionEliminar||mostrarClientesConflicto"></div>
+
+
+<!-- Modal de CLientes Conflicto -->
+<div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarClientesConflicto }" [style.display]="mostrarClientesConflicto ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
+        <span>Clientes Generando Conflicto</span>
+        <i class="ri-close-line custom-modal-close" (click)="cancelarClientesConflicto()"></i>
+      </div>
+      <hr class="custom-modal-divider">
+      <div class="modal-body custom-modal-body">
+        <span>Los siguientes clientes generan conflicto. Remuevalos de esta lista antes de guardarla, o remuevalos de su lista respectiva antes de agregarlos a esta.</span>
+        <hr>
+        <!-- <div class="row">
+            <div *ngIf="listaClientesConflicto.length >= 1" class="col-md-4">
+              <span class="ms-2">{{ " Cliente: Lista" }}</span>                          
+            </div>
+            <div *ngIf="listaClientesConflicto.length >= 2" class="col-md-4">
+              <span class="ms-2">{{ " Cliente: Lista" }}</span>                          
+            </div>
+            <div *ngIf="listaClientesConflicto.length >= 3" class="col-md-4">
+              <span class="ms-2">{{ " Cliente: Lista" }}</span>                          
+            </div>
+        </div>
+        <div class="row">
+            <div *ngFor="let clienteconflicto of listaClientesConflicto" class="col-md-4">
+              <span class="ms-2">{{ "- "+clienteconflicto }}</span>                          
+            </div>
+        </div> -->
+        <!-- Scrollable table container -->
+        <!-- <div *ngIf="listaClientesConflicto.length > 0" class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+          <table class="table table-bordered align-middle mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th style="width: 70%;">Cliente</th>
+                <th style="width: 30%;">Lista Actual</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let clienteconflicto of listaClientesConflicto">
+                <td>
+                  {{ clienteconflicto.split(':')[0] }}
+                </td>
+                <td>
+                  {{ clienteconflicto.split(':')[1] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+        <!-- Scrollable grid table with two pairs per row -->
+<div *ngIf="listaClientesConflicto.length > 0" class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+  <table class="table table-bordered align-middle mb-0">
+    <thead class="text-white" style="background: #141a2e">
+      <tr class="text-white">
+        <th class="text-white" style="width: 30%">Cliente</th>
+        <th class="text-white" style="width: 10%">Lista Actual</th>
+        <th class="text-white" style="width: 30%">Cliente</th>
+        <th class="text-white" style="width: 10%">Lista Actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of [].constructor(Math.ceil(listaClientesConflicto.length / 2)); let idx = index">
+        <td>{{ listaClientesConflicto[idx * 2]?.split(':')[0] || '' }}</td>
+        <td>{{ listaClientesConflicto[idx * 2]?.split(':')[1] || '' }}</td>
+        <td>{{ listaClientesConflicto[idx * 2 + 1]?.split(':')[0] || '' }}</td>
+        <td>{{ listaClientesConflicto[idx * 2 + 1]?.split(':')[1] || '' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+        
+        <!-- <div class="text-center"> 
+          <p class="mt-2 custom-modal-text">
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la Lista de Precios <strong>{{ listaAEliminar.listaId }}</strong>?
+          </p>
+        </div> -->
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button type="button" class="btn btn-primary gray btn-sm btn-minw-5" (click)="cancelarClientesConflicto()"><span class="btn-text">Aceptar</span><span class="btn-icon"><i class="ri-check-line"></i></span></button>
+        <!-- <button type="button" class="btn btn-primary red btn-sm btn-minw-5" (click)="eliminar()">
+          <span class="btn-text">Si</span>
+          <span class="btn-icon"><i class="ri-delete-bin-line"></i></span>
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
