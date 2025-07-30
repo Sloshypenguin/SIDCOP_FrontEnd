@@ -32,6 +32,11 @@
         <label  class="form-label">Codigo<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-attachment-line" [ngStyle]="{
+                border: (!vendedor.vend_Codigo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Codigo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -52,6 +57,11 @@
         <label  class="form-label">Identidad<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class="ri-bank-card-line" [ngStyle]="{
+                border: (!vendedor.vend_DNI.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_DNI.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -75,6 +85,11 @@
         <label  class="form-label">Nombres<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class="ri-user-line" [ngStyle]="{
+                border: (!vendedor.vend_Nombres.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Nombres.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -95,6 +110,11 @@
         <label  class="form-label">Apellidos<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-user-line" [ngStyle]="{
+                border: (!vendedor.vend_Apellidos.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Apellidos.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -115,6 +135,11 @@
         <label  class="form-label">Telefono<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-phone-line" [ngStyle]="{
+                border: (!vendedor.vend_Telefono.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Telefono.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -158,6 +183,11 @@
         <label  class="form-label">Correo<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-mail-line" [ngStyle]="{
+                border: (!vendedor.vend_Correo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Correo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="email" 
               class="form-control" 
@@ -181,6 +211,11 @@
         <label  class="form-label">Supervisor<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-shield-user-line" [ngStyle]="{
+                border: (!vendedor.vend_Supervisor && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Supervisor && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
            <ng-select
               class="w-100"
                 [items]="supervisores"
@@ -233,6 +268,11 @@
   <label class="form-label">Ayudante<span class="text-danger">*</span></label>
   <div class="mb-3">
     <div class="d-flex align-items-center">
+      <i class=" ri-user-shared-line" [ngStyle]="{
+        border: (!vendedor.vend_Ayudante && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+        backgroundColor: (!vendedor.vend_Ayudante && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+        padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+      </i>
       <ng-select
         class="w-100"
         [items]="ayudantes"
@@ -259,6 +299,11 @@
         <label  class="form-label">Colonia<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-route-line" [ngStyle]="{
+                border: (!vendedor.colo_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.colo_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+            </i>
            <ng-select
               class="w-100"
                 [items]="colonia"
@@ -293,6 +338,11 @@
         <label  class="form-label">Direccion Exacta<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-road-map-line" [ngStyle]="{
+                border: (!vendedor.vend_DireccionExacta.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_DireccionExacta.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <input 
               type="text" 
               class="form-control" 
@@ -317,6 +367,11 @@
         <label  class="form-label">Sucursal<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+            <i class="ri-map-pin-2-line" [ngStyle]="{
+                border: (!vendedor.sucu_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.sucu_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
             <ng-select
               class="w-100"
                 [items]="sucursales"
@@ -352,6 +407,11 @@
         <label  class="form-label">Tipo de Vendedor<span class="text-danger">*</span></label>
         <div class="mb-3">
           <div class="d-flex align-items-center">
+             <i class="ri-group-line" [ngStyle]="{
+                border: (!vendedor.vend_Tipo && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!vendedor.vend_Tipo && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
              <select 
                 id="tipoVendedor" 
                 name="tipoVendedor" 

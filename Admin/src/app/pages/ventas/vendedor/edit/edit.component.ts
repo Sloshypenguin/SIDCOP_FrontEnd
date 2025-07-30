@@ -175,6 +175,10 @@ tieneAyudante: boolean = false;
       this.vendedor = { ...changes['vendedorData'].currentValue };
       this.vendedorOriginal = this.vendedor.vend_Codigo || '';
       this.mostrarErrores = false;
+      if(this.vendedor.vend_Ayudante != null && this.vendedor.vend_Ayudante > 0  )
+      {
+          this.tieneAyudante = true;
+      }
       this.cerrarAlerta();
     }
   }

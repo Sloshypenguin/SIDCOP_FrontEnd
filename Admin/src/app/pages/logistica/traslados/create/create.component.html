@@ -26,34 +26,19 @@
     </div>
   </div>
 
-  <!-- Navegación de Tabs -->
-  <div class="mb-4">
-    <nav>
-      <div class="nav nav-tabs custom-tabs" id="nav-tab" role="tablist">
-        <button 
-          class="nav-link custom-tab-link"
-          [class.active]="tabActivo === 1"
-          id="nav-datos-tab" 
-          type="button" 
-          role="tab"
-          (click)="cambiarTab(1)">
-          <i class="ri-file-list-3-line me-2"></i>
-          Datos y Productos
-        </button>
-        <button 
-          class="nav-link custom-tab-link"
-          [class.active]="tabActivo === 2"
-          [class.disabled]="!puedeAvanzarAResumen"
-          id="nav-resumen-tab" 
-          type="button" 
-          role="tab"
-          (click)="cambiarTab(2)">
-          <i class="ri-file-check-line me-2"></i>
-          Resumen
-        </button>
-      </div>
-    </nav>
-  </div>
+  <!-- Navegación de Tabs estilo descuentos -->
+  <ul class="nav nav-tabs mb-3 justify-content-center" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" [class.active]="tabActivo === 1" (click)="cambiarTab(1)" type="button" role="tab">
+        Datos y Productos
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" [class.active]="tabActivo === 2" [class.disabled]="!puedeAvanzarAResumen" (click)="cambiarTab(2)" type="button" role="tab">
+        Resumen
+      </button>
+    </li>
+  </ul>
   
   <div class="flex-grow-1">
     <!-- TAB 1: Datos y Productos -->

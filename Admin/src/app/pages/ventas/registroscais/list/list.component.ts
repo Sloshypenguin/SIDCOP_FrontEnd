@@ -14,6 +14,14 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -31,17 +39,52 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden',
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden',
+          })
+        ),
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)',
+          })
+        ),
+      ]),
+    ]),
+  ],
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
-    // Acciones disponibles para el usuario en esta pantalla
+  // Acciones disponibles para el usuario en esta pantalla
   accionesDisponibles: string[] = [];
 
   // Método robusto para validar si una acción está permitida
   accionPermitida(accion: string): boolean {
-    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
+    return this.accionesDisponibles.some(
+      (a) => a.trim().toLowerCase() === accion.trim().toLowerCase()
+    );
   }
 
   ngOnInit(): void {
@@ -53,7 +96,7 @@ export class ListComponent implements OnInit {
       { label: 'Registro CAI', active: true },
     ];
 
-     this.cargarAccionesUsuario();
+    this.cargarAccionesUsuario();
   }
 
   // Métodos para los botones de acción principales (crear, editar, detalles)
@@ -98,6 +141,7 @@ export class ListComponent implements OnInit {
   RegistroCAIDetalle: RegistroCAI | null = null;
 
   // Propiedades para alertas
+  mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -116,9 +160,8 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   ) {
-    this.cargardatos();
+    this.cargardatos(true);
   }
-
 
   // (navigateToCreate eliminado, lógica movida a crear)
 
@@ -139,23 +182,31 @@ export class ListComponent implements OnInit {
   }
 
   guardarRegistroCAI(registroCai: RegistroCAI): void {
-    console.log(
-      'Estado civil guardado exitosamente desde create component:',
-      registroCai
-    );
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Punto de Emision guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarRegistroCAI(registroCai: RegistroCAI): void {
-    console.log(
-      'Estado civil actualizado exitosamente desde edit component:',
-      registroCai
-    );
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Punto de Emision actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(registroCai: RegistroCAI): void {
@@ -174,7 +225,7 @@ export class ListComponent implements OnInit {
     if (!this.RegistroCAIAEliminar) return;
 
     console.log('Eliminando estado civil:', this.RegistroCAIAEliminar);
-
+    this.mostrarOverlayCarga = true;
     this.http
       .post(
         `${environment.apiBaseUrl}/EstadosCiviles/Eliminar/${this.RegistroCAIAEliminar.regC_Id}`,
@@ -206,15 +257,15 @@ export class ListComponent implements OnInit {
                 this.mensajeExito = '';
               }, 3000);
 
-              this.cargardatos();
+               this.cargardatos(false);
               this.cancelarEliminar();
             } else if (response.data.code_Status === -1) {
               //result: está siendo utilizado
-              console.log('Estado civil está siendo utilizado');
+              console.log('El Registro CAI está siendo utilizado');
               this.mostrarAlertaError = true;
               this.mensajeError =
                 response.data.message_Status ||
-                'No se puede eliminar: el estado civil está siendo utilizado.';
+                'No se puede eliminar: el registro CAI está siendo utilizado.';
 
               setTimeout(() => {
                 this.mostrarAlertaError = false;
@@ -229,7 +280,7 @@ export class ListComponent implements OnInit {
               this.mostrarAlertaError = true;
               this.mensajeError =
                 response.data.message_Status ||
-                'Error al eliminar el estado civil.';
+                'Error al eliminar el registro CAI.';
 
               setTimeout(() => {
                 this.mostrarAlertaError = false;
@@ -268,7 +319,6 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-
   private cargarAccionesUsuario(): void {
     // Obtener permisosJson del localStorage
     const permisosRaw = localStorage.getItem('permisosJson');
@@ -284,28 +334,43 @@ export class ListComponent implements OnInit {
           modulo = permisos.find((m: any) => m.Pant_Id === 14);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
-          modulo = permisos['Estados Civiles'] || permisos['estados civiles'] || null;
+          modulo =
+            permisos['Estados Civiles'] || permisos['estados civiles'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // Extraer solo el nombre de la acción
-          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
+          accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter(
+            (a: any) => typeof a === 'string'
+          );
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
       }
     }
-    this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
+    this.accionesDisponibles = accionesArray
+      .filter((a) => typeof a === 'string' && a.length > 0)
+      .map((a) => a.trim().toLowerCase());
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
-    this.http
-      .get<RegistroCAI[]>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
-        headers: { 'x-api-key': environment.apiKey },
-      })
-      .subscribe((data) => {
-        console.log('Datos recargados:', data);
-        this.table.setData(data);
+ 
+   private cargardatos(state: boolean): void {
+       this.mostrarOverlayCarga = state;
+      this.http.get<RegistroCAI[]>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe(data => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+           const tienePermisoListar = this.accionPermitida('listar');
+          const userId = getUserId();
+  
+          const datosFiltrados = tienePermisoListar
+            ? data
+            : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+  
+          this.table.setData(datosFiltrados);
+          this.table.setData(data);
+        },500);
       });
-  }
+    }
 }

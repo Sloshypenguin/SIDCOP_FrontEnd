@@ -6,11 +6,12 @@ import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
 
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
 })
@@ -119,6 +120,16 @@ obtenerProductosSeleccionados(): any[] {
       peDe_ProdPrecio: p.precio || 0
     }));
 }
+
+ searchCliente = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.clie_Codigo?.toLowerCase().includes(term) ||
+      item.clie_Nombres?.toLowerCase().includes(term) ||
+      item.clie_Apellidos?.toLowerCase().includes(term) ||
+      item.clie_NombreNegocio?.toLowerCase().includes(term)
+    );
+  };
 
 
 
@@ -312,31 +323,24 @@ onClienteSeleccionado(clienteId: number) {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Pedido:', pedidoGuardar);
-          this.mensajeExito = `Pedido de  "${this.pedido.clie_NombreNegocio}" guardado exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
-          
-          // Ocultar la alerta después de 3 segundos
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
+         this.mostrarErrores = false;
             this.onSave.emit(this.pedido);
             this.cancelar();
-          }, 3000);
         },
         error: (error) => {
-          console.log('Entro esto', pedidoGuardar)
-         // console.log('Error al guardar punto de emision:', error);
-          console.error('Error al guardar punto de emision:', error);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el pedido. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-          
-          // Ocultar la alerta de error después de 5 segundos
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
+          console.log('Entro esto', this.pedido);
+            // console.log('Error al guardar punto de emision:', error);
+            console.error('Error al guardar punto de emision:', error);
+            this.mostrarAlertaError = true;
+            this.mensajeError =
+              'Error al guardar el pedido. Por favor, intente nuevamente.';
+            this.mostrarAlertaExito = false;
+
+            // Ocultar la alerta de error después de 5 segundos
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
         }
       });
     } else {

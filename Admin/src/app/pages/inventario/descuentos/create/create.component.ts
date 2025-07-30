@@ -182,6 +182,7 @@ seleccionarTodos(event: any) {
     clientes: '',
   referencias: '',
   escalas: '',
+  desc_TipoFactura: '',
   }
 
   descuentoDetalle: DescuentoDetalle = {
@@ -487,7 +488,8 @@ tieneAyudante: boolean = false;
   usuarioCreacion:  '',
   usuarioModificacion: '',
   code_Status:  0,
-  message_Status:''
+  message_Status:'',
+  desc_TipoFactura:''
 
     };
     this.seleccionados = [];
@@ -573,8 +575,7 @@ tieneAyudante: boolean = false;
         }
 
           
-          this.mensajeExito = `Descuento "${this.descuento.desc_Descripcion}" guardado exitosamente`;
-          this.mostrarAlertaExito = true;
+   
           this.mostrarErrores = false;
                     
                     // Ocultar la alerta después de 3 segundos

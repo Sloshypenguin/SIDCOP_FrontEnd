@@ -56,6 +56,11 @@
               <label  class="form-label">Descripcion<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                  <i class="ri-attachment-line" [ngStyle]="{
+                border: (!descuento.desc_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input 
                     type="text" 
                     class="form-control" 
@@ -76,6 +81,11 @@
               <label  class="form-label">Tipo<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                   <i class="ri-refund-2-fill" [ngStyle]="{
+                border: (!descuento.desc_Tipo == null && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_Tipo == null && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <select 
                       id="tipodescuento" 
                       name="tipodescuento" 
@@ -130,6 +140,11 @@
               <label  class="form-label">Fecha Inicio<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                   <i class="ri-calendar-2-line" [ngStyle]="{
+                border: (!descuento.desc_FechaInicio && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_FechaInicio && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input 
                     type="Date" 
                     class="form-control" 
@@ -150,6 +165,11 @@
               <label  class="form-label">Fecha Fin<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                  <i class="ri-calendar-2-line" [ngStyle]="{
+                border: (!descuento.desc_FechaFin && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_FechaFin && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input 
                     type="Date" 
                     class="form-control" 
@@ -170,6 +190,12 @@
               <label  class="form-label">Observaciones</label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                  <i class="ri-attachment-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+
                   <input 
                     type="text" 
                     class="form-control" 
@@ -355,18 +381,49 @@
 
                 <div class="col-md-4">
                   <label class="form-label">Inicio Escala<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="ri-swap-box-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+
                   <input type="number" class="form-control" [(ngModel)]="escala.deEs_InicioEscala" name="inicio{{i}}" required>
                 </div>
+                </div>
+                </div>
+              
 
                 <div class="col-md-4">
                   <label class="form-label">Fin Escala<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-swap-box-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input type="number" class="form-control" [(ngModel)]="escala.deEs_FinEscala" name="fin{{i}}" required>
                 </div>
+              </div>
+              </div>
+
 
                 <div class="col-md-3">
                   <label class="form-label">Valor<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-money-dollar-circle-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input type="number" class="form-control" [(ngModel)]="escala.deEs_Valor" name="valor{{i}}" required>
                 </div>
+              </div>
+              </div>
+
 
                 <div class="col-md-1">
                   <button type="button" class="btn btn-danger" (click)="eliminarEscala(i)" *ngIf="escalas.length > 1">

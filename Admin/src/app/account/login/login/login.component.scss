@@ -83,7 +83,6 @@
   justify-content: flex-start;
 }
 
-
 .login-input-icon i {
   color: rgba(214, 182, 138, 1);
   font-size: 1.5rem;
@@ -98,12 +97,14 @@
   box-shadow: none;
   font-weight: 500;
   outline: none;
-  padding: 0.5rem 1.5rem 0.5rem 0;
+  padding: 0.75rem 1rem !important; /* Padding corregido */
   width: 100%;
+  height: auto; /* Permitir altura automática */
+  min-height: 44px; /* Altura mínima para mejor UX */
 }
 
 .login-input-icon input::placeholder {
-  color: #e0e0e0;
+  color: #888 !important; /* Color más legible para placeholder */
   opacity: 1;
 }
 
@@ -121,7 +122,6 @@
   padding: 0;
   z-index: 2;
 }
-
 
 .login-forgot {
   margin-top: 1.5rem;
@@ -148,6 +148,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem; /* Espacio entre icono y texto */
+}
+
+.btn-login i {
+  margin-right: 0.5rem; /* Espacio adicional para el icono */
 }
 
 .login-header {
@@ -232,8 +237,16 @@
     max-width: 98vw;
     padding: 0.15rem 0.5rem;
   }
+  
+  /* Input responsive corregido */
+  .login-input-icon input {
+    padding: 0.6rem 0.8rem !important;
+    min-height: 40px;
+  }
+  
   .login-header {
     height: 120px;
+    height: 180px;
     min-width: 100vw;
   }
   .login-logo {
@@ -243,6 +256,12 @@
   .btn-login {
     font-size: 0.95rem;
     padding: 0.7em 1.2em;
+    min-width: 12.5rem !important;
+    width: 10.5rem !important;
+    gap: 0.4rem; /* Espacio reducido en mobile */
+  }
+  
+  .btn-login i {
+    margin-right: 0.3rem; /* Espacio reducido en mobile */
   }
 }
-
