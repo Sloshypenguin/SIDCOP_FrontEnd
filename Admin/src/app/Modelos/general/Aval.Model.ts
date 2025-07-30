@@ -13,6 +13,11 @@ export class Aval{
     colo_Id: number = 0;
     aval_FechaNacimiento?: Date | null;
     esCv_Id: number = 0;
+    pare_Descripcion: string = '';
+    esCv_Descripcion: string = '';
+    tiVi_Descripcion: string = '';
+    muni_Descripcion: string = '';
+    depa_Descripcion: string = '';
     usua_Creacion: number = 0;
     usuarioCreacion: string = '';
     aval_FechaCreacion: Date = new Date();

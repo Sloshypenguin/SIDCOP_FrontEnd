@@ -23,6 +23,8 @@ export class DetailsComponent implements OnChanges {
   mostrarAlertaError = false;
   mensajeError = '';
   colonias: any[] = [];
+  municipios: any[] = [];
+  departamentos: any[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clienteData'] && changes['clienteData'].currentValue) {
@@ -30,6 +32,8 @@ export class DetailsComponent implements OnChanges {
     }
 
     this.cargarColonias();
+    this.cargarMunicipios();
+    this.cargarDepartamentos();
   }
 
   // Simulación de carga
@@ -77,6 +81,7 @@ export class DetailsComponent implements OnChanges {
 
   constructor(private http: HttpClient){}
   direcciones: any = [];
+  avales: any = [];
   // cargarDirecciones(): void {
   //   this.http.get<DireccionPorCliente[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
   //     headers:{ 'x-api-key': environment.apiKey }
@@ -103,6 +108,14 @@ export class DetailsComponent implements OnChanges {
     });
   }
 
+  cargarAvales(): void {
+  this.http.get<any[]>(`${environment.apiBaseUrl}/Aval/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.avales = data || [];
+    });
+  }
+
   cargarColonias(): void {
   this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
     headers: { 'x-api-key': environment.apiKey }
@@ -111,8 +124,34 @@ export class DetailsComponent implements OnChanges {
     });
   }
 
+  cargarMunicipios(): void {
+  this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.municipios = data || [];
+    });
+  }
+
+  cargarDepartamentos(): void {
+  this.http.get<any[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      this.departamentos = data || [];
+    });
+  }
+
   obtenerDescripcionColonia(colo_Id: number): string {
     const colonia = this.colonias.find(c => c.colo_Id === colo_Id);
     return colonia?.colo_Descripcion || 'Colonia no encontrada';
+  }
+
+  obtenerDescripcionMunicipio(muni_Codigo: string): string {
+    const municipio = this.municipios.find(m => m.muni_Descripcion === muni_Codigo);
+    return municipio?.muni_Descripcion || 'Municipio no encontrado';
+  }
+
+  obtenerDescripcionDepartamento(depa_Codigo: string): string {
+    const departamento = this.departamentos.find(d => d.depa_Descripcion === depa_Codigo);
+    return departamento?.depa_Descripcion || 'Departamento no encontrado';
   }
 }
