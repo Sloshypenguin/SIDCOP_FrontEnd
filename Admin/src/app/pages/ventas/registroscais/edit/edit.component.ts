@@ -184,6 +184,22 @@ export class EditComponent implements OnChanges {
     this.guardar();
   }
 
+  get fechaInicioFormato(): string {
+  return new Date(this.registroCai.regC_FechaInicialEmision).toISOString().split('T')[0];
+}
+
+set fechaInicioFormato(value: string) {
+  this.registroCai.regC_FechaInicialEmision = new Date(value);
+}
+
+get fechaFinFormato(): string {
+  return new Date(this.registroCai.regC_FechaFinalEmision).toISOString().split('T')[0];
+}
+
+set fechaFinFormato(value: string) {
+  this.registroCai.regC_FechaFinalEmision = new Date(value);
+}
+
   private guardar(): void {
     this.mostrarErrores = true;
 

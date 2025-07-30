@@ -64,7 +64,7 @@
                                                 <ul class="nav nav-sm flex-column" aria-expanded="false">
                                                     @for(subSubitem1 of subSubitem.subItems; track $index){
                                                     <li class="nav-item">
-                                                        <a [attr.data-parent]="subSubitem1.parentId" [routerLink]="subSubitem1.link" class="nav-link" (click)="updateActive($event)">
+                                                        <a [attr.data-parent]="subSubitem1.parentId" [routerLink]="subSubitem1.link" class="nav-link" (click)="renavegar(subSubitem1.link)">
                                                             {{ subSubitem1.label | translate }}
                                                         </a>
                                                     </li>
@@ -72,7 +72,7 @@
                                                 </ul>
                                             </div>
                                             }@else {
-                                            <a [routerLink]="subSubitem.link" class="nav-link" [attr.data-parent]="subSubitem.parentId" (click)="updateActive($event)" aria-expanded="false">
+                                            <a [routerLink]="subSubitem.link" class="nav-link" [attr.data-parent]="subSubitem.parentId" (click)="renavegar(subSubitem.link)" aria-expanded="false">
                                                 {{ subSubitem.label | translate}}
                                             </a>
                                             }
@@ -81,7 +81,7 @@
                                     </ul>
                                 </div>
                                 }@else {
-                                <a [routerLink]="subitem.link" class="nav-link" [attr.data-parent]="subitem.parentId" (click)="updateActive($event)">
+                                <a [routerLink]="subitem.link" class="nav-link" [attr.data-parent]="subitem.parentId" (click)="renavegar(subitem.link)">
                                     {{ subitem.label | translate}}
                                     <span class="badge badge-pill bg-success" *ngIf="subitem.isNew">New</span>
                                 </a>
@@ -91,7 +91,7 @@
                         </ul>
                     </div>
                     }@else {
-                    <a [routerLink]="item.link" class="side-nav-link-ref nav-link menu-link" (click)="toggleParentItem($event,item)">
+                    <a [routerLink]="item.link" class="side-nav-link-ref nav-link menu-link" (click)="renavegar(item.link)">
                         @if(item.icon){<i class="bx {{ item.icon }} icon nav-icon" class=""></i>}
                         <span class=""> {{ item.label | translate }} </span>
                         <span class="badge badge-pill bg-secondary">{{item.badge | translate}}</span>

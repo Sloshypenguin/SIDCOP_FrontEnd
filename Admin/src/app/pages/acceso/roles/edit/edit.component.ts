@@ -188,7 +188,7 @@ export class EditComponent implements OnChanges {
               name: esquema.Esquema,
               type: 'esquema',
               selected: false,
-              expanded: false,
+              expanded: true,
               children: []
             };
 
@@ -225,7 +225,7 @@ export class EditComponent implements OnChanges {
 
             // Si alguna pantalla está seleccionada, marcar esquema como seleccionado y expandido
             esquemaNode.selected = esquemaNode.children.some(c => c.selected);
-            esquemaNode.expanded = esquemaNode.selected;
+            esquemaNode.expanded = true;
 
             return esquemaNode;
           });

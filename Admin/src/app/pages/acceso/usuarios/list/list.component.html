@@ -126,7 +126,7 @@
                         </div>
 
 
-                        <div class="card-body pt-5 mt-2 px-3 text-center">
+                        <div class="card-body pt-5 mt-2 px-3 pb-0 text-center">
                             @if (data.usua_Estado) {
                                 <span class="badge fw-semibold mb-1 px-3 py-1 border" style="font-size: 0.8rem; background-color: #CEE9C6; color: #365506">
                                     <i class="ri-checkbox-blank-circle-fill" style="font-size: 0.6rem;"></i>
@@ -143,7 +143,7 @@
                                 {{ data.nombreCompleto }}
                             </h5>
 
-                            <ul class="list-unstyled mb-4 mt-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
+                            <ul class="list-unstyled mb-0 mt-4 ps-0" style="display: flex; flex-direction: column; align-items: center;">
                                 <li class="d-flex justify-content-center align-items-center" style="gap: 4px;">
                                     <span class="text-break" style="font-size: 0.8em;">-Usuario<p class="text-muted" style="font-size: 1.5em;">{{ data.usua_Usuario }}</p></span>
                                 </li>
@@ -152,8 +152,22 @@
                                 </li>
                             </ul>
                         </div>
-                        <span class="text-center" style="color: #554439;">{{data.usua_EsAdmin ? 'Administrador' : ''}}</span>
-                    </div>
+                        <div class="text-center mb-2">
+                            @if (data.usua_EsAdmin) {
+                                <span class="badge fw-semibold px-3 py-2 border mb-3" 
+                                    style="font-size: 0.85rem; background:  #e6dfb5; color: #91832d; border-color: #9f9f9f;">
+                                    <i class="ri-vip-crown-fill me-1" style="font-size: 0.9rem;"></i>
+                                    Administrador
+                                </span>
+                            } @else {
+                                <span class="badge fw-semibold px-3 py-2 border mb-3" 
+                                    style="font-size: 0.85rem; background-color: #E8F4FD; color: #837a26; border-color: #BFDBFE;">
+                                    <i class="ri-user-line me-1" style="font-size: 0.9rem;"></i>
+                                    Usuario
+                                </span>
+                            }
+                        </div>
+                        </div>
                 </div>
             </ng-container>
         </div>
@@ -246,34 +260,50 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="text-center mt-3 mb-3">
-                        <h5 class="text-muted">Cambiar clave del usuario:</h5> <h6>{{usuarioRestablecer?.usua_Usuario}}</h6>
+                        <h6 class="text-muted">Cambiar clave del usuario:</h6> <h4>{{usuarioRestablecer?.usua_Usuario}}</h4>
                         <hr>
                     </div>
-                    <div class="modal-body custom-modal-body">
-                        <!-- Clave -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="usua_Clave" class="form-label">Contraseña</label>
-                                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-                                <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="usuario.usua_Clave" [class.is-invalid]="!usuario.usua_Clave.trim() && mostrarErrores" placeholder="Ingrese la Contraseña" required />
-                                <div class="text-danger mt-1" *ngIf="!usuario.usua_Clave.trim() && mostrarErrores">
-                                    <small>El campo Contraseña es requerido</small>
+                    <<!-- Cuerpo del modal -->
+                        <div class="modal-body custom-modal-body">
+                            <div class="row">
+                                <!-- Campo Contraseña -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="usua_Clave2" class="form-label">
+                                        Contraseña
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="usua_Clave2" 
+                                        placeholder="Ingrese la contraseña" 
+                                        required 
+                                    />
+                                    <div class="text-danger mt-1" style="display: none;">
+                                        <small>El campo Contraseña es requerido</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Campo Confirmar Contraseña -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="confirmar_Clave2" class="form-label">
+                                        Confirmar Contraseña
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="confirmar_Clave2" 
+                                        placeholder="Confirme la contraseña" 
+                                        required 
+                                    />
+                                    <div class="text-danger mt-1" style="display: none;">
+                                        <small>El campo Confirmar Contraseña es requerido</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Confirmar Clave -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="usua_Clave" class="form-label">Confirmar Contraseña</label>
-                                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-                                <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="confirmaciondePassword" [class.is-invalid]="!confirmaciondePassword.trim() && mostrarErrores" placeholder="Ingrese la Confirmación" required />
-                                <div class="text-danger mt-1" *ngIf="!confirmaciondePassword.trim() && mostrarErrores">
-                                    <small>El campo Confirmar Contraseña requerido</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="modal-footer custom-modal-footer">
                         <button type="button" class="btn btn-primary gold" (click)="cancelarRestablecer()">
                             <span class="btn-text">Cancelar</span>

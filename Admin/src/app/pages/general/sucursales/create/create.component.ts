@@ -17,6 +17,21 @@ import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
   styleUrl: './create.component.scss'
 })
 export class CreateComponent implements OnInit {
+  onTelefonoInput(event: Event, campo: 'sucu_Telefono1' | 'sucu_Telefono2') {
+    const input = event.target as HTMLInputElement;
+    if (input && input.value !== undefined) {
+      this.sucursal[campo] = this.aplicarMascaraTelefono(input.value);
+    }
+  }
+  aplicarMascaraTelefono(valor: string): string {
+    valor = valor.replace(/[^\d]/g, '').slice(0, 8);
+    let resultado = '';
+    for (let i = 0; i < valor.length; i += 4) {
+      if (resultado) resultado += '-';
+      resultado += valor.substring(i, i + 4);
+    }
+    return resultado;
+  }
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Sucursales>();
 
