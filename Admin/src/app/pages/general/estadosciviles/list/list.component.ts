@@ -165,6 +165,7 @@ export class ListComponent implements OnInit {
   }
 
   cerrarFormularioEdicion(): void {
+    this.mostrarOverlayCarga = false;
     this.showEditForm = false;
     this.estadoCivilEditando = null;
   }
@@ -318,7 +319,9 @@ export class ListComponent implements OnInit {
 
   private cargardatos(): void {
     this.mostrarOverlayCarga = true;
-    this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
+    setTimeout(() => {
+            this.mostrarOverlayCarga = false;
+      this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: data => {
@@ -330,13 +333,12 @@ export class ListComponent implements OnInit {
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
         this.table.setData(datosFiltrados);
-        this.mostrarOverlayCarga = false;
       },
       error: error => {
         console.error('Error al cargar estados civiles:', error);
         this.table.setData([]);
-        this.mostrarOverlayCarga = false;
       }
     });
+    },300);
   }
 }
