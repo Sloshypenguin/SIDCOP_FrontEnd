@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -25,6 +25,7 @@ import { getUserId } from 'src/app/core/utils/user-utils';
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cliente>();
+  @ViewChild('tabsScroll', { static: false }) tabsScroll!: ElementRef<HTMLDivElement>;
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
   entrando = true;
@@ -84,6 +85,22 @@ export class CreateComponent {
   selectedDepaAval: string = '';
   selectedMuniAval: string = '';
   selectedColoniaAval: string = '';
+
+  scrollToAval(index: number) {
+    const container = this.tabsScroll.nativeElement;
+    const avalElements = container.querySelectorAll('.aval-tab');
+    
+    if (avalElements[index]) {
+      const target = avalElements[index] as HTMLElement;
+      const offsetLeft = target.offsetLeft;
+      const containerWidth = container.clientWidth;
+    
+      container.scrollTo({
+        left: offsetLeft - containerWidth / 4,
+        behavior: 'smooth'
+      });
+    }
+  }
 
   tabDeArriba(no: number) {
     if (no === this.activeTab) return;
@@ -843,8 +860,10 @@ export class CreateComponent {
 
   cambiarAval(direccion: number) {
     const nuevoIndex = this.avalActivoIndex + direccion;
+
     if (nuevoIndex >= 0 && nuevoIndex < this.avales.length) {
       this.avalActivoIndex = nuevoIndex;
+      this.scrollToAval(nuevoIndex);
     }
   }
 
