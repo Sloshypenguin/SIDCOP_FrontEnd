@@ -106,7 +106,7 @@ export class CreateComponent {
     const regex = /^\d{1,10}(\.\d{1,2})?$/;
 
     this.precioFormatoValido = regex.test(valorStr);
-    this.precioValido = !valor && this.precioFormatoValido && Number(valor) > 8.20;
+    this.precioValido = !valor && this.precioFormatoValido && Number(valor) > 0;
   }
 
   onPagaImpuestoChange() {
@@ -281,7 +281,7 @@ export class CreateComponent {
       guardar(): void {
         console.log('guardar() llamado');
         this.mostrarErrores = true;
-        if (this.producto.prod_Codigo.trim() && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id
+        if (this.producto.prod_Codigo.trim() && this.producto.prod_CodigoBarra && this.producto.prod_Descripcion.trim() && this.producto.prod_DescripcionCorta.trim() && this.producto.marc_Id && this.producto.prov_Id && this.producto.subc_Id
           && (this.producto.prod_PrecioUnitario != null && this.producto.prod_PrecioUnitario >= 0) && (this.producto.prod_CostoTotal != null && this.producto.prod_CostoTotal >= 0) && this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal)
         {
           this.mostrarAlertaWarning = false;

@@ -71,6 +71,7 @@ export class ListComponent implements OnInit {
   accionesDisponibles: string[] = [];
   mostrarConfirmacionEliminar = false;
   configuracionAEliminar: ConfiguracionFactura | null = null;
+  tieneRegistros: boolean = false;
   // Método robusto para validar si una acción está permitida
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
@@ -271,7 +272,7 @@ this.http.post(`${environment.apiBaseUrl}/ConfiguracionFactura/Eliminar?id=${thi
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-
+/*
 private cargardatos(state: boolean): void {
   this.mostrarOverlayCarga = state;
 
@@ -301,9 +302,44 @@ private cargardatos(state: boolean): void {
       }, 500);
     }
   });
+ }
+
+*/
+
+
+private cargardatos(state: boolean): void {
+  this.mostrarOverlayCarga = state;
+
+  this.http.get<ConfiguracionFactura[]>(`${environment.apiBaseUrl}/ConfiguracionFactura/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe({
+    next: (data) => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+      this.table.setData(datosFiltrados);
+     
+      this.tieneRegistros = datosFiltrados.length > 0;
+    },
+    error: (error) => {
+      console.error('Error al cargar los datos:', error);
+      this.mostrarOverlayCarga = false;
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
+      this.table.setData([]);
+      this.tieneRegistros = false; 
+    },
+    complete: () => {
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+      }, 500);
+    }
+  });
 }
-
-
   constructor(
     public table: ReactiveTableService<ConfiguracionFactura>,
     private http: HttpClient,
@@ -344,10 +380,9 @@ private cargardatos(state: boolean): void {
     if (permisosRaw) {
       try {
         const permisos = JSON.parse(permisosRaw);
-        // Buscar el módulo de Estados Civiles (ajusta el nombre si es diferente)
+        // Buscar el módulo (
         let modulo = null;
         if (Array.isArray(permisos)) {
-          // Buscar por ID de pantalla (ajusta el ID si cambia en el futuro)
           modulo = permisos.find((m: any) => m.Pant_Id === 33);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // Si es objeto, buscar por clave
