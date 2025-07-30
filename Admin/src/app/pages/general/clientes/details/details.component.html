@@ -308,7 +308,7 @@
             <hr />
 
             <div class="row text-center g-4 col-12">
-                <div class="col-4">
+                <div class="col-3">
                 <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
                   <i class="ri-map-pin-line"></i>
                 </div>
@@ -317,7 +317,7 @@
                   {{ direccion.diCl_DireccionExacta }}
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
                   <i class="ri-map-pin-line"></i>
                 </div>
@@ -326,16 +326,8 @@
                   {{ obtenerDescripcionColonia(direccion.colo_Id) }}
                 </div>
               </div>
-              <div class="col-4">
-                <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
-                  <i class="ri-map-pin-line"></i>
-                </div>
-                <div class="detail-label">Departamento</div>
-                <div class="detail-value fw-bold text-break small">
-                  {{ obtenerDescripcionDepartamento(direccion.depa_Descripcion) }}
-                </div>
-              </div>
-              <div class="col-4">
+
+             <!-- <div class="col-4">
                 <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
                   <i class="ri-map-pin-line"></i>
                 </div>
@@ -349,12 +341,22 @@
                 <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
                   <i class="ri-map-pin-line"></i>
                 </div>
+                <div class="detail-label">Departamento</div>
+                <div class="detail-value fw-bold text-break small">
+                  {{ obtenerDescripcionDepartamento(direccion.depa_Descripcion) }}
+                </div>
+              </div> -->
+
+              <div class="col-3">
+                <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
+                  <i class="ri-map-pin-line"></i>
+                </div>
                 <div class="detail-label">Latitud</div>
                 <div class="detail-value fw-bold text-break small">
                   {{ direccion.diCl_Latitud | number : "1.6-6" }}
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
                   <i class="ri-map-pin-line"></i>
                 </div>

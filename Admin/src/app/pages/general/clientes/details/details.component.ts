@@ -146,12 +146,13 @@ export class DetailsComponent implements OnChanges {
   }
 
   obtenerDescripcionMunicipio(muni_Codigo: string): string {
-    const municipio = this.municipios.find(m => m.muni_Descripcion === muni_Codigo);
-    return municipio?.muni_Descripcion || 'Municipio no encontrado';
-  }
+  const municipio = this.municipios.find(m => m.muni_Codigo === muni_Codigo);
+  return municipio?.muni_Descripcion || 'Municipio no encontrado';
+}
 
-  obtenerDescripcionDepartamento(depa_Codigo: string): string {
-    const departamento = this.departamentos.find(d => d.depa_Descripcion === depa_Codigo);
-    return departamento?.depa_Descripcion || 'Departamento no encontrado';
-  }
+obtenerDescripcionDepartamento(depa_Codigo: string): string {
+  const departamento = this.departamentos.find(d => d.depa_Codigo === depa_Codigo);
+  return departamento?.depa_Descripcion || 'Departamento no encontrado';
+}
+
 }

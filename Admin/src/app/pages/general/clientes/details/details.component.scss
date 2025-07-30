@@ -177,9 +177,15 @@
     margin-right: 0;
   }
   .employee-img-card {
-    min-height: 220px;
-    height: 220px;
-  }
+  min-height: 220px;
+  height: 220px;
+  width: 100%;
+  object-fit: contain;         /* Muestra la imagen completa sin recortes */
+  background-color: #fff;      /* Evita bordes negros, usa fondo blanco */
+  padding: 5px;                /* Espacio opcional interno */
+  border-radius: 10px;         /* Opcional: bordes redondeados */
+}
+
   .employee-img-placeholder-card {
     min-height: 220px;
   }
