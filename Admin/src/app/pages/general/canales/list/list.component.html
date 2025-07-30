@@ -74,14 +74,14 @@
               <thead>
                 <tr>
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                  <th class="gridjs-th" (click)="table.sortBy('cana_Id')" style="cursor:pointer;">
+                  <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
                     <span class="table-header-flex">
                       No.
                       <span style="display: flex; flex-direction: column;">
                         <i class="ri-arrow-up-s-line icon-sort"
-                          [ngStyle]="table.sortField === 'cana_Id' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+                          [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
                         <i class="ri-arrow-down-s-line icon-sort"
-                          [ngStyle]="table.sortField === 'cana_Id' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+                          [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
                       </span>
                     </span>
                   </th>
@@ -111,7 +111,7 @@
                   </button>
                   </div>
                   </td>
-                  <td><span class="fw-semibold">{{data.cana_Id}}</span></td>
+                  <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                   <td>{{data.cana_Descripcion}}</td>
                 </tr>
               </tbody>
