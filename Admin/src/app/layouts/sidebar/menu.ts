@@ -217,6 +217,13 @@ export const MENU: MenuItem[] = [
         parentId: 5,
         icon: 'ri-group-line',
       },
+      {
+        id: 59,
+        label: 'MENUITEMS.VENTAS.LIST.LISTASPRECIOS',
+        link: '/ventas/listasprecios',
+        parentId: 5,
+        icon: 'ri-group-line',
+      },
       // Puedes añadir más subitems aquí según sea necesario
     ],
   },
@@ -281,6 +288,13 @@ export const MENU: MenuItem[] = [
         id: 22,
         label: 'MENUITEMS.INVENTARIO.LIST.DESCUENTOS',
         link: '/inventario/descuentos',
+        parentId: 3,
+        icon: 'ri-truck-line',
+      },
+      {
+        id: 26,
+        label: 'MENUITEMS.INVENTARIO.LIST.PROMOCIONES',
+        link: '/inventario/promociones',
         parentId: 3,
         icon: 'ri-truck-line',
       },
