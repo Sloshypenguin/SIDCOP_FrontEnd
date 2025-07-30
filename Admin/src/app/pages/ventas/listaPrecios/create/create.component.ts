@@ -370,8 +370,12 @@ confirmarGuardarCambios() {
     this.inputErrors.precioCredito = 'Precio crédito es requerido y debe ser mayor a 0.';
     valid = false;
   }
-  if ((this.newLista.inicioEscala ?? null) === null || this.newLista.inicioEscala! < 0) {
+  if ((this.newLista.inicioEscala ?? null) === null || !this.newLista.inicioEscala) {
     this.inputErrors.inicioEscala = 'Inicio escala es requerido.';
+    valid = false;
+  }
+  if ( this.newLista.inicioEscala! <= 0) {
+    this.inputErrors.inicioEscala = 'Inicio escala debe ser mayor a 1.';
     valid = false;
   }
   if ((this.newLista.finEscala ?? null) === null || this.newLista.finEscala! < (this.newLista.inicioEscala ?? 0)) {
