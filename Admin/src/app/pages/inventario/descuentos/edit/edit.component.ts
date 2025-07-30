@@ -120,7 +120,7 @@ seleccionarTodos(event: any) {
   this.descuentoDetalle.idReferencias = [...this.seleccionados];
 }
 
-
+hoy: string;
 
   constructor(private http: HttpClient) {
     this.listarcategorias();
@@ -129,6 +129,10 @@ seleccionarTodos(event: any) {
     this.listarSubcategorias();
     this.listarClientes();
     this.listarDescuentos();
+    const today = new Date();
+    this.hoy = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    this.mostrarSeccion('productos');
+
     
   }
 
@@ -581,7 +585,9 @@ tieneAyudante: boolean = false;
     !this.descuento.desc_Descripcion.trim() ||
     !this.descuento.desc_Aplicar.trim() ||
     !this.descuento.desc_FechaInicio ||
-    !this.descuento.desc_FechaFin 
+    !this.descuento.desc_FechaFin ||
+    !this.puedeAgregarNuevaEscala()
+
   ) {
     this.mostrarAlertaWarning = true;
     this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
@@ -626,7 +632,7 @@ tieneAyudante: boolean = false;
     desc_Aplicar: this.descuento.desc_Aplicar,
     desc_FechaInicio: new Date(this.descuento.desc_FechaInicio),
     desc_FechaFin: new Date(this.descuento.desc_FechaFin),
-    desc_Observaciones: this.descuento.desc_Observaciones.trim(),
+    desc_Observaciones: 'N/A',
     usua_Creacion: this.descuento.usua_Creacion,
     desc_FechaCreacion: new Date(this.descuento.desc_FechaCreacion),
     usua_Modificacion: getUserId(),
@@ -639,9 +645,12 @@ tieneAyudante: boolean = false;
     referencias: '',
     escalas_Json: this.escalas,
     desc_TipoFactura: this.formaPago
-
+    
 
   };
+  if (this.descuento.desc_Observaciones) {
+      descuentoActualizar.desc_Observaciones = this.descuento.desc_Observaciones;
+    }
 
   console.log('datos enviados', descuentoActualizar);
 
@@ -695,7 +704,7 @@ tieneAyudante: boolean = false;
 validarPasoInformacionGeneral(): boolean {
   const d = this.descuento;
 
-  return !!d.desc_Descripcion?.trim() &&
+  return !!d.desc_Descripcion && d.desc_Descripcion.trim() !== '' &&
          d.desc_Tipo !== null &&
          !!d.desc_FechaInicio &&
          !!d.desc_FechaFin;
@@ -716,8 +725,58 @@ irAlSiguientePaso() {
     this.mostrarErrores = false;
     this.activeTab ++;
   } else {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning= 'Debe Completar todos los campos'
+
+    setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 2000);
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
   }
+}
+
+validado = true;
+
+limitarValor(valor: number, escala: any): void {
+  if (this.descuento.desc_Tipo === false && valor > 100) {
+    this.validado = false;
+  } else {
+    escala.deEs_Valor = valor;
+    this.validado = true;
+
+  }
+}
+
+puedeAgregarNuevaEscala(): boolean {
+  if (!this.escalas || this.escalas.length === 0) return true;
+
+  for (let i = 0; i < this.escalas.length; i++) {
+    const escala = this.escalas[i];
+    if (
+      escala.deEs_InicioEscala == null ||
+      escala.deEs_FinEscala == null ||
+      escala.deEs_Valor == null ||
+      escala.deEs_FinEscala <= escala.deEs_InicioEscala ||
+        escala.deEs_Valor == 0
+
+    ) {
+      return false;
+    }
+
+    if (i > 0) {
+      const anterior = this.escalas[i - 1];
+      if (
+        escala.deEs_InicioEscala <= anterior.deEs_FinEscala ||
+        escala.deEs_Valor <= anterior.deEs_Valor ||
+        escala.deEs_Valor == 0
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 }
