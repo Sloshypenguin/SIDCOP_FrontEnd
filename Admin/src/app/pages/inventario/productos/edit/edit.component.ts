@@ -15,33 +15,34 @@ import { getUserId } from 'src/app/core/utils/user-utils';
   styleUrl: './edit.component.scss'
 })
 export class EditComponent implements OnChanges {
+  mostrarOverlayCarga = false;
   @Input() productoData: Producto | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Producto>();
 
   subcategorias: Categoria[] = [];
-    categorias: any[] = [];
-    subcategoriasFiltradas: Categoria[] = [];
-    categoriaseleccionada: any[] = [];
-    marcas: any[] = [];
-    proveedores: any[] = [];
-    impuestos: any[] = [];
+  categorias: any[] = [];
+  subcategoriasFiltradas: Categoria[] = [];
+  categoriaSeleccionada: number = 0;
+  marcas: any[] = [];
+  proveedores: any[] = [];
+  impuestos: any[] = [];
   
-    categoria: Categoria = {
-      cate_Id: 0,
-      cate_Descripcion: '',
-      cate_Estado: true,
-      cate_FechaCreacion: new Date(),
-      cate_FechaModificacion: new Date(),
-      usua_Creacion: 0, 
-      usua_Modificacion: 0,
-      code_Status: 0,
-      subc_Id: 0,
-      subC_Descripcion: '',
-      usuarioCreacion: '',
-      usuarioModificacion: '',
-      message_Status: ''
-    }
+  categoria: Categoria = {
+    cate_Id: 0,
+    cate_Descripcion: '',
+    cate_Estado: true,
+    cate_FechaCreacion: new Date(),
+    cate_FechaModificacion: new Date(),
+    usua_Creacion: 0, 
+    usua_Modificacion: 0,
+    code_Status: 0,
+    subc_Id: 0,
+    subC_Descripcion: '',
+    usuarioCreacion: '',
+    usuarioModificacion: '',
+    message_Status: ''
+  }
 
   producto: Producto = {
     prod_Id: 0,
@@ -104,10 +105,6 @@ export class EditComponent implements OnChanges {
       this.producto.prod_PagaImpuesto = this.producto.prod_PagaImpuesto || 'N';
       this.producto.impu_Id = this.producto.impu_Id || 0;
       this.cargarCategorias();
-      this.cargarSubcategorias(); // si usas todo el listado para algo
-      if (this.categoria.cate_Id) {
-        this.filtrarSubcategoriasPorCategoria(this.categoria.cate_Id);
-      }
     }
   }
   validarPrecioUnitario() {
@@ -171,8 +168,10 @@ export class EditComponent implements OnChanges {
   cargarCategorias() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Categorias/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {this.categorias = data;}, 
-      error => {
+    }).subscribe(data => {
+      this.categorias = data;
+      this.cargarSubcategorias();
+    }, error => {
         console.error('Error al cargar las categorías:', error);
       }
     );
@@ -181,8 +180,20 @@ export class EditComponent implements OnChanges {
   cargarSubcategorias() {
     this.http.get<Categoria[]>(`${environment.apiBaseUrl}/Subcategoria/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {this.subcategorias = data;}, 
-      error => {
+    }).subscribe(data => {
+      this.subcategorias = data;
+      if (this.producto.subc_Id) {
+        // Si existe subc_Id, asignamos la categoría relacionada a esa subcategoría
+        const subcategoriaActual = this.subcategorias.find(s => s.subc_Id === this.producto.subc_Id);
+        if (subcategoriaActual) {
+          this.categoriaSeleccionada = subcategoriaActual.cate_Id;
+        } else {
+          this.categoriaSeleccionada = 0;
+        }
+        // Llamamos a filtrar subcategorías por categoría seleccionada
+        this.filtrarSubcategoriasPorCategoria(this.categoriaSeleccionada);
+      }
+    }, error => {
         console.error('Error al cargar las subcategorías:', error);
       }
     ); 
@@ -221,10 +232,9 @@ export class EditComponent implements OnChanges {
           'accept': '*/*'
         }
     }).subscribe(response  => {
-      console.log('Subcategorías recibidas:', response);
       this.subcategoriasFiltradas = response.data;
       console.log('Subcategorías filtradas:', this.subcategoriasFiltradas);
-      this.producto.subc_Id = 0; // Reset subcategory selection
+      // this.producto.subc_Id = 0; // Reset subcategory selection
       this.isCargandoSubcategorias = false; // terminó carga
     }, error => {
       console.error('Error al filtrar subcategorías por categoría:', error);
@@ -250,15 +260,29 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    const camposRequeridos = [
-      this.producto.prod_Codigo.trim(),
-      this.producto.prod_Descripcion.trim(),
-      this.producto.prod_DescripcionCorta.trim(),
-      this.producto.prod_CostoTotal > 0,
-    ];
-
-    if (camposRequeridos.every(Boolean)) {
-      if (this.producto.prod_Descripcion.trim() !== this.productoOriginal) {
+    if (
+      this.producto.prod_Codigo.trim() &&
+      this.producto.prod_Descripcion.trim() &&
+      this.producto.prod_DescripcionCorta.trim() &&
+      this.producto.subc_Id &&
+      this.producto.marc_Id &&
+      this.producto.prov_Id &&
+      this.producto.prod_PrecioUnitario != null &&
+      this.producto.prod_CostoTotal != null &&
+      this.producto.prod_PrecioUnitario >= 0 &&
+      this.producto.prod_CostoTotal >= 0 &&
+      this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal
+    ) {
+      const hayCambios = 
+        this.producto.prod_Codigo.trim() !== this.productoData?.prod_Codigo?.trim() ||
+        this.producto.prod_Descripcion.trim() !== this.productoData?.prod_Descripcion?.trim() ||
+        this.producto.prod_DescripcionCorta.trim() !== this.productoData?.prod_DescripcionCorta?.trim() ||
+        this.producto.subc_Id !== this.productoData?.subc_Id ||
+        this.producto.marc_Id !== this.productoData?.marc_Id ||
+        this.producto.prov_Id !== this.productoData?.prov_Id ||
+        this.producto.prod_PrecioUnitario !== this.productoData?.prod_PrecioUnitario ||
+        this.producto.prod_CostoTotal !== this.productoData?.prod_CostoTotal
+      if (hayCambios) {
         this.mostrarConfirmacionEditar = true;
       } else {
         this.mostrarAlertaWarning = true;
@@ -281,28 +305,28 @@ export class EditComponent implements OnChanges {
     this.guardar();
   }
 
-  guardar(): void {
+  private guardar(): void {
     this.mostrarErrores = true;
 
-    const camposRequeridos = [
-      this.producto.prod_Codigo.trim(),
-      this.producto.prod_CodigoBarra.trim(),
-      this.producto.prod_Descripcion.trim(),
-      this.producto.prod_DescripcionCorta.trim(),
-      this.producto.prod_CostoTotal > 0,
-      this.producto.prod_PrecioUnitario >= 0,
-      this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal,
-      this.producto.prod_Estado,
-      this.producto.subc_Id > 0,
-      this.producto.marc_Id > 0,
-      this.producto.prov_Id > 0
-    ];
+    if (
+      this.producto.prod_Codigo.trim() &&
+      this.producto.prod_Descripcion.trim() &&
+      this.producto.prod_DescripcionCorta.trim() &&
+      this.producto.subc_Id &&
+      this.producto.marc_Id &&
+      this.producto.prov_Id &&
+      this.producto.prod_PrecioUnitario != null &&
+      this.producto.prod_CostoTotal != null &&
+      this.producto.prod_PrecioUnitario >= 0 &&
+      this.producto.prod_CostoTotal >= 0 &&
+      this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal
+    ) {
+      const productoActualizar = {
+        ...this.producto,
+        usua_Modificacion: getUserId(),
+        prod_FechaModificacion: new Date()
+      }
 
-    if (camposRequeridos.every(Boolean)) {
-      this.producto.usua_Modificacion = getUserId();
-      this.producto.prod_FechaModificacion = new Date();
-      
-      // Validar impuesto solo si paga impuesto
       if (this.producto.prod_PagaImpuesto === 'S' && !this.producto.impu_Id) {
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Debe seleccionar un impuesto si el producto paga impuesto.';
@@ -310,36 +334,82 @@ export class EditComponent implements OnChanges {
         return;
       }
 
-      this.http.put(`${environment.apiBaseUrl}/Productos/Actualizar`, this.producto)
-        .subscribe({
-          next: (response) => {
+      this.mostrarOverlayCarga = true;
+      this.http.put<any>(`${environment.apiBaseUrl}/Productos/Actualizar`, productoActualizar, {
+        headers: {
+          'X-Api-Key': environment.apiKey,
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        }
+      }).subscribe({
+        next: (response) => {
+          this.mostrarOverlayCarga = false;
+          if (response?.data?.code_Status === 1) {
+            this.mensajeExito = response.data.message_Status || `Producto "${this.producto.prod_DescripcionCorta}" actualizado exitosamente`;
             this.mostrarAlertaExito = true;
-            this.mensajeExito = 'Producto actualizado exitosamente';
+            this.mostrarErrores = false;
+
             setTimeout(() => {
+              this.mostrarAlertaExito = false;
               this.onSave.emit(this.producto);
-              this.cerrarAlerta();
-            }, 2000);
-          },
-          error: (error) => {
+              this.cancelar();
+            }, 3000);
+          } else {
             this.mostrarAlertaError = true;
-            this.mensajeError = error.error?.message || 'Error al actualizar el producto';
-            setTimeout(() => this.cerrarAlerta(), 4000);
+            this.mensajeError = response?.data?.message_Status || 'No se pudo actualizar el producto.';
+            this.mostrarAlertaExito = false;
+
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
           }
-        });
+        },
+        error: (error) => {
+          this.mostrarOverlayCarga = false;
+          this.mostrarAlertaError = true;
+          this.mensajeError = error?.error?.data?.message_Status || 'Error al actualizar el producto. Por favor, intente nuevamente.';
+          this.mostrarAlertaExito = false;
+          setTimeout(() => this.cerrarAlerta(), 5000);
+        }
+      });
+    } else {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
     }
   }
 
-  onImagenSeleccionada(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
+  onImagenSeleccionada(event: any) {
+    // Obtenemos el archivo seleccionado desde el input tipo file
+    const file = event.target.files[0];
+
+    if (file) {
+      // para enviar la imagen a Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'subidas_usuarios');
+      //Subidas usuarios Carpeta identificadora en Cloudinary
+      //dwiprwtmo es el nombre de la cuenta de Cloudinary
+      const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
+
       
-      reader.onload = (e) => {
-        this.producto.prod_Imagen = e.target?.result as string;
-      };
-      
-      reader.readAsDataURL(file);
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.producto.prod_Imagen = data.secure_url;
+      })
+      .catch(error => {
+        console.error('Error al subir la imagen a Cloudinary:', error);
+      });
     }
+  }
+
+  onImgError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/images/users/32/agotado.png';
   }
 } 
