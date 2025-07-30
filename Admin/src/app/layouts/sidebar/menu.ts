@@ -234,7 +234,7 @@ export const MENU: MenuItem[] = [
       },
 
       {
-        id: 29,
+        id: 31,
         label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
         link: '/logistica/traslados',
         parentId: 4,

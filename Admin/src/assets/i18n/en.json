@@ -41,7 +41,7 @@
       "TEXT": "Ventas",
       "LIST": {
         "IMPUESTOS": "Impuestos",
-        "CONFIGURACIONFACTURA": "Configuracion Factura",
+        "CONFIGURACIONFACTURA": "Configuracion de la Empresa",
         "CAIS": "CAIs",
         "VENDEDORES": "Vendedores",
         "REGISTROCAIS": "Registros CAI",
@@ -54,7 +54,8 @@
       "TEXT": "Logistica",
       "LIST": {
         "BODEGAS": "Bodegas",
-        "TRASLADOS": "Traslados"
+        "TRASLADOS": "Traslados",
+        "RECARGAS": "Recargas"
       }
     },
     "DASHBOARD": {
