@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Rol } from 'src/app/Modelos/acceso/roles.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
+import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 
 interface TreeItem {
   id: string;
@@ -61,18 +63,30 @@ const accionesPorPantalla = [
   { AcPa_Id: 101, Pant_Id: 30, Acci_Id: 3 }, { AcPa_Id: 102, Pant_Id: 30, Acci_Id: 5 }, { AcPa_Id: 103, Pant_Id: 31, Acci_Id: 1 }, { AcPa_Id: 104, Pant_Id: 31, Acci_Id: 2 },
   { AcPa_Id: 105, Pant_Id: 31, Acci_Id: 3 }, { AcPa_Id: 106, Pant_Id: 31, Acci_Id: 5 }, { AcPa_Id: 107, Pant_Id: 32, Acci_Id: 1 }, { AcPa_Id: 108, Pant_Id: 32, Acci_Id: 2 },
   { AcPa_Id: 109, Pant_Id: 32, Acci_Id: 5 }, { AcPa_Id: 110, Pant_Id: 32, Acci_Id: 6 }, { AcPa_Id: 111, Pant_Id: 33, Acci_Id: 1 }, { AcPa_Id: 112, Pant_Id: 33, Acci_Id: 2 },
-  { AcPa_Id: 113, Pant_Id: 33, Acci_Id: 3 }, { AcPa_Id: 114, Pant_Id: 33, Acci_Id: 5 }, { AcPa_Id: 115, Pant_Id: 34, Acci_Id: 1 }, { AcPa_Id: 116, Pant_Id: 34, Acci_Id: 2 },
-  { AcPa_Id: 117, Pant_Id: 34, Acci_Id: 3 }, { AcPa_Id: 118, Pant_Id: 34, Acci_Id: 5 }, { AcPa_Id: 119, Pant_Id: 35, Acci_Id: 1 }, { AcPa_Id: 120, Pant_Id: 35, Acci_Id: 2 },
-  { AcPa_Id: 121, Pant_Id: 35, Acci_Id: 3 }, { AcPa_Id: 122, Pant_Id: 35, Acci_Id: 5 }, { AcPa_Id: 123, Pant_Id: 36, Acci_Id: 1 }, { AcPa_Id: 124, Pant_Id: 36, Acci_Id: 2 },
-  { AcPa_Id: 125, Pant_Id: 36, Acci_Id: 3 }, { AcPa_Id: 126, Pant_Id: 36, Acci_Id: 5 }, { AcPa_Id: 127, Pant_Id: 37, Acci_Id: 2 }, { AcPa_Id: 128, Pant_Id: 38, Acci_Id: 1 },
-  { AcPa_Id: 129, Pant_Id: 38, Acci_Id: 2 }, { AcPa_Id: 130, Pant_Id: 38, Acci_Id: 3 }, { AcPa_Id: 131, Pant_Id: 38, Acci_Id: 5 }, { AcPa_Id: 132, Pant_Id: 39, Acci_Id: 1 },
-  { AcPa_Id: 133, Pant_Id: 39, Acci_Id: 2 }, { AcPa_Id: 134, Pant_Id: 39, Acci_Id: 3 }, { AcPa_Id: 135, Pant_Id: 39, Acci_Id: 5 }, { AcPa_Id: 136, Pant_Id: 40, Acci_Id: 1 },
-  { AcPa_Id: 137, Pant_Id: 40, Acci_Id: 2 }, { AcPa_Id: 138, Pant_Id: 40, Acci_Id: 5 }, { AcPa_Id: 139, Pant_Id: 40, Acci_Id: 6 }, { AcPa_Id: 140, Pant_Id: 41, Acci_Id: 1 },
-  { AcPa_Id: 141, Pant_Id: 41, Acci_Id: 2 }, { AcPa_Id: 142, Pant_Id: 41, Acci_Id: 5 }, { AcPa_Id: 143, Pant_Id: 41, Acci_Id: 6 }, { AcPa_Id: 144, Pant_Id: 42, Acci_Id: 1 },
-  { AcPa_Id: 145, Pant_Id: 42, Acci_Id: 2 }, { AcPa_Id: 146, Pant_Id: 42, Acci_Id: 3 }, { AcPa_Id: 147, Pant_Id: 42, Acci_Id: 5 }, { AcPa_Id: 148, Pant_Id: 43, Acci_Id: 1 },
-  { AcPa_Id: 149, Pant_Id: 43, Acci_Id: 2 }, { AcPa_Id: 150, Pant_Id: 43, Acci_Id: 3 }, { AcPa_Id: 151, Pant_Id: 43, Acci_Id: 5 }, { AcPa_Id: 152, Pant_Id: 45, Acci_Id: 1 },
-  { AcPa_Id: 153, Pant_Id: 45, Acci_Id: 2 }, { AcPa_Id: 154, Pant_Id: 45, Acci_Id: 3 }, { AcPa_Id: 155, Pant_Id: 45, Acci_Id: 5 }
+  { AcPa_Id: 113, Pant_Id: 33, Acci_Id: 3 }, { AcPa_Id: 114, Pant_Id: 33, Acci_Id: 5 }, { AcPa_Id: 118, Pant_Id: 34, Acci_Id: 5 },
+  { AcPa_Id: 119, Pant_Id: 35, Acci_Id: 1 }, { AcPa_Id: 120, Pant_Id: 35, Acci_Id: 2 }, { AcPa_Id: 121, Pant_Id: 35, Acci_Id: 3 }, { AcPa_Id: 122, Pant_Id: 35, Acci_Id: 5 },
+  { AcPa_Id: 123, Pant_Id: 36, Acci_Id: 1 }, { AcPa_Id: 124, Pant_Id: 36, Acci_Id: 2 }, { AcPa_Id: 125, Pant_Id: 36, Acci_Id: 3 }, { AcPa_Id: 126, Pant_Id: 36, Acci_Id: 5 },
+  { AcPa_Id: 127, Pant_Id: 37, Acci_Id: 2 }, { AcPa_Id: 128, Pant_Id: 38, Acci_Id: 1 }, { AcPa_Id: 129, Pant_Id: 38, Acci_Id: 2 }, { AcPa_Id: 130, Pant_Id: 38, Acci_Id: 3 },
+  { AcPa_Id: 131, Pant_Id: 38, Acci_Id: 5 }, { AcPa_Id: 132, Pant_Id: 39, Acci_Id: 1 }, { AcPa_Id: 133, Pant_Id: 39, Acci_Id: 2 }, { AcPa_Id: 134, Pant_Id: 39, Acci_Id: 3 },
+  { AcPa_Id: 135, Pant_Id: 39, Acci_Id: 5 }, { AcPa_Id: 136, Pant_Id: 40, Acci_Id: 1 }, { AcPa_Id: 137, Pant_Id: 40, Acci_Id: 2 }, { AcPa_Id: 138, Pant_Id: 40, Acci_Id: 5 },
+  { AcPa_Id: 139, Pant_Id: 40, Acci_Id: 6 }, { AcPa_Id: 140, Pant_Id: 41, Acci_Id: 1 }, { AcPa_Id: 141, Pant_Id: 41, Acci_Id: 2 }, { AcPa_Id: 142, Pant_Id: 41, Acci_Id: 5 },
+  { AcPa_Id: 143, Pant_Id: 41, Acci_Id: 6 }, { AcPa_Id: 144, Pant_Id: 42, Acci_Id: 1 }, { AcPa_Id: 145, Pant_Id: 42, Acci_Id: 2 }, { AcPa_Id: 146, Pant_Id: 42, Acci_Id: 3 },
+  { AcPa_Id: 147, Pant_Id: 42, Acci_Id: 5 }, { AcPa_Id: 148, Pant_Id: 43, Acci_Id: 1 }, { AcPa_Id: 149, Pant_Id: 43, Acci_Id: 2 }, { AcPa_Id: 150, Pant_Id: 43, Acci_Id: 3 },
+  { AcPa_Id: 151, Pant_Id: 43, Acci_Id: 5 }, { AcPa_Id: 152, Pant_Id: 45, Acci_Id: 1 }, { AcPa_Id: 153, Pant_Id: 45, Acci_Id: 2 }, { AcPa_Id: 154, Pant_Id: 45, Acci_Id: 3 },
+  { AcPa_Id: 155, Pant_Id: 45, Acci_Id: 5 }, { AcPa_Id: 156, Pant_Id: 17, Acci_Id: 4 }, { AcPa_Id: 157, Pant_Id: 53, Acci_Id: 4 }, { AcPa_Id: 158, Pant_Id: 52, Acci_Id: 4 },
+  { AcPa_Id: 159, Pant_Id: 49, Acci_Id: 4 }, { AcPa_Id: 160, Pant_Id: 22, Acci_Id: 4 }, { AcPa_Id: 161, Pant_Id: 34, Acci_Id: 4 }, { AcPa_Id: 162, Pant_Id: 34, Acci_Id: 9 },
+  { AcPa_Id: 188, Pant_Id: 18, Acci_Id: 4 }, { AcPa_Id: 189, Pant_Id: 19, Acci_Id: 4 }, { AcPa_Id: 190, Pant_Id: 20, Acci_Id: 4 }, { AcPa_Id: 191, Pant_Id: 21, Acci_Id: 4 },
+  { AcPa_Id: 192, Pant_Id: 23, Acci_Id: 4 }, { AcPa_Id: 193, Pant_Id: 24, Acci_Id: 4 }, { AcPa_Id: 194, Pant_Id: 25, Acci_Id: 4 }, { AcPa_Id: 195, Pant_Id: 26, Acci_Id: 4 },
+  { AcPa_Id: 196, Pant_Id: 27, Acci_Id: 4 }, { AcPa_Id: 197, Pant_Id: 28, Acci_Id: 4 }, { AcPa_Id: 198, Pant_Id: 29, Acci_Id: 4 }, { AcPa_Id: 199, Pant_Id: 30, Acci_Id: 4 },
+  { AcPa_Id: 200, Pant_Id: 31, Acci_Id: 4 }, { AcPa_Id: 201, Pant_Id: 32, Acci_Id: 4 }, { AcPa_Id: 202, Pant_Id: 33, Acci_Id: 4 }, { AcPa_Id: 203, Pant_Id: 35, Acci_Id: 4 },
+  { AcPa_Id: 204, Pant_Id: 36, Acci_Id: 4 }, { AcPa_Id: 205, Pant_Id: 37, Acci_Id: 4 }, { AcPa_Id: 206, Pant_Id: 38, Acci_Id: 4 }, { AcPa_Id: 207, Pant_Id: 39, Acci_Id: 4 },
+  { AcPa_Id: 208, Pant_Id: 40, Acci_Id: 4 }, { AcPa_Id: 209, Pant_Id: 41, Acci_Id: 4 }, { AcPa_Id: 210, Pant_Id: 42, Acci_Id: 4 }, { AcPa_Id: 211, Pant_Id: 43, Acci_Id: 4 },
+  { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 6, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 7, Acci_Id: 4 }, { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 },
+  { AcPa_Id: 216, Pant_Id: 9, Acci_Id: 4 }, { AcPa_Id: 217, Pant_Id: 10, Acci_Id: 4 }, { AcPa_Id: 218, Pant_Id: 11, Acci_Id: 4 }, { AcPa_Id: 219, Pant_Id: 12, Acci_Id: 4 },
+  { AcPa_Id: 220, Pant_Id: 13, Acci_Id: 4 }, { AcPa_Id: 221, Pant_Id: 14, Acci_Id: 4 }, { AcPa_Id: 222, Pant_Id: 15, Acci_Id: 4 }, { AcPa_Id: 223, Pant_Id: 16, Acci_Id: 4 },
+  { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }
 ];
+
 
 @Component({
   selector: 'app-create',
@@ -133,7 +147,7 @@ export class CreateComponent {
               selected: false,
               expanded: true,
               children: []
-            };
+            }; 
             esquemaNode.children = esquema.Pantallas.map((pantalla: Pantalla) => {
               const pantallaNode: TreeItem = {
                 id: `${esquema.Esquema}_${pantalla.Pant_Id}`,
@@ -167,7 +181,8 @@ export class CreateComponent {
   toggleSelection(item: TreeItem): void {
     item.selected = !item.selected;
 
-    if (item.type === 'pantalla' || item.type === 'esquema') {
+    // Si selecciona un esquema o pantalla, propagar la selección a hijos
+    if (item.type === 'esquema' || item.type === 'pantalla') {
       this.updateChildrenSelection(item, item.selected);
     }
 
@@ -176,29 +191,53 @@ export class CreateComponent {
       const esquema = pantalla?.parent;
 
       if (item.selected) {
-        if (pantalla) pantalla.selected = true;
-        if (esquema) esquema.selected = true;
+        if (pantalla) {
+          pantalla.selected = true;
+          pantalla.expanded = true;
+        }
+        if (esquema) {
+          esquema.selected = true;
+          esquema.expanded = true;
+        }
       } else {
-        // Si ninguna otra acción está seleccionada, desmarcar pantalla
-        if (pantalla && !pantalla.children?.some(child => child.selected)) {
+        // Si ya no hay acciones seleccionadas en la pantalla, desmarcarla
+        if (pantalla && !pantalla.children?.some(acc => acc.selected)) {
           pantalla.selected = false;
-          // Si ninguna otra pantalla está seleccionada, desmarcar esquema
-          if (esquema && !esquema.children?.some(p => p.selected)) {
+          // Si tampoco hay pantallas seleccionadas en el esquema, desmarcarlo
+          if (esquema && !esquema.children?.some(pant => pant.selected)) {
             esquema.selected = false;
           }
         }
       }
     }
 
+    // Validar hacia arriba en caso de que se desmarque una pantalla
+    if (item.type === 'pantalla') {
+      const esquema = item.parent;
+
+      if (item.selected) {
+        if (esquema) {
+          esquema.selected = true;
+          esquema.expanded = true;
+        }
+      } else {
+        // Si ninguna pantalla está seleccionada dentro del esquema, lo desmarcamos
+        if (esquema && !esquema.children?.some(p => p.selected)) {
+          esquema.selected = false;
+        }
+      }
+    }
+
+    // Validar hacia arriba si desmarcas un esquema no hace falta, ya se cubre
+
     this.updateSelectedItems();
   }
-
-
 
   private updateChildrenSelection(parent: TreeItem, selected: boolean): void {
     if (parent.children) {
       for (const child of parent.children) {
         child.selected = selected;
+        child.expanded = selected; // expandir al seleccionar
         if (child.children) {
           this.updateChildrenSelection(child, selected);
         }
@@ -217,11 +256,15 @@ export class CreateComponent {
       return acc;
     }, []);
   }
+  
+  get hayExpandido(): boolean {
+    return this.treeData.some(esquema => esquema.expanded || (esquema.children ? esquema.children.some(pantalla => pantalla.expanded) : false));
+  }
 
-  estanExpandidoTodos = true; // por defecto todo expandido
+  // estanExpandidoTodos = true; // por defecto todo expandido
 
   alternarDesplegables(): void {
-    this.estanExpandidoTodos = !this.estanExpandidoTodos;
+    const expandir = !this.hayExpandido;
 
     const cambiarExpansion = (items: TreeItem[], expandir: boolean) => {
       for (const item of items) {
@@ -229,13 +272,14 @@ export class CreateComponent {
         if (item.children) {
           cambiarExpansion(item.children, expandir);
         }
-      }
-    };
+      } 
+    }
 
-    cambiarExpansion(this.treeData, this.estanExpandidoTodos);
+    cambiarExpansion(this.treeData, expandir);
   }
 
   guardar(): void {
+    this.mostrarErrores = true;
     if (!this.rol.role_Descripcion.trim()) {
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos.';
@@ -246,13 +290,14 @@ export class CreateComponent {
     const rolInsertar = {
       role_Id: 0,
       role_Descripcion: this.rol.role_Descripcion.trim(),
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       role_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       numero: '',
       role_FechaModificacion: new Date().toISOString(),
       usuarioCreacion: '',
-      usuarioModificacion: ''
+      usuarioModificacion: '',
+      role_Estado: true
     };
 
     this.http.post<Rol>(`${environment.apiBaseUrl}/Roles/Insertar`, rolInsertar, {
@@ -289,7 +334,7 @@ export class CreateComponent {
               return {
                 acPa_Id: acPa.AcPa_Id,
                 role_Id: ultimoRol.role_Id,
-                usua_Creacion: environment.usua_Id,
+                usua_Creacion: getUserId(),
                 perm_FechaCreacion: new Date().toISOString()
               };
             })
@@ -313,7 +358,7 @@ export class CreateComponent {
 
             // Enviar los permisos uno por uno
             permisos.forEach(permiso => {
-              console.log('Permiso enviado:', permiso);
+              // console.log('Permiso enviado:', permiso);
               this.http.post(`${environment.apiBaseUrl}/Insertar`, permiso, {
                 headers: {
                   'X-Api-Key': environment.apiKey,
@@ -335,7 +380,7 @@ export class CreateComponent {
               this.mostrarAlertaExito = false;
               this.onSave.emit(ultimoRol);
               this.cancelar();
-            }, 3000);
+            }, 300);
           },
           error: () => {
             this.mostrarAlertaError = true;

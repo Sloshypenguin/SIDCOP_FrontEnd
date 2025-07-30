@@ -5,7 +5,8 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Cargos } from 'src/app/Modelos/general/Cargos.Model';
@@ -81,7 +82,7 @@ export class ListComponent implements OnInit {
     public floatingMenuService: FloatingMenuService // <-- Agrega el servicio aquí
   ) {
     this.cargardatos();
-    this.table.setConfig(['carg_Id', 'carg_Descripcion']);
+    this.table.setConfig(['secuencia', 'carg_Descripcion']);
   }
 
   cambiarPagina(nuevaPagina: number): void {

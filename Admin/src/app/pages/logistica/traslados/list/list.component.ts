@@ -13,6 +13,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-list',
@@ -111,6 +112,9 @@ export class ListComponent implements OnInit {
   trasladoEditando: Traslado | null = null;
   trasladoDetalle: Traslado | null = null;
   
+  // Propiedades para overlay de carga
+  mostrarOverlayCarga = false;
+  
   // Propiedades para alertas
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -138,17 +142,33 @@ export class ListComponent implements OnInit {
   }
 
   guardarTraslado(traslado: Traslado): void {
-    console.log('Traslado guardado exitosamente desde create component:', traslado);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      console.log('Traslado guardado exitosamente desde create component:', traslado);
+      this.cargardatos();
+      this.showCreateForm = false;
+      this.mensajeExito = `Traslado guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   actualizarTraslado(traslado: Traslado): void {
-    console.log('Traslado actualizado exitosamente desde edit component:', traslado);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      console.log('Traslado actualizado exitosamente desde edit component:', traslado);
+      this.cargardatos();
+      this.showEditForm = false;
+      this.mensajeExito = `Traslado actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
   confirmarEliminar(traslado: Traslado): void {
@@ -166,75 +186,93 @@ export class ListComponent implements OnInit {
   eliminar(): void {
     if (!this.trasladoAEliminar) return;
     
-    console.log('Eliminando traslado:', this.trasladoAEliminar);
+    // Prevenir múltiples clicks - deshabilitar el botón
+    if (this.mostrarOverlayCarga) return;
     
-    this.http.post(`${environment.apiBaseUrl}/Traslados/Eliminar/${this.trasladoAEliminar.tras_Id}`, {}, {
+    console.log('Eliminando traslado:', this.trasladoAEliminar);
+    this.mostrarOverlayCarga = true;
+    
+    // Cerrar el modal inmediatamente para evitar doble click
+    const trasladoTemp = { ...this.trasladoAEliminar };
+    this.mostrarConfirmacionEliminar = false;
+    
+    this.http.post(`${environment.apiBaseUrl}/Traslado/Eliminar/${trasladoTemp.tras_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('Traslado eliminado exitosamente');
-            this.mensajeExito = `Traslado del "${this.trasladoAEliminar!.origen}" al "${this.trasladoAEliminar!.destino}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
-            this.cargardatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Traslado está siendo utilizado');
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          console.log('Respuesta del servidor:', response);
+          
+          // Limpiar variables
+          this.trasladoAEliminar = null;
+          
+          // Verificar el código de estado en la respuesta
+          if (response.success && response.data) {
+            if (response.data.code_Status === 1) {
+              // Éxito: eliminado correctamente
+              console.log('Traslado eliminado exitosamente');
+              this.mensajeExito = `Traslado del "${trasladoTemp.origen}" al "${trasladoTemp.destino}" eliminado exitosamente`;
+              this.mostrarAlertaExito = true;
+              
+              // Ocultar la alerta después de 3 segundos
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                this.mensajeExito = '';
+              }, 3000);
+              
+              this.cargardatos();
+            } else if (response.data.code_Status === -1) {
+              //result: está siendo utilizado
+              console.log('El traslado está siendo utilizado');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'No se puede eliminar: el traslado está siendo utilizado.';
+              
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            } else if (response.data.code_Status === 0) {
+              // Error general
+              console.log('Error general al eliminar');
+              this.mostrarAlertaError = true;
+              this.mensajeError = response.data.message_Status || 'Error al eliminar el traslado.';
+              
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            }
+          } else {
+            // Respuesta inesperada
+            console.log('Respuesta inesperada del servidor');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el traslado está siendo utilizado.';
+            this.mensajeError = response.message || 'Error inesperado al eliminar el traslado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el traslado.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
           }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
+        }, 1000);
+      },
+      error: (error) => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          this.trasladoAEliminar = null;
+          console.error('Error en la petición:', error);
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el traslado.';
+          this.mensajeError = 'Error de conexión al eliminar el traslado.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
             this.mensajeError = '';
           }, 5000);
-          
-          // Cerrar el modal de confirmación
-          this.cancelarEliminar();
-        }
-      },
+        }, 1000);
+      }
     });
   }
 
@@ -279,12 +317,35 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
-    this.http.get<Traslado[]>(`${environment.apiBaseUrl}/Traslado/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
-    });
-  }
+  // Declaramos un estado en el cargarDatos, esto para hacer el overlay
+  // segun dicha funcion de recargar, ya que si vienes de hacer una accion
+  // es innecesario mostrar el overlay de carga
+private cargardatos(): void {
+  this.mostrarOverlayCarga = true;
+
+  this.http.get<Traslado[]>(`${environment.apiBaseUrl}/Traslado/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe({
+    next: data => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(t => t.usua_Creacion?.toString() === userId.toString());
+
+      setTimeout(() => {
+        this.mostrarOverlayCarga = false;
+        console.log('Datos recargados:', datosFiltrados);
+        this.table.setData(datosFiltrados);
+      }, 500);
+    },
+    error: error => {
+      console.error('Error al cargar traslados:', error);
+      this.mostrarOverlayCarga = false;
+      this.table.setData([]);
+    }
+  });
+}
+
 }

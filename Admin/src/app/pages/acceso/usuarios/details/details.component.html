@@ -1,1 +1,153 @@
-<p>details works!</p>
+<div class="details-container">
+    <div class="alert-container">
+        <div *ngIf="mostrarAlertaError"
+            class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+            <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+            <strong>¡Error!</strong> {{ mensajeError }}
+            <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="details-header-button">
+        <button type="button" class="btn btn-primary" (click)="cerrar()">
+            <span class="btn-text">Regresar</span>
+            <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+        </button>
+    </div>
+
+    <div *ngIf="!cargando && usuarioDetalle" class="details-content">
+        <div class="row g-4 align-items-stretch">
+            <!-- Card izquierda: Imagen + Nombre -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm employee-photo-card position-relative">
+                    <ng-container *ngIf="usuarioDetalle?.usua_Imagen; else noImage">
+                        <img [src]="usuarioDetalle.usua_Imagen" alt="Foto del empleado" class="employee-img-card" />
+                        <div class="employee-img-overlay">
+                            <span class="employee-img-name">{{ usuarioDetalle.usua_Usuario }}</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #noImage>
+                        <div
+                            class="employee-img-placeholder-card d-flex flex-column justify-content-center align-items-center h-100">
+                            <i class="ri-user-3-line display-1"></i>
+                            <span class="employee-img-name mt-3">{{ usuarioDetalle.usua_Usuario }}</span>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            <!-- Card derecha: Detalles -->
+            <div class="col-md-8">
+                <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+                    <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+                        <i class="ri-user-3-line me-2 fs-4"></i>
+                        <h5 class="mb-0">Detalles del Usuario</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <div class="detail-item">
+                                    <div class="detail-icon bg-dark-blue text-white"><i class="ri-profile-line"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        @if(!usuarioDetalle.usua_EsVendedor){
+                                        <div class="detail-label">Empleado</div>
+                                        <div class="detail-value">{{ usuarioDetalle.nombreCompleto }}</div>
+                                        }
+                                        @if(usuarioDetalle.usua_EsVendedor){
+                                        <div class="detail-label">Vendedor</div>
+                                        <div class="detail-value">{{ usuarioDetalle.nombreCompleto }}</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="detail-item">
+                                    <div class="detail-icon bg-dark-blue text-white"><i class="ri-team-line"></i></div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">Rol Descripcion</div>
+                                        <div class="detail-value">{{ usuarioDetalle.role_Descripcion }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="detail-item">
+                                    <div class="detail-icon bg-dark-blue text-white"><i class="ri-group-2-line"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">Cargo</div>
+                                        <div class="detail-value">{{ usuarioDetalle.usua_EsAdmin ?
+                                            'Administrador':'Usuario' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="detail-item">
+                                    <div class="detail-icon bg-dark-blue text-white">
+                                        @if(usuarioDetalle.usua_Estado){
+                                        <i class="ri-user-follow-line"></i>
+                                        }
+                                        @else {
+                                        <i class="ri-user-unfollow-line"></i>
+                                        }
+                                    </div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">Estado</div>
+                                        <div class="detail-value">
+                                            @if (usuarioDetalle.usua_Estado) {
+                                            <span class="badge fw-semibold mb-1 px-3 py-1 border"
+                                                style="font-size: 0.8rem; background-color: #CEE9C6; color: #365506">
+                                                <i class="ri-checkbox-blank-circle-fill" style="font-size: 0.6rem;"></i>
+                                                Activo
+                                            </span>
+                                            }
+                                            @else {
+                                            <span class="badge fw-semibold mb-1 px-3 py-1 border"
+                                                style="font-size: 0.8rem; background-color: #FBCFD4; color: #4E1212">
+                                                <i class="ri-close-fill" style="font-size: 0.6rem;"></i>
+                                                Inactivo
+                                            </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="audit-table-container">
+            <div class="audit-table">
+                <div class="audit-header">
+                    <div class="audit-col">Acción</div>
+                    <div class="audit-col">Usuario</div>
+                    <div class="audit-col">Fecha</div>
+                </div>
+
+                <div class="audit-row">
+                    <div class="audit-col">
+                        <span class="audit-action">Creador</span>
+                    </div>
+                    <div class="audit-col">
+                        <span class="audit-user">{{ usuarioDetalle.usua_Creacion || 'N/A' }}</span>
+                    </div>
+                    <div class="audit-col">
+                        <span class="audit-date">{{ formatearFecha(usuarioDetalle.usua_FechaCreacion || null) }}</span>
+                    </div>
+                </div>
+
+                <div class="audit-row">
+                    <div class="audit-col">
+                        <span class="audit-action">Modificación</span>
+                    </div>
+                    <div class="audit-col">
+                        <span class="audit-user">{{ usuarioDetalle.usua_Modificacion || 'N/A' }}</span>
+                    </div>
+                    <div class="audit-col">
+                        <span class="audit-date">{{ formatearFecha(usuarioDetalle.usua_FechaModificacion || null) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

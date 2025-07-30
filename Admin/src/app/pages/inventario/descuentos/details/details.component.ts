@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
+import { Descuento } from 'src/app/Modelos/inventario/DescuentoModel';
+
 
 @Component({
   selector: 'app-details',
@@ -10,32 +11,47 @@ import { Vendedor } from 'src/app/Modelos/venta/Vendedor.Model';
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnChanges {
-  @Input() vendedorData: Vendedor | null = null;
+  @Input() descuentoData: Descuento | null = null;
   @Output() onClose = new EventEmitter<void>();
 
-  vendedorDetalle: Vendedor | null = null;
+  descuentoDetalle: Descuento | null = null;
   cargando = false;
 
   mostrarAlertaError = false;
   mensajeError = '';
+  referenciasLista = [];
+  clientesLista = [];
+  referenciasNombre : any[] = [];
+  ClientesNombre : any[] = [];
+escalasParsed: any[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['vendedorData'] && changes['vendedorData'].currentValue) {
-      this.cargarDetallesSimulado(changes['vendedorData'].currentValue);
+    if (changes['descuentoData'] && changes['descuentoData'].currentValue) {
+      this.cargarDetallesSimulado(changes['descuentoData'].currentValue);
     }
+    
+     
+
   }
 
   // Simulación de carga
-  cargarDetallesSimulado(data: Vendedor): void {
+  cargarDetallesSimulado(data: Descuento): void {
     this.cargando = true;
     this.mostrarAlertaError = false;
 
     setTimeout(() => {
       try {
-        this.vendedorDetalle = { ...data };
+        this.descuentoDetalle = { ...data };
         this.cargando = false;
+         this.referenciasLista = JSON.parse(this.descuentoDetalle.referencias ?? '[]');
+       this.clientesLista = JSON.parse(this.descuentoDetalle.clientes ?? '[]');
+        this.referenciasNombre = this.referenciasLista.map((r: any) => r.nombre);
+        this.ClientesNombre = this.clientesLista.map((r: any) => r.nombre);
+        if (typeof this.descuentoDetalle.escalas === 'string') {
+          this.escalasParsed = JSON.parse(this.descuentoDetalle.escalas);
+        }
       } catch (error) {
-        console.error('Error al cargar detalles del estado civil:', error);
+        console.error('Error al cargar detalles del descuento:', error);
         this.mostrarAlertaError = true;
         this.mensajeError = 'Error al cargar los detalles del vendedor.';
         this.cargando = false;

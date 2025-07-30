@@ -5,14 +5,23 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { PuntoEmision } from 'src/app/Modelos/ventas/PuntoEmision.Model';
+import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
+import { set } from 'lodash';
 
 @Component({
   selector: 'app-list',
@@ -29,7 +38,40 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
+  //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
   // bread crumb items
@@ -49,7 +91,7 @@ export class ListComponent implements OnInit {
      */
     this.breadCrumbItems = [
       { label: 'Ventas' },
-      { label: 'Puntos de Emision', active: true }
+      { label: 'Pedidos', active: true }
     ];
 
        // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
@@ -68,24 +110,21 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(puntodeemision: PuntoEmision): void {
-    console.log('Abriendo formulario de edición para:', puntodeemision);
+  editar(pedido: Pedido): void {
+    console.log('Abriendo formulario de edición para:', pedido);
     console.log('Datos específicos:', {
-      id: puntodeemision.puEm_Id,
-      codigo: puntodeemision.puEm_Codigo,
-      descripcion: puntodeemision.puEm_Descripcion,
-      completo: puntodeemision
+      completo: pedido
     });
-    this.PEEditando = { ...puntodeemision }; // Hacer copia profunda
+    this.PedidoEditando = { ...pedido }; // Hacer copia profunda
     this.showEditForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showDetailsForm = false; // Cerrar details si está abierto
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(puntodeemision: PuntoEmision): void {
-    console.log('Abriendo detalles para:', puntodeemision);
-    this.PEDetalle = { ...puntodeemision }; // Hacer copia profunda
+  detalles(pedido: Pedido): void {
+    console.log('Abriendo detalles para:', pedido);
+    this.PedidoDetalle = { ...pedido }; // Hacer copia profunda
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -99,10 +138,12 @@ export class ListComponent implements OnInit {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  PEEditando: PuntoEmision | null = null;
-  PEDetalle: PuntoEmision | null = null;
+  PedidoEditando: Pedido | null = null;
+  PedidoDetalle: Pedido | null = null;
   
   // Propiedades para alertas
+
+      mostrarOverlayCarga = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -112,16 +153,16 @@ export class ListComponent implements OnInit {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  PEEliminar: PuntoEmision | null = null;
+  PedidoEliminar: Pedido | null = null;
 
-constructor(public table: ReactiveTableService<PuntoEmision>, 
+constructor(public table: ReactiveTableService<Pedido>, 
     private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   )
     {
-    this.cargardatos();
+    this.cargardatos(true);
   }   
 
 
@@ -137,46 +178,62 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
   
   cerrarFormularioEdicion(): void {
     this.showEditForm = false;
-    this.PEEditando = null;
+    this.PedidoEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.PEDetalle = null;
+    this.PedidoDetalle = null;
   }
 
-  guardarPE(puntodeemision: PuntoEmision): void {
-    console.log('Estado civil guardado exitosamente desde create component:', puntodeemision);
+  guardarPedido(pedido: Pedido): void {
+    this.mostrarOverlayCarga = true;
+    setTimeout(()=> {
+      this.cargardatos(false);
+      this.showCreateForm = false;
+      this.mensajeExito = `Pedido guardado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
+  }
+
+  actualizarPedido(pedido: Pedido): void {
+    console.log('Pedido actualizado exitosamente desde edit component:', pedido);
     // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormulario();
+    this.mostrarOverlayCarga = true;
+    setTimeout(() => {
+      this.cargardatos(false);
+      this.showEditForm = false;
+      this.mensajeExito = `Pedido actualizado exitosamente`;
+      this.mostrarAlertaExito = true;
+      setTimeout(() => {
+        this.mostrarAlertaExito = false;
+        this.mensajeExito = '';
+      }, 3000);
+    }, 1000);
   }
 
-  actualizarPE(puntodeemision: PuntoEmision): void {
-    console.log('Estado civil actualizado exitosamente desde edit component:', puntodeemision);
-    // Recargar los datos de la tabla
-    this.cargardatos();
-    this.cerrarFormularioEdicion();
-  }
-
-  confirmarEliminar(puntodeemision: PuntoEmision): void {
-    console.log('Solicitando confirmación para eliminar:', puntodeemision);
-    this.PEEliminar = puntodeemision;
+  confirmarEliminar(pedido: Pedido): void {
+    console.log('Solicitando confirmación para eliminar:', pedido);
+    this.PedidoEliminar = pedido;
     this.mostrarConfirmacionEliminar = true;
     this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.PEEliminar = null;
+    this.PedidoEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.PEEliminar) return;
+    if (!this.PedidoEliminar) return;
     
-    console.log('Eliminando estado civil:', this.PEEliminar);
-    
-    this.http.post(`${environment.apiBaseUrl}/PuntoEmision/Eliminar/${this.PEEliminar.puEm_Id}`, {}, {
+    console.log('Eliminando estado civil:', this.PedidoEliminar);
+     this.mostrarOverlayCarga = true;
+    this.http.post(`${environment.apiBaseUrl}/Pedido/Eliminar/${this.PedidoEliminar.pedi_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -187,10 +244,11 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
         
         // Verificar el código de estado en la respuesta
         if (response.success && response.data) {
+          console.log('Respuesta exitosa del servidor:', response.data);
           if (response.data.code_Status === 1) {
             // Éxito: eliminado correctamente
             console.log('Punto de Emision exitosamente');
-            this.mensajeExito = `Punto de Emision "${this.PEEliminar!.puEm_Descripcion}" eliminado exitosamente`;
+            this.mensajeExito = `Pedido de "${this.PedidoEliminar!.clie_NombreNegocio}" eliminado exitosamente`;
             this.mostrarAlertaExito = true;
             
             // Ocultar la alerta después de 3 segundos
@@ -200,13 +258,13 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
-            console.log('Estado civil está siendo utilizado');
+            console.log('Pedido está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el estado civil está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el pedido está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -219,7 +277,7 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
             // Error general
             console.log('Error general al eliminar');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el estado civil.';
+            this.mensajeError = response.data.message_Status || 'Error al eliminar el pedido.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -285,12 +343,24 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
-    this.http.get<PuntoEmision[]>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
-    });
-  }
+
+   private cargardatos(state: boolean): void {
+       this.mostrarOverlayCarga = state;
+      this.http.get<Pedido[]>(`${environment.apiBaseUrl}/Pedido/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe(data => {
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+           const tienePermisoListar = this.accionPermitida('listar');
+          const userId = getUserId();
+  
+          const datosFiltrados = tienePermisoListar
+            ? data
+            : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+  
+          this.table.setData(datosFiltrados);
+          this.table.setData(data);
+        },500);
+      });
+    }
 }

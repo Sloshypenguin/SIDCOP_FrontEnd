@@ -2,8 +2,12 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
+import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
+import { Departamento } from 'src/app/Modelos/general/Departamentos.Model';
+import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
 
 @Component({
   selector: 'app-create',
@@ -24,13 +28,13 @@ export class CreateComponent implements OnInit {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  departamentos: any[] = [];
-  departamentoSeleccionado: string = '';
-  municipiosAll: any[] = [];
-  municipios: any[] = [];
-  municipioSeleccionado: string = '';
-  coloniasfiltro: any[] = [];
-  colonias: any[] = [];
+departamentos: Departamento[] = [];
+departamentoSeleccionado: string = '';
+municipiosAll: Municipio[] = [];
+municipios: Municipio[] = [];    
+municipioSeleccionado: string = '';
+coloniasfiltro: Colonias[] = [];
+colonias: Colonias[] = [];
 
   sucursal: Sucursales = {
     sucu_Id: 0,
@@ -40,7 +44,7 @@ export class CreateComponent implements OnInit {
     sucu_Telefono1: '',
     sucu_Telefono2: '',
     sucu_Correo: '',
-    usua_Creacion: environment.usua_Id,
+    usua_Creacion: getUserId(),
     sucu_FechaCreacion: new Date(),
     sucu_Estado: true
   };
@@ -49,14 +53,17 @@ export class CreateComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener departamentos
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.departamentos = data;
-    });
+    this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+    headers: { 'x-api-key': environment.apiKey }
+  }).subscribe(data => {
+    
+    this.departamentos = data;
+  }, error => {
+    console.error('Error al cargar los departamentos', error);
+  });
 
     // Obtener municipios (todos)
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+    this.http.get<Municipio[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.municipiosAll = data;
@@ -114,7 +121,7 @@ export class CreateComponent implements OnInit {
       sucu_Telefono1: '',
       sucu_Telefono2: '',
       sucu_Correo: '',
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       sucu_FechaCreacion: new Date(),
       sucu_Estado: true
     };
@@ -149,7 +156,7 @@ export class CreateComponent implements OnInit {
 
       const sucursalGuardar = {
         ...this.sucursal,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         sucu_FechaCreacion: new Date().toISOString()
       };
 

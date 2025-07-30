@@ -5,13 +5,16 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Sucursales } from 'src/app/Modelos/general/Sucursales.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+
 
 @Component({
   selector: 'app-list',
@@ -31,6 +34,8 @@ import { DetailsComponent } from '../details/details.component';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   breadCrumbItems!: Array<{}>;
   accionesDisponibles: string[] = [];
 
@@ -69,11 +74,16 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   sucursalAEliminar: Sucursales | null = null;
 
+  // Ordenamiento
+  sortField: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   constructor(
     public table: ReactiveTableService<Sucursales>,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {
     this.cargarDatos();
   }
@@ -119,14 +129,14 @@ export class ListComponent implements OnInit {
     this.sucursalDetalle = null;
   }
 
-guardarSucursal(sucursal: Sucursales): void {
-  this.cargarDatos();
-  this.cerrarFormulario();
-}
-actualizarSucursal(sucursal: Sucursales): void {
-  this.cargarDatos();
-  this.cerrarFormularioEdicion();
-}
+  guardarSucursal(sucursal: Sucursales): void {
+    this.cargarDatos();
+    this.cerrarFormulario();
+  }
+  actualizarSucursal(sucursal: Sucursales): void {
+    this.cargarDatos();
+    this.cerrarFormularioEdicion();
+  }
 
   confirmarEliminar(sucursal: Sucursales): void {
     this.sucursalAEliminar = sucursal;
@@ -148,10 +158,8 @@ actualizarSucursal(sucursal: Sucursales): void {
       }
     }).subscribe({
       next: (response: any) => {
-        // ...
         if (response.success && response.data) {
           if (response.data.code_Status === 1) {
-
             this.mensajeExito = `Sucursal "${this.sucursalAEliminar!.sucu_Descripcion}" eliminada exitosamente`;
             this.mostrarAlertaExito = true;
             setTimeout(() => {
@@ -239,10 +247,25 @@ actualizarSucursal(sucursal: Sucursales): void {
   }
 
   private cargarDatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+        this.mostrarOverlayCarga = false;
+      },
+      error: error => {
+        this.mostrarOverlayCarga = false;
+        this.table.setData([]);
+      }
     });
   }
 }

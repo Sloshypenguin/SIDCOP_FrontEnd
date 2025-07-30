@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Bodega } from 'src/app/Modelos/logistica/Bodega.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-create',
@@ -155,7 +156,7 @@ export class CreateComponent  {
         bode_Placa: this.bodega.bode_Placa.trim(),
         bode_TipoCamion: this.bodega.bode_TipoCamion.trim(),
         bode_Capacidad: this.bodega.bode_Capacidad,
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         bode_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
         numero: "", 
@@ -165,7 +166,6 @@ export class CreateComponent  {
       };
 
       console.log('Guardando bodega:', bodegaGuardar);
-      
       this.http.post<any>(`${environment.apiBaseUrl}/Bodega/Insertar`, bodegaGuardar, {
         headers: { 
           'X-Api-Key': environment.apiKey,
@@ -174,17 +174,19 @@ export class CreateComponent  {
         }
       }).subscribe({
         next: (response) => {
-          console.log('Bodega guardado exitosamente:', response);
-          this.mensajeExito = `Bodega "${this.bodega.bode_Descripcion}" guardado exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
-          
-          // Ocultar la alerta después de 3 segundos
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
+          if(response.data.code_Status === 1) {
+            this.mostrarErrores = false;
             this.onSave.emit(this.bodega);
             this.cancelar();
-          }, 3000);
+          }else{
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al guardar la bodega, ' + response.data.message_Status;
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
           console.error('Error al guardar bodega:', error);

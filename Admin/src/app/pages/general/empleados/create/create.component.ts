@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DropzoneModule, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
@@ -154,7 +155,7 @@ export class CreateComponent {
       empl_DireccionExacta: this.empleado.empl_DireccionExacta,
       empl_Imagen: this.empleado.empl_Imagen,
       empl_Estado: true,
-      usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+      usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
       empl_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       empl_FechaModificacion: new Date().toISOString(),

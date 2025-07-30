@@ -3,7 +3,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
 
 @Component({
@@ -112,7 +113,7 @@ export class CreateComponent {
         subc_Id: 0,
         subc_Descripcion: this.subcategoria.subc_Descripcion.trim(),
         cate_Id: this.selectedCate,
-        usua_Creacion: environment.usua_Id,// varibale global, obtiene el valor del environment, esto por mientras
+        usua_Creacion: getUserId(),// varibale global, obtiene el valor del environment, esto por mientras
         subc_FechaCreacion: new Date(),
         usua_Modificacion: 0,
         numero: "", 

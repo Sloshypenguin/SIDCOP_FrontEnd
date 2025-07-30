@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Colonias } from 'src/app/Modelos/general/Colonias.Model';
 import { Municipio } from 'src/app/Modelos/general/Municipios.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 
 @Component({
   selector: 'app-edit',
@@ -128,7 +129,7 @@ export class EditComponent implements OnInit, OnChanges {
         muni_Codigo: (this.coloniaEditada.muni_Codigo ?? '').trim(),
         usua_Creacion: this.coloniaEditada.usua_Creacion,
         colo_FechaCreacion: this.coloniaEditada.colo_FechaCreacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         numero: this.coloniaEditada.secuencia || '',
         depa_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',

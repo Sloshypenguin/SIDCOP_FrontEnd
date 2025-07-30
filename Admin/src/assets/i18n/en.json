@@ -15,6 +15,7 @@
       "LIST": {
         "ESTADOSCIVILES": "Estados Civiles",
         "SUCURSALES": "Sucursales",
+        "CLIENTES": "Clientes",
         "PROVEEDORES": "Proveedores",
         "MARCAS": "Marcas",
         "MARCASVEHICULOS": "Marcas Vehiculos",
@@ -44,7 +45,9 @@
         "CAIS": "CAIs",
         "VENDEDORES": "Vendedores",
         "REGISTROCAIS": "Registros CAI",
-        "PUNTOSEMISION": "Puntos Emision"
+        "PUNTOSEMISION": "Puntos Emision",
+        "CUENTASPORCOBRAR": "Cuentas por cobrar",
+        "PEDIDOS": "Pedidos"
       }
     },
     "LOGISTICA": {

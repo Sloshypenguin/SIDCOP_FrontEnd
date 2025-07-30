@@ -16,8 +16,24 @@ export class Descuento{
   usuarioModificacion: string = '';
   code_Status: number = 0;
   message_Status: string ='';
+  secuencia?: string ='';
+  clientes?: string ='';
+  referencias?: string ='';
+  escalas?: string ='';
+  escalas_Json?: EscalaViewModel[] = [];
+  idClientes?: number[] = [] ; 
+  idReferencias?: number[] = [] ;
+  desc_TipoFactura: string=''; 
+
+
 
   constructor(init?: Partial<Descuento>) {
     Object.assign(this, init);
   }
+}
+
+export class EscalaViewModel {
+  deEs_InicioEscala: number = 0;
+  deEs_FinEscala: number = 0;
+  deEs_Valor: number = 0;
 }

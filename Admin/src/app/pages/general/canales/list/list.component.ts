@@ -5,13 +5,15 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Canal } from 'src/app/Modelos/general/Canal.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list-canales',
@@ -31,6 +33,8 @@ import { DetailsComponent } from '../details/details.component';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   breadCrumbItems!: Array<{}>;
 
 
@@ -47,12 +51,6 @@ export class ListComponent implements OnInit {
     ];
     this.cargarAccionesUsuario();
     this.cargardatos();
-  }
-
-  // Dropdown acciones
-  activeActionRow: number | null = null;
-  onActionMenuClick(rowIndex: number) {
-    this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
   // Form controls
@@ -78,14 +76,15 @@ export class ListComponent implements OnInit {
     public table: ReactiveTableService<Canal>,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
   ) {}
 
   crear(): void {
     this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false;
     this.showDetailsForm = false;
-    this.activeActionRow = null;
+    // (Eliminada referencia a activeActionRow)
   }
 
   editar(canal: Canal): void {
@@ -93,7 +92,6 @@ export class ListComponent implements OnInit {
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
-    this.activeActionRow = null;
   }
 
   detalles(canal: Canal): void {
@@ -101,7 +99,7 @@ export class ListComponent implements OnInit {
     this.showDetailsForm = true;
     this.showCreateForm = false;
     this.showEditForm = false;
-    this.activeActionRow = null;
+
   }
 
   cerrarFormulario(): void {
@@ -137,7 +135,6 @@ export class ListComponent implements OnInit {
   confirmarEliminar(canal: Canal): void {
     this.canalAEliminar = canal;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null;
   }
 
   cancelarEliminar(): void {
@@ -204,10 +201,26 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<Canal[]>(`${environment.apiBaseUrl}/Canal/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+        this.mostrarOverlayCarga = false;
+      },
+      error: error => {
+        console.error('Error al cargar canales:', error);
+        this.table.setData([]);
+        this.mostrarOverlayCarga = false;
+      }
     });
   }
 

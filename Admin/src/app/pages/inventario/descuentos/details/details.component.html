@@ -19,92 +19,70 @@
   </div>
   
   <!-- Contenido de detalles -->
-  <div *ngIf="!cargando && vendedorDetalle" class="details-content">
+  <div *ngIf="!cargando && descuentoDetalle" class="details-content">
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <div class="details-title">Detalles del Vendedor</div>
+      <div class="details-title">Detalles del Descuento</div>
       <div class="details-id-row">
   <div class="details-id">
-    <div class="details-id-label">Codigo</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Codigo }}</div>
+    <div class="details-id-label">Descripcion</div>
+    <div class="details-id-value">{{ descuentoDetalle.desc_Descripcion }}</div>
   </div>
   <div class="details-id">
-    <div class="details-id-label">DNI</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_DNI }}</div>
+    <div class="details-id-label">Tipo</div>
+    <div class="details-id-value">{{descuentoDetalle.desc_Tipo == true? 'Monto Fijo' : 'Porcentaje'}}</div>
   </div>
   <div class="details-id">
-    <div class="details-id-label">Nombre Completo</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Nombres }} {{ vendedorDetalle.vend_Apellidos }}</div>
+    <div class="details-id-label">Aplica Para {{descuentoDetalle.desc_Aplicar == 'M'? 'Marcas' : descuentoDetalle.desc_Aplicar == 'C'? 'Categorias' : descuentoDetalle.desc_Aplicar == 'S'? 'Subcategoria' : 'Productos' }}</div>
+     <div class="details-id-value">
+  <ng-container *ngFor="let nombre of referenciasNombre; let i = index">
+    <span >{{ nombre }}<span *ngIf="i < referenciasNombre.length - 1">, </span></span>
+    <br *ngIf="(i + 1) % 3 === 0" />
+  </ng-container>
+</div>
   </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Sexo</div>
-    <div class="details-id-value"> {{
-    vendedorDetalle.vend_Sexo === 'M' ? 'Masculino' :
-    vendedorDetalle.vend_Sexo === 'F' ? 'Femenino' :
-    'N/A'
-  }}</div>
+   <div class="details-id">
+    <div class="details-id-label">Tipo de Factura</div>
+    <div class="details-id-value"> {{descuentoDetalle.desc_TipoFactura == 'CR'? 'Credito' : descuentoDetalle.desc_TipoFactura == 'CO'? 'Contado' : descuentoDetalle.desc_TipoFactura == 'AM'? 'Ambas' : 'N/A' }}</div>
 
    
   </div>
 
   <div class="details-id">
-    <div class="details-id-label">Telefono</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Telefono }}</div>
+    <div class="details-id-label">Validez</div>
+    <div class="details-id-value"> {{ formatearFecha(descuentoDetalle.desc_FechaInicio ) || 'N/A' }} al {{ formatearFecha(descuentoDetalle.desc_FechaFin ) || 'N/A' }}</div>
+
+   
   </div>
 
   <div class="details-id">
-    <div class="details-id-label">Correo</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Correo }}</div>
+    <div class="details-id-label">Observaciones</div>
+    <div class="details-id-value">{{ descuentoDetalle.desc_Observaciones }}</div>
+  </div>
+
+  <div class="details-id">
+    <div class="details-id-label">Clientes con el descuento</div>
+    <div class="details-id-value">
+  <ng-container *ngFor="let nombre of ClientesNombre; let i = index">
+    <span >{{ nombre }}<span *ngIf="i < ClientesNombre.length - 1">, </span></span>
+    <br *ngIf="(i + 1) % 3 === 0" />
+  </ng-container>
+</div>
   </div>
   
 
   <div class="details-id">
-    <div class="details-id-label">Colonia</div>
-    <div class="details-id-value">{{ vendedorDetalle.colo_Descripcion }}</div>
+    <div class="details-id-label">Escala</div>
+   <div class="details-id-value">
+  <div *ngFor="let escala of escalasParsed">
+    De {{ escala.deEs_InicioEscala }} a {{ escala.deEs_FinEscala }}: {{ escala.deEs_Valor | number: '1.2-2' }} {{descuentoDetalle.desc_Tipo == true? 'Lps.' : '%'}}
+  </div>
+</div>
   </div>
 
-   <div class="details-id">
-    <div class="details-id-label">Direccion Exacta</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_DireccionExacta }} </div>
-  </div>
-
-
-
-   <div class="details-id">
-    <div class="details-id-label">Sucursal</div>
-    <div class="details-id-value">{{ vendedorDetalle.sucu_Descripcion }}</div>
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Supervisor</div>
-    <div class="details-id-value">{{ vendedorDetalle.nombreSupervisor }} {{ vendedorDetalle.apellidoSupervisor }}</div>
-  </div>
-
-   <div class="details-id">
-    <div class="details-id-label">Ayudante</div>
-    <div class="details-id-value">  {{
-    vendedorDetalle.nombreAyudante || vendedorDetalle.apellidoAyudante
-      ? (vendedorDetalle.nombreAyudante + ' ' + vendedorDetalle.apellidoAyudante)
-      : 'Sin ayudante'
-  }}</div>
-  </div>
-
-   <div class="details-id">
-    <div class="details-id-label">Tipo de Vendedor</div>
-    <div class="details-id-value"> {{
-    vendedorDetalle.vend_Tipo === 'P' ? 'Preventista' :
-    vendedorDetalle.vend_Tipo === 'V' ? 'Venta directa' :
-    vendedorDetalle.vend_Tipo === 'F' ? 'Entregador' :
-    'N/A'
-  }}</div>
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Es contratista?</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_EsExterno == true? 'Si': 'No' }}</div>
-  </div>
+  
 
   </div>
 </div>
@@ -129,10 +107,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ vendedorDetalle?.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ descuentoDetalle?.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaCreacion ?? null) || 'N/A' }}</span>
+          <span class="audit-date">{{ formatearFecha(descuentoDetalle?.desc_FechaCreacion ?? null) || 'N/A' }}</span>
         </div>
       </div>
       
@@ -142,10 +120,10 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ vendedorDetalle?.usuarioModificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ descuentoDetalle?.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaModificacion?? null ) }}</span>
+          <span class="audit-date">{{ formatearFecha(descuentoDetalle?.desc_FechaModificacion ?? null ) || 'N/A' }}</span>
         </div>
       </div>
     </div>

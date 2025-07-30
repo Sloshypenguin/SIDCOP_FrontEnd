@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RegistroCAI } from 'src/app/Modelos/ventas/RegistroCAI.Model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
@@ -59,25 +61,71 @@ export class EditComponent implements OnChanges {
 
  CAI: any[] = []; 
   PE: any[] = [];
-  Sucursales: any[] = []; // Lista de sucursales, se puede llenar con un servicio si es necesario
+  searchCAI = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.nCai_Codigo?.toLowerCase().includes(term) ||
+      item.nCai_Descripcion?.toLowerCase().includes(term) 
+    
+    );
+  };
+
   cargarCAI() {
-      this.http.get<any>('https://localhost:7071/CaiS/Listar', {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.CAI = data);
-    };
+    this.http
+      .get<any>(`${environment.apiBaseUrl}/CaiS/Listar`, {
+        headers: { 'x-api-key': environment.apiKey },
+      })
+      .subscribe((data) => (this.CAI = data));
+  }
 
-     cargarPE() {
-      this.http.get<any>('https://localhost:7071/PuntoEmision/Listar', {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.PE = data);
-    };
+  searchPuntoEmision = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.puEm_Descripcion?.toLowerCase().includes(term) ||
+      item.sucu_Descripcion?.toLowerCase().includes(term) ||
+      item.puEm_Codigo?.toLowerCase().includes(term)
+    );
+  };
 
+  cargarPE() {
+    this.http
+      .get<any>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
+        headers: { 'x-api-key': environment.apiKey },
+      })
+      .subscribe((data) => (this.PE = data));
+  }
 
-     cargarSucursales() {
-      this.http.get<any>('https://localhost:7071/Sucursales/Listar', {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe((data) => this.Sucursales = data);
-    };
+  ordenarPorMunicipioYDepartamento(sucursales: any[]): any[] {
+    return sucursales.sort((a, b) => {
+      if (a.depa_Descripcion < b.depa_Descripcion) return -1;
+      if (a.depa_Descripcion > b.depa_Descripcion) return 1;
+      if (a.muni_Descripcion < b.muni_Descripcion) return -1;
+      if (a.muni_Descripcion > b.muni_Descripcion) return 1;
+      return 0;
+    });
+  }
+
+  searchSucursal = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.sucu_Descripcion?.toLowerCase().includes(term) ||
+      item.muni_Descripcion?.toLowerCase().includes(term) ||
+      item.depa_Descripcion?.toLowerCase().includes(term)
+    );
+  };
+
+  Sucursales: any[] = [];
+
+  cargarSucursales() {
+    this.http
+      .get<any>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+        headers: { 'x-api-key': environment.apiKey },
+      })
+      .subscribe(
+        (data) =>
+          (this.Sucursales = this.ordenarPorMunicipioYDepartamento(data))
+      );
+  }
 
   constructor(private http: HttpClient) {
 
@@ -144,16 +192,25 @@ export class EditComponent implements OnChanges {
         regC_Id: this.registroCai.regC_Id,
         regC_Descripcion: this.registroCai.regC_Descripcion.trim(),
         sucu_Id: this.registroCai.sucu_Id,
+         sucu_Descripcion: "",
         puEm_Id: this.registroCai.puEm_Id,
+          puEm_Descripcion: "",
         nCai_Id: this.registroCai.nCai_Id,
+          nCai_Descripcion: "",
         regC_RangoInicial: this.registroCai.regC_RangoInicial.trim(),
         regC_RangoFinal: this.registroCai.regC_RangoFinal.trim(),
         regC_FechaInicialEmision: this.registroCai.regC_FechaInicialEmision,
         regC_FechaFinalEmision: this.registroCai.regC_FechaFinalEmision,
         
-
-        usua_Modificacion: environment.usua_Id,
+secuencia: 0,
+        estado: "",
+        code_Status: 0,
+        message_Status: '',
+        regC_Estado: false,
+        usua_Modificacion: getUserId(),
         regC_FechaModificacion: new Date().toISOString(),
+          usuarioCreacion: "", 
+        usuarioModificacion: "" 
        
       };
 
@@ -165,15 +222,9 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Registro CAI "${this.registroCai.puEm_Descripcion}" actualizado exitosamente`;
-          this.mostrarAlertaExito = true;
-          this.mostrarErrores = false;
-
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
+            this.mostrarErrores = false;
             this.onSave.emit(this.registroCai);
             this.cancelar();
-          }, 3000);
         },
         error: (error) => {
           console.error('Error al actualizar el Registro CAI:', error);

@@ -2,7 +2,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 
 @Component({
@@ -16,7 +17,6 @@ export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<any>();
 
-  mostrarOverlayCarga = false;
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -132,9 +132,9 @@ export class CreateComponent {
         usua_EsVendedor: this.usuario.usua_EsVendedor,
         usua_EsAdmin: this.usuario.usua_EsAdmin,
         usua_Imagen: this.usuario.usua_Imagen,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         usua_FechaCreacion: new Date().toISOString(),
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         usua_FechaModificacion: new Date().toISOString(),
         usua_Estado: true,
         permisosJson:"",
@@ -143,7 +143,6 @@ export class CreateComponent {
         code_Status: 0,
         message_Status: '',
       };
-      this.mostrarOverlayCarga = true;
       this.http.post<any>(`${environment.apiBaseUrl}/Usuarios/Insertar`, usuarioGuardar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -152,22 +151,19 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          setTimeout(() => {
-            this.mostrarOverlayCarga = false;
-            if (response.data.code_Status === 1) {
-              this.mostrarErrores = false;
-              this.onSave.emit(this.usuario);
-              this.cancelar();
-            } else {
-              this.mostrarAlertaError = true;
-              this.mensajeError = 'Error al guardar el usuario, ' + response.data.message_Status;
-              this.mostrarAlertaExito = false;
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-            }
-          }, 1000);
+          if (response.data.code_Status === 1) {
+            this.mostrarErrores = false;
+            this.onSave.emit(this.usuario);
+            this.cancelar();
+          } else {
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al guardar el usuario, ' + response.data.message_Status;
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }
         },
         error: (error) => {
           this.mostrarAlertaError = true;

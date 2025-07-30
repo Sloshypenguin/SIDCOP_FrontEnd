@@ -1,11 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { EstadoCivil } from 'src/app/Modelos/general/EstadoCivil.Model';
@@ -28,9 +36,43 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
@@ -150,7 +192,6 @@ export class ListComponent implements OnInit {
     console.log('Solicitando confirmación para eliminar:', estadoCivil);
     this.estadoCivilAEliminar = estadoCivil;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
@@ -276,12 +317,26 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+    }).subscribe({
+      next: data => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
+
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+        this.table.setData(datosFiltrados);
+        this.mostrarOverlayCarga = false;
+      },
+      error: error => {
+        console.error('Error al cargar estados civiles:', error);
+        this.table.setData([]);
+        this.mostrarOverlayCarga = false;
+      }
     });
   }
 }
-

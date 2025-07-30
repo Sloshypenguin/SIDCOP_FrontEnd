@@ -5,16 +5,21 @@ import 'firebase/compat/firestore';
 class FirebaseAuthBackend {
 
     constructor(firebaseConfig: any) {
-        if (firebaseConfig) {
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            firebase.auth().onAuthStateChanged((user: any) => {
-                if (user) {
-                    sessionStorage.setItem('authUser', JSON.stringify(user));
-                } else {
-                    sessionStorage.removeItem('authUser');
-                }
-            });
+        if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey.length > 0) {
+            // Initialize Firebase solo si hay una apiKey válida
+            try {
+                firebase.initializeApp(firebaseConfig);
+                firebase.auth().onAuthStateChanged((user: any) => {
+                    if (user) {
+                        sessionStorage.setItem('authUser', JSON.stringify(user));
+                    } else {
+                        sessionStorage.removeItem('authUser');
+                    }
+                });
+            } catch (error) {
+                // No hacemos nada más, simplemente evitamos que la app falle
+            }
+        } else {
         }
     }
 

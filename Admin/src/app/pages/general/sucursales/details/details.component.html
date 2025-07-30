@@ -19,49 +19,47 @@
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && sucursalDetalle" class="details-content">
     <!-- Header con descripción -->
-<!-- Header con descripción -->
-<div class="details-header">
-  <div class="details-title">Detalles de Sucursal</div>
-  <div class="details-id-row">
-    <div class="details-id">
-      <div class="details-id-label">Código</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Id || 'N/A' }}</div>
+    <div class="details-header">
+      <div class="details-title">Detalles de Sucursal</div>
+      <div class="details-id-row">
+        <div class="details-id">
+          <div class="details-id-label">Código</div>
+          <div class="details-id-value">{{ sucursalDetalle.sucu_Id || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Descripción</div>
+          <div class="details-id-value">{{ sucursalDetalle.sucu_Descripcion || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Departamento</div>
+          <div class="details-id-value">{{ sucursalDetalle.depa_Descripcion || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Municipio</div>
+          <div class="details-id-value">{{ sucursalDetalle.muni_Descripcion || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Colonia</div>
+          <div class="details-id-value">{{ sucursalDetalle.colo_Descripcion || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Dirección Exacta</div>
+          <div class="details-id-value">{{ sucursalDetalle.sucu_DireccionExacta || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Teléfono 1</div>
+          <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono1 || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Teléfono 2</div>
+          <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono2 || 'N/A' }}</div>
+        </div>
+        <div class="details-id">
+          <div class="details-id-label">Correo</div>
+          <div class="details-id-value">{{ sucursalDetalle.sucu_Correo || 'N/A' }}</div>
+        </div>
+      </div>
     </div>
-    <div class="details-id">
-      <div class="details-id-label">Descripción</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Descripcion || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Departamento</div>
-      <div class="details-id-value">{{ sucursalDetalle.depa_Descripcion || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Municipio</div>
-      <div class="details-id-value">{{ sucursalDetalle.muni_Descripcion || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Colonia</div>
-      <div class="details-id-value">{{ sucursalDetalle.colo_Descripcion || 'N/A' }}</div>
-    </div>  
-    <div class="details-id">
-      <div class="details-id-label">Dirección Exacta</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_DireccionExacta || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Teléfono 1</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono1 || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Teléfono 2</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono2 || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Correo</div>
-      <div class="details-id-value">{{ sucursalDetalle.sucu_Correo || 'N/A' }}</div>
-    </div>
-  </div>
-</div>
-
     <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">

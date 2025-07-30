@@ -10,12 +10,12 @@ const routes: Routes = [
     children: [
       { 
         path: '',
-        redirectTo: 'create',
+        redirectTo: 'list',
         pathMatch: 'full'
       },
       {
-        path: 'create',
-        loadComponent: () => import('./create/create.component').then(m => m.CreateComponent),
+        path: 'list',
+        loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
         data: {
           title: 'Listado de Descuentos',
         }

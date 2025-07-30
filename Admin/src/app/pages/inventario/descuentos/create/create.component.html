@@ -25,19 +25,42 @@
       <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
-  
+
   <div class="flex-grow-1">
-    <ng-stepper #cdkStepper [linear]="true" (selectionChange)="change($event)" class="step-arrow-nav wizard">
-      <cdk-step [optional]="false" >
-        <ng-template cdkStepLabel class="wizard-nav">
-          <button class="nav-link done" id="steparrow-gen-info-tab" data-bs-toggle="pill" type="button" aria-readonly="true" disabled="true">Informacion General</button>
-        </ng-template>
-        @if (cdkStepper.selectedIndex === 0) {
-            <div class="row">
-            <div class="col-md-6">
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 1" (click)="activeTab = 1" type="button" role="tab">
+          Informacion General
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2" type="button" role="tab">
+          Aplicar para
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3" type="button" role="tab">
+          Clientes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 4" (click)="activeTab = 4" type="button" role="tab">
+          Escalas
+        </button>
+      </li>
+    </ul>
+    
+    <div *ngIf="activeTab === 1">
+      <div class="row mx-lg-4">
+         <div class="col-md-6">
               <label  class="form-label">Descripcion<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                  <i class="ri-attachment-line" [ngStyle]="{
+                border: (!descuento.desc_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input 
                     type="text" 
                     class="form-control" 
@@ -58,6 +81,11 @@
               <label  class="form-label">Tipo<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                   <i class="ri-refund-2-fill" [ngStyle]="{
+                border: (!descuento.desc_Tipo == null && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_Tipo == null && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <select 
                       id="tipodescuento" 
                       name="tipodescuento" 
@@ -78,16 +106,51 @@
               </div>
             </div>
 
+             <div class="col-md-6">
+              <label  class="form-label">Tipo Factura<span class="text-danger">*</span></label>
+              <div class="mb-3">
+            
+                <div class="toggle-group">
+                  <div class="toggle-option">
+                    <input
+                      type="checkbox"
+                      id="contado"
+                      [(ngModel)]="seleccionContado"
+                      (change)="actualizarFormaPago()"
+                    />
+                    <label for="contado">Contado</label>
+                  </div>
+                  <div class="toggle-option">
+                    <input
+                      type="checkbox"
+                      id="credito"
+                      [(ngModel)]="seleccionCredito"
+                      (change)="actualizarFormaPago()"
+                    />
+                    <label for="credito">Crédito</label>
+                  </div>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!formaPago && mostrarErrores">
+                  <small>El tipo de factura es requerida</small>
+                </div>
+              </div>
+            </div>
+
             <div class="col-md-6">
               <label  class="form-label">Fecha Inicio<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                   <i class="ri-calendar-2-line" [ngStyle]="{
+                border: (!descuento.desc_FechaInicio && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_FechaInicio && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input 
                     type="Date" 
                     class="form-control" 
                     [class.is-invalid]="!descuento.desc_FechaInicio && mostrarErrores"
                     id="desc_FechaInicio"
-                    [(ngModel)]="descuento.desc_FechaInicio"
+                    [(ngModel)]="fechaInicioFormato"
                     placeholder="Ingrese la Fecha Inicio del descuento"
                     required>
                   <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -102,12 +165,17 @@
               <label  class="form-label">Fecha Fin<span class="text-danger">*</span></label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                  <i class="ri-calendar-2-line" [ngStyle]="{
+                border: (!descuento.desc_FechaFin && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_FechaFin && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input 
                     type="Date" 
                     class="form-control" 
                     [class.is-invalid]="!descuento.desc_FechaFin && mostrarErrores"
                     id="desc_FechaFin"
-                    [(ngModel)]="descuento.desc_FechaFin"
+                    [(ngModel)]="fechaFinFormato"
                     placeholder="Ingrese la Fecha Fin del descuento"
                     required>
                   <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
@@ -122,6 +190,12 @@
               <label  class="form-label">Observaciones</label>
               <div class="mb-3">
                 <div class="d-flex align-items-center">
+                  <i class="ri-attachment-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+
                   <input 
                     type="text" 
                     class="form-control" 
@@ -135,43 +209,48 @@
               
               </div>
             </div>
-          </div>
 
-        }
-        <div class="d-flex align-items-start gap-3 mt-4">
-           <button type="button" class="btn btn-primary gold" (click)="cancelar()">
-            <span class="btn-text">Cancelar</span>
-            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="cancelar()"
+          >
+            <i class="ri-close-circle-line"></i> Cancelar
           </button>
-          <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
-            nexttab" data-nexttab="steparrow-description-info-tab" >
-             <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+          <button style="background: none;border: none;"></button>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
-        </cdk-step>
-        <cdk-step [optional]="false">
-          <ng-template cdkStepLabel>
-            <button class="nav-link" id="steparrow-description-info-tab" type="button" aria-readonly="true" disabled>Aplica para</button>
-          </ng-template>
-        @if (cdkStepper.selectedIndex === 1) {
-             <div class="row">
+      </div>
+    </div>
+    </div>
 
-              <div class="col-md-12">
+      <div *ngIf="activeTab === 2">
+      <div class="row mx-lg-4">
+        <div class="col-md-12">
               <label  class="form-label">Aplicar a:</label>
               <div class="mb-3">
                 <div class="row">
-                <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('productos')">Productos</button>
+                <div class="application-tabs col-md-3">
+                  <button class="tab-button tab-button--productos w-100" [class.active]="tabActiva === 'productos'" data-tab="productos" (click)="mostrarSeccion('productos')">Productos</button>
                 </div>
                 <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('categorias')">Categoría</button>
+                  <button class="tab-button tab-button--categorias w-100" [class.active]="tabActiva === 'categorias'" data-tab="categorias" (click)="mostrarSeccion('categorias')">Categoría</button>
                 </div>
                 <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('subcategorias')">Subcategoría</button>
+                  <button class="tab-button tab-button--subcategorias w-100" [class.active]="tabActiva === 'subcategorias'" data-tab="subcategorias" (click)="mostrarSeccion('subcategorias')">Subcategoría</button>
                 </div>
                 <div class="col-md-3">
-                  <button class="btn btn-primary w-100" (click)="mostrarSeccion('marcas')">Marca</button>
+                  <button class="tab-button tab-button--marcas w-100" [class.active]="tabActiva === 'marcas'" data-tab="marcas" (click)="mostrarSeccion('marcas')">Marcas</button>
                 </div>
               </div>
             </div>
@@ -206,28 +285,34 @@
               
               </div>
             </div>
-          </div>
-        }
-          <div class="d-flex align-items-start gap-3 mt-4">
-            <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
-              <span class="btn-text">Regresar</span>
-            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
-              
-            </button>
-            <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
-            nexttab" data-nexttab="steparrow-description-info-tab" >
-             <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
-          </button>
-          </div>
-        </cdk-step>
 
-        <cdk-step [optional]="false">
-          <ng-template cdkStepLabel>
-            <button class="nav-link" id="steparrow-descripcion-info-tab" type="button" aria-readonly="true" disabled>Clientes</button>
-          </ng-template>
-          @if (cdkStepper.selectedIndex === 2) {
-              <div class="row">
+         <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  
+  
+        <div *ngIf="activeTab === 3">
+      <div class="row mx-lg-4">
                 <div class="col-md-12">
                   <label  class="form-label">Aplicar para:</label>
                   <div class="mb-3">
@@ -256,7 +341,7 @@
                             class="form-check-input"
                             [id]="'cliente-' + cliente.clie_Id"
                             [checked]="clientesSeleccionados.includes(cliente.clie_Id)"
-                            (change)="alternarCliente(cliente.clie_Id, $any($event.target).checked)"
+                            (click)="onClickCheckbox($event, cliente.clie_Id)"
                           />
                           <label class="form-check-label" [for]="'cliente-' + cliente.clie_Id">
                             {{ cliente.clie_NombreNegocio }}
@@ -266,44 +351,79 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              
-
-          }
-            <div class="d-flex align-items-start gap-3 mt-4">
-            <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
-              <span class="btn-text">Regresar</span>
-            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
-              
-            </button>
-             <button type="button" (click)="irAlSiguientePaso()" class="btn btn-primary  right ms-auto nexttab
-            nexttab" data-nexttab="steparrow-description-info-tab" >
-             <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i></span>
+           
+               <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
           </button>
-            </div>
-          </cdk-step>
-          <cdk-step [optional]="false">
-            <ng-template cdkStepLabel>
-                <button class="nav-link"  type="button" aria-readonly="true" disabled>Escala</button>
-            </ng-template>
-            @if (cdkStepper.selectedIndex === 3) {
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+             <div *ngIf="activeTab === 4">
+                <div class="row mx-lg-4">
                 <div *ngFor="let escala of escalas; let i = index" class="row align-items-end mb-3">
 
                 <div class="col-md-4">
                   <label class="form-label">Inicio Escala<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="ri-swap-box-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+
                   <input type="number" class="form-control" [(ngModel)]="escala.deEs_InicioEscala" name="inicio{{i}}" required>
                 </div>
+                </div>
+                </div>
+              
 
                 <div class="col-md-4">
                   <label class="form-label">Fin Escala<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-swap-box-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input type="number" class="form-control" [(ngModel)]="escala.deEs_FinEscala" name="fin{{i}}" required>
                 </div>
+              </div>
+              </div>
+
 
                 <div class="col-md-3">
                   <label class="form-label">Valor<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-money-dollar-circle-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
                   <input type="number" class="form-control" [(ngModel)]="escala.deEs_Valor" name="valor{{i}}" required>
                 </div>
+              </div>
+              </div>
+
 
                 <div class="col-md-1">
                   <button type="button" class="btn btn-danger" (click)="eliminarEscala(i)" *ngIf="escalas.length > 1">
@@ -319,22 +439,36 @@
                           <span class="btn-icon"><i class="ri-add-line"></i></span>
                         </button>
               </div>
-    
-            }
-            <div class="d-flex align-items-start gap-3 mt-4">
-             <button type="button" class="btn btn-primary gold  previestab" data-previous="steparrow-gen-info-tab" cdkStepperPrevious>
-              <span class="btn-text">Regresar</span>
-            <span class="btn-icon"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i></span>
-              
-            </button>
-             <button type="button" class="btn btn-primary right ms-auto nexttab
-                nexttab" (click)="guardar()">
-            <span class="btn-text">Guardar</span>
-            <span class="btn-icon"><i class="ri-save-line"></i></span>
+
+
+               <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
           </button>
-            </div>
-            </cdk-step>
-          </ng-stepper>
+          <button
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="guardar()"
+          >
+            Guardar <i class="ri-save-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+           
+    
+<div *ngIf="mostrarAlertaWarning" class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+    <strong>¡Atención!</strong> {{ mensajeWarning }}
+    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+  </div>
     
   
 

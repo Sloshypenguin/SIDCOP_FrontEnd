@@ -58,7 +58,6 @@ export class LocalstorageDebugComponent implements OnInit {
           }
         } catch (e) {
           // Si no se puede parsear como JSON, dejarlo como está
-          console.log('No se pudo parsear como JSON:', key);
         }
         
         this.localStorageItems.push({ key, value: value || '' });

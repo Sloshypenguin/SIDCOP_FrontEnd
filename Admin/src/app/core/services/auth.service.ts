@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MenuService } from './menu.service';
 import { Store } from '@ngrx/store';
 
 import { User } from '../../store/Authentication/auth.models';
@@ -39,23 +40,46 @@ export class AuthenticationService {
   constructor(
     private http: HttpClient,
     private store: Store,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private menuService: MenuService
   ) {
     this.currentUserSubject = new BehaviorSubject<User>(
       JSON.parse(localStorage.getItem('currentUser')!)
     );
+    
+    // Inicializar el menú según los permisos actuales al cargar el servicio
+    const permisosJson = localStorage.getItem('permisosJson');
+    this.menuService.filtrarMenuPorPermisos(permisosJson);
   }
 
   // Sign in with Google provider
   signInWithGoogle(): Promise<User> {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return this.signInWithPopup(provider);
+    try {
+      if (!firebase.apps.length || !(firebase.apps[0].options as any).apiKey) {
+        console.warn('Firebase no está inicializado o tiene una configuración inválida');
+        return Promise.reject('Firebase no está disponible');
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      return this.signInWithPopup(provider);
+    } catch (error) {
+      console.error('Error al intentar autenticar con Google:', error);
+      return Promise.reject('Error al intentar autenticar con Google');
+    }
   }
 
   // Sign in with Facebook provider
   signInWithFacebook(): Promise<User> {
-    const provider = new firebase.auth.FacebookAuthProvider();
-    return this.signInWithPopup(provider);
+    try {
+      if (!firebase.apps.length || !(firebase.apps[0].options as any).apiKey) {
+        console.warn('Firebase no está inicializado o tiene una configuración inválida');
+        return Promise.reject('Firebase no está disponible');
+      }
+      const provider = new firebase.auth.FacebookAuthProvider();
+      return this.signInWithPopup(provider);
+    } catch (error) {
+      console.error('Error al intentar autenticar con Facebook:', error);
+      return Promise.reject('Error al intentar autenticar con Facebook');
+    }
   }
 
   // Sign in with a popup for the specified provider
@@ -174,6 +198,9 @@ export class AuthenticationService {
             // Guardar permisos JSON
             if (userData.permisosJson) {
               localStorage.setItem('permisosJson', userData.permisosJson);
+              
+              // Actualizar el menú según los permisos del usuario
+              this.menuService.filtrarMenuPorPermisos(userData.permisosJson);
             }
 
             // Guardar cualquier otro dato relevante que venga en la respuesta
@@ -230,8 +257,12 @@ export class AuthenticationService {
 
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
+    localStorage.removeItem('permisosJson'); // Eliminar permisos al cerrar sesión
     this.currentUserSubject.next(null!);
     this.store.dispatch(logoutSuccess());
+    
+    // Actualizar el menú para mostrar solo elementos permitidos sin autenticación
+    this.menuService.filtrarMenuPorPermisos(null);
 
     // Return an Observable<void> indicating the successful logout
     return of(undefined).pipe(

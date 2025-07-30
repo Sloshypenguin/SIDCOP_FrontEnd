@@ -1,0 +1,366 @@
+<div class="d-flex flex-column" style="height: 100%; min-height: 250px">
+  <!-- Título del componente -->
+  <h5 class="card-title mb-4">Editar Pedido</h5>
+
+  <!-- Contenedor de alertas flotantes -->
+  <div class="alert-container">
+    <!-- Alerta de éxito -->
+    <div
+      *ngIf="mostrarAlertaExito"
+      class="alert alert-success alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Alerta de advertencia -->
+    <div
+      *ngIf="mostrarAlertaWarning"
+      class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+      <strong>¡Atención!</strong> {{ mensajeWarning }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Alerta de error -->
+    <div
+      *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert"
+      role="alert"
+    >
+      <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+      <strong>¡Error!</strong> {{ mensajeError }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarAlerta()"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+
+  <div class="flex-grow-1">
+    <div class="row">
+
+
+       <div class="col-md-6">
+        <div class="mb-3">
+          <label for="clie_Id" class="form-label">Cliente</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+             <i class="ri-user-3-line" [ngStyle]="{
+                border: (!pedidoEditada.clie_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.clie_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select 
+            id="clie_Id" 
+            name="clie_Id" 
+            class="form-select" 
+            [(ngModel)]="selectedCliente" 
+            (change)="cargarMunicipios(selectedCliente)"
+            required>
+            <option [ngValue]="0" disabled selected>{{ Clientes && Clientes.length > 0 ? 'Seleccione un Cliente' : 'Cargando clientes...' }}</option>
+            <option *ngFor="let cliente of Clientes" [ngValue]="cliente.clie_Id">{{ cliente.clie_NombreNegocio }}</option>
+          </select>
+          
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+         
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="diCl_Id" class="form-label">Dirección</label>
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          <div class="d-flex align-items-center">
+             <i class="ri-map-pin-user-line" [ngStyle]="{
+                border: (!pedidoEditada.diCl_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.diCl_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <select 
+            id="diCl_Id" 
+            name="diCl_Id" 
+            class="form-select" 
+            [(ngModel)]="pedidoEditada.diCl_Id" 
+            [disabled]="!selectedCliente || Direcciones.length === 0"
+            required>
+            <option [ngValue]="0" disabled selected>{{ Direcciones.length > 0 ? 'Seleccione una Dirección' : 'No hay direcciones disponibles' }}</option>
+            <option *ngFor="let dir of Direcciones" [ngValue]="dir.diCl_Id">{{ dir.diCl_DireccionExacta }}</option>
+          </select>
+         
+          <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && selectedCliente && !pedidoEditada.diCl_Id">
+            <small>Por favor seleccione una dirección de entrega</small>
+          </div>
+          <div class="text-danger mt-1" *ngIf="mostrarErrores && selectedCliente && Direcciones.length === 0">
+            <small>Este cliente no tiene direcciones registradas</small>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="inicial-input" class="form-label"
+            >Fecha Entrega<span class="text-danger">*</span></label
+          >
+            <div class="d-flex align-items-center">
+             <i class="ri-calendar-event-line" [ngStyle]="{
+                border: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+          <input
+            type="date"
+            id="inicial-input"
+            [(ngModel)]="fechaInicioFormato"
+            class="form-control"
+            [class.is-invalid]="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
+            placeholder="Seleccione la fecha de entrega"
+            required
+          />
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="!pedidoEditada.pedi_FechaEntrega && mostrarErrores"
+          >
+            <small>La fecha de entrega es requerida</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+         
+          <div class="col-md-12 mb-3">
+            <label for="buscador" class="form-label">Seleccionar los Productos</label>
+             <div class="d-flex align-items-center">  
+             <i class="ri-search-2-line"  [ngStyle]="{
+                border: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!pedidoEditada.pedi_FechaEntrega && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}" >
+              </i>
+            <input
+              type="text"
+              id="buscador"
+              class="form-control"
+              placeholder="Buscar por nombre del producto"
+              [(ngModel)]="searchQuery"
+              (input)="filtrarProductos()"
+            />
+            </div>
+          </div>
+
+          <!-- Contenedor de tarjetas de productos -->
+          <div class="productos-container">
+            <div class="row g-3">
+              <div
+                class="col-lg-4 col-md-6 col-sm-12"
+                *ngFor="let producto of productosPaginados; let i = index"
+              >
+                <div class="card producto-card h-100 shadow-sm border-0">
+                  <div class="card-body p-3">
+                    <!-- Imagen del producto -->
+                    <div class="producto-imagen-container mb-3 text-center">
+                      <img
+                        [src]="
+                          producto.prod_Imagen ||
+                          'assets/images/default-product.png'
+                        "
+                        [alt]="producto.prod_Descripcion"
+                        class="producto-imagen rounded"
+                        onerror="this.src='assets/images/default-product.png'"
+                      />
+                    </div>
+
+                    <!-- Nombre del producto -->
+                    <h6 class="card-title text-center mb-3 producto-titulo">
+                      {{ producto.prod_Descripcion }}
+                    </h6>
+
+                    <!-- Controles de cantidad -->
+                    <div class="cantidad-controls mb-3">
+                      <label class="form-label small text-muted"
+                        >Cantidad</label
+                      >
+                      <div class="input-group input-group-sm">
+                        <button
+                          class="btn btn-outline-secondary btn-cantidad"
+                          type="button"
+                          (click)="disminuirCantidad(i)"
+                          [disabled]="producto.cantidad <= 0"
+                        >
+                          <i class="ri-subtract-line"></i>
+                        </button>
+                        <input
+                          type="number"
+                          class="form-control text-center cantidad-input"
+                          [(ngModel)]="producto.cantidad"
+                          (change)="validarCantidad(i)"
+                          min="0"
+                          max="999"
+                        />
+                        <button
+                          class="btn btn-outline-secondary btn-cantidad"
+                          type="button"
+                          (click)="aumentarCantidad(i)"
+                        >
+                          <i class="ri-add-line"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Indicador de producto seleccionado -->
+                  <div
+                    class="card-footer bg-transparent border-0 p-2"
+                    *ngIf="producto.cantidad > 0"
+                  >
+                    <div class="badge bg-success w-100 py-2">
+                      <i class="ri-check-line me-1"></i>
+                      {{ producto.cantidad }}
+                      {{
+                        producto.cantidad === 1 ? "unidad" : "unidades"
+                      }}
+                      seleccionadas
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pagination-container mt-3 d-flex justify-content-center align-items-center flex-wrap gap-2">
+  <button
+    class="btn btn-outline-primary btn-sm px-3"
+    [disabled]="paginaActual === 1"
+    (click)="cambiarPagina(-1)"
+  >
+    <i class="ri-arrow-left-line me-1"></i> Anterior
+  </button>
+
+  <span class="pagination-indicator px-2 text-muted small">
+    Página {{ paginaActual }} de {{ Math.ceil(productosFiltrados.length / productosPorPagina) }}
+  </span>
+
+  <button
+    class="btn btn-outline-primary btn-sm px-3"
+    [disabled]="paginaActual >= Math.ceil(productosFiltrados.length / productosPorPagina)"
+    (click)="cambiarPagina(1)"
+  >
+    Siguiente <i class="ri-arrow-right-line ms-1"></i>
+  </button>
+</div>
+
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-auto pt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            class="btn btn-primary gold"
+            (click)="cancelar()"
+          >
+            <span class="btn-text">Cancelar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="validarEdicion()"
+          >
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación para editar -->
+<div
+  class="modal fade custom-modal"
+  [ngClass]="{ show: mostrarConfirmacionEditar }"
+  [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'"
+  tabindex="-1"
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div
+        class="modal-header custom-modal-header d-flex justify-content-between align-items-center"
+      >
+        <span>Confirmación</span>
+        <i
+          class="ri-close-line custom-modal-close"
+          (click)="cancelarEdicion()"
+        ></i>
+      </div>
+      <hr class="custom-modal-divider" />
+      <div class="modal-body custom-modal-body">
+        <div class="text-center">
+          <p class="mt-2 custom-modal-text">
+            <i
+              class="ri-edit-line me-2 custom-modal-alert-icon"
+              (click)="cancelarEdicion()"
+            ></i>
+            ¿Estás seguro que deseas guardar los cambios en este pedido?
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer custom-modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary btn-minw-5 gray btn-sm"
+          (click)="cancelarEdicion()"
+        >
+          <span class="btn-text">No</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-minw-5 btn-sm"
+          (click)="confirmarEdicion()"
+        >
+          <span class="btn-text">Si</span>
+          <span class="btn-icon"><i class="ri-save-line"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay para el modal -->
+<div
+  class="modal-backdrop fade"
+  [ngClass]="{ show: mostrarConfirmacionEditar }"
+  *ngIf="mostrarConfirmacionEditar"
+></div>

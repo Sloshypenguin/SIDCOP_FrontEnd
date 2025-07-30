@@ -27,403 +27,441 @@
   </div>
   
   <div class="flex-grow-1">
-    <div class="row">
-      <div class="col-md-6">
-        <label  class="form-label">Codigo<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_Codigo.trim() && mostrarErrores"
-              id="vendedorCodigo"
-              [(ngModel)]="vendedor.vend_Codigo"
-              placeholder="Ingrese el codigo del vendedor"
-              required>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Codigo.trim() && mostrarErrores">
-            <small>El campo codigo del vendedor es requerido</small>
-          </div>
-        </div>
-      </div>
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 1" (click)="activeTab = 1" type="button" role="tab">
+          Informacion General
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2" type="button" role="tab">
+          Aplicar para
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3" type="button" role="tab">
+          Clientes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 4" (click)="activeTab = 4" type="button" role="tab">
+          Escalas
+        </button>
+      </li>
+    </ul>
+    
+    <div *ngIf="activeTab === 1">
+      <div class="row mx-lg-4">
+         <div class="col-md-6">
+              <label  class="form-label">Descripcion<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="ri-attachment-line" [ngStyle]="{
+                border: (!descuento.desc_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [class.is-invalid]="!descuento.desc_Descripcion.trim() && mostrarErrores"
+                    id="descuentoCodigo"
+                    [(ngModel)]="descuento.desc_Descripcion"
+                    placeholder="Ingrese la descripcion del descuento"
+                    required>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!descuento.desc_Descripcion.trim() && mostrarErrores">
+                  <small>La descripcion es requerida</small>
+                </div>
+              </div>
+            </div>
 
-      <div class="col-md-6">
-        <label  class="form-label">Identidad<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_DNI.trim() && mostrarErrores"
-              id="vend_DNI"
-              [(ngModel)]="vendedor.vend_DNI"
-              placeholder="Ingrese la identidad del vendedor"
-              required
-              mask="0000-0000-00000"
+            <div class="col-md-6">
+              <label  class="form-label">Tipo<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-refund-2-fill" [ngStyle]="{
+                border: (!descuento.desc_Tipo == null && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_Tipo == null && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+                  <select 
+                      id="tipodescuento" 
+                      name="tipodescuento" 
+                      class="form-select"
+                      [class.is-invalid]="descuento.desc_Tipo == null"
+                      [(ngModel)]="descuento.desc_Tipo"
+                      required>
+                          <option value="" disabled selected>Seleccione una opción</option>
+                          <option value=true  selected>Monto Fijo</option>
+                          <option value=false  selected>Porcentaje</option>
+                          
+                  </select>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="descuento.desc_Tipo == null && mostrarErrores">
+                  <small>El campo tipo de descuento es requerido</small>
+                </div>
+              </div>
+            </div>
+
+             <div class="col-md-6">
+              <label  class="form-label">Tipo Factura<span class="text-danger">*</span></label>
+              <div class="mb-3">
+            
+                <div class="toggle-group">
+                  <div class="toggle-option">
+                    <input
+                      type="checkbox"
+                      id="contado"
+                      [(ngModel)]="seleccionContado"
+                      (change)="actualizarFormaPago()"
+                    />
+                    <label for="contado">Contado</label>
+                  </div>
+                  <div class="toggle-option">
+                    <input
+                      type="checkbox"
+                      id="credito"
+                      [(ngModel)]="seleccionCredito"
+                      (change)="actualizarFormaPago()"
+                    />
+                    <label for="credito">Crédito</label>
+                  </div>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!formaPago && mostrarErrores">
+                  <small>El tipo de factura es requerida</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Fecha Inicio<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-calendar-2-line" [ngStyle]="{
+                border: (!descuento.desc_FechaInicio && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_FechaInicio && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+                  <input 
+                    type="Date" 
+                    class="form-control" 
+                    [class.is-invalid]="!descuento.desc_FechaInicio && mostrarErrores"
+                    id="desc_FechaInicio"
+                    [(ngModel)]="fechaInicioFormato"
+                    placeholder="Ingrese la Fecha Inicio del descuento"
+                    required>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!descuento.desc_FechaInicio && mostrarErrores">
+                  <small>La Fecha inicio es requerida</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Fecha Fin<span class="text-danger">*</span></label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="ri-calendar-2-line" [ngStyle]="{
+                border: (!descuento.desc_FechaFin && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!descuento.desc_FechaFin && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+                  <input 
+                    type="Date" 
+                    class="form-control" 
+                    [class.is-invalid]="!descuento.desc_FechaFin && mostrarErrores"
+                    id="desc_FechaFin"
+                    [(ngModel)]="fechaFinFormato"
+                    placeholder="Ingrese la Fecha Fin del descuento"
+                    required>
+                  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+                </div>
+                <div class="text-danger mt-1" *ngIf="!descuento.desc_FechaFin && mostrarErrores">
+                  <small>La Fecha fin es requerida</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label  class="form-label">Observaciones</label>
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="ri-attachment-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                  
+                    id="desc_Observaciones"
+                    [(ngModel)]="descuento.desc_Observaciones"
+                    placeholder="Ingrese observaciones del descuento"
+                    >
+                  
+                </div>
               
-              >
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_DNI.trim() && mostrarErrores">
-            <small>El campo Identidad es requerido</small>
-          </div>
+              </div>
+            </div>
+
+        <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="cancelar()"
+          >
+            <i class="ri-close-circle-line"></i> Cancelar
+          </button>
+          <button style="background: none;border: none;"></button>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
         </div>
-      </div>
-
-      <div class="col-md-6">
-        <label  class="form-label">Nombres<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_Nombres.trim() && mostrarErrores"
-              id="vend_Nombres"
-              [(ngModel)]="vendedor.vend_Nombres"
-              placeholder="Ingrese los nombres del vendedor"
-              required>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Nombres.trim() && mostrarErrores">
-            <small>El campo Nombres es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <label  class="form-label">Apellidos<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_Apellidos.trim() && mostrarErrores"
-              id="vend_Apellidos"
-              [(ngModel)]="vendedor.vend_Apellidos"
-              placeholder="Ingrese los apellidos del vendedor"
-              required>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Apellidos.trim() && mostrarErrores">
-            <small>El campo Apellidos es requerido</small>
-          </div>
-        </div>
-      </div>
-
-       <div class="col-md-6">
-        <label  class="form-label">Telefono<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_Telefono.trim() && mostrarErrores"
-              id="vend_Telefono"
-              [(ngModel)]="vendedor.vend_Telefono"
-              placeholder="Ingrese el telefono del vendedor"
-              required
-              mask="0000-0000"
-              >
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
-            <small>El campo telefono es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <label  class="form-label">Sexo<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <ng-select
-                class="w-100"
-                [items]="sexos"
-                bindLabel="label"
-                bindValue="value"
-                [(ngModel)]="vendedor.vend_Sexo"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Seleccione sexo"
-                required
-              >
-                <ng-template ng-option-tmp let-item="item">
-                  <i [class]="item.icon"></i> {{ item.label }}
-                </ng-template>
-              </ng-select>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
-            <small>El campo correo es requerido</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <label  class="form-label">Correo<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="email" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_Correo.trim() && mostrarErrores"
-              id="vend_Correo"
-              [(ngModel)]="vendedor.vend_Correo"
-              placeholder="Ingrese el Correo del vendedor"
-              required
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-              >
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Telefono.trim() && mostrarErrores">
-            <small>El campo correo es requerido</small>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-md-6">
-        <label  class="form-label">Supervisor<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-           <ng-select
-              class="w-100"
-                [items]="supervisores"
-                bindLabel="nombreCompleto"
-                bindValue="empl_Id"
-                [(ngModel)]="vendedor.vend_Supervisor"
-                [searchable]="true"
-                [clearable]="false"
-                [class.is-invalid]="!vendedor.vend_Supervisor && mostrarErrores"
-                placeholder="Seleccione un Supervisor"
-                required
-              >
-              <ng-template ng-label-tmp let-item="item">
-                {{ item.nombreCompleto}}  
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item">
-                 {{ item.nombreCompleto}} 
-              </ng-template>
-            </ng-select>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Supervisor && mostrarErrores">
-            <small>El campo Supervisor es requerido</small>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-md-6">
-  <label class="form-label">¿Tiene Ayudante?<span class="text-danger">*</span></label>
-  <div class="mb-3">
-    <div class="d-flex align-items-center">
-      <div class="form-check form-switch">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          id="ayudanteSwitch"
-          [(ngModel)]="tieneAyudante"
-          required
-        >
-        <label class="form-check-label ms-2" for="ayudanteSwitch">
-          {{ tieneAyudante ? 'Sí' : 'No' }}
-        </label>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="col-md-6" *ngIf="tieneAyudante">
-  <label class="form-label">Ayudante<span class="text-danger">*</span></label>
-  <div class="mb-3">
-    <div class="d-flex align-items-center">
-      <ng-select
-        class="w-100"
-        [items]="ayudantes"
-        bindLabel="nombreCompleto"
-        bindValue="empl_Id"
-        [(ngModel)]="vendedor.vend_Ayudante"
-        [searchable]="true"
-        [clearable]="false"
-        placeholder="Seleccione un Ayudante"
-        required
-      >
-        <ng-template ng-label-tmp let-item="item">
-          {{ item.nombreCompleto }}
-        </ng-template>
-        <ng-template ng-option-tmp let-item="item">
-          {{ item.nombreCompleto }}
-        </ng-template>
-      </ng-select>
     </div>
-  </div>
-</div>
 
-      <div class="col-md-6">
-        <label  class="form-label">Colonia<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-           <ng-select
-              class="w-100"
-                [items]="colonia"
-                bindLabel="colo_Descripcion"
-                bindValue="colo_Id"
-                [(ngModel)]="vendedor.colo_Id"
-                [searchable]="true"
-                [clearable]="false"
-                [class.is-invalid]="!vendedor.colo_Id && mostrarErrores"
-                placeholder="Seleccione una colonia"
-                required
-                [searchFn]="searchColonias"
-                (ngModelChange)="onColoniaSeleccionada($event)"
-              >
-              <ng-template ng-label-tmp let-item="item">
-                {{ item.colo_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item">
-                {{ item.colo_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
-              </ng-template>
-            </ng-select>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.colo_Id && mostrarErrores">
-            <small>El campo Colonia es requerido</small>
+      <div *ngIf="activeTab === 2">
+      <div class="row mx-lg-4">
+        <div class="col-md-12">
+              <label  class="form-label">Aplicar a:</label>
+              <div class="mb-3">
+                <div class="row">
+                <div class="application-tabs col-md-3">
+                  <button class="tab-button tab-button--productos w-100" [class.active]="tabActiva === 'productos'" data-tab="productos" (click)="mostrarSeccion('productos')">Productos</button>
+                </div>
+                <div class="col-md-3">
+                  <button class="tab-button tab-button--categorias w-100" [class.active]="tabActiva === 'categorias'" data-tab="categorias" (click)="mostrarSeccion('categorias')">Categoría</button>
+                </div>
+                <div class="col-md-3">
+                  <button class="tab-button tab-button--subcategorias w-100" [class.active]="tabActiva === 'subcategorias'" data-tab="subcategorias" (click)="mostrarSeccion('subcategorias')">Subcategoría</button>
+                </div>
+                <div class="col-md-3">
+                  <button class="tab-button tab-button--marcas w-100" [class.active]="tabActiva === 'marcas'" data-tab="marcas" (click)="mostrarSeccion('marcas')">Marcas</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listado dinámico -->
+      <div *ngIf="seccionVisible" class="mt-4 col-md-12">
+        <h5 class="text-capitalize">{{ seccionVisible }}</h5>
+        
+        <!-- Buscador -->
+        <input type="text" class="form-control mb-2" [(ngModel)]="filtro" placeholder="Buscar..." />
+
+        <!-- Seleccionar todo -->
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" [checked]="todosSeleccionados()" (change)="seleccionarTodos($event)" />
+          <label class="form-check-label">Seleccionar todos</label>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3" *ngFor="let item of getItemsFiltrados()">
+            <div class="form-check">
+              <input type="checkbox"
+                    class="form-check-input"
+                    [id]="'check-' + getId(item)"
+                    [checked]="seleccionados.includes(getId(item))"
+                    (change)="alternarSeleccion(getId(item))" />
+              <label class="form-check-label" [for]="'check-' + getId(item)">
+                {{ getNombre(item) }}
+              </label>
+            </div>
           </div>
         </div>
-      </div>
+              
+              </div>
+            </div>
 
-
-      <div class="col-md-6">
-        <label  class="form-label">Direccion Exacta<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <input 
-              type="text" 
-              class="form-control" 
-              [class.is-invalid]="!vendedor.vend_DireccionExacta.trim() && mostrarErrores"
-              id="vend_DireccionExacta"
-              [(ngModel)]="vendedor.vend_DireccionExacta"
-               [disabled]="!vendedor.colo_Id"
-              [value]="direccionExactaInicial"
-              placeholder="Ingrese la Direccion exacta del vendedor"
-              required
-              >
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_DireccionExacta.trim() && mostrarErrores">
-            <small>El campo Direccion Exacta es requerida</small>
-          </div>
+         <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
+          </button>
         </div>
       </div>
-
-
-      <div class="col-md-6">
-        <label  class="form-label">Sucursal<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-            <ng-select
-              class="w-100"
-                [items]="sucursales"
-                bindLabel="sucu_Descripcion"
-                bindValue="sucu_Id"
-                [(ngModel)]="vendedor.sucu_Id"
-                [searchable]="true"
-                [clearable]="false"
-                [class.is-invalid]="!vendedor.sucu_Id && mostrarErrores"
-                placeholder="Seleccione una sucursal"
-                required
-                [searchFn]="searchSucursal"
-              >
-              <ng-template ng-label-tmp let-item="item">
-                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item">
-                {{ item.sucu_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
-              </ng-template>
-            </ng-select>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.sucu_Id && mostrarErrores">
-            <small>El campo sucursal es requerido</small>
-          </div>
-        </div>
-      </div>
-
-
-
-
-      <div class="col-md-6">
-        <label  class="form-label">Tipo de Vendedor<span class="text-danger">*</span></label>
-        <div class="mb-3">
-          <div class="d-flex align-items-center">
-             <select 
-                id="tipoVendedor" 
-                name="tipoVendedor" 
-                class="form-select"
-                [class.is-invalid]="!vendedor.vend_Tipo && mostrarErrores"
-                [(ngModel)]="vendedor.vend_Tipo"
-                required>
-                    <option value="" disabled selected>Seleccione una opción</option>
-                    <option value="P"  selected>Preventista</option>
-                    <option value="V"  selected>Venta Directa</option>
-                    <option value="F"  selected>Entregador</option>
-                    
-            </select>
-            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
-          </div>
-          <div class="text-danger mt-1" *ngIf="!vendedor.vend_Tipo && mostrarErrores">
-            <small>El campo tipo de vendedor es requerido</small>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-6">
-  <label class="form-label">¿Es Contratista?<span class="text-danger">*</span></label>
-  <div class="mb-3">
-    <div class="d-flex align-items-center">
-      <div class="form-check form-switch">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          id="contratistaSwitch"
-          [(ngModel)]="vendedor.vend_EsExterno"
-          [class.is-invalid]="mostrarErrores && vendedor.vend_EsExterno === undefined"
-          required
-        >
-        <label class="form-check-label ms-2" for="contratistaSwitch">
-          {{ vendedor.vend_EsExterno ? 'Sí' : 'No' }}
-        </label>
-      </div>
-      <span class="text-danger ms-2" *ngIf="mostrarErrores && vendedor.vend_EsExterno === undefined">*</span>
     </div>
-    <div class="text-danger mt-1" *ngIf="mostrarErrores && vendedor.vend_EsExterno === undefined">
-      <small>Debe indicar si es contratista</small>
     </div>
-  </div>
-</div>
 
-    </div>
-  </div>
   
-  <div class="mt-auto pt-3">
-    <div class="row">
-      <div class="col-12">
-        <div class="d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-primary gold" (click)="cancelar()">
-            <span class="btn-text">Cancelar</span>
-            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
+  
+        <div *ngIf="activeTab === 3">
+      <div class="row mx-lg-4">
+                <div class="col-md-12">
+                  <label  class="form-label">Aplicar para:</label>
+                  <div class="mb-3">
+                    <div *ngFor="let grupo of clientesAgrupados">
+            <!-- Checkbox principal por canal -->
+                      <div class="form-check canal-checkbox mb-2">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          [id]="'canal-' + grupo.canal"
+                          [checked]="estanTodosSeleccionados(grupo)"
+                          (change)="seleccionarTodosClientes(grupo, $any($event.target).checked)"
+                        />
+                        <label class="form-check-label fw-bold" [for]="'canal-' + grupo.canal">
+                          {{ grupo.canal }}
+                        </label>
+                      </div>
+            <!-- Checkboxes de clientes -->
+                      <div class="d-flex flex-wrap gap-3 mb-4">
+                        <div
+                          class="form-check me-3"
+                          *ngFor="let cliente of getClientesFiltrados(grupo)"
+                        >
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            [id]="'cliente-' + cliente.clie_Id"
+                            [checked]="clientesSeleccionados.includes(cliente.clie_Id)"
+                            (click)="onClickCheckbox($event, cliente.clie_Id)"
+                          />
+                          <label class="form-check-label" [for]="'cliente-' + cliente.clie_Id">
+                            {{ cliente.clie_NombreNegocio }}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+           
+               <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
           </button>
-          <button type="button" class="btn btn-primary" (click)="validarEdicion()">
-            <span class="btn-text">Guardar</span>
-            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          <button
+            *ngIf="activeTab < 4"
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="irAlSiguientePaso()"
+          >
+            Siguiente <i class="ri-arrow-right-line"></i>
           </button>
         </div>
       </div>
     </div>
-  </div>
-</div>
+    </div>
+
+             <div *ngIf="activeTab === 4">
+                <div class="row mx-lg-4">
+                <div *ngFor="let escala of escalas; let i = index" class="row align-items-end mb-3">
+
+                <div class="col-md-4">
+                  <label class="form-label">Inicio Escala<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="ri-swap-box-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+
+                  <input type="number" class="form-control" [(ngModel)]="escala.deEs_InicioEscala" name="inicio{{i}}" required>
+                </div>
+                </div>
+                </div>
+              
+
+                <div class="col-md-4">
+                  <label class="form-label">Fin Escala<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-swap-box-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+                  <input type="number" class="form-control" [(ngModel)]="escala.deEs_FinEscala" name="fin{{i}}" required>
+                </div>
+              </div>
+              </div>
+
+
+                <div class="col-md-3">
+                  <label class="form-label">Valor<span class="text-danger">*</span></label>
+                  <div class="mb-3">
+                <div class="d-flex align-items-center">
+                   <i class="ri-money-dollar-circle-line" [ngStyle]="{
+                border: '1px solid #e9ecf5',
+                backgroundColor: '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+              </i>
+                  <input type="number" class="form-control" [(ngModel)]="escala.deEs_Valor" name="valor{{i}}" required>
+                </div>
+              </div>
+              </div>
+
+
+                <div class="col-md-1">
+                  <button type="button" class="btn btn-danger" (click)="eliminarEscala(i)" *ngIf="escalas.length > 1">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="mb-3">
+                <button  type="button" class="btn btn-primary me-2 mb-2" (click)="agregarEscala()">
+                          <span class="btn-text">Agregar Escala</span>
+                          <span class="btn-icon"><i class="ri-add-line"></i></span>
+                        </button>
+              </div>
+
+
+               <div class="row mx-lg-4 gap-3">
+        <div class="col-md-12 d-flex justify-content-between gap-2">
+          <button
+            *ngIf="activeTab > 1"
+            type="button"
+            class="btn-tab-custom btn-tab-prev"
+            (click)="activeTab = activeTab - 1"
+          >
+            <i class="ri-arrow-left-line"></i> Anterior
+          </button>
+          <button
+            type="button"
+            class="btn-tab-custom btn-tab-next"
+            (click)="guardar()"
+          >
+            Guardar <i class="ri-save-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
 
 <!-- Modal de confirmación para editar -->
 <div class="modal fade custom-modal" [ngClass]="{ 'show': mostrarConfirmacionEditar }" [style.display]="mostrarConfirmacionEditar ? 'block' : 'none'" tabindex="-1" role="dialog">
@@ -438,7 +476,7 @@
         <div class="text-center">
           <p class="mt-2 custom-modal-text">
             <i class="ri-edit-line me-2 custom-modal-alert-icon" (click)="cancelarEdicion()"></i>
-            ¿Estás seguro que deseas editar la bodega <strong>"{{ vendedorOriginal }}"</strong> por <strong>"{{ vendedor.vend_Nombres }} {{ vendedor.vend_Apellidos }}"</strong>?
+            ¿Estás seguro que deseas editar la bodega <strong>"{{ descuentoOriginal }}"</strong> por <strong>"{{ descuento.desc_Descripcion }} "</strong>?
           </p>
         </div>
       </div>
