@@ -148,6 +148,8 @@ seleccionarTodos(event: any) {
   this.descuentoDetalle.idReferencias = [...this.seleccionados];
 }
 
+hoy: string;
+
 
 
   constructor(private http: HttpClient) {
@@ -157,6 +159,9 @@ seleccionarTodos(event: any) {
     this.listarSubcategorias();
     this.listarClientes();
     this.listarDescuentos();
+     const today = new Date();
+    this.hoy = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    this.mostrarSeccion('productos');
     
   }
 
@@ -303,15 +308,18 @@ seleccionarTodos(event: any) {
   });
 }
 
+
 escalas: {
   deEs_InicioEscala: number;
   deEs_FinEscala: number;
   deEs_Valor: number;
+
 }[] = [
   {
     deEs_InicioEscala: 0,
     deEs_FinEscala: 0,
     deEs_Valor: 0
+    
   }
 ];
 
@@ -518,6 +526,9 @@ tieneAyudante: boolean = false;
     this.mostrarAlertaWarning = false;
     this.mostrarAlertaError = false;
 
+
+  
+
     // Construir el objeto para guardar
     const DescuentoGuardar: any = {
       desc_Id:  0,
@@ -526,7 +537,7 @@ tieneAyudante: boolean = false;
       desc_Aplicar: this.descuento.desc_Aplicar,
       desc_FechaInicio:  new Date(this.descuento.desc_FechaInicio) ,
       desc_FechaFin: new Date(this.descuento.desc_FechaFin),
-      desc_Observaciones:  '',
+      desc_Observaciones:  'N/A',
       usua_Creacion:  getUserId(),
       desc_FechaCreacion:  new Date(),
       usua_Modificacion: 0,
@@ -617,6 +628,7 @@ tieneAyudante: boolean = false;
   }
 }
 
+
 validarPasoActual(): boolean {
   switch (this.activeTab) {
     case 1: // Información general
@@ -656,9 +668,62 @@ irAlSiguientePaso() {
     this.mostrarErrores = false;
     this.activeTab ++;
   } else {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning= 'Debe Completar todos los campos'
+
+    setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 2000);
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
   }
 }
+
+validado = true;
+
+limitarValor(valor: number, escala: any): void {
+  if (this.descuento.desc_Tipo === false && valor > 100) {
+    this.validado = false;
+  } else {
+    escala.deEs_Valor = valor;
+    this.validado = true;
+
+  }
+}
+
+puedeAgregarNuevaEscala(): boolean {
+  if (!this.escalas || this.escalas.length === 0) return true;
+
+  for (let i = 0; i < this.escalas.length; i++) {
+    const escala = this.escalas[i];
+    if (
+      escala.deEs_InicioEscala == null ||
+      escala.deEs_FinEscala == null ||
+      escala.deEs_Valor == null ||
+      escala.deEs_FinEscala <= escala.deEs_InicioEscala ||
+        escala.deEs_Valor == 0
+
+    ) {
+      return false;
+    }
+
+    if (i > 0) {
+      const anterior = this.escalas[i - 1];
+      if (
+        escala.deEs_InicioEscala <= anterior.deEs_FinEscala ||
+        escala.deEs_Valor <= anterior.deEs_Valor ||
+        escala.deEs_Valor == 0
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+
+
 
 
 
