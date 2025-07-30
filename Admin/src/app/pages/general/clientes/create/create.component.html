@@ -491,16 +491,23 @@
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
-            style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
-            <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+          <button type="button" class="btn btn-primary gold" style="height: 100%; transform: rotate(180deg);"
+            (click)="cancelar()">
+            <span class="btn-text" style="transform: rotate(180deg);">Cerrar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn btn-primary" style="height: 100%;"
-            (click)="tabuladores(2)">
-            <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
-          </button>
+          <div class="col-6 d-flex justify-content-end gap-2">
+            <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
+              style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
+              <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
+              <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+            </button>
+            <button *ngIf="activeTab < 5" type="button" class="btn btn-primary" style="height: 100%;"
+              (click)="tabuladores(2)">
+              <span class="btn-text">Siguiente</span>
+              <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -566,16 +573,23 @@
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
-            style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
-            <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+          <button type="button" class="btn btn-primary gold" style="height: 100%; transform: rotate(180deg);"
+            (click)="cancelar()">
+            <span class="btn-text" style="transform: rotate(180deg);">Cerrar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn btn-primary" style="height: 100%;"
-            (click)="tabuladores(3)">
-            <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
-          </button>
+          <div class="col-6 d-flex justify-content-end gap-2">
+            <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
+              style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
+              <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
+              <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+            </button>
+            <button *ngIf="activeTab < 5" type="button" class="btn btn-primary" style="height: 100%;"
+              (click)="tabuladores(3)">
+              <span class="btn-text">Siguiente</span>
+              <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -921,16 +935,23 @@
       <!-- Botones de navegación -->
       <div class="row mx-lg-4">
         <div class="col-md-12 d-flex justify-content-between gap-2">
-          <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
-            style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
-            <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+          <button type="button" class="btn btn-primary gold" style="height: 100%; transform: rotate(180deg);"
+            (click)="cancelar()">
+            <span class="btn-text" style="transform: rotate(180deg);">Cerrar</span>
+            <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
           </button>
-          <button *ngIf="activeTab < 5" type="button" class="btn btn-primary" style="height: 100%;"
-            (click)="tabuladores(4)">
-            <span class="btn-text">Siguiente</span>
-            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
-          </button>
+          <div class="col-6 d-flex justify-content-end gap-2">
+            <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
+              style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
+              <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
+              <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+            </button>
+            <button *ngIf="activeTab < 5" type="button" class="btn btn-primary" style="height: 100%;"
+              (click)="tabuladores(4)">
+              <span class="btn-text">Siguiente</span>
+              <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -967,15 +988,22 @@
     <!-- Botones de navegación -->
     <div class="row mx-lg-4">
       <div class="col-md-12 d-flex justify-content-between gap-2">
-        <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
-          style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
-          <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
-          <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+        <button type="button" class="btn btn-primary gold" style="height: 100%; transform: rotate(180deg);"
+          (click)="cancelar()">
+          <span class="btn-text" style="transform: rotate(180deg);">Cerrar</span>
+          <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
         </button>
-        <button type="button" class="btn btn-primary" style="height: 100%;" (click)="guardarCliente()">
-          <span class="btn-text">Guardar</span>
-          <span class="btn-icon"><i class="ri-save-line"></i></span>
-        </button>
+        <div class="col-6 d-flex justify-content-end gap-2">
+          <button *ngIf="activeTab > 1" type="button" class="btn btn-primary"
+            style="height: 100%; transform: rotate(180deg);" (click)="activeTab = activeTab - 1">
+            <span class="btn-text" style="transform: rotate(180deg);">Anterior</span>
+            <span class="btn-icon"><i class="ri-arrow-right-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary" style="height: 100%;" (click)="guardarCliente()">
+            <span class="btn-text">Guardar</span>
+            <span class="btn-icon"><i class="ri-save-line"></i></span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
