@@ -2,8 +2,8 @@
     { label: 'Ventas' },
     { label: 'Pedidos', active: true }
   ]">
-  <img class="icon-breadcrumb" style="width: 10vh; height: 10vh" src="assets/images/imagenes/product-shelf-svgrepo-com (1).svg"
-    alt="breadcrumb icon" />
+  <img class="icon-breadcrumb" style="width: 10vh; height: 10vh"
+    src="assets/images/imagenes/product-shelf-svgrepo-com (1).svg" alt="breadcrumb icon" />
 </app-breadcrumbs>
 
 <div class="row">
@@ -24,8 +24,8 @@
         </div>
 
         <!-- Collapse para el formulario de creación -->
-       <div *ngIf="showCreateForm" [@fadeExpand]>
-         <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+        <div *ngIf="showCreateForm" [@fadeExpand]>
+          <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
             <div class="container-fluid flex-grow-1">
               <app-create (onCancel)="cerrarFormulario()" (onSave)="guardarPedido($event)"></app-create>
             </div>
@@ -33,8 +33,8 @@
         </div>
 
         <!-- Collapse para el formulario de edición -->
-         <div *ngIf="showEditForm" [@fadeExpand]>
-  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
+        <div *ngIf="showEditForm" [@fadeExpand]>
+          <div class="card card-body mb-3 d-flex flex-column" style="min-height: 300px; padding: 2rem;">
             <div class="container-fluid flex-grow-1">
               <app-edit [PedidoData]="PedidoEditando" (onCancel)="cerrarFormularioEdicion()"
                 (onSave)="actualizarPedido($event)">
@@ -44,8 +44,8 @@
         </div>
 
         <!-- Collapse para el formulario de detalles -->
-        <div *ngIf="showDetailsForm" [@fadeExpand]> 
-  <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
+        <div *ngIf="showDetailsForm" [@fadeExpand]>
+          <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
             <div class="container-fluid flex-grow-1">
               <app-details [PedidoData]="PedidoDetalle" (onClose)="cerrarFormularioDetalles()">
               </app-details>
@@ -346,7 +346,7 @@
         <div class="text-center">
           <p class="mt-2 custom-modal-text">
             <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que
-            desea eliminar el pedido de 
+            desea eliminar el pedido de
             <strong>{{ PedidoEliminar?.clie_Nombres }}</strong>?
           </p>
         </div>
