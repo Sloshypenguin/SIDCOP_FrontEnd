@@ -99,7 +99,7 @@ export class CreateComponent {
                 this.cancelar();
               }, 100);
             }, 2000);
-          }, 1000);
+          }, 300);
         },
         error: () => {
           setTimeout(() => {
@@ -111,7 +111,7 @@ export class CreateComponent {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-          }, 1000);
+          }, 300);
         }
       });
     } else {

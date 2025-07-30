@@ -260,24 +260,25 @@ export class ListComponent implements OnInit {
 
   private cargarDatos(): void {
     this.mostrarOverlayCarga = true;
-    this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
-        const tienePermisoListar = this.accionPermitida('listar');
-        const userId = getUserId();
+    setTimeout(() => {
+      this.mostrarOverlayCarga = false;
+      this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe({
+        next: data => {
+          const tienePermisoListar = this.accionPermitida('listar');
+          const userId = getUserId();
 
-        const datosFiltrados = tienePermisoListar
-          ? data
-          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+          const datosFiltrados = tienePermisoListar
+            ? data
+            : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
-        this.table.setData(datosFiltrados);
-        this.mostrarOverlayCarga = false;
-      },
-      error: error => {
-        this.mostrarOverlayCarga = false;
-        this.table.setData([]);
-      }
-    });
+          this.table.setData(datosFiltrados);
+        },
+        error: error => {
+          this.table.setData([]);
+        }
+      });
+    }, 300);
   }
 }
