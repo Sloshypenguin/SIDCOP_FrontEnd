@@ -97,7 +97,7 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   ) {
-    this.cargarDatos();
+    this.cargarDatos(true);
   }
 
   onActionMenuClick(rowIndex: number) {
@@ -142,11 +142,11 @@ export class ListComponent implements OnInit {
   }
 
   guardarSucursal(sucursal: Sucursales): void {
-    this.cargarDatos();
+    this.cargarDatos(false);
     this.cerrarFormulario();
   }
   actualizarSucursal(sucursal: Sucursales): void {
-    this.cargarDatos();
+    this.cargarDatos(false);
     this.cerrarFormularioEdicion();
   }
 
@@ -156,13 +156,10 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null;
   }
 
-  cancelarEliminar(): void {
-    this.mostrarConfirmacionEliminar = false;
-    this.sucursalAEliminar = null;
-  }
 
   eliminar(): void {
     if (!this.sucursalAEliminar) return;
+    this.mostrarOverlayCarga = true;
     this.http.post<any>(`${environment.apiBaseUrl}/Sucursales/Eliminar/${this.sucursalAEliminar.sucu_Id}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
@@ -178,7 +175,7 @@ export class ListComponent implements OnInit {
               this.mostrarAlertaExito = false;
               this.mensajeExito = '';
             }, 3000);
-            this.cargarDatos();
+            this.cargarDatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             this.mostrarAlertaError = true;
@@ -208,23 +205,31 @@ export class ListComponent implements OnInit {
         }
       },
       error: (err) => {
-        const codeStatus = err?.error?.data?.code_Status;
-        const messageStatus = err?.error?.data?.message_Status;
-        this.mostrarAlertaError = true;
-        if (codeStatus === -1) {
-          this.mensajeError = messageStatus || 'No se puede eliminar: la sucursal está siendo utilizada.';
-        } else if (codeStatus === 0) {
-          this.mensajeError = messageStatus || 'Error al eliminar la sucursal.';
-        } else {
-          this.mensajeError = err?.error?.message || 'Error al eliminar la sucursal. Intenta de nuevo.';
-        }
-        setTimeout(() => {  
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
-        this.cancelarEliminar();
+        setTimeout(() => {
+          this.mostrarOverlayCarga = false;
+          const codeStatus = err?.error?.data?.code_Status;
+          const messageStatus = err?.error?.data?.message_Status;
+          this.mostrarAlertaError = true;
+          if (codeStatus === -1) {
+            this.mensajeError = messageStatus || 'No se puede eliminar: la sucursal está siendo utilizada.';
+          } else if (codeStatus === 0) {
+            this.mensajeError = messageStatus || 'Error al eliminar la sucursal.';
+          } else {
+            this.mensajeError = err?.error?.message || 'Error al eliminar la sucursal. Intenta de nuevo.';
+          }
+          setTimeout(() => {  
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        }, 1000);
       }
     });
+  }
+
+  cancelarEliminar(): void {
+    this.mostrarConfirmacionEliminar = false;
+    this.sucursalAEliminar = null;
   }
 
   cerrarAlerta(): void {
@@ -258,27 +263,23 @@ export class ListComponent implements OnInit {
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
   }
 
-  private cargarDatos(): void {
-    this.mostrarOverlayCarga = true;
-    setTimeout(() => {
-      this.mostrarOverlayCarga = false;
-      this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe({
-        next: data => {
-          const tienePermisoListar = this.accionPermitida('listar');
-          const userId = getUserId();
+  private cargarDatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
+    this.http.get<Sucursales[]>(`${environment.apiBaseUrl}/Sucursales/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      setTimeout(() => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
 
-          const datosFiltrados = tienePermisoListar
-            ? data
-            : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
-          this.table.setData(datosFiltrados);
-        },
-        error: error => {
-          this.table.setData([]);
-        }
-      });
-    }, 300);
+        this.table.setData(datosFiltrados);
+        this.table.setData(data);
+        this.mostrarOverlayCarga = false;
+      }, 500);
+    });
   }
 }

@@ -34,6 +34,7 @@ export class CreateComponent implements OnInit {
   }
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Sucursales>();
+  @Output() onOverlayChange = new EventEmitter<boolean>();
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -158,7 +159,7 @@ colonias: Colonias[] = [];
 
   guardar(): void {
     this.mostrarErrores = true;
-
+    this.onOverlayChange.emit(true);
     if (
       this.sucursal.sucu_Descripcion.trim() &&
       this.sucursal.colo_Id &&
@@ -187,19 +188,19 @@ colonias: Colonias[] = [];
             this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" guardada exitosamente`;
             this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
-
             setTimeout(() => {
+              this.onOverlayChange.emit(false);
               this.mostrarAlertaExito = false;
               this.onSave.emit(this.sucursal);
               this.cancelar();
             }, 3000);
           }
           if(response?.data?.code_Status === -1) {
+            this.onOverlayChange.emit(false);
             this.mostrarAlertaError = true;
             this.mensajeError = response?.data?.message_Status || 'ya existe una sucursal con estos datos.';
             console.error('Error al guardar la sucursal:', this.mensajeError);
             this.mostrarAlertaExito = false;
-
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
@@ -207,6 +208,7 @@ colonias: Colonias[] = [];
           }
         },
         error: (error) => {
+          this.onOverlayChange.emit(false);
           console.error('Error al guardar sucursal:', error);
           const codeStatus = error?.error?.data?.code_Status;
           const messageStatus = error?.error?.data?.message_Status;
@@ -226,11 +228,11 @@ colonias: Colonias[] = [];
         }
       });
     } else {
+      this.onOverlayChange.emit(false);
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
       this.mostrarAlertaError = false;
       this.mostrarAlertaExito = false;
-
       setTimeout(() => {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
