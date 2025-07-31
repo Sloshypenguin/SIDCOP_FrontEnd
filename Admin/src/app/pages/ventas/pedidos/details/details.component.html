@@ -21,7 +21,7 @@
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && PedidoDetalle" class="details-content">
     <!-- Header con descripción -->
-    <div class="details-header">
+    <!-- <div class="details-header">
       <div class="details-title">Detalles del Pedido</div>
       <div class="details-id-row">
         <div class="details-id">
@@ -44,7 +44,59 @@
           </div>
         </div>
       </div>
+    </div> -->
+
+    <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+        <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+          <i class="ri-shopping-basket-2-line me-2 fs-4"></i>
+          <h5 class="mb-0">Detalles del Pedido</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-store-2-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Negocio</div>
+                  <div class="detail-value">{{ PedidoDetalle.clie_NombreNegocio }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="bx bx-user-pin"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Vendedor</div>
+                  <div class="detail-value"> {{ PedidoDetalle.vend_Nombres }} {{ PedidoDetalle.vend_Apellidos }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-calendar-event-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Fecha Entrega</div>
+                  <div class="detail-value"> {{ formatearFecha(PedidoDetalle.pedi_FechaEntrega) || "N/A" }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-calendar-event-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Fecha del Pedido</div>
+                  <div class="detail-value"> {{ formatearFecha(PedidoDetalle.pedi_FechaPedido) || "N/A" }}</div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
   <div class="product-scroll mt-4">
