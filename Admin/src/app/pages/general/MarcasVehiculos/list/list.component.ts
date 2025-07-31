@@ -32,6 +32,9 @@ import { DetailsComponent } from '../details/details.component';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  // Variable para controlar el estado de carga
+  mostrarOverlayCarga = false;
+
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
@@ -292,11 +295,21 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<MarcasVehiculos[]>(`${environment.apiBaseUrl}/MarcasVehiculos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+    }).subscribe({
+      next: (data) => {
+        console.log('Datos recargados:', data);
+        this.table.setData(data);
+      },
+      error: (error) => {
+        console.error('Error al cargar los datos:', error);
+        this.mostrarOverlayCarga = false;
+      },
+      complete: () => {
+        this.mostrarOverlayCarga = false;
+      }
     });
   }
 }
