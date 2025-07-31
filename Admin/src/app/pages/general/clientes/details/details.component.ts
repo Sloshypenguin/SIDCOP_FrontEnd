@@ -25,6 +25,8 @@ export class DetailsComponent implements OnChanges {
   colonias: any[] = [];
   municipios: any[] = [];
   departamentos: any[] = [];
+  departamentosAval: any[] = [];
+  municipiosAval: any[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clienteData'] && changes['clienteData'].currentValue) {
@@ -47,6 +49,7 @@ export class DetailsComponent implements OnChanges {
         this.cargando = false;
 
         this.cargarDirecciones();
+        this.cargarAvales();
       } catch (error) {
         console.error('Error al cargar detalles del cliente:', error);
         this.mostrarAlertaError = true;
@@ -99,9 +102,9 @@ export class DetailsComponent implements OnChanges {
     }).subscribe(data => {
       const todasLasDirecciones = data || [];
       if (this.clienteDetalle?.clie_Id != null) {
-        this.direcciones = todasLasDirecciones.filter(d =>
-          d.clie_Id === this.clienteDetalle?.clie_Id
-        );
+        this.direcciones = todasLasDirecciones
+          .filter(d => d.clie_Id === this.clienteDetalle?.clie_Id)
+          .sort((a, b) => new Date(a.diCl_FechaCreacion).getTime() - new Date(b.diCl_FechaCreacion).getTime());
       } else {
         this.direcciones = [];
       }
@@ -111,10 +114,14 @@ export class DetailsComponent implements OnChanges {
   cargarAvales(): void {
   this.http.get<any[]>(`${environment.apiBaseUrl}/Aval/Listar`, {
     headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.avales = data || [];
-    });
-  }
+  }).subscribe(data => {
+    if (this.clienteDetalle?.clie_Id != null) {
+      this.avales = (data || []).filter(a => a.clie_Id === this.clienteDetalle?.clie_Id);
+    } else {
+      this.avales = [];
+    }
+  });
+}
 
   cargarColonias(): void {
   this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
@@ -145,13 +152,15 @@ export class DetailsComponent implements OnChanges {
     return colonia?.colo_Descripcion || 'Colonia no encontrada';
   }
 
-  obtenerDescripcionMunicipio(muni_Codigo: string): string {
-    const municipio = this.municipios.find(m => m.muni_Descripcion === muni_Codigo);
-    return municipio?.muni_Descripcion || 'Municipio no encontrado';
-  }
+  obtenerDescripcionMunicipioAval(muni_Codigo: any): string {
+  const municipioAval = this.municipiosAval.find(m => String(m.muni_Codigo) === String(muni_Codigo));
+  return municipioAval?.muni_Descripcion || 'Municipio no encontrado';
+}
 
-  obtenerDescripcionDepartamento(depa_Codigo: string): string {
-    const departamento = this.departamentos.find(d => d.depa_Descripcion === depa_Codigo);
-    return departamento?.depa_Descripcion || 'Departamento no encontrado';
-  }
+obtenerDescripcionDepartamento(depa_Codigo: any): string {
+  const departamento = this.departamentos.find(d => String(d.depa_Codigo) === String(depa_Codigo));
+  return departamento?.depa_Descripcion || 'Departamento no encontrado';
+}
+
+
 }

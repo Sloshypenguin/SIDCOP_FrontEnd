@@ -2,19 +2,11 @@
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
     <!-- Alerta de error -->
-    <div
-      *ngIf="mostrarAlertaError"
-      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert"
-      role="alert"
-    >
+    <div *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
       <strong>¡Error!</strong> {{ mensajeError }}
-      <button
-        type="button"
-        class="btn-close"
-        (click)="cerrarAlerta()"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
 
@@ -58,12 +50,9 @@
   <div class="product-scroll mt-4">
     <h4 class="details-title mb-3" style="color: black">Productos</h4>
 
-    <div
-      *ngIf="productos.length > 0; else sinProductos"
-      class="scroll-container"
-    >
+    <!-- <div *ngIf="productos.length > 0; else sinProductos" class="scroll-container">
       <div class="scroll-item" *ngFor="let producto of productos">
-        
+
         <div class="product-info">
           <div class="fw-bold">{{ producto.descripcion }}</div>
           <div>
@@ -72,7 +61,66 @@
           <div><strong>Cantidad:</strong> {{ producto.cantidad }}</div>
         </div>
       </div>
+    </div> -->
+
+    <div class="table-responsive mt-4">
+      <table class="table table-borderless text-center table-nowrap align-middle mb-0">
+        <thead>
+          <tr class="table-light">
+            <th scope="col" style="width: 50px;">#</th>
+            <th scope="col">Descripcion</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col" class="text-end">Importe</th>
+          </tr>
+        </thead>
+        <tbody id="products-list">
+          <tr *ngFor="let producto of productos; let i = index">
+            <td>
+              <span>{{ i + 1 }}</span>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div>
+                  <h6 class="mb-0">{{ producto.descripcion }}</h6>
+                </div>
+              </div>
+            </td>
+            <td>{{ producto.precio | currency : "L. " }}</td>
+            <td>{{ producto.cantidad }}</td>
+            <td class="text-end">
+              {{ (producto.precio * producto.cantidad) | currency : "L. " }}
+            </td>
+          </tr>
+        </tbody>
+      </table><!--end table-->
     </div>
+
+    <!-- <div class="border-top border-top-dashed mt-2" id="products-list-total">
+      <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
+        <tbody>
+          <tr>
+            <th scope="row" class="text-end">Subtotal:</th>
+            <td class="text-end">
+              {{ 0 | currency : "L. " }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-end">Descuento:</th>
+            <td class="text-end">
+              {{ 0 | currency : "L. " }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-end">Total:</th>
+            <td class="text-end">
+              {{ 0 | currency : "L. " }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+     
+    </div> -->
 
     <ng-template #sinProductos>
       <p>No hay productos en este pedido.</p>
@@ -105,12 +153,12 @@
       <div class="audit-col">
         <span class="audit-user">{{
           PedidoDetalle?.usuarioCreacion || "N/A"
-        }}</span>
+          }}</span>
       </div>
       <div class="audit-col">
         <span class="audit-date">{{
           formatearFecha(PedidoDetalle?.pedi_FechaCreacion ?? null) || "N/A"
-        }}</span>
+          }}</span>
       </div>
     </div>
 
@@ -122,12 +170,12 @@
       <div class="audit-col">
         <span class="audit-user">{{
           PedidoDetalle?.usuarioModificacion || "N/A"
-        }}</span>
+          }}</span>
       </div>
       <div class="audit-col">
         <span class="audit-date">{{
           formatearFecha(PedidoDetalle?.pedi_FechaModificacion ?? null) || "N/A"
-        }}</span>
+          }}</span>
       </div>
     </div>
   </div>

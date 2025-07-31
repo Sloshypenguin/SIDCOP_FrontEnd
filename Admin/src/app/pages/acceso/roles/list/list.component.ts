@@ -104,6 +104,8 @@ export class ListComponent implements OnInit {
     this.showEditForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
+    this.rolEditando = null;
+    this.rolDetalle = null;
   }
 
   editar(rol: Rol): void {
@@ -329,23 +331,24 @@ export class ListComponent implements OnInit {
 
   private cargardatos(state: boolean): void {
     this.mostrarOverlayCarga = state;
+
     this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
       setTimeout(() => {
-        this.mostrarOverlayCarga = false;
-         const tienePermisoListar = this.accionPermitida('listar');
-        const userId = getUserId();
-
-        const datosFiltrados = tienePermisoListar
-          ? data
-          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
-
         this.table.setData(datosFiltrados);
-        this.table.setData(data);
-      },500);
+        this.mostrarOverlayCarga = false;
+      }, 500);
     });
   }
+
 
   private cargarPantallas(): void {
     this.http.get(`${environment.apiBaseUrl}/Roles/ListarPantallas`, {

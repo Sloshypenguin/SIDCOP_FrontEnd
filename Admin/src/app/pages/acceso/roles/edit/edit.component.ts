@@ -157,8 +157,8 @@ export class EditComponent implements OnChanges {
   mostrarConfirmacionEditar = false;
 
   treeData: TreeItem[] = [];
-  permisosDelRol: string[] = []; // ids combinados "pant_Id_acci_Id" para marcar acciones
-  permisosActuales: any[] = []; // permisos reales con perm_Id para eliminar
+  permisosDelRol: string[] = [];
+  permisosActuales: any[] = [];
   selectedItems: TreeItem[] = [];
 
   constructor(private http: HttpClient) {}
@@ -449,9 +449,22 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (!this.rol.role_Descripcion.trim()) {
+    const descripcionVacia = !this.rol.role_Descripcion.trim();
+    const permisosVacios = !this.selectedItems.some(item => item.type === 'accion');
+
+    if (descripcionVacia || permisosVacios) {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      
+      if (descripcionVacia && permisosVacios) {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos y seleccione al menos un permiso antes de guardar.';
+      }
+      else if (permisosVacios) {
+        this.mensajeWarning = 'Por favor seleccione al menos un permiso antes de guardar.';
+      }
+      else if (descripcionVacia) {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      }
+
       setTimeout(() => this.cerrarAlerta(), 4000);
       return;
     }
@@ -543,6 +556,7 @@ export class EditComponent implements OnChanges {
               this.mostrarAlertaExito = false;
               this.onSave.emit(this.rol);
               this.cancelar();
+              this.mostrarErrores = false;
             }, 3000);
           })
           .catch(error => {
@@ -577,6 +591,7 @@ export class EditComponent implements OnChanges {
       usuarioModificacion: '',
       role_Estado: true
     };
+    this.mostrarErrores = false;
     this.onCancel.emit();
   }
 
