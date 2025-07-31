@@ -157,8 +157,8 @@ export class EditComponent implements OnChanges {
   mostrarConfirmacionEditar = false;
 
   treeData: TreeItem[] = [];
-  permisosDelRol: string[] = []; // ids combinados "pant_Id_acci_Id" para marcar acciones
-  permisosActuales: any[] = []; // permisos reales con perm_Id para eliminar
+  permisosDelRol: string[] = [];
+  permisosActuales: any[] = [];
   selectedItems: TreeItem[] = [];
 
   constructor(private http: HttpClient) {}
