@@ -295,7 +295,7 @@ export class ListComponent {
         item.No = index + 1; // Agregar número de fila
         item.cate_Descripcion = item.cate_Descripcion || ''; // Asegurar que cate_Descripcion no sea undefined
       });
-      this.table.setData(data);
+      this.table.setData(datosConIndex);
     });
   }
 }
