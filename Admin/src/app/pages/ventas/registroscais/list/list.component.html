@@ -534,8 +534,8 @@
                   <td>{{ data.nCai_Descripcion }}</td>
                   <td>{{ data.regC_RangoInicial }}</td>
                   <td>{{ data.regC_RangoFinal }}</td>
-                  <td>{{ data.regC_FechaInicialEmision }}</td>
-                  <td>{{ data.regC_FechaFinalEmision }}</td>
+                  <td>{{ data.regC_FechaInicialEmision | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ data.regC_FechaFinalEmision | date:'dd/MM/yyyy' }}</td>
                   <td>{{ data.estado }}</td>
                 </tr>
               </thead>
