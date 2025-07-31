@@ -334,6 +334,8 @@ set fechaInicioFormato(value: string) {
       
       };
 
+      console.log('Datos a enviar:', PEActualizar);
+
       this.http
         .put<any>(`${environment.apiBaseUrl}/Pedido/Actualizar`, PEActualizar, {
           headers: {

@@ -84,7 +84,9 @@ const accionesPorPantalla = [
   { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 6, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 7, Acci_Id: 4 }, { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 },
   { AcPa_Id: 216, Pant_Id: 9, Acci_Id: 4 }, { AcPa_Id: 217, Pant_Id: 10, Acci_Id: 4 }, { AcPa_Id: 218, Pant_Id: 11, Acci_Id: 4 }, { AcPa_Id: 219, Pant_Id: 12, Acci_Id: 4 },
   { AcPa_Id: 220, Pant_Id: 13, Acci_Id: 4 }, { AcPa_Id: 221, Pant_Id: 14, Acci_Id: 4 }, { AcPa_Id: 222, Pant_Id: 15, Acci_Id: 4 }, { AcPa_Id: 223, Pant_Id: 16, Acci_Id: 4 },
-  { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }
+  { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }, { AcPa_Id: 237, Pant_Id: 36, Acci_Id: 11 }, { AcPa_Id: 238, Pant_Id: 38, Acci_Id: 11 }, { AcPa_Id: 239, Pant_Id: 29, Acci_Id: 11 },
+  { AcPa_Id: 240, Pant_Id: 31, Acci_Id: 11 }, { AcPa_Id: 241, Pant_Id: 57, Acci_Id: 4 }, { AcPa_Id: 242, Pant_Id: 58, Acci_Id: 4 }, { AcPa_Id: 243, Pant_Id: 59, Acci_Id: 1 },
+  { AcPa_Id: 244, Pant_Id: 59, Acci_Id: 2 }, { AcPa_Id: 245, Pant_Id: 59, Acci_Id: 3 }, { AcPa_Id: 246, Pant_Id: 59, Acci_Id: 4 }
 ];
 
 
@@ -101,6 +103,35 @@ export class CreateComponent {
 
   treeData: TreeItem[] = [];
   selectedItems: TreeItem[] = [];
+
+  ngOnInit(): void {
+    this.inicializarFormulario();
+  }
+
+  inicializarFormulario(): void {
+    this.rol = {
+      role_Id: 0,
+      role_Descripcion: '',
+      usua_Creacion: 0,
+      usua_Modificacion: 0,
+      secuencia: 0,
+      role_FechaCreacion: new Date(),
+      role_FechaModificacion: new Date(),
+      code_Status: 0,
+      message_Status: '',
+      usuarioCreacion: '',
+      usuarioModificacion: '',
+      role_Estado: true
+    };
+
+    // Ocultar cualquier mensaje o alerta
+    this.mostrarErrores = false;
+    this.mostrarAlertaExito = false;
+    this.mostrarAlertaError = false;
+    this.mostrarAlertaWarning = false;
+
+    this.cargarPantallas();
+  }
 
   rol: Rol = {
     role_Id: 0,
@@ -280,10 +311,24 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
-    if (!this.rol.role_Descripcion.trim()) {
+
+    const descripcionVacia = !this.rol.role_Descripcion.trim();
+    const permisosVacios = !this.selectedItems.some(item => item.type === 'accion');
+
+    if (descripcionVacia || permisosVacios) {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos.';
-      setTimeout(() => this.mostrarAlertaWarning = false, 4000);
+      
+      if (descripcionVacia && permisosVacios) {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos y seleccione al menos un permiso antes de guardar.';
+      }
+      else if (permisosVacios) {
+        this.mensajeWarning = 'Por favor seleccione al menos un permiso antes de guardar.';
+      }
+      else if (descripcionVacia) {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      }
+
+      setTimeout(() => this.cerrarAlerta(), 4000);
       return;
     }
 
@@ -380,6 +425,7 @@ export class CreateComponent {
               this.mostrarAlertaExito = false;
               this.onSave.emit(ultimoRol);
               this.cancelar();
+              this.mostrarErrores = false;
             }, 300);
           },
           error: () => {
@@ -412,6 +458,8 @@ export class CreateComponent {
       usuarioModificacion: '',
       role_Estado: true
     };
+    this.mostrarErrores = false;
+    this.inicializarFormulario();
     this.onCancel.emit();
   }
 
