@@ -14,7 +14,8 @@ import { Subscription } from 'rxjs';
 export class SidebarComponent implements OnInit, OnDestroy {
   renavegar(link?: string) {
     if (typeof link === 'string') {
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      // solo recargamos el esquema o alguna ruta ya agregada y el componente deberia reiniciarse
+      this.router.navigateByUrl('/general', { skipLocationChange: true }).then(() => {
         this.router.navigateByUrl(link);
       });
     }

@@ -116,6 +116,13 @@ export class CreateComponent {
     this.mensajeWarning = '';
   }
 
+  onAdminToggle(): void {
+    if (this.usuario.usua_EsAdmin) {
+      this.usuario.role_Id = 1;
+      this.usuario.usua_IdPersona = 0;
+    }
+  }
+
   guardar(): void {
     this.mostrarErrores = true;
     if (this.usuario.usua_Usuario.trim() && this.usuario.usua_Clave.trim() && this.usuario.role_Id && this.usuario.usua_IdPersona) 
