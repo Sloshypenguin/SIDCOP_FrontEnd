@@ -21,73 +21,133 @@
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && descuentoDetalle" class="details-content">
     
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles del Descuento</div>
-      <div class="details-id-row">
-  <div class="details-id">
-    <div class="details-id-label">Descripcion</div>
-    <div class="details-id-value">{{ descuentoDetalle.desc_Descripcion }}</div>
+   <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+  <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+    <i class="ri-price-tag-3-line me-2 fs-4"></i>
+     <h5 class="mb-0">Detalles del Descuento</h5>
   </div>
-  <div class="details-id">
-    <div class="details-id-label">Tipo</div>
-    <div class="details-id-value">{{descuentoDetalle.desc_Tipo == true? 'Monto Fijo' : 'Porcentaje'}}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Aplica Para {{descuentoDetalle.desc_Aplicar == 'M'? 'Marcas' : descuentoDetalle.desc_Aplicar == 'C'? 'Categorias' : descuentoDetalle.desc_Aplicar == 'S'? 'Subcategoria' : 'Productos' }}</div>
-     <div class="details-id-value">
-  <ng-container *ngFor="let nombre of referenciasNombre; let i = index">
-    <span >{{ nombre }}<span *ngIf="i < referenciasNombre.length - 1">, </span></span>
-    <br *ngIf="(i + 1) % 3 === 0" />
-  </ng-container>
-</div>
-  </div>
-
-   <div class="details-id">
-    <div class="details-id-label">Tipo de Factura</div>
-    <div class="details-id-value"> {{descuentoDetalle.desc_TipoFactura == 'CR'? 'Credito' : descuentoDetalle.desc_TipoFactura == 'CO'? 'Contado' : descuentoDetalle.desc_TipoFactura == 'AM'? 'Ambas' : 'N/A' }}</div>
-
-   
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Validez</div>
-    <div class="details-id-value"> {{ formatearFecha(descuentoDetalle.desc_FechaInicio ) || 'N/A' }} al {{ formatearFecha(descuentoDetalle.desc_FechaFin ) || 'N/A' }}</div>
-
-   
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Observaciones</div>
-    <div class="details-id-value">{{ descuentoDetalle.desc_Observaciones }}</div>
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Clientes con el descuento</div>
-    <div class="details-id-value">
-  <ng-container *ngFor="let nombre of ClientesNombre; let i = index">
-    <span >{{ nombre }}<span *ngIf="i < ClientesNombre.length - 1">, </span></span>
-    <br *ngIf="(i + 1) % 3 === 0" />
-  </ng-container>
-</div>
-  </div>
-  
-
-  <div class="details-id">
-    <div class="details-id-label">Escala</div>
-   <div class="details-id-value">
-  <div *ngFor="let escala of escalasParsed">
-    De {{ escala.deEs_InicioEscala }} a {{ escala.deEs_FinEscala }}: {{ escala.deEs_Valor | number: '1.2-2' }} {{descuentoDetalle.desc_Tipo == true? 'Lps.' : '%'}}
-  </div>
-</div>
-  </div>
-
-  
-
-  </div>
-</div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue text-white"><i class="ri-attachment-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Descripción</div>
+        <div class="detail-value">{{ descuentoDetalle.desc_Descripcion }}</div>
+      </div>
     </div>
-     <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+  </div>
+
+  <!-- Tipo -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-refund-2-fill"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Tipo</div>
+        <div class="detail-value">
+          {{ descuentoDetalle.desc_Tipo == true ? 'Monto Fijo' : 'Porcentaje' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aplica Para -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-stack-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">
+          Aplica Para {{ descuentoDetalle.desc_Aplicar == 'M' ? 'Marcas' : descuentoDetalle.desc_Aplicar == 'C' ? 'Categorías' : descuentoDetalle.desc_Aplicar == 'S' ? 'Subcategoría' : 'Productos' }}
+        </div>
+        <div class="detail-value">
+          <ng-container *ngFor="let nombre of referenciasNombre; let i = index">
+            <span>{{ nombre }}<span *ngIf="i < referenciasNombre.length - 1">, </span></span>
+            <br *ngIf="(i + 1) % 3 === 0" />
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tipo de Factura -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-file-text-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Tipo de Factura</div>
+        <div class="detail-value">
+          {{
+            descuentoDetalle.desc_TipoFactura == 'CR' ? 'Crédito' :
+            descuentoDetalle.desc_TipoFactura == 'CO' ? 'Contado' :
+            descuentoDetalle.desc_TipoFactura == 'AM' ? 'Ambas' :
+            'N/A'
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Validez -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-calendar-2-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Validez</div>
+        <div class="detail-value">
+          {{ formatearFecha(descuentoDetalle.desc_FechaInicio) || 'N/A' }} al {{ formatearFecha(descuentoDetalle.desc_FechaFin) || 'N/A' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Observaciones -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-file-list-3-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Observaciones</div>
+        <div class="detail-value">{{ descuentoDetalle.desc_Observaciones }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clientes con el descuento -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-user-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Clientes con el descuento</div>
+        <div class="detail-value">
+          <ng-container *ngFor="let nombre of ClientesNombre; let i = index">
+            <span>{{ nombre }}<span *ngIf="i < ClientesNombre.length - 1">, </span></span>
+            <br *ngIf="(i + 1) % 3 === 0" />
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Escalas -->
+  <div class="col-12 col-sm-6">
+    <div class="detail-item">
+      <div class="detail-icon bg-dark-blue  text-white"><i class="ri-bar-chart-line"></i></div>
+      <div class="detail-content">
+        <div class="detail-label">Escala</div>
+        <div class="detail-value">
+          <div *ngFor="let escala of escalasParsed">
+            De {{ escala.deEs_InicioEscala }} a {{ escala.deEs_FinEscala }}:
+            {{ escala.deEs_Valor | number: '1.2-2' }}
+            {{ descuentoDetalle.desc_Tipo == true ? 'Lps.' : '%' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+      </div>
+    </div>
+    
+
     
 
     
@@ -107,10 +167,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ descuentoDetalle?.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ descuentoDetalle.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(descuentoDetalle?.desc_FechaCreacion ?? null) || 'N/A' }}</span>
+          <span class="audit-date">{{ formatearFecha(descuentoDetalle.desc_FechaCreacion) || 'N/A' }}</span>
         </div>
       </div>
       
@@ -120,10 +180,10 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ descuentoDetalle?.usuarioModificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ descuentoDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(descuentoDetalle?.desc_FechaModificacion ?? null ) || 'N/A' }}</span>
+          <span class="audit-date">{{ formatearFecha(descuentoDetalle.desc_FechaModificacion ?? null ) || 'N/A' }}</span>
         </div>
       </div>
     </div>

@@ -62,15 +62,15 @@
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th" (click)="table.sortBy('prov_Id')" style="cursor:pointer;">
+                <th class="gridjs-th" (click)="table.sortBy('No')" style="cursor:pointer;">
   <span class="table-header-flex">
     No.
     <span style="display: flex; flex-direction: column;">
       <i class="ri-arrow-up-s-line icon-sort"
-        [ngStyle]="table.sortField === 'prov_Id' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+        [ngStyle]="table.sortField === 'No' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
       </i>
       <i class="ri-arrow-down-s-line icon-sort"
-        [ngStyle]="table.sortField === 'prov_Id' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+        [ngStyle]="table.sortField === 'No' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
       </i>
     </span>
   </span>
@@ -164,7 +164,7 @@
     </button>
   </div>
 </td>
-                <td><span class="fw-semibold">{{data.prov_Id}}</span></td>
+                <td><span class="fw-semibold">{{data.No}}</span></td>
                 <td>{{data.prov_Codigo}}</td>
                 <td>{{data.prov_NombreEmpresa}}</td>
                 <td>{{data.prov_NombreContacto}}</td>

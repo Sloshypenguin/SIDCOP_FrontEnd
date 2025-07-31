@@ -39,13 +39,6 @@
           </label>
 
           <div class="d-flex align-items-center">
-            <!-- <span 
-              class="input-icon border rounded-start px-3 py-2 bg-white d-flex align-items-center justify-content-center"
-              [ngClass]="{
-    'border-secondary': (!mostrarErrores || cargo.carg_Descripcion.trim()) && !(!cargo.carg_Descripcion.trim() && mostrarErrores),
-    'border-danger': mostrarErrores && !cargo.carg_Descripcion.trim()
-  }"> -->
-              <!-- <i class="ri-attachment-line text" style="border-color: gray;"></i> -->
                <i class="ri-attachment-line" [ngStyle]="{
                 border: (!cargo.carg_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
                 backgroundColor: (!cargo.carg_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',

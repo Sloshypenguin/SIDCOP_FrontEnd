@@ -20,96 +20,173 @@
   
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && vendedorDetalle" class="details-content">
-    
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles del Vendedor</div>
-      <div class="details-id-row">
-  <div class="details-id">
-    <div class="details-id-label">Codigo</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Codigo }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">DNI</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_DNI }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Nombre Completo</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Nombres }} {{ vendedorDetalle.vend_Apellidos }}</div>
-  </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Sexo</div>
-    <div class="details-id-value"> {{
-    vendedorDetalle.vend_Sexo === 'M' ? 'Masculino' :
-    vendedorDetalle.vend_Sexo === 'F' ? 'Femenino' :
-    'N/A'
-  }}</div>
-
-   
+    <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+  <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+    <i class="ri-contacts-line me-2 fs-4"></i>
+     <h5 class="mb-0">Detalles del Vendedor</h5>
   </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-attachment-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Codigo</div>
+            <div class="detail-value">{{ vendedorDetalle.vend_Codigo }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-bank-card-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">DNI</div>
+            <div class="detail-value">{{ vendedorDetalle.vend_DNI }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-user-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Nombre Completo</div>
+            <div class="detail-value">{{ vendedorDetalle.vend_Nombres }} {{ vendedorDetalle.vend_Apellidos }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white">
+            <ng-container *ngIf="vendedorDetalle.vend_Sexo; else iconFemenino">
+              <i class="ri-men-line"></i>
+            </ng-container>
+            <ng-template #iconFemenino>
+              <i class="ri-women-line"></i>
+            </ng-template>
+          </div>
+          <div class="detail-content">
+            <div class="detail-label">Sexo</div>
+            <div class="detail-value">
+              <ng-container *ngIf="vendedorDetalle.vend_Sexo === 'M'; else textoFemenino">Masculino</ng-container>
+              <ng-template #textoFemenino>Femenino</ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-phone-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Telefono</div>
+            <div class="detail-value">{{ vendedorDetalle.vend_Telefono }}</div>
+          </div>
+        </div>
+      </div>
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon bg-dark-blue text-white"><i class="ri-mail-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Correo</div>
+              <div class="detail-value">{{ vendedorDetalle.vend_Correo }}</div>
+            </div>
+          </div>
+        </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Telefono</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Telefono }}</div>
-  </div>
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon bg-dark-blue text-white"><i class="ri-map-pin-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Colonia</div>
+              <div class="detail-value">{{ vendedorDetalle.colo_Descripcion }}</div>
+            </div>
+          </div>
+        </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Correo</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_Correo }}</div>
-  </div>
-  
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon bg-dark-blue text-white"><i class="ri-home-4-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Dirección Exacta</div>
+              <div class="detail-value">{{ vendedorDetalle.vend_DireccionExacta }}</div>
+            </div>
+          </div>
+        </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Colonia</div>
-    <div class="details-id-value">{{ vendedorDetalle.colo_Descripcion }}</div>
-  </div>
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon bg-dark-blue text-white"><i class="ri-building-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Sucursal</div>
+              <div class="detail-value">{{ vendedorDetalle.sucu_Descripcion }}</div>
+            </div>
+          </div>
+        </div>
 
-   <div class="details-id">
-    <div class="details-id-label">Direccion Exacta</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_DireccionExacta }} </div>
-  </div>
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon bg-dark-blue  text-white"><i class="ri-shield-user-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Supervisor</div>
+              <div class="detail-value">
+                {{ vendedorDetalle.nombreSupervisor }} {{ vendedorDetalle.apellidoSupervisor }}
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon  bg-dark-blue text-white"><i class="ri-user-3-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Ayudante</div>
+              <div class="detail-value">
+                {{
+                  vendedorDetalle.nombreAyudante || vendedorDetalle.apellidoAyudante
+                    ? (vendedorDetalle.nombreAyudante + ' ' + vendedorDetalle.apellidoAyudante)
+                    : 'Sin ayudante'
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon bg-dark-blue text-white"><i class="ri-group-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Tipo de Vendedor</div>
+              <div class="detail-value">
+                {{
+                  vendedorDetalle.vend_Tipo === 'P' ? 'Preventista' :
+                  vendedorDetalle.vend_Tipo === 'V' ? 'Venta directa' :
+                  vendedorDetalle.vend_Tipo === 'F' ? 'Entregador' :
+                  'N/A'
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
 
-   <div class="details-id">
-    <div class="details-id-label">Sucursal</div>
-    <div class="details-id-value">{{ vendedorDetalle.sucu_Descripcion }}</div>
-  </div>
+        <div class="col-12 col-sm-6">
+          <div class="detail-item">
+            <div class="detail-icon  bg-dark-blue text-white"><i class="ri-checkbox-circle-line"></i></div>
+            <div class="detail-content">
+              <div class="detail-label">Es contratista?</div>
+              <div class="detail-value">
+                {{ vendedorDetalle.vend_EsExterno == true ? 'Sí' : 'No' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Supervisor</div>
-    <div class="details-id-value">{{ vendedorDetalle.nombreSupervisor }} {{ vendedorDetalle.apellidoSupervisor }}</div>
-  </div>
-
-   <div class="details-id">
-    <div class="details-id-label">Ayudante</div>
-    <div class="details-id-value">  {{
-    vendedorDetalle.nombreAyudante || vendedorDetalle.apellidoAyudante
-      ? (vendedorDetalle.nombreAyudante + ' ' + vendedorDetalle.apellidoAyudante)
-      : 'Sin ayudante'
-  }}</div>
-  </div>
-
-   <div class="details-id">
-    <div class="details-id-label">Tipo de Vendedor</div>
-    <div class="details-id-value"> {{
-    vendedorDetalle.vend_Tipo === 'P' ? 'Preventista' :
-    vendedorDetalle.vend_Tipo === 'V' ? 'Venta directa' :
-    vendedorDetalle.vend_Tipo === 'F' ? 'Entregador' :
-    'N/A'
-  }}</div>
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Es contratista?</div>
-    <div class="details-id-value">{{ vendedorDetalle.vend_EsExterno == true? 'Si': 'No' }}</div>
-  </div>
-
-  </div>
-</div>
+      </div>
     </div>
-     <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+    
+  
     
 
     
@@ -129,10 +206,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ vendedorDetalle?.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ vendedorDetalle.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaCreacion ?? null) || 'N/A' }}</span>
+          <span class="audit-date">{{ formatearFecha(vendedorDetalle.vend_FechaCreacion) || 'N/A' }}</span>
         </div>
       </div>
       
@@ -142,10 +219,10 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ vendedorDetalle?.usuarioModificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ vendedorDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(vendedorDetalle?.vend_FechaModificacion?? null ) }}</span>
+          <span class="audit-date">{{ formatearFecha(vendedorDetalle.vend_FechaModificacion?? null ) }}</span>
         </div>
       </div>
     </div>

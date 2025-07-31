@@ -63,7 +63,7 @@
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
                   <th class="gridjs-th" (click)="table.sortBy('nCai_Id')" style="cursor:pointer;">
                     <span class="table-header-flex">
-                      ID
+                      No.
                       <!-- iconos para ordenar -->
                       <span style="display: flex; flex-direction: column;">
                         <i class="ri-arrow-up-s-line icon-sort"
@@ -118,7 +118,7 @@
                       </button>
                     </div>
                   </td>
-                  <td><span class="fw-semibold">{{ data.nCai_Id }}</span></td>
+                 <td><span class="fw-semibold">{{ (table.page - 1) * table.pageSizeValue + i + 1 }}</span></td>
                   <td>{{ data.nCai_Codigo }}</td>
                   <td>{{ data.nCai_Descripcion }}</td>
                 </tr>

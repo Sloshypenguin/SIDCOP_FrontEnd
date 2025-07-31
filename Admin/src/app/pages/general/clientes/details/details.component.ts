@@ -28,6 +28,7 @@ export class DetailsComponent implements OnChanges {
   departamentosAval: any[] = [];
   municipiosAval: any[] = [];
 
+  public imgLoaded: boolean = false;
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clienteData'] && changes['clienteData'].currentValue) {
       this.cargarDetallesSimulado(changes['clienteData'].currentValue);
@@ -38,6 +39,8 @@ export class DetailsComponent implements OnChanges {
     this.cargarDepartamentos();
   }
 
+
+  
   // Simulación de carga
   cargarDetallesSimulado(data: Cliente): void {
     this.cargando = true;
