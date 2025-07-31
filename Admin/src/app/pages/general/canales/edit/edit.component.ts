@@ -17,6 +17,7 @@ export class EditComponent implements OnChanges {
   @Input() canalData: Canal | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Canal>();
+  @Output() onOverlayChange = new EventEmitter<boolean>();
 
   canal: Canal = new Canal();
 
@@ -90,10 +91,8 @@ export class EditComponent implements OnChanges {
 
   private guardar() {
     this.mostrarErrores = true;
-    console.log('Método guardar() llamado');
-    console.log('Datos del canal antes de PUT:', this.canal);
-
-    // Construir el payload exactamente como lo espera el backend
+    this.onOverlayChange.emit(true);
+    // ...payload igual...
     const canal: any = {
       cana_Id: this.canal.cana_Id,
       cana_Descripcion: this.canal.cana_Descripcion.trim(),
@@ -109,9 +108,7 @@ export class EditComponent implements OnChanges {
       UsuarioModificacion: this.canal.UsuarioModificacion || ''
     };
 
-
     if (canal.cana_Descripcion && canal.cana_Observaciones) {
-
       this.http.put<any>(`${environment.apiBaseUrl}/Canal/Actualizar`, canal, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -121,23 +118,32 @@ export class EditComponent implements OnChanges {
       }).subscribe({
         next: (resp) => {
           console.log('Respuesta del PUT /Canal/Actualizar:', resp);
-          this.mensajeExito = `Canal "${this.canal.cana_Descripcion}" actualizado exitosamente`;
-          this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
           setTimeout(() => {
-            this.mostrarAlertaExito = false;
-            this.onSave.emit(this.canal);
-            this.cancelar();
-          }, 3000);
+            this.onOverlayChange.emit(false);
+            this.mensajeExito = `Canal "${this.canal.cana_Descripcion}" actualizado exitosamente`;
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              setTimeout(() => {
+                this.onSave.emit(this.canal);
+                this.cancelar();
+              }, 100);
+            }, 2000);
+          }, 1000);
         },
         error: (err) => {
-          console.error('Error en PUT /Canal/Actualizar:', err);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al actualizar canal. Por favor, intente nuevamente.';
-          setTimeout(() => this.cerrarAlerta(), 5000);
+          setTimeout(() => {
+            this.onOverlayChange.emit(false);
+            console.error('Error en PUT /Canal/Actualizar:', err);
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al actualizar canal. Por favor, intente nuevamente.';
+            setTimeout(() => this.cerrarAlerta(), 5000);
+          }, 1000);
         }
       });
     } else {
+      this.onOverlayChange.emit(false);
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
       setTimeout(() => this.cerrarAlerta(), 4000);

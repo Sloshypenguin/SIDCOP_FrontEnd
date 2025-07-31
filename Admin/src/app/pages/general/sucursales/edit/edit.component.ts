@@ -35,6 +35,7 @@ export class EditComponent implements OnChanges {
   @Input() sucursalData: Sucursales | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Sucursales>();
+  @Output() onOverlayChange = new EventEmitter<boolean>();
 
   sucursal: Sucursales = {
     sucu_Id: 0,
@@ -140,7 +141,10 @@ export class EditComponent implements OnChanges {
 
   cancelar(): void {
     this.cerrarAlerta();
-    this.onCancel.emit();
+    setTimeout(() => {
+      this.onOverlayChange.emit(false);
+      this.onCancel.emit();
+    }, 100);
   }
 
   cerrarAlerta(): void {
@@ -195,21 +199,13 @@ export class EditComponent implements OnChanges {
 
   private guardar(): void {
     this.mostrarErrores = true;
-
-    if (
-      this.sucursal.sucu_Descripcion.trim() &&
-      this.sucursal.colo_Id &&
-      this.sucursal.sucu_DireccionExacta.trim() &&
-      this.sucursal.sucu_Telefono1.trim() &&
-      this.sucursal.sucu_Correo.trim()
-    ) {
+    this.onOverlayChange.emit(true);
       const sucursalActualizar = {
         ...this.sucursal,
         usua_Modificacion: getUserId(),
         sucu_FechaModificacion: new Date().toISOString()
       };
 
-      this.mostrarOverlayCarga = true;
       this.http.put<any>(`${environment.apiBaseUrl}/Sucursales/Actualizar`, sucursalActualizar, {
         headers: {
           'X-Api-Key': environment.apiKey,
@@ -218,40 +214,39 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mostrarOverlayCarga = false;
-          if (response?.data?.code_Status === 1) {
-            this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" actualizada exitosamente`;
-            this.mostrarAlertaExito = true;
-            this.mostrarErrores = false;
-
-            setTimeout(() => {
+          this.mostrarErrores = false;
+          setTimeout(() => {
+            this.onOverlayChange.emit(false);
+            if (response?.data?.code_Status === 1) {
+              this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" actualizada exitosamente`;
+              this.mostrarAlertaExito = true;
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                setTimeout(() => {
+                  this.onSave.emit(this.sucursal);
+                  this.cancelar();
+                }, 100);
+              }, 2000);
+            } else {
+              this.mostrarAlertaError = true;
+              this.mensajeError = response?.data?.message_Status || 'No se pudo actualizar la sucursal.';
               this.mostrarAlertaExito = false;
-              this.onSave.emit(this.sucursal);
-              this.cancelar();
-            }, 3000);
-          } else {
-            this.mostrarAlertaError = true;
-            this.mensajeError = response?.data?.message_Status || 'No se pudo actualizar la sucursal.';
-            this.mostrarAlertaExito = false;
-
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-          }
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            }
+          }, 300);
         },
         error: (error) => {
-          this.mostrarOverlayCarga = false;
-          this.mostrarAlertaError = true;
-          this.mensajeError = error?.error?.data?.message_Status || 'Error al actualizar la sucursal. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
-          setTimeout(() => this.cerrarAlerta(), 5000);
+          setTimeout(() => {
+            this.onOverlayChange.emit(false);
+            this.mostrarAlertaError = true;
+            this.mensajeError = error?.error?.data?.message_Status || 'Error al actualizar la sucursal. Por favor, intente nuevamente.';
+            this.mostrarAlertaExito = false;
+            setTimeout(() => this.cerrarAlerta(), 5000);
+          }, 1000);
         }
       });
-    } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
-      setTimeout(() => this.cerrarAlerta(), 4000);
-    }
   }
 }
