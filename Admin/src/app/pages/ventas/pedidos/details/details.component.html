@@ -50,7 +50,7 @@
   <div class="product-scroll mt-4">
     <h4 class="details-title mb-3" style="color: black">Productos</h4>
 
-    <div *ngIf="productos.length > 0; else sinProductos" class="scroll-container">
+    <!-- <div *ngIf="productos.length > 0; else sinProductos" class="scroll-container">
       <div class="scroll-item" *ngFor="let producto of productos">
 
         <div class="product-info">
@@ -61,7 +61,7 @@
           <div><strong>Cantidad:</strong> {{ producto.cantidad }}</div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="table-responsive mt-4">
       <table class="table table-borderless text-center table-nowrap align-middle mb-0">
@@ -96,7 +96,7 @@
       </table><!--end table-->
     </div>
 
-    <div class="border-top border-top-dashed mt-2" id="products-list-total">
+    <!-- <div class="border-top border-top-dashed mt-2" id="products-list-total">
       <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
         <tbody>
           <tr>
@@ -119,8 +119,8 @@
           </tr>
         </tbody>
       </table>
-      <!--end table-->
-    </div>
+     
+    </div> -->
 
     <ng-template #sinProductos>
       <p>No hay productos en este pedido.</p>
