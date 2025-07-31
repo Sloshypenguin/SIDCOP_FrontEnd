@@ -72,15 +72,15 @@
               <thead>
                 <tr>
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                  <th class="gridjs-th" (click)="table.sortBy('sucu_Id')" style="cursor:pointer;">
+                  <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
                     <span class="table-header-flex">
                       ID
                       <span style="display: flex; flex-direction: column;">
                         <i class="ri-arrow-up-s-line icon-sort"
-                          [ngStyle]="sortField === 'sucu_Id' && sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                          [ngStyle]="sortField === 'secuencia' && sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                         </i>
                         <i class="ri-arrow-down-s-line icon-sort"
-                          [ngStyle]="sortField === 'sucu_Id' && sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                          [ngStyle]="sortField === 'secuencia' && sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                         </i>
                       </span>
                     </span>
@@ -152,7 +152,7 @@
                   </button>
                   </div>
                   </td>
-                  <td><span class="fw-semibold">{{data.sucu_Id}}</span></td>
+                  <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                   <td>{{data.sucu_Descripcion}}</td>
                   <td>{{data.sucu_DireccionExacta}}</td>
                   <td>{{data.sucu_Telefono1}}</td>
