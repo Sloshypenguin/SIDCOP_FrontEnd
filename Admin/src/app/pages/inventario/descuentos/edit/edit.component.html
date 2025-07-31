@@ -431,7 +431,7 @@
                 </div>
                 
                 </div>
-                <div class="text-danger mt-1" >
+                <div class="text-danger mt-1 error-message-container" >
                     <small *ngIf="i > 0 && escala.deEs_InicioEscala <= escalas[i - 1].deEs_FinEscala">Inicio debe ser mayor al fin de la escala anterior</small>
                   </div>
                 </div>
@@ -456,7 +456,7 @@
                 </div>
                 
               </div>
-              <div class="text-danger mt-1" >
+              <div class="text-danger mt-1 error-message-container" >
                   <small *ngIf="escala.deEs_FinEscala <= escala.deEs_InicioEscala">Fin de escala debe ser mayor que el inicio</small>
                 </div>
               </div>
@@ -484,7 +484,7 @@
                 </div>
                 
               </div>
-              <div class="text-danger mt-0" >
+              <div class="text-danger mt-0 error-message-container" >
                     <small *ngIf="i > 0 && escala.deEs_Valor <= escalas[i - 1].deEs_Valor">El valor debe ser mayor al valor anterior</small>
                 </div>
               </div>
@@ -539,7 +539,7 @@
           class="btn btn-primary  
           right ms-auto nexttab
             nexttab" data-nexttab="steparrow-description-info-tab" 
-            [disabled]="!validado || !puedeAgregarNuevaEscala()"
+            [disabled]="!validado"
             >
              <span class="btn-text">Guardar</span>
             <span class="btn-icon"><i class="ri-save-line label-icon align-middle fs-16 ms-2"></i></span>
@@ -549,6 +549,7 @@
         </div>
       </div>
     </div>
+  
 
 
 <!-- Modal de confirmación para editar -->

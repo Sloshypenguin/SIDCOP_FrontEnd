@@ -431,7 +431,7 @@
                 </div>
                 
                 </div>
-                <div class="text-danger mt-1" >
+                <div class="text-danger mt-1 error-message-container" >
                     <small *ngIf="i > 0 && escala.deEs_InicioEscala <= escalas[i - 1].deEs_FinEscala">Inicio debe ser mayor al fin de la escala anterior</small>
                   </div>
                 </div>
@@ -456,7 +456,7 @@
                 </div>
                 
               </div>
-              <div class="text-danger mt-1" >
+              <div class="text-danger mt-1 error-message-container" >
                   <small *ngIf="escala.deEs_FinEscala <= escala.deEs_InicioEscala">Fin de escala debe ser mayor que el inicio</small>
                 </div>
               </div>
@@ -484,7 +484,7 @@
                 </div>
                 
               </div>
-              <div class="text-danger mt-0" >
+              <div class="text-danger mt-0 error-message-container" >
                     <small *ngIf="i > 0 && escala.deEs_Valor <= escalas[i - 1].deEs_Valor">El valor debe ser mayor al valor anterior</small>
                 </div>
               </div>
