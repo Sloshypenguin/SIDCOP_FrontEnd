@@ -30,28 +30,34 @@
     <div class="row">
       <div class="col-lg-4 ">
         <div class="mb-1">
-          <label for="empl_DNI"  class="form-label">DNI<span class="text-danger">*</span></label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="empl_DNI"
-            mask="0000-0000-00000"
-            maxlength="15"
-            [class.is-invalid]="!empleado.empl_DNI.trim() && mostrarErrores"
-            [(ngModel)]="empleado.empl_DNI"
-            placeholder="0000-0000-00000"
-            required>
-        <div class="text-danger" *ngIf="!empleado.empl_DNI.trim() && mostrarErrores">
-          <small>El campo DNI es requerido</small>
+          <label for="empl_DNI" class="form-label">DNI<span cl0.0....00.0000000000000000000000000............0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.000000000000000000000000000000000000000000.0...ass="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-credit-card-2-front"></i></span>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="empl_DNI"
+              mask="0000-0000-00000"
+              maxlength="15"
+              [class.is-invalid]="!empleado.empl_DNI.trim() && mostrarErrores"
+              [(ngModel)]="empleado.empl_DNI"
+              placeholder="0000-0000-00000"
+              required>
+          </div>
+          <div class="text-danger" *ngIf="!empleado.empl_DNI.trim() && mostrarErrores">
+            <small>El campo DNI es requerido</small>
+          </div>
         </div>
-      </div>
       </div>
 
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="codigo-input"  class="form-label">Código<span class="text-danger">*</span></label>
-                <input type="text"  id="codigo-input"  [(ngModel)]="empleado.empl_Codigo"  class="form-control" [class.is-invalid]="!empleado.empl_Codigo.trim() && mostrarErrores" placeholder="Ingrese el código" required>
+                <label for="codigo-input" class="form-label">Código<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                  <input type="text" id="codigo-input" [(ngModel)]="empleado.empl_Codigo" class="form-control" [class.is-invalid]="!empleado.empl_Codigo.trim() && mostrarErrores" placeholder="Ingrese el código" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_Codigo.trim() && mostrarErrores">
                     <small>El código es requerido</small>
                 </div>
@@ -62,8 +68,11 @@
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="nombres-input"  class="form-label">Nombres<span class="text-danger">*</span></label>
-                <input type="text"  id="nombres-input"  [(ngModel)]="empleado.empl_Nombres"  class="form-control" [class.is-invalid]="!empleado.empl_Nombres.trim() && mostrarErrores" placeholder="Ingrese los nombres del empleado" required>
+                <label for="nombres-input" class="form-label">Nombres<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" id="nombres-input" [(ngModel)]="empleado.empl_Nombres" class="form-control" [class.is-invalid]="!empleado.empl_Nombres.trim() && mostrarErrores" placeholder="Ingrese los nombres del empleado" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_Nombres.trim() && mostrarErrores">
                     <small>Los nombres son requeridos</small>
                 </div>
@@ -73,8 +82,11 @@
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="apellidos-input"  class="form-label">Apellidos<span class="text-danger">*</span></label>
-                <input type="text"  id="apellidos-input"  [(ngModel)]="empleado.empl_Apellidos"  class="form-control" [class.is-invalid]="!empleado.empl_Apellidos.trim() && mostrarErrores" placeholder="Ingrese los apellidos del empleado" required>
+                <label for="apellidos-input" class="form-label">Apellidos<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                  <input type="text" id="apellidos-input" [(ngModel)]="empleado.empl_Apellidos" class="form-control" [class.is-invalid]="!empleado.empl_Apellidos.trim() && mostrarErrores" placeholder="Ingrese los apellidos del empleado" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_Apellidos.trim() && mostrarErrores">
                     <small>Los apellidos son requeridos</small>
                 </div>
@@ -82,27 +94,37 @@
             
       </div><!--end col-->
 
-      <div class="col-lg-4">
-        <div class="mb-3">
-          <label class="form-label">Sexo<span class="text-danger">*</span></label>
-          <div class="d-flex align-items-center gap-3">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sexo" id="sexoM" [(ngModel)]="empleado.empl_Sexo" [value]="'M'" required>
-              <label class="form-check-label" for="sexoM">Masculino</label>
+
+      <div class="col-md-4">
+          <div class="mb-3">
+            <label class="form-label">Sexo</label>
+            <div class="sexo-toggle d-flex">
+              <label class="sexo-option me-2" [class.selected]="empleado.empl_Sexo === 'M'">
+                <input type="radio" name="sexo" value="M" [(ngModel)]="empleado.empl_Sexo" required />
+                <i class="ri-men-line sexo-icon"></i>
+                <span>Masculino</span>
+              </label>
+              <label class="sexo-option" [class.selected]="empleado.empl_Sexo === 'F'">
+                <input type="radio" name="sexo" value="F" [(ngModel)]="empleado.empl_Sexo" />
+                <i class="ri-women-line sexo-icon"></i>
+                <span>Femenino</span>
+              </label>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sexo" id="sexoF" [(ngModel)]="empleado.empl_Sexo" [value]="'F'" required>
-              <label class="form-check-label" for="sexoF">Femenino</label>
+            <div class="text-danger mt-1" *ngIf="!empleado.empl_Sexo && mostrarErrores">
+              <small>El campo Sexo del Cliente es requerido</small>
             </div>
           </div>
         </div>
-      </div><!--end col-->
+
 
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="nacimiento-input"  class="form-label">Fecha de nacimiento<span class="text-danger">*</span></label>
-                <input type="date"  id="nacimiento-input"  [(ngModel)]="empleado.empl_FechaNacimiento"  class="form-control" [class.is-invalid]="!empleado.empl_FechaNacimiento && mostrarErrores" placeholder="Seleccione la fecha de nacimiento del empleado" required>
+                <label for="nacimiento-input" class="form-label">Fecha de nacimiento<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                  <input type="date" id="nacimiento-input" [(ngModel)]="fechaInicioFormato" class="form-control" [class.is-invalid]="!empleado.empl_FechaNacimiento && mostrarErrores" placeholder="Seleccione la fecha de nacimiento del empleado" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_FechaNacimiento && mostrarErrores">
                     <small>La fecha de nacimiento es requerida</small>
                 </div>
@@ -112,8 +134,11 @@
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="correo-input"  class="form-label">Correo electrónico<span class="text-danger">*</span></label>
-                <input type="text"  id="correo-input"  [(ngModel)]="empleado.empl_Correo"  class="form-control" [class.is-invalid]="!empleado.empl_Correo.trim() && mostrarErrores" placeholder="Ingrese el correo del empleado" required>
+                <label for="correo-input" class="form-label">Correo electrónico<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <input type="email" id="correo-input" [(ngModel)]="empleado.empl_Correo" class="form-control" [class.is-invalid]="!empleado.empl_Correo.trim() && mostrarErrores" placeholder="Ingrese el correo del empleado" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_Correo.trim() && mostrarErrores">
                     <small>El correo es requerido</small>
                 </div>
@@ -123,8 +148,11 @@
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="telefono-input"  class="form-label">Teléfono<span class="text-danger">*</span></label>
-                <input type="text"  id="telefono-input"  [(ngModel)]="empleado.empl_Telefono"  class="form-control" [class.is-invalid]="!empleado.empl_Telefono.trim() && mostrarErrores" placeholder="Ingrese el telefono del empleado" required>
+                <label for="telefono-input" class="form-label">Teléfono<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                  <input type="text" id="telefono-input" [(ngModel)]="empleado.empl_Telefono" class="form-control" [class.is-invalid]="!empleado.empl_Telefono.trim() && mostrarErrores" placeholder="Ingrese el telefono del empleado" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_Telefono.trim() && mostrarErrores">
                     <small>El teléfono es requerido</small>
                 </div>
@@ -201,8 +229,11 @@
 
       <div class="col-lg-4">
             <div class="mb-3">
-                <label for="direccion-input"  class="form-label">Dirección exacta<span class="text-danger">*</span></label>
-                <input type="text"  id="nombres-input"  [(ngModel)]="empleado.empl_DireccionExacta"  class="form-control" [class.is-invalid]="!empleado.empl_DireccionExacta.trim() && mostrarErrores" placeholder="Ingrese la dirección exacta del empleado" required>
+                <label for="direccion-input" class="form-label">Dirección exacta<span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                  <input type="text" id="direccion-input" [(ngModel)]="empleado.empl_DireccionExacta" class="form-control" [class.is-invalid]="!empleado.empl_DireccionExacta.trim() && mostrarErrores" placeholder="Ingrese la dirección exacta del empleado" required>
+                </div>
                 <div class="text-danger" *ngIf="!empleado.empl_DireccionExacta.trim() && mostrarErrores">
                     <small>La dirección es requerida</small>
                 </div>
@@ -246,10 +277,6 @@
           }
           <div *ngIf="uploadedFiles.length === 0">
             <span class="text-muted">No hay imagen cargada para este empleado.</span>
-          </div>
-          <div style="font-size:12px; color:#888;">
-            <b>Debug:</b> uploadedFiles: {{ uploadedFiles | json }}<br>
-            <b>empl_Imagen:</b> {{ empleado.empl_Imagen }}
           </div>
         </div>
         

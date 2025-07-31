@@ -203,6 +203,7 @@ export class ListComponent {
       this.showCreateForm = false;
       this.showEditForm = false;
       this.activeActionRow = null;
+      this.listadoClientesSinConfirmar = false
     }
 
     eliminar(): void {
