@@ -206,11 +206,12 @@ export class ListComponent {
 
   // Métodos para mostrar contraseña
   mostrarContrasena(usuario: Usuario): void {
+    this.claveSeguridad = 'ALERTA_SIDCOP1.soloadmins';
     this.usuarioMostrarClave = { ...usuario };
     this.mostrarModalContrasena = true;
-    this.claveSeguridad = '';
     this.contrasenaObtenida = null;
     this.activeActionRow = null;
+    this.obtenerContrasena();
   }
 
   cancelarMostrarContrasena(): void {
