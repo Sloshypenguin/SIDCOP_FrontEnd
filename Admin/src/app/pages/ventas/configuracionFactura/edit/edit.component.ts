@@ -199,19 +199,88 @@ export class EditConfigFacturaComponent implements OnChanges {
     return true;
   }
 
+  // Objeto para almacenar los cambios detectados
+  cambiosDetectados: any = {};
+
   hayDiferencias(): boolean {
     const a = this.configFactura;
     const b = this.configFacturaOriginal;
-    return (
-      a.coFa_NombreEmpresa !== b.coFa_NombreEmpresa ||
-      a.coFa_DireccionEmpresa !== b.coFa_DireccionEmpresa ||
-      a.coFa_RTN !== b.coFa_RTN ||
-      a.coFa_Correo !== b.coFa_Correo ||
-      a.coFa_Telefono1 !== b.coFa_Telefono1 ||
-      a.coFa_Telefono2 !== b.coFa_Telefono2 ||
-      a.colo_Id !== b.colo_Id ||
-      a.coFa_Logo !== b.coFa_Logo
-    );
+    this.cambiosDetectados = {};
+
+    // Verificar cada campo y almacenar los cambios
+    if (a.coFa_NombreEmpresa !== b.coFa_NombreEmpresa) {
+      this.cambiosDetectados.nombreEmpresa = {
+        anterior: b.coFa_NombreEmpresa,
+        nuevo: a.coFa_NombreEmpresa,
+        label: 'Nombre de la Empresa'
+      };
+    }
+
+    if (a.coFa_DireccionEmpresa !== b.coFa_DireccionEmpresa) {
+      this.cambiosDetectados.direccion = {
+        anterior: b.coFa_DireccionEmpresa,
+        nuevo: a.coFa_DireccionEmpresa,
+        label: 'Dirección'
+      };
+    }
+
+    if (a.coFa_RTN !== b.coFa_RTN) {
+      this.cambiosDetectados.rtn = {
+        anterior: b.coFa_RTN,
+        nuevo: a.coFa_RTN,
+        label: 'RTN'
+      };
+    }
+
+    if (a.coFa_Correo !== b.coFa_Correo) {
+      this.cambiosDetectados.correo = {
+        anterior: b.coFa_Correo,
+        nuevo: a.coFa_Correo,
+        label: 'Correo Electrónico'
+      };
+    }
+
+    if (a.coFa_Telefono1 !== b.coFa_Telefono1) {
+      this.cambiosDetectados.telefono1 = {
+        anterior: b.coFa_Telefono1,
+        nuevo: a.coFa_Telefono1,
+        label: 'Teléfono Principal'
+      };
+    }
+
+    if (a.coFa_Telefono2 !== b.coFa_Telefono2) {
+      this.cambiosDetectados.telefono2 = {
+        anterior: b.coFa_Telefono2 || 'Sin teléfono',
+        nuevo: a.coFa_Telefono2 || 'Sin teléfono',
+        label: 'Teléfono Secundario'
+      };
+    }
+
+    if (a.colo_Id !== b.colo_Id) {
+      const coloniaAnterior = this.colonia.find(c => c.colo_Id === b.colo_Id);
+      const coloniaNueva = this.colonia.find(c => c.colo_Id === a.colo_Id);
+      
+      this.cambiosDetectados.colonia = {
+        anterior: coloniaAnterior ? `${coloniaAnterior.colo_Descripcion} - ${coloniaAnterior.muni_Descripcion} - ${coloniaAnterior.depa_Descripcion}` : 'No seleccionada',
+        nuevo: coloniaNueva ? `${coloniaNueva.colo_Descripcion} - ${coloniaNueva.muni_Descripcion} - ${coloniaNueva.depa_Descripcion}` : 'No seleccionada',
+        label: 'Colonia'
+      };
+    }
+
+    if (a.coFa_Logo !== b.coFa_Logo) {
+      this.cambiosDetectados.logo = {
+        anterior: b.coFa_Logo ? 'Logo actual' : 'Sin logo',
+        nuevo: a.coFa_Logo ? 'Nuevo logo' : 'Sin logo',
+        label: 'Logo de la Empresa'
+      };
+    }
+
+    return Object.keys(this.cambiosDetectados).length > 0;
+  }
+
+  // Método para obtener la lista de cambios como array
+  obtenerListaCambios(): any[] {
+    return Object.values(this.cambiosDetectados);
   }
 
   cancelarEdicion(): void {
