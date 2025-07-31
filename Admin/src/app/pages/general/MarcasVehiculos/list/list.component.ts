@@ -13,6 +13,7 @@ import { MarcasVehiculos } from 'src/app/Modelos/general/MarcasVehiculos.model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -157,7 +158,7 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   marcasVehiculosAEliminar: MarcasVehiculos | null = null;
 
-  constructor(public table: ReactiveTableService<MarcasVehiculos>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<MarcasVehiculos>, private http: HttpClient, private router: Router, private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
     this.cargardatos();
   }
 
