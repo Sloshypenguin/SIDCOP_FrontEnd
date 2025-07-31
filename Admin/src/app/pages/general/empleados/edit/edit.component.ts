@@ -82,6 +82,14 @@ export class EditComponent implements OnChanges {
 
   constructor(private http: HttpClient) {}
 
+  get fechaInicioFormato(): string {
+    return new Date(this.empleado.empl_FechaNacimiento).toISOString().split('T')[0];
+  }
+
+  set fechaInicioFormato(value: string) {
+    this.empleado.empl_FechaNacimiento = new Date(value);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['empleadoData'] && changes['empleadoData'].currentValue) {
       this.empleado = { ...changes['empleadoData'].currentValue };

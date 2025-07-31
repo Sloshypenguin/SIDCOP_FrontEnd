@@ -85,10 +85,20 @@
       </div>
       <div class="col-12 col-sm-6">
         <div class="detail-item">
-          <div class="detail-icon bg-dark-blue text-white"><i class="ri-gender-line"></i></div>
+          <div class="detail-icon bg-dark-blue text-white">
+            <ng-container *ngIf="empleadoDetalle.empl_Sexo === 'M'; else iconFemenino">
+              <i class="ri-men-line"></i>
+            </ng-container>
+            <ng-template #iconFemenino>
+              <i class="ri-women-line"></i>
+            </ng-template>
+          </div>
           <div class="detail-content">
             <div class="detail-label">Sexo</div>
-            <div class="detail-value">{{ empleadoDetalle.empl_Sexo }}</div>
+            <div class="detail-value">
+              <ng-container *ngIf="empleadoDetalle.empl_Sexo === 'M'; else textoFemenino">Masculino</ng-container>
+              <ng-template #textoFemenino>Femenino</ng-template>
+            </div>
           </div>
         </div>
       </div>

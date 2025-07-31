@@ -8,7 +8,7 @@
   <img
     class="icon-breadcrumb"
     style="width: 10vh; height: 10vh"
-    src="assets/images/svg/Vector.svg"
+    src="assets/images/imagenes/bill.svg"
     alt="breadcrumb icon"
   />
 </app-breadcrumbs>
@@ -534,8 +534,8 @@
                   <td>{{ data.nCai_Descripcion }}</td>
                   <td>{{ data.regC_RangoInicial }}</td>
                   <td>{{ data.regC_RangoFinal }}</td>
-                  <td>{{ data.regC_FechaInicialEmision }}</td>
-                  <td>{{ data.regC_FechaFinalEmision }}</td>
+                  <td>{{ data.regC_FechaInicialEmision | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ data.regC_FechaFinalEmision | date:'dd/MM/yyyy' }}</td>
                   <td>{{ data.estado }}</td>
                 </tr>
               </thead>

@@ -112,7 +112,9 @@ const accionesPorPantalla = [
   { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 6, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 7, Acci_Id: 4 }, { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 },
   { AcPa_Id: 216, Pant_Id: 9, Acci_Id: 4 }, { AcPa_Id: 217, Pant_Id: 10, Acci_Id: 4 }, { AcPa_Id: 218, Pant_Id: 11, Acci_Id: 4 }, { AcPa_Id: 219, Pant_Id: 12, Acci_Id: 4 },
   { AcPa_Id: 220, Pant_Id: 13, Acci_Id: 4 }, { AcPa_Id: 221, Pant_Id: 14, Acci_Id: 4 }, { AcPa_Id: 222, Pant_Id: 15, Acci_Id: 4 }, { AcPa_Id: 223, Pant_Id: 16, Acci_Id: 4 },
-  { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }
+  { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }, { AcPa_Id: 237, Pant_Id: 36, Acci_Id: 11 }, { AcPa_Id: 238, Pant_Id: 38, Acci_Id: 11 }, { AcPa_Id: 239, Pant_Id: 29, Acci_Id: 11 },
+  { AcPa_Id: 240, Pant_Id: 31, Acci_Id: 11 }, { AcPa_Id: 241, Pant_Id: 57, Acci_Id: 4 }, { AcPa_Id: 242, Pant_Id: 58, Acci_Id: 4 }, { AcPa_Id: 243, Pant_Id: 59, Acci_Id: 1 },
+  { AcPa_Id: 244, Pant_Id: 59, Acci_Id: 2 }, { AcPa_Id: 245, Pant_Id: 59, Acci_Id: 3 }, { AcPa_Id: 246, Pant_Id: 59, Acci_Id: 4 }
 ];
 
 @Component({
@@ -188,7 +190,7 @@ export class EditComponent implements OnChanges {
               name: esquema.Esquema,
               type: 'esquema',
               selected: false,
-              expanded: false,
+              expanded: true,
               children: []
             };
 
@@ -225,7 +227,7 @@ export class EditComponent implements OnChanges {
 
             // Si alguna pantalla está seleccionada, marcar esquema como seleccionado y expandido
             esquemaNode.selected = esquemaNode.children.some(c => c.selected);
-            esquemaNode.expanded = esquemaNode.selected;
+            esquemaNode.expanded = true;
 
             return esquemaNode;
           });
@@ -447,9 +449,22 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (!this.rol.role_Descripcion.trim()) {
+    const descripcionVacia = !this.rol.role_Descripcion.trim();
+    const permisosVacios = !this.selectedItems.some(item => item.type === 'accion');
+
+    if (descripcionVacia || permisosVacios) {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      
+      if (descripcionVacia && permisosVacios) {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos y seleccione al menos un permiso antes de guardar.';
+      }
+      else if (permisosVacios) {
+        this.mensajeWarning = 'Por favor seleccione al menos un permiso antes de guardar.';
+      }
+      else if (descripcionVacia) {
+        this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      }
+
       setTimeout(() => this.cerrarAlerta(), 4000);
       return;
     }
@@ -541,6 +556,7 @@ export class EditComponent implements OnChanges {
               this.mostrarAlertaExito = false;
               this.onSave.emit(this.rol);
               this.cancelar();
+              this.mostrarErrores = false;
             }, 3000);
           })
           .catch(error => {
@@ -575,6 +591,7 @@ export class EditComponent implements OnChanges {
       usuarioModificacion: '',
       role_Estado: true
     };
+    this.mostrarErrores = false;
     this.onCancel.emit();
   }
 

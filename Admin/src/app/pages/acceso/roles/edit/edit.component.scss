@@ -43,5 +43,29 @@
 
 .tree-node input[type="checkbox"]:checked + span {
   font-weight: 500;
-  color: #0d6efd;
+  color: #062e69;
+}
+
+
+//Estilos para boton de contraer/expandir
+.btn-subtle {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-subtle:hover {
+  background: #e9ecef;
+  border-color: #dee2e6;
+  color: #495057;
+}
+
+.btn-subtle i {
+  font-size: 0.875rem;
+  margin-right: 0.375rem;
 }

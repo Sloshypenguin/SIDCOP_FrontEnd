@@ -22,7 +22,14 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Código <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor" [class.is-invalid]="mostrarErrores && !proveedor.prov_Codigo.trim()">
+          <div class="d-flex align-items-center">
+  <i class="ri-hashtag" [ngStyle]="{
+    border: (!proveedor.prov_Codigo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.prov_Codigo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <input type="text" class="form-control" [class.is-invalid]="mostrarErrores && !proveedor.prov_Codigo.trim()" [(ngModel)]="proveedor.prov_Codigo" placeholder="Código del proveedor">
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Codigo.trim()">
             <small>El campo Código es requerido</small>
           </div>
@@ -31,7 +38,14 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Empresa <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">
+          <div class="d-flex align-items-center">
+  <i class="ri-building-line" [ngStyle]="{
+    border: (!proveedor.prov_NombreEmpresa.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.prov_NombreEmpresa.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <input type="text" class="form-control" [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()" [(ngModel)]="proveedor.prov_NombreEmpresa" placeholder="Nombre de la empresa" required>
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreEmpresa.trim()">
             <small>El campo empresa es requerido</small>
           </div>
@@ -42,7 +56,14 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Contacto <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto" [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreContacto.trim()">
+          <div class="d-flex align-items-center">
+  <i class="ri-user-3-line" [ngStyle]="{
+    border: (!proveedor.prov_NombreContacto.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.prov_NombreContacto.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <input type="text" class="form-control" [class.is-invalid]="mostrarErrores && !proveedor.prov_NombreContacto.trim()" [(ngModel)]="proveedor.prov_NombreContacto" placeholder="Nombre del contacto">
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_NombreContacto.trim()">
             <small>El campo Contacto es requerido</small>
           </div>
@@ -51,7 +72,14 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Teléfono <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono" [class.is-invalid]="mostrarErrores && !proveedor.prov_Telefono.trim()">
+          <div class="d-flex align-items-center">
+  <i class="ri-phone-line" [ngStyle]="{
+    border: (!proveedor.prov_Telefono.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.prov_Telefono.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <input type="text" class="form-control" [class.is-invalid]="mostrarErrores && !proveedor.prov_Telefono.trim()" [(ngModel)]="proveedor.prov_Telefono" placeholder="Teléfono">
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Telefono.trim()">
             <small>El campo Teléfono es requerido</small>
           </div>
@@ -62,7 +90,14 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Correo <span class="text-danger">*</span></label>
-          <input type="email" class="form-control" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico" [class.is-invalid]="mostrarErrores && !proveedor.prov_Correo.trim()">
+          <div class="d-flex align-items-center">
+  <i class="ri-mail-line" [ngStyle]="{
+    border: (!proveedor.prov_Correo.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.prov_Correo.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <input type="email" class="form-control" [class.is-invalid]="mostrarErrores && !proveedor.prov_Correo.trim()" [(ngModel)]="proveedor.prov_Correo" placeholder="Correo electrónico">
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_Correo.trim()">
             <small>El campo Correo es requerido</small>
           </div>
@@ -71,7 +106,14 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Dirección <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta" [class.is-invalid]="mostrarErrores && !proveedor.prov_DireccionExacta.trim()">
+          <div class="d-flex align-items-center">
+  <i class="ri-map-pin-line" [ngStyle]="{
+    border: (!proveedor.prov_DireccionExacta.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.prov_DireccionExacta.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <input type="text" class="form-control" [class.is-invalid]="mostrarErrores && !proveedor.prov_DireccionExacta.trim()" [(ngModel)]="proveedor.prov_DireccionExacta" placeholder="Dirección exacta">
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.prov_DireccionExacta.trim()">
             <small>El campo Dirección es requerido</small>
           </div>
@@ -82,15 +124,22 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Departamento <span class="text-danger">*</span></label>
-          <select 
-            class="form-select"
-            [(ngModel)]="selectedDepa"
-            (change)="cargarMunicipios(selectedDepa)"
-            [class.is-invalid]="mostrarErrores && !selectedDepa"
-            required>
-            <option value="" disabled selected>Seleccione un departamento</option>
-            <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion || depa.depa_Nombre }}</option>
-          </select>
+          <div class="d-flex align-items-center">
+  <i class="ri-map-pin-line" [ngStyle]="{
+    border: (!selectedDepa && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!selectedDepa && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <select 
+    class="form-select"
+    [(ngModel)]="selectedDepa"
+    (change)="cargarMunicipios(selectedDepa)"
+    [class.is-invalid]="mostrarErrores && !selectedDepa"
+    required>
+    <option value="" disabled selected>Seleccione un departamento</option>
+    <option *ngFor="let depa of Departamentos" [value]="depa.depa_Codigo">{{ depa.depa_Descripcion || depa.depa_Nombre }}</option>
+  </select>
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !selectedDepa">
             <small>El campo departamento es requerido</small>
           </div>
@@ -99,16 +148,23 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Municipio <span class="text-danger">*</span></label>
-          <select 
-            class="form-select"
-            [(ngModel)]="selectedMuni"
-            (change)="cargarColonias(selectedMuni)"
-            [class.is-invalid]="mostrarErrores && !selectedMuni"
-            required
-            [disabled]="!selectedDepa">
-            <option value="" disabled selected>Seleccione un municipio</option>
-            <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion || muni.muni_Nombre }}</option>
-          </select>
+          <div class="d-flex align-items-center">
+  <i class="ri-map-pin-user-line" [ngStyle]="{
+    border: (!selectedMuni && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!selectedMuni && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <select 
+    class="form-select"
+    [(ngModel)]="selectedMuni"
+    (change)="cargarColonias(selectedMuni)"
+    [class.is-invalid]="mostrarErrores && !selectedMuni"
+    required
+    [disabled]="!selectedDepa">
+    <option value="" disabled selected>Seleccione un municipio</option>
+    <option *ngFor="let muni of Municipios" [value]="muni.muni_Codigo">{{ muni.muni_Descripcion || muni.muni_Nombre }}</option>
+  </select>
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !selectedMuni">
             <small>El campo municipio es requerido</small>
           </div>
@@ -117,15 +173,22 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label>Colonia <span class="text-danger">*</span></label>
-          <select 
-            class="form-select"
-            [(ngModel)]="proveedor.colo_Id"
-            [class.is-invalid]="mostrarErrores && !proveedor.colo_Id"
-            required
-            [disabled]="!selectedMuni">
-            <option value="" disabled selected>Seleccione una colonia</option>
-            <option *ngFor="let colo of Colonias" [value]="colo.colo_Id">{{ colo.colo_Descripcion }}</option>
-          </select>
+          <div class="d-flex align-items-center">
+  <i class="ri-home-2-line" [ngStyle]="{
+    border: (!proveedor.colo_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+    backgroundColor: (!proveedor.colo_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+    padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
+  <select 
+    class="form-select"
+    [(ngModel)]="proveedor.colo_Id"
+    [class.is-invalid]="mostrarErrores && !proveedor.colo_Id"
+    required
+    [disabled]="!selectedMuni">
+    <option value="" disabled selected>Seleccione una colonia</option>
+    <option *ngFor="let colo of Colonias" [value]="colo.colo_Id">{{ colo.colo_Descripcion }}</option>
+  </select>
+  <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+</div>
           <div class="text-danger mt-1" *ngIf="mostrarErrores && !proveedor.colo_Id">
             <small>El campo colonia es requerido</small>
           </div>

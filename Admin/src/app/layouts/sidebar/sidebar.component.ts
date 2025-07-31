@@ -12,6 +12,14 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  renavegar(link?: string) {
+    if (typeof link === 'string') {
+      // solo recargamos el esquema o alguna ruta ya agregada y el componente deberia reiniciarse
+      this.router.navigateByUrl('/general', { skipLocationChange: true }).then(() => {
+        this.router.navigateByUrl(link);
+      });
+    }
+  }
   menu: any;
   toggle: any = true;
   menuItems: MenuItem[] = [];
