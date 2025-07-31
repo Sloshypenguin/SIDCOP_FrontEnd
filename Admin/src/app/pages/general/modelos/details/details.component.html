@@ -12,7 +12,7 @@
   
   <!-- Botón de regresar -->
   <div class="details-header-button">
-    <button type="button" class="btn btn-primary" (click)="cerrar()">
+    <button type="button" class="btn btn-primary mb-3" (click)="cerrar()">
       <span class="btn-text">Regresar</span>
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
@@ -20,28 +20,50 @@
   
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && modeloDetalle" class="details-content">
-    
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles de Modelos</div>
-      <div class="details-id-row">
-        <div class="details-id">
-          <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ modeloDetalle.mode_Id || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Marca</div>
-          <div class="details-id-value">{{ modeloDetalle.maVe_Marca || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Descripción</div>
-          <div class="details-id-value">{{ modeloDetalle.mode_Descripcion || 'N/A' }}</div>
+    <div class="row g-4 align-items-stretch">
+        
+      <!-- Card derecha: Detalles -->
+      <div class="col-md-12">
+        <div class="card h-100 shadow-sm modelo-details-card bg-dark-blue">
+          <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+            <i class="ri-car-line me-2 fs-4"></i>
+            <h5 class="mb-0">Detalles del Modelo</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-hashtag"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Código</div>
+                    <div class="detail-value">{{ modeloDetalle.mode_Id || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-bookmark-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Marca</div>
+                    <div class="detail-value">{{ modeloDetalle.maVe_Marca || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-file-text-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Descripción</div>
+                    <div class="detail-value">{{ modeloDetalle.mode_Descripcion || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    
-    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>  
-    
+
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
       <div class="audit-table">
@@ -78,6 +100,5 @@
         </div>
       </div>
     </div>
-    
   </div>
 </div>
