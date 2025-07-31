@@ -12,6 +12,9 @@ export class Traslado {
   tras_FechaModificacion?: Date;
   tras_Estado: boolean = true;
 
+  // Campo para numeración de filas en la tabla
+  No?: number;
+
   // Campos adicionales para seguimiento de estado (opcional)
   code_Status?: number;
   message_Status?: string;
