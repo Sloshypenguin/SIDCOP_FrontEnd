@@ -329,20 +329,10 @@
                     </div>
                     <div class="modal-header custom-modal-header d-flex justify-content-between align-items-center">
                         <i class=""></i>
-                        <h4>Verificación de Seguridad</h4>
+                        <h4>Verificación de Seguridad {{ usuarioMostrarClave?.usua_Usuario }}</h4>
                         <i class="ri-close-line custom-modal-close" (click)="cancelarMostrarContrasena()"></i>
                     </div>
                     <div class="modal-body custom-modal-body">
-                        <div class="text-center mb-3"> 
-                            <p class="mt-2 custom-modal-text">
-                                Para mostrar la contraseña del usuario <strong>{{ usuarioMostrarClave?.usua_Usuario }}</strong>, ingrese la clave de seguridad:
-                            </p>
-                        </div>
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <input type="password" class="form-control" [(ngModel)]="claveSeguridad" placeholder="Ingrese la clave de seguridad" />
-                            </div>
-                        </div>
                         <div *ngIf="contrasenaObtenida" class="alert alert-success mt-3">
                             <div class="d-flex align-items-center">
                                 <i class="ri-key-2-line me-2"></i>
@@ -357,10 +347,6 @@
                         <button type="button" class="btn btn-primary gold" (click)="cancelarMostrarContrasena()">
                             <span class="btn-text">Cancelar</span>
                             <span class="btn-icon"><i class="ri-close-circle-line"></i></span>
-                        </button>
-                        <button type="button" class="btn btn-primary" (click)="obtenerContrasena()">
-                            <span class="btn-text">Verificar</span>
-                            <span class="btn-icon"><i class="ri-shield-check-line"></i></span>
                         </button>
                     </div>
                 </div>
