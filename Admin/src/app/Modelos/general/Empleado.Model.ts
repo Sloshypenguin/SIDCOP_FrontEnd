@@ -19,6 +19,8 @@ export class Empleado{
   usua_Modificacion?: number;
   empl_FechaModificacion?: Date;
   empl_Imagen?: string;
+  usuarioCreacion?: string;
+  usuarioModificacion?: string;
 
   constructor(init?: Partial<Empleado>) {
     Object.assign(this, init);

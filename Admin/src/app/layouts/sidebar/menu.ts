@@ -16,19 +16,7 @@ export const MENU: MenuItem[] = [
         label: 'MENUITEMS.DASHBOARD.LIST.ECOMMERCE',
         link: '/',
         parentId: 2,
-      },
-      {
-        id: -1, // ID negativo para siempre ser visible
-        label: 'Depuración de Permisos',
-        link: '/dashboards/permisos-debug',
-        parentId: 2,
-      },
-      {
-        id: -2, // ID negativo para siempre ser visible
-        label: 'Ejemplo de Permisos',
-        link: '/dashboards/permisos-ejemplo',
-        parentId: 2,
-      },
+      }
     ],
   },
   {
@@ -241,9 +229,16 @@ export const MENU: MenuItem[] = [
       },
 
       {
-        id: 29,
+        id: 31,
         label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
         link: '/logistica/traslados',
+        parentId: 4,
+        icon: 'ri-truck-line',
+      },
+      {
+        id: 29,
+        label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
+        link: '/logistica/recargas',
         parentId: 4,
         icon: 'ri-truck-line',
       },

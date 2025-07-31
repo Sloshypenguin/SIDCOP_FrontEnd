@@ -60,16 +60,17 @@
               <thead>
                 <tr>
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                  <th class="gridjs-th" (click)="table.sortBy('mode_Id')" style="cursor:pointer;">
+                  
+                  <th class="gridjs-th" (click)="table.sortBy('No')" style="cursor:pointer;">
                     <span class="table-header-flex">
-                      ID
+                      No.
                       <!-- iconos para ordenar -->
                       <span style="display: flex; flex-direction: column;">
                        <i class="ri-arrow-up-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'mode_Id' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        [ngStyle]="table.sortField === 'No' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                       </i>
                       <i class="ri-arrow-down-s-line icon-sort"
-                        [ngStyle]="table.sortField === 'mode_Id' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        [ngStyle]="table.sortField === 'No' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                       </i>
                       </span>
                     </span>
@@ -104,7 +105,8 @@
                   </th>
                 </tr>
                 <tr class="gridjs-th"*ngFor="let data of table.paginated$ | async; let i = index">
-                  <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
+                 
+                  <td *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
                     <div class="dropdown-action-list">
                       <button type="button"
                     class="dropdown-toggle"
@@ -115,7 +117,8 @@
                   </button>
                   </div>
                   </td>
-                  <td><span class="fw-semibold">{{data.mode_Id}}</span></td>
+                  
+                  <td><span class="fw-semibold">{{data.No}}</span></td>
                   <td>{{data.maVe_Marca}}</td>
                   <td>{{data.mode_Descripcion}}</td>
                 </tr>
@@ -194,8 +197,6 @@
 
 <!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
-
-
 
 <ul
   *ngIf="floatingMenuService.show"

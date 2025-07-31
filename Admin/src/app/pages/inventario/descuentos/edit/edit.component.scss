@@ -149,3 +149,21 @@
 					flex-direction: column;
 				}
 			}
+			.error-message-container {
+				min-height: 20px; // Altura mínima para reservar espacio
+				height: auto;
+				display: flex;
+				align-items: flex-start;
+				
+				small {
+				  line-height: 1.2;
+				  font-size: 0.75rem;
+				  margin: 0;
+				  padding: 0;
+				}
+				
+				// Cuando no hay mensaje de error, mantiene el espacio reservado
+				&:empty {
+				  min-height: 20px;
+				}
+			  }

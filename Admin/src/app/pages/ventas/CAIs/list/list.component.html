@@ -215,11 +215,11 @@
     top: floatingMenuService.top + 'px',
     left: floatingMenuService.left + 'px',
   }">
-  <li *ngIf="accionPermitida('editar')">
+  <!-- <li *ngIf="accionPermitida('editar')">
     <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
       Editar <i class="ri-edit-line"></i>
     </button>
-  </li>
+  </li> -->
   <li *ngIf="accionPermitida('eliminar')">
     <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
       Eliminar <i class="ri-delete-bin-line"></i>
