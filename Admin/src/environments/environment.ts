@@ -20,9 +20,9 @@ export const environment = {
   },
 
 
-  //apiBaseUrl: 'http://200.59.27.115:8091', //cambiar si es necesario
+  apiBaseUrl: 'http://200.59.27.115:8091', //cambiar si es necesario
 
-  apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
+  // apiBaseUrl: 'https://localhost:7071', //cambiar si es necesario
 
   apiKey: 'bdccf3f3-d486-4e1e-ab44-74081aefcdbc',
   usua_Id: idUsuario, 
