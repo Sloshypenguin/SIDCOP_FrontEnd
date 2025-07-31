@@ -1,15 +1,16 @@
 <div class="details-container">
-  
+
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
     <!-- Alerta de error -->
-    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <div *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
       <strong>¡Error!</strong> {{ mensajeError }}
       <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
-  
+
   <!-- Botón de regresar -->
   <div class="details-header-button">
     <button type="button" class="btn btn-primary mb-3" (click)="cerrar()">
@@ -17,98 +18,102 @@
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
   </div>
-  
+
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && empleadoDetalle" class="details-content">
-  <div class="row g-4 align-items-stretch">
-    <!-- Card izquierda: Imagen + Nombre -->
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm employee-photo-card position-relative">
-        <ng-container *ngIf="empleadoDetalle?.empl_Imagen; else noImage">
-          <img [src]="empleadoDetalle.empl_Imagen" alt="Foto del empleado" class="employee-img-card" />
-          <div class="employee-img-overlay">
-            <span class="employee-img-name">{{ empleadoDetalle.empl_Nombres }} {{ empleadoDetalle.empl_Apellidos }}</span>
-          </div>
-        </ng-container>
-        <ng-template #noImage>
-          <div class="employee-img-placeholder-card d-flex flex-column justify-content-center align-items-center h-100">
-            <i class="ri-user-3-line display-1"></i>
-            <span class="employee-img-name mt-3">{{ empleadoDetalle.empl_Nombres }} {{ empleadoDetalle.empl_Apellidos }}</span>
-          </div>
-        </ng-template>
-      </div>
-    </div>
-    <!-- Card derecha: Detalles -->
-    <div class="col-md-8">
-      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
-  <div class="card-header d-flex align-items-center rounded-top details-header-custom">
-    <i class="ri-user-3-line me-2 fs-4"></i>
-    <h5 class="mb-0">Detalles del Empleado</h5>
-  </div>
-  <div class="card-body">
-    <div class="row g-3">
-      <div class="col-12 col-sm-6">
-        <div class="detail-item">
-          <div class="detail-icon bg-dark-blue text-white"><i class="ri-profile-line"></i></div>
-          <div class="detail-content">
-            <div class="detail-label">DNI</div>
-            <div class="detail-value">{{ empleadoDetalle.empl_DNI }}</div>
-          </div>
+    <div class="row g-4 align-items-stretch">
+      <!-- Card izquierda: Imagen + Nombre -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm employee-photo-card position-relative">
+          <ng-container *ngIf="empleadoDetalle?.empl_Imagen; else noImage">
+            <img [src]="empleadoDetalle.empl_Imagen" alt="Foto del empleado" class="employee-img-card" />
+            <div class="employee-img-overlay">
+              <span class="employee-img-name">{{ empleadoDetalle.empl_Nombres }} {{ empleadoDetalle.empl_Apellidos
+                }}</span>
+            </div>
+          </ng-container>
+          <ng-template #noImage>
+            <div
+              class="employee-img-placeholder-card d-flex flex-column justify-content-center align-items-center h-100">
+              <i class="ri-user-3-line display-1"></i>
+              <span class="employee-img-name mt-3">{{ empleadoDetalle.empl_Nombres }} {{ empleadoDetalle.empl_Apellidos
+                }}</span>
+            </div>
+          </ng-template>
         </div>
       </div>
-      <div class="col-12 col-sm-6">
-        <div class="detail-item">
-          <div class="detail-icon bg-dark-blue text-white"><i class="ri-mail-line"></i></div>
-          <div class="detail-content">
-            <div class="detail-label">Correo electrónico</div>
-            <div class="detail-value">{{ empleadoDetalle.empl_Correo }}</div>
+      <!-- Card derecha: Detalles -->
+      <div class="col-md-8">
+        <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+          <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+            <i class="ri-user-3-line me-2 fs-4"></i>
+            <h5 class="mb-0">Detalles del Empleado</h5>
           </div>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6">
-        <div class="detail-item">
-          <div class="detail-icon bg-dark-blue text-white"><i class="ri-phone-line"></i></div>
-          <div class="detail-content">
-            <div class="detail-label">Teléfono</div>
-            <div class="detail-value">{{ empleadoDetalle.empl_Telefono }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6">
-        <div class="detail-item">
-          <div class="detail-icon bg-dark-blue text-white"><i class="ri-map-pin-line"></i></div>
-          <div class="detail-content">
-            <div class="detail-label">Dirección</div>
-            <div class="detail-value">{{ empleadoDetalle.empl_DireccionExacta }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6">
-        <div class="detail-item">
-          <div class="detail-icon bg-dark-blue text-white">
-            <ng-container *ngIf="empleadoDetalle.empl_Sexo === 'M'; else iconFemenino">
-              <i class="ri-men-line"></i>
-            </ng-container>
-            <ng-template #iconFemenino>
-              <i class="ri-women-line"></i>
-            </ng-template>
-          </div>
-          <div class="detail-content">
-            <div class="detail-label">Sexo</div>
-            <div class="detail-value">
-              <ng-container *ngIf="empleadoDetalle.empl_Sexo === 'M'; else textoFemenino">Masculino</ng-container>
-              <ng-template #textoFemenino>Femenino</ng-template>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-profile-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">DNI</div>
+                    <div class="detail-value">{{ empleadoDetalle.empl_DNI }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-mail-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Correo electrónico</div>
+                    <div class="detail-value">{{ empleadoDetalle.empl_Correo }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-phone-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Teléfono</div>
+                    <div class="detail-value">{{ empleadoDetalle.empl_Telefono }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-map-pin-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Dirección</div>
+                    <div class="detail-value">{{ empleadoDetalle.empl_DireccionExacta }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white">
+                    <ng-container *ngIf="empleadoDetalle.empl_Sexo === 'M'; else iconFemenino">
+                      <i class="ri-men-line"></i>
+                    </ng-container>
+                    <ng-template #iconFemenino>
+                      <i class="ri-women-line"></i>
+                    </ng-template>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">Sexo</div>
+                    <div class="detail-value">
+                      <ng-container
+                        *ngIf="empleadoDetalle.empl_Sexo === 'M'; else textoFemenino">Masculino</ng-container>
+                      <ng-template #textoFemenino>Femenino</ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-    </div>
-  </div>
 
-    
+
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
       <div class="audit-table">
@@ -117,36 +122,36 @@
           <div class="audit-col">Usuario</div>
           <div class="audit-col">Fecha</div>
         </div>
-      
-      <!-- Fila de creación -->
-      <div class="audit-row">
-        <div class="audit-col">
-          <span class="audit-action">Creador</span>
+
+        <!-- Fila de creación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Creador</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user">{{ empleadoDetalle.usua_Creacion || 'N/A' }}</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date">{{ formatearFecha(empleadoDetalle.empl_FechaCreacion || null) }}</span>
+          </div>
         </div>
-        <div class="audit-col">
-          <span class="audit-user">{{ empleadoDetalle.usua_Creacion || 'N/A' }}</span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(empleadoDetalle.empl_FechaCreacion || null) }}</span>
-        </div>
-      </div>
-      
-      <!-- Fila de modificación -->
-      <div class="audit-row">
-        <div class="audit-col">
-          <span class="audit-action">Modificación</span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-user"></span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-date"></span>
+
+        <!-- Fila de modificación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Modificación</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user"></span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date"></span>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-    
-  
+
+
 
   </div>
 </div>
