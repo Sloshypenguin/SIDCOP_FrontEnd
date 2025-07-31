@@ -5,14 +5,28 @@
 }
 
 .employee-photo-card {
-  overflow: hidden;
-  min-height: 320px;
-  position: relative;
-  background: #181a2f;
+//overflow: hidden;
+  min-height: 300px;
   display: flex;
-  align-items: stretch;
-  padding: 0;
+//   align-items: stretch;
+//   padding: 0;
   border-radius: 16px;
+}
+
+.custom-business-img {
+  width: 160px;     // un poquito más angosta
+  height: 100px;    // el triple menos en alto que lo ancho
+  object-fit: contain; // asegura que no recorte nada, solo ajuste
+  border-radius: 10px;
+  display: flex;
+}
+
+.custom-placeholder-img {
+  width: 160px;
+  height: 100px;
+  border-radius: 10px;
+  background-color: #f8f9fa; // opcional
+  text-align: center;
 }
 
 @media (max-width: 767px) {
@@ -24,19 +38,11 @@
 
 
 .employee-img-card {
-  width: 100%;
-  height: 100%;
-  min-height: 320px;
+  width: 160px;     /* antes era más ancho, lo bajamos un poco */
+  height: 140px;    /* bajamos más en altura, como pediste */
   object-fit: cover;
-  object-position: center;
-  display: block;
-  filter: brightness(0.85);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+  border-radius: 10px;
+  overflow: hidden;
 }
 @media (max-width: 767px) {
   .employee-img-card {
@@ -176,15 +182,34 @@
     margin-bottom: 0.5rem;
     margin-right: 0;
   }
-  .employee-img-card {
-  min-height: 220px;
-  height: 220px;
-  width: 100%;
-  object-fit: contain;         /* Muestra la imagen completa sin recortes */
-  background-color: #fff;      /* Evita bordes negros, usa fondo blanco */
-  padding: 5px;                /* Espacio opcional interno */
-  border-radius: 10px;         /* Opcional: bordes redondeados */
+.employee-img-card {
+  width: 160px;     /* antes era más ancho, lo bajamos un poco */
+  height: 140px;    /* bajamos más en altura, como pediste */
+  object-fit: cover;
+  border-radius: 10px;
+  overflow: hidden;
 }
+
+.client-img-card-horizontal {
+  width: 40%;
+  max-height: 200px;
+//   object-fit: contain; /* Usa 'cover' si prefieres que recorte */
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.client-img-responsive {
+  max-width: 70%;
+  max-height: 130px;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
   .employee-img-placeholder-card {
     min-height: 220px;
@@ -281,7 +306,7 @@
   }
 }
 
-.employee-img-card {
+.prueba-img-card {
   width: 100%;
   object-fit: cover;
   display: block;
