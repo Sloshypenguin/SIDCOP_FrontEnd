@@ -6,6 +6,7 @@ export class Canal {
   cana_FechaCreacion: Date = new Date();
   usua_Modificacion?: number;
   cana_FechaModificacion?: Date;
+  secuencia: number = 0;
   cana_Estado: boolean = true;
   UsuarioCreacion: string = '';
   UsuarioModificacion: string = '';
