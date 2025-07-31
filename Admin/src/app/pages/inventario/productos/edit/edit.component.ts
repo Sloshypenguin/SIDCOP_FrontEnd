@@ -274,6 +274,7 @@ export class EditComponent implements OnChanges {
       this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal
     ) {
       const hayCambios = 
+        this.producto.prod_Imagen !== this.productoData?.prod_Imagen ||
         this.producto.prod_Codigo.trim() !== this.productoData?.prod_Codigo?.trim() ||
         this.producto.prod_Descripcion.trim() !== this.productoData?.prod_Descripcion?.trim() ||
         this.producto.prod_DescripcionCorta.trim() !== this.productoData?.prod_DescripcionCorta?.trim() ||
@@ -380,7 +381,7 @@ export class EditComponent implements OnChanges {
     }
   }
 
-  onImagenSeleccionada(event: any) {
+  onImagenSeleccionada1(event: any) {
     // Obtenemos el archivo seleccionado desde el input tipo file
     const file = event.target.files[0];
 
