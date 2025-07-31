@@ -254,14 +254,14 @@ export class ListComponent implements OnInit {
   private cargarDatos(): void {
     this.http.get<Modelo[]>(`${environment.apiBaseUrl}/Modelo/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
-        this.table.setData(data);
-      },
-      error: error => {
-        console.error('Error al cargar modelos:', error);
-        this.table.setData([]);
-      }
+    }).subscribe(data => {
+      console.log('Datos recargados:', data);
+
+      data.forEach((modelo, index) => {
+        modelo.No = index + 1;
+      });
+
+      this.table.setData(data);
     });
   }
 }

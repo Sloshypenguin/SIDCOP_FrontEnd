@@ -334,6 +334,11 @@ private cargardatos(): void {
         ? data
         : data.filter(t => t.usua_Creacion?.toString() === userId.toString());
 
+      // Asignar numeración de filas
+      datosFiltrados.forEach((traslado, index) => {
+        traslado.No = index + 1;
+      });
+
       setTimeout(() => {
         this.mostrarOverlayCarga = false;
         console.log('Datos recargados:', datosFiltrados);
