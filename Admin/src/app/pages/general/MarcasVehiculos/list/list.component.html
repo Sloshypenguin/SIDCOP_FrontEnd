@@ -1,3 +1,17 @@
+<!-- Overlay de carga animado -->
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+  <div class="typing-indicator">
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+  </div>
+</div>
+
+
+
 <app-breadcrumbs
   [title]="'Marcas De Vehiculos '"
   [breadcrumbItems]="[
@@ -8,17 +22,6 @@
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb"  style="width: 10vh; height: 10vh;" src="assets/images/imagenes/car-round-svgrepo-com.svg" alt="icono breadcrumb" />
 </app-breadcrumbs>
 
-<!-- Loading Overlay -->
-<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
-  <div class="typing-indicator">
-      <div class="typing-circle"></div>
-      <div class="typing-circle"></div>
-      <div class="typing-circle"></div>
-      <div class="typing-shadow"></div>
-      <div class="typing-shadow"></div>
-      <div class="typing-shadow"></div>
-  </div>
-</div>
 
 <div class="row">
   <div class="col-lg-12">
