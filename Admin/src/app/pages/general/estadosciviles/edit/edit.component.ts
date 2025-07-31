@@ -17,6 +17,7 @@ export class EditComponent implements OnChanges {
   @Input() estadoCivilData: EstadoCivil | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<EstadoCivil>();
+  @Output() onOverlayChange = new EventEmitter<boolean>();
 
  estadoCivil: EstadoCivil = {
     esCv_Id: 0,
@@ -96,6 +97,7 @@ export class EditComponent implements OnChanges {
 
   private guardar(): void {
     this.mostrarErrores = true;
+    this.onOverlayChange.emit(true);
 
     if (this.estadoCivil.esCv_Descripcion.trim()) {
       const estadoCivilActualizar = {
@@ -118,24 +120,32 @@ export class EditComponent implements OnChanges {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Estado civil "${this.estadoCivil.esCv_Descripcion}" actualizado exitosamente`;
-          this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
-
           setTimeout(() => {
-            this.mostrarAlertaExito = false;
-            this.onSave.emit(this.estadoCivil);
-            this.cancelar();
-          }, 3000);
+            this.onOverlayChange.emit(false);
+            this.mensajeExito = `Estado civil "${this.estadoCivil.esCv_Descripcion}" actualizado exitosamente`;
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              setTimeout(() => {
+                this.onSave.emit(this.estadoCivil);
+                this.cancelar();
+              }, 100);
+            }, 2000);
+          }, 300);
         },
         error: (error) => {
-          console.error('Error al actualizar estado civil:', error);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al actualizar el estado civil. Por favor, intente nuevamente.';
-          setTimeout(() => this.cerrarAlerta(), 5000);
+          setTimeout(() => {
+            this.onOverlayChange.emit(false);
+            console.error('Error al actualizar estado civil:', error);
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al actualizar el estado civil. Por favor, intente nuevamente.';
+            setTimeout(() => this.cerrarAlerta(), 5000);
+          }, 1000);
         }
       });
     } else {
+      this.onOverlayChange.emit(false);
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
       setTimeout(() => this.cerrarAlerta(), 4000);

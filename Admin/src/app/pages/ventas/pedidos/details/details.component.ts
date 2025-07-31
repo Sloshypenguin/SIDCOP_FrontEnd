@@ -1,14 +1,20 @@
-import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pedido } from 'src/app/Modelos/ventas/Pedido.Model';
-
 
 @Component({
   selector: 'app-details',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './details.component.html',
-  styleUrl: './details.component.scss'
+  styleUrl: './details.component.scss',
 })
 export class DetailsComponent implements OnChanges {
   @Input() PedidoData: Pedido | null = null;
@@ -22,19 +28,12 @@ export class DetailsComponent implements OnChanges {
   mensajeError = '';
   referenciasLista = [];
   clientesLista = [];
-  referenciasNombre : any[] = [];
-
-  
-  
- 
+  referenciasNombre: any[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['PedidoData'] && changes['PedidoData'].currentValue) {
       this.cargarDetallesSimulado(changes['PedidoData'].currentValue);
     }
-    
-     
-
   }
 
   // Simulación de carga
@@ -44,7 +43,7 @@ export class DetailsComponent implements OnChanges {
 
     setTimeout(() => {
       try {
-       this.PedidoDetalle = { ...data };
+        this.PedidoDetalle = { ...data };
         this.productos = JSON.parse(this.PedidoDetalle.detallesJson ?? '[]');
         this.cargando = false;
       } catch (error) {
@@ -72,7 +71,7 @@ export class DetailsComponent implements OnChanges {
       return date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric'
+        year: 'numeric',
       });
     } catch {
       return String(fecha);

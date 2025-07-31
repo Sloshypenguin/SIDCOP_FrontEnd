@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -30,7 +37,39 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
   // Overlay de carga animado
@@ -50,7 +89,7 @@ export class ListComponent implements OnInit {
       { label: 'Canales', active: true }
     ];
     this.cargarAccionesUsuario();
-    this.cargardatos();
+    this.cargardatos(true);
   }
 
   // Form controls
@@ -79,6 +118,11 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService
   ) {}
+
+  // Overlay de carga controlado por hijos
+  onOverlayChange(visible: boolean) {
+    this.mostrarOverlayCarga = visible;
+  }
 
   crear(): void {
     this.showCreateForm = !this.showCreateForm;
@@ -117,18 +161,16 @@ export class ListComponent implements OnInit {
   }
 
   guardarCanal(canal: Canal): void {
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormulario();
-    this.mostrarAlertaExito = true;
-    this.mensajeExito = 'Canal guardado exitosamente';
+    // El overlay se oculta en cargardatos, no aquí
     setTimeout(() => this.mostrarAlertaExito = false, 3000);
   }
 
   actualizarCanal(canal: Canal): void {
-    this.cargardatos();
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
-    this.mostrarAlertaExito = true;
-    this.mensajeExito = 'Canal actualizado exitosamente';
+    // El overlay se oculta en cargardatos, no aquí
     setTimeout(() => this.mostrarAlertaExito = false, 3000);
   }
 
@@ -159,7 +201,7 @@ export class ListComponent implements OnInit {
               this.mostrarAlertaExito = false;
               this.mensajeExito = '';
             }, 3000);
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             this.mostrarAlertaError = true;
@@ -199,30 +241,26 @@ export class ListComponent implements OnInit {
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
   }
-
-  private cargardatos(): void {
-    this.mostrarOverlayCarga = true;
+  
+private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<Canal[]>(`${environment.apiBaseUrl}/Canal/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
-        const tienePermisoListar = this.accionPermitida('listar');
-        const userId = getUserId();
+        headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+        setTimeout(() => {
+            const tienePermisoListar = this.accionPermitida('listar');
+            const userId = getUserId();
 
-        const datosFiltrados = tienePermisoListar
-          ? data
-          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+            const datosFiltrados = tienePermisoListar
+                ? data
+                : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
-        this.table.setData(datosFiltrados);
-        this.mostrarOverlayCarga = false;
-      },
-      error: error => {
-        console.error('Error al cargar canales:', error);
-        this.table.setData([]);
-        this.mostrarOverlayCarga = false;
-      }
+            this.table.setData(datosFiltrados);
+            this.table.setData(data);
+            this.mostrarOverlayCarga = false;
+        }, 500);
     });
-  }
+}
 
   // Método para cargar las acciones disponibles del usuario
   private cargarAccionesUsuario(): void {
