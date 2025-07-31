@@ -43,7 +43,7 @@ export class CreateComponent {
   nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
   direccion = { colo_Id: '' };
   direccionAval = { colo_Id: '' };
-  activeTab = 1;
+  activeTab = 2;
 
   nacionalidades: any[] = [];
   paises: any[] = [];
@@ -89,12 +89,12 @@ export class CreateComponent {
   scrollToAval(index: number) {
     const container = this.tabsScroll.nativeElement;
     const avalElements = container.querySelectorAll('.aval-tab');
-    
+
     if (avalElements[index]) {
       const target = avalElements[index] as HTMLElement;
       const offsetLeft = target.offsetLeft;
       const containerWidth = container.clientWidth;
-    
+
       container.scrollTo({
         left: offsetLeft - containerWidth / 4,
         behavior: 'smooth'
@@ -147,11 +147,12 @@ export class CreateComponent {
         this.cliente.clie_ImagenDelNegocio.trim() &&
         this.cliente.ruta_Id &&
         this.cliente.cana_Id &&
-        this.validarDireccion >= 1
+        this.validarDireccion
       ) {
         this.mostrarErrores = false;
         this.activeTab = 3;
       } else {
+        this.validarDireccion = true;
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios del negocio.';
         setTimeout(() => {
@@ -239,6 +240,7 @@ export class CreateComponent {
     return this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval));
   }
 
+  validarDireccion: boolean = false;
   //Parametros para evaluar antes de pasar al siguiente tabulador
   tabuladores(no: number) {
     if (no == 1) {
@@ -265,11 +267,12 @@ export class CreateComponent {
     if (no == 2) {
       this.mostrarErrores = true
       if (this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim() &&
-        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion >= 1) {
+        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion) {
         this.mostrarErrores = false;
         this.activeTab = 3;
       }
       else {
+        this.validarDireccion = true;
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
         setTimeout(() => {
@@ -373,7 +376,7 @@ export class CreateComponent {
       diCl_Latitud: 0,
       diCl_Longitud: 0,
       muni_Descripcion: '',
-      depa_Descripcion:  '',
+      depa_Descripcion: '',
       usua_Creacion: 0,
       diCl_FechaCreacion: new Date(),
       usua_Modificacion: 0,
@@ -388,7 +391,7 @@ export class CreateComponent {
     this.cargarCanales();
     this.cargarRutas();
     this.cargarParentescos();
-    this.cargarListados();
+    this.cargarColoniasCliente();
     this.cargarListadosAval();
   }
 
@@ -430,27 +433,10 @@ export class CreateComponent {
     }).subscribe(data => this.parentescos = data);
   }
 
-  cargarListados(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+  cargarColoniasCliente() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/ListarMunicipiosyDepartamentos`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => this.Departamentos = data,
-      error: (error) => console.error('Error cargando departamentos:', error)
-    });
-
-    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => this.TodosMunicipios = data,
-      error: (error) => console.error('Error cargando municipios:', error)
-    });
-
-    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => this.TodasColonias = data,
-      error: (error) => console.error('Error cargando colonias:', error)
-    });
+    }).subscribe(data => this.TodasColonias = data);
   }
 
   cargarListadosAval(): void {
@@ -570,7 +556,7 @@ export class CreateComponent {
     diCl_Latitud: 0,
     diCl_Longitud: 0,
     muni_Descripcion: '',
-  depa_Descripcion: '',
+    depa_Descripcion: '',
     usua_Creacion: 0,
     diCl_FechaCreacion: new Date(),
     usua_Modificacion: 0,
@@ -596,7 +582,7 @@ export class CreateComponent {
       aval_FechaNacimiento: null,
       esCv_Id: 0,
       aval_Sexo: 'M',
-      pare_Descripcion:  '',
+      pare_Descripcion: '',
       esCv_Descripcion: '',
       tiVi_Descripcion: '',
       muni_Descripcion: '',
@@ -753,7 +739,7 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          if(response.data.code_Status === -1) {
+          if (response.data.code_Status === -1) {
             this.mostrarAlertaError = true;
             this.mensajeError = response.data.message_Status;
             this.activeTab = 1;
@@ -791,17 +777,46 @@ export class CreateComponent {
     }
   }
 
-  validarDireccion: number = 0;
   agregarDireccion() {
-    this.validarDireccion += 1;
-    if (this.direccionEditandoIndex !== null) {
-      this.direccionesPorCliente[this.direccionEditandoIndex] = { ...this.direccionPorCliente };
-      this.direccionEditandoIndex = null;
-    } else {
-      this.direccionesPorCliente.push({ ...this.direccionPorCliente });
+    this.mostrarErrores = true;
+    if(!this.direccionPorCliente.diCl_Longitud && !this.direccionPorCliente.diCl_Latitud){
+      this.mostrarErrores = true;
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor, seleccione una ubicación en el mapa.';
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+        this.mensajeWarning = '';
+      }, 3000);
+      return;
     }
-    this.limpiarDireccionModal();
-    this.cerrarMapa();
+    if (this.direccionPorCliente.diCl_DireccionExacta.trim() && this.direccionPorCliente.colo_Id && this.direccionPorCliente.diCl_Observaciones) {
+      this.mostrarErrores = false;
+      const colonia = this.TodasColonias.find(c => c.colo_Id == this.direccionPorCliente.colo_Id);
+      this.direccionPorCliente.muni_Descripcion = colonia ? colonia.colo_Descripcion : '';
+      this.direccionPorCliente.muni_Descripcion += ' ';
+      this.direccionPorCliente.muni_Descripcion += colonia ? colonia.muni_Descripcion : '';
+      this.direccionPorCliente.muni_Descripcion += ' ';
+      this.direccionPorCliente.muni_Descripcion += colonia ? colonia.depa_Descripcion : '';
+
+      if (this.direccionEditandoIndex !== null) {
+        this.direccionesPorCliente[this.direccionEditandoIndex] = { ...this.direccionPorCliente };
+        this.direccionEditandoIndex = null;
+      } else {
+        this.direccionesPorCliente.push({ ...this.direccionPorCliente });
+      }
+      this.limpiarDireccionModal();
+      this.cerrarMapa();
+    }
+    else{
+      this.mostrarErrores = true;
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor, complete todos los campos obligatorios de la dirección.';
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+        this.mensajeWarning = '';
+      }, 3000);
+      return;
+    }
   }
 
   editarDireccion(index: number) {
@@ -814,7 +829,6 @@ export class CreateComponent {
   }
 
   eliminarDireccion(index: number) {
-    this.validarDireccion -= 1;
     this.direccionesPorCliente.splice(index, 1);
   }
 
