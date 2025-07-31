@@ -12,6 +12,7 @@ export class Modelo {
   mode_Estado: boolean = true; 
   code_Status: number = 0;
   message_Status: string = '';
+  No?: number = 0;
 
   constructor(init?: Partial<Modelo>) {
     Object.assign(this, init);

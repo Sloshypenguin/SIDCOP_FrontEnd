@@ -296,6 +296,11 @@ export class ListComponent implements OnInit {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
+
+      data.forEach((modelo, index) => {
+        modelo.No = index + 1;
+      });
+
       this.table.setData(data);
     });
   }

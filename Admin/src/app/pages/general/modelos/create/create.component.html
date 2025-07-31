@@ -33,17 +33,22 @@
         <div class="mb-3">
           <label for="marcaSelect"  class="form-label">Marca de Vehículo<span class="text-danger">*</span></label>
           <div class="d-flex align-items-center">
+            <i class="ri-car-line" [ngStyle]="{
+              border: (!modelo.maVe_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+              backgroundColor: (!modelo.maVe_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+              padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
             <select 
               class="form-select" 
               [class.is-invalid]="!modelo.maVe_Id && mostrarErrores"
               id="marcaSelect"
               [(ngModel)]="modelo.maVe_Id"
               required>
-              <option value="">Seleccione una marca</option>
+              <option value="0">Seleccione una marca</option>
               <option *ngFor="let marca of marcas" [value]="marca.maVe_Id">
                 {{ marca.maVe_Marca }}
               </option>
             </select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
           <div class="text-danger mt-1" *ngIf="!modelo.maVe_Id && mostrarErrores">
             <small>El campo Marca es requerido</small>
@@ -56,6 +61,10 @@
         <div class="mb-3">
           <label for="modeloDescripcion"  class="form-label">Descripción del Modelo<span class="text-danger">*</span></label>
           <div class="d-flex align-items-center">
+            <i class="ri-file-text-line" [ngStyle]="{
+              border: (!modelo.mode_Descripcion.trim() && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+              backgroundColor: (!modelo.mode_Descripcion.trim() && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+              padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
             <input 
               type="text" 
               class="form-control" 
@@ -64,6 +73,7 @@
               [(ngModel)]="modelo.mode_Descripcion"
               placeholder="Ingrese la descripción del modelo"
               required>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
           </div>
           <div class="text-danger mt-1" *ngIf="!modelo.mode_Descripcion.trim() && mostrarErrores">
             <small>El campo Descripción es requerido</small>
