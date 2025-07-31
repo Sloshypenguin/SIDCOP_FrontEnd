@@ -40,7 +40,7 @@ const routes: Routes = [
       import('./cuentasporcobrar/cuentasporcobrar.module').then(m => m.CuentasPorCobrarModule)
     },
     {
- path: 'ListasPrecios',
+ path: 'listasprecios',
     loadChildren: () =>
       import('./listaPrecios/listasprecios.module').then(m => m.SubcategoriasModule)
    },

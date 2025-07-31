@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export class CreateComponent {
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Canal>();
+  @Output() onOverlayChange = new EventEmitter<boolean>();
 
   canal: Canal = new Canal();
 
@@ -52,6 +53,7 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
+    this.onOverlayChange.emit(true);
 
     if (
       this.canal.cana_Descripcion &&
@@ -85,27 +87,35 @@ export class CreateComponent {
         }
       }).subscribe({
         next: (response) => {
-          this.mensajeExito = `Canal "${this.canal.cana_Descripcion}" guardado exitosamente`;
-          this.mostrarAlertaExito = true;
           this.mostrarErrores = false;
           setTimeout(() => {
-            this.mostrarAlertaExito = false;
-            this.onSave.emit(this.canal);
-            this.cancelar();
-          }, 3000);
+            this.onOverlayChange.emit(false);
+            this.mensajeExito = `Canal "${this.canal.cana_Descripcion}" guardado exitosamente`;
+            this.mostrarAlertaExito = true;
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              setTimeout(() => {
+                this.onSave.emit(this.canal);
+                this.cancelar();
+              }, 100);
+            }, 2000);
+          }, 300);
         },
         error: () => {
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el canal. Por favor, intente nuevamente.';
-          this.mostrarAlertaExito = false;
           setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
+            this.onOverlayChange.emit(false);
+            this.mostrarAlertaError = true;
+            this.mensajeError = 'Error al guardar el canal. Por favor, intente nuevamente.';
+            this.mostrarAlertaExito = false;
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+          }, 300);
         }
       });
     } else {
-      // Mostrar alerta de warning para campos vacíos
+      this.onOverlayChange.emit(false);
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
       this.mostrarAlertaError = false;
