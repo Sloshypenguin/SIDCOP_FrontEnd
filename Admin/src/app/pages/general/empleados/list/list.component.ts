@@ -75,6 +75,8 @@ import { EditComponent } from '../edit/edit.component';
 // Grid Component
 
 export class ListComponent {
+  accionesDisponibles: string [] = [];
+
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
@@ -464,5 +466,11 @@ export class ListComponent {
     if (!this.usuarioGrid?.length) return 0;
     const end = this.currentPage * this.itemsPerPage;
     return end > this.usuarioGrid.length ? this.usuarioGrid.length : end;
+  }
+
+
+  //Permisos
+  accionPermitida(accion: string): boolean {
+    return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 }
