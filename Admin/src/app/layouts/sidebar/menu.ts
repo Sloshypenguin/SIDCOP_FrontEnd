@@ -235,13 +235,13 @@ export const MENU: MenuItem[] = [
         parentId: 4,
         icon: 'ri-truck-line',
       },
-      {
-        id: 29,
-        label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
-        link: '/logistica/recargas',
-        parentId: 4,
-        icon: 'ri-truck-line',
-      },
+      // {
+      //   id: 29,
+      //   label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
+      //   link: '/logistica/recargas',
+      //   parentId: 4,
+      //   icon: 'ri-truck-line',
+      // },
       // Puedes añadir más subitems aquí según sea necesario
     ],
   },
@@ -279,13 +279,13 @@ export const MENU: MenuItem[] = [
         parentId: 3,
         icon: 'ri-truck-line',
       },
-      {
-        id: 26,
-        label: 'MENUITEMS.INVENTARIO.LIST.PROMOCIONES',
-        link: '/inventario/promociones',
-        parentId: 3,
-        icon: 'ri-truck-line',
-      },
+      // {
+      //   id: 26,
+      //   label: 'MENUITEMS.INVENTARIO.LIST.PROMOCIONES',
+      //   link: '/inventario/promociones',
+      //   parentId: 3,
+      //   icon: 'ri-truck-line',
+      // },
       // Puedes añadir más subitems aquí según sea necesario
     ],
   },
