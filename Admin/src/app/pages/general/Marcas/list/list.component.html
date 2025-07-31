@@ -77,16 +77,16 @@
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th" (click)="table.sortBy('marc_Id')" style="cursor:pointer;">
+                <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
                   <span class="table-header-flex">
                     Código
                     <!-- iconos para ordenar -->
                     <span style="display: flex; flex-direction: column;">
                      <i class="ri-arrow-up-s-line icon-sort"
-                      [ngStyle]="table.sortField === 'marc_Id' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                     </i>
                     <i class="ri-arrow-down-s-line icon-sort"
-                      [ngStyle]="table.sortField === 'marc_Id' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                      [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                     </i>
                     </span>
                   </span>
@@ -120,7 +120,7 @@
                     </button>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.marc_Id}}</span></td>
+                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                 <td>{{data.marc_Descripcion}}</td>
               </tr>
             </tbody>
