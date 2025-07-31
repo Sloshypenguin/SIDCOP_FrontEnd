@@ -74,7 +74,7 @@
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
                   <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
                     <span class="table-header-flex">
-                      ID
+                      No.
                       <span style="display: flex; flex-direction: column;">
                         <i class="ri-arrow-up-s-line icon-sort"
                           [ngStyle]="sortField === 'secuencia' && sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
