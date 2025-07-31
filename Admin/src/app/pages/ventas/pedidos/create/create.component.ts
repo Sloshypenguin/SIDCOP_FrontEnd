@@ -31,97 +31,161 @@ export class CreateComponent {
   Direccines: any[] = [];
   productos: any[] = [];
   Math = Math; // para usar Math en la plantilla
-  productosFiltrados: any[] = []; // resultado después del filtro
-  productosPaginados: any[] = []; // productos que se muestran en la página actual
-  paginaActual: number = 1;
-  productosPorPagina: number = 6;
 
+  // ========== PROPIEDADES PARA BÚSQUEDA Y PAGINACIÓN MEJORADAS ==========
+  busquedaProducto = '';
+  productosFiltrados: any[] = [];
+  paginaActual = 1;
+  productosPorPagina = 6;
 
+  listarProductos(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        this.productos = data.map((producto: any) => ({
+          ...producto,
+          cantidad: 0,
+          precio: producto.prod_PrecioUnitario || 0
+        }));
+        this.aplicarFiltros(); // Usar el nuevo método de filtrado
+      },
+      error: () => {
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar productos.';
+      }
+    });
+  }
 
-listarProductos(): void {
-  this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
-  }).subscribe({
-    next: (data) => {
-      this.productos = data.map((producto: any) => ({
-        ...producto,
-        cantidad: 0,
-        precio: producto.prod_PrecioUnitario || 0
-      }));
-      this.filtrarProductos(); // aplicar filtro inicial
-    },
-    error: () => {
-      this.mostrarAlertaError = true;
-      this.mensajeError = 'Error al cargar productos.';
+  // ========== MÉTODOS PARA BÚSQUEDA Y PAGINACIÓN MEJORADOS ==========
+
+  buscarProductos(): void {
+    this.paginaActual = 1;
+    this.aplicarFiltros();
+  }
+
+  limpiarBusqueda(): void {
+    this.busquedaProducto = '';
+    this.paginaActual = 1;
+    this.aplicarFiltros();
+  }
+
+  private aplicarFiltros(): void {
+    if (!this.busquedaProducto.trim()) {
+      this.productosFiltrados = [...this.productos];
+    } else {
+      const termino = this.busquedaProducto.toLowerCase().trim();
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.prod_Descripcion.toLowerCase().includes(termino)
+      );
     }
-  });
-}
-
-
-
-searchQuery: string = ''; // Variable para almacenar la búsqueda
-
-  // Filtrar productos según el nombre
-filtrarProductos(): void {
-  const query = this.searchQuery.trim().toLowerCase();
-  if (query === '') {
-    this.productosFiltrados = [...this.productos];
-  } else {
-    this.productosFiltrados = this.productos.filter(producto =>
-      producto.prod_Descripcion.toLowerCase().includes(query)
-    );
   }
-  this.paginaActual = 1; // reset a la página 1 tras filtrar
-  this.actualizarProductosPaginados();
-}
 
-
-actualizarProductosPaginados(): void {
-  const inicio = (this.paginaActual - 1) * this.productosPorPagina;
-  const fin = inicio + this.productosPorPagina;
-  this.productosPaginados = this.productosFiltrados.slice(inicio, fin);
-}
-
-
-cambiarPagina(delta: number): void {
-  const totalPaginas = Math.ceil(this.productosFiltrados.length / this.productosPorPagina);
-  const nuevaPagina = this.paginaActual + delta;
-  if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-    this.paginaActual = nuevaPagina;
-    this.actualizarProductosPaginados();
+  getProductosFiltrados(): any[] {
+    return this.productosFiltrados;
   }
-}
 
-
-
-
-
-aumentarCantidad(index: number): void {
-  this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
-}
-
-disminuirCantidad(index: number): void {
-  if (this.productos[index].cantidad > 0) {
-    this.productos[index].cantidad--;
+  getProductosPaginados(): any[] {
+    const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+    const fin = inicio + this.productosPorPagina;
+    return this.productosFiltrados.slice(inicio, fin);
   }
-}
 
-validarCantidad(index: number): void {
-  const cantidad = this.productos[index].cantidad;
-  this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
-}
+  getTotalPaginas(): number {
+    return Math.ceil(this.productosFiltrados.length / this.productosPorPagina);
+  }
 
-obtenerProductosSeleccionados(): any[] {
-  return this.productos
-    .filter(p => p.cantidad > 0)
-    .map(p => ({
-      prod_Id: p.prod_Id,
-      peDe_Cantidad: p.cantidad,
-      peDe_ProdPrecio: p.precio || 0
-    }));
-}
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.getTotalPaginas()) {
+      this.paginaActual = pagina;
+    }
+  }
 
- searchCliente = (term: string, item: any) => {
+  getPaginasVisibles(): number[] {
+    const totalPaginas = this.getTotalPaginas();
+    const paginaActual = this.paginaActual;
+    const paginas: number[] = [];
+
+    if (totalPaginas <= 5) {
+      for (let i = 1; i <= totalPaginas; i++) {
+        paginas.push(i);
+      }
+    } else {
+      if (paginaActual <= 3) {
+        for (let i = 1; i <= 5; i++) {
+          paginas.push(i);
+        }
+      } else if (paginaActual >= totalPaginas - 2) {
+        for (let i = totalPaginas - 4; i <= totalPaginas; i++) {
+          paginas.push(i);
+        }
+      } else {
+        for (let i = paginaActual - 2; i <= paginaActual + 2; i++) {
+          paginas.push(i);
+        }
+      }
+    }
+
+    return paginas;
+  }
+
+  getInicioRegistro(): number {
+    return (this.paginaActual - 1) * this.productosPorPagina + 1;
+  }
+
+  getFinRegistro(): number {
+    const fin = this.paginaActual * this.productosPorPagina;
+    return Math.min(fin, this.productosFiltrados.length);
+  }
+
+  // Método para obtener el índice real del producto en el array principal
+  getProductoIndex(prodId: number): number {
+    return this.productos.findIndex(p => p.prod_Id === prodId);
+  }
+
+  // ========== MÉTODOS DE CANTIDAD MEJORADOS ==========
+
+  aumentarCantidad(prodId: number): void {
+    const index = this.getProductoIndex(prodId);
+    if (index >= 0 && index < this.productos.length) {
+      this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
+    }
+  }
+
+  disminuirCantidad(prodId: number): void {
+    const index = this.getProductoIndex(prodId);
+    if (index >= 0 && index < this.productos.length && this.productos[index].cantidad > 0) {
+      this.productos[index].cantidad--;
+    }
+  }
+
+  validarCantidad(prodId: number): void {
+    const index = this.getProductoIndex(prodId);
+    if (index >= 0 && index < this.productos.length) {
+      const cantidad = this.productos[index].cantidad || 0;
+      this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad));
+    }
+  }
+
+  // Método para obtener la cantidad de un producto específico
+  getCantidadProducto(prodId: number): number {
+    const producto = this.productos.find(p => p.prod_Id === prodId);
+    return producto ? (producto.cantidad || 0) : 0;
+  }
+
+  obtenerProductosSeleccionados(): any[] {
+    return this.productos
+      .filter(p => p.cantidad > 0)
+      .map(p => ({
+        prod_Id: p.prod_Id,
+        peDe_Cantidad: p.cantidad,
+        peDe_ProdPrecio: p.precio || 0
+      }));
+  }
+
+  // ========== MÉTODOS DE CLIENTES (SIN CAMBIOS) ==========
+
+  searchCliente = (term: string, item: any) => {
     term = term.toLowerCase();
     return (
       item.clie_Codigo?.toLowerCase().includes(term) ||
@@ -131,51 +195,45 @@ obtenerProductosSeleccionados(): any[] {
     );
   };
 
-
-
-   cargarClientes() {
-      this.http.get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe({
-        next: (data) => {
-          this.Clientes = data;
-          console.log('Clientes cargados:', this.Clientes);
-        },
-
-        error: (error) => {
-          console.error('Error al cargar clientes:', error);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al cargar clientes. Por favor, intente nuevamente.';
-        }
+  cargarClientes() {
+    this.http.get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        this.Clientes = data;
+        console.log('Clientes cargados:', this.Clientes);
+      },
+      error: (error) => {
+        console.error('Error al cargar clientes:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar clientes. Por favor, intente nuevamente.';
       }
-      )
-    };
+    });
+  };
 
- cargarDirecciones(clienteId: number) {
-  this.http.get<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${clienteId}`, {
-    headers: { 'x-api-key': environment.apiKey }
-  }).subscribe((data) => this.Direccines = data,
+  cargarDirecciones(clienteId: number) {
+    this.http.get<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${clienteId}`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe((data) => this.Direccines = data);
+  }
 
-  
-  
-); 
-}
-
-onClienteSeleccionado(clienteId: number) {
-  this.cargarDirecciones(clienteId);
-  this.pedido.diCl_Id = 0; // Reiniciar dirección seleccionada
-}
-
-
-    
+  onClienteSeleccionado(clienteId: number) {
+    this.cargarDirecciones(clienteId);
+    this.pedido.diCl_Id = 0; // Reiniciar dirección seleccionada
+  }
 
   constructor(private http: HttpClient) {
     this.cargarClientes();
     this.listarProductos();
   }
 
+  // Agregar al componente TypeScript
+trackByProducto(index: number, producto: any): number {
+  return producto.prod_Id;
+}
+
   pedido: Pedido = {
-   pedi_Id: 0,
+    pedi_Id: 0,
     diCl_Id: 0,
     vend_Id: 0,
     pedi_FechaPedido: new Date(),
@@ -197,10 +255,8 @@ onClienteSeleccionado(clienteId: number) {
     peDe_Cantidad: 0,
     detalles: [],
     detallesJson: '',
-
     usua_Creacion: 0,
     usua_Modificacion: 0,
-  
     pedi_FechaCreacion: new Date(),
     pedi_FechaModificacion: new Date(),
     code_Status: 0,
@@ -212,8 +268,9 @@ onClienteSeleccionado(clienteId: number) {
   };
 
   cancelar(): void {
-    this.searchQuery = '';
-    this.filtrarProductos();
+    this.busquedaProducto = '';
+    this.paginaActual = 1;
+    this.aplicarFiltros();
     this.mostrarErrores = false;
     this.mostrarAlertaExito = false;
     this.mensajeExito = '';
@@ -221,7 +278,10 @@ onClienteSeleccionado(clienteId: number) {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
-    this.productos.forEach(p => { p.cantidad = 0; p.prod_PrecioUnitario = 0; });
+    this.productos.forEach(p => { 
+      p.cantidad = 0; 
+      p.prod_PrecioUnitario = 0; 
+    });
     this.pedido = {
       pedi_Id: 0,
       diCl_Id: 0,
@@ -245,10 +305,8 @@ onClienteSeleccionado(clienteId: number) {
       peDe_Cantidad: 0,
       detalles: [],
       detallesJson: '',
-  
       usua_Creacion: 0,
       usua_Modificacion: 0,
-    
       pedi_FechaCreacion: new Date(),
       pedi_FechaModificacion: new Date(),
       code_Status: 0,
@@ -257,8 +315,6 @@ onClienteSeleccionado(clienteId: number) {
       usuarioModificacion: '',
       secuencia: 0,
       pedi_Estado: false,
-  
-      
     };
     this.onCancel.emit();
   }
@@ -277,12 +333,12 @@ onClienteSeleccionado(clienteId: number) {
     const productosSeleccionados = this.obtenerProductosSeleccionados();
 
     if (!this.pedido.diCl_Id || !this.pedido.pedi_FechaEntrega || productosSeleccionados.length === 0) {
-    this.mostrarAlertaWarning = true;
-    this.mensajeWarning = 'Por favor complete todos los campos requeridos y seleccione al menos un producto.';
-    return;
-  }
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor complete todos los campos requeridos y seleccione al menos un producto.';
+      return;
+    }
     
-    if (this.pedido.diCl_Id && this.pedido.pedi_FechaEntrega ) {
+    if (this.pedido.diCl_Id && this.pedido.pedi_FechaEntrega) {
       // Limpiar alertas previas
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
@@ -323,24 +379,22 @@ onClienteSeleccionado(clienteId: number) {
         }
       }).subscribe({
         next: (response) => {
-         this.mostrarErrores = false;
-            this.onSave.emit(this.pedido);
-            this.cancelar();
+          this.mostrarErrores = false;
+          this.onSave.emit(this.pedido);
+          this.cancelar();
         },
         error: (error) => {
           console.log('Entro esto', this.pedido);
-            // console.log('Error al guardar punto de emision:', error);
-            console.error('Error al guardar punto de emision:', error);
-            this.mostrarAlertaError = true;
-            this.mensajeError =
-              'Error al guardar el pedido. Por favor, intente nuevamente.';
-            this.mostrarAlertaExito = false;
+          console.error('Error al guardar punto de emision:', error);
+          this.mostrarAlertaError = true;
+          this.mensajeError = 'Error al guardar el pedido. Por favor, intente nuevamente.';
+          this.mostrarAlertaExito = false;
 
-            // Ocultar la alerta de error después de 5 segundos
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
+          // Ocultar la alerta de error después de 5 segundos
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
         }
       });
     } else {

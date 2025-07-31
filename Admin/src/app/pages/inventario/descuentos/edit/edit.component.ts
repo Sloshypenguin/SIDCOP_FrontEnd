@@ -120,7 +120,7 @@ seleccionarTodos(event: any) {
   this.descuentoDetalle.idReferencias = [...this.seleccionados];
 }
 
-
+hoy: string;
 
   constructor(private http: HttpClient) {
     this.listarcategorias();
@@ -129,6 +129,11 @@ seleccionarTodos(event: any) {
     this.listarSubcategorias();
     this.listarClientes();
     this.listarDescuentos();
+    const today = new Date();
+    this.hoy = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    this.mostrarSeccion('productos');
+    this.activeTab = 1;
+
     
   }
 
@@ -370,9 +375,9 @@ hayConflicto(clienteId: number): boolean {
       return false;
   }
 
-  // Filtrar descuentos del mismo tipo (P, C, M o S)
+  // Filtrar descuentos del mismo tipo (P, C, M o S) y excluir el descuento actual en modo edición
   const descuentosMismoTipo = this.descuentosExistentes.filter(
-    d => d.desc_Aplicar === this.descuento.desc_Aplicar
+    d => d.desc_Aplicar === this.descuento.desc_Aplicar && d.desc_Id !== this.descuento.desc_Id
   );
 
   // Verificar conflicto
@@ -581,7 +586,9 @@ tieneAyudante: boolean = false;
     !this.descuento.desc_Descripcion.trim() ||
     !this.descuento.desc_Aplicar.trim() ||
     !this.descuento.desc_FechaInicio ||
-    !this.descuento.desc_FechaFin 
+    !this.descuento.desc_FechaFin ||
+    !this.puedeAgregarNuevaEscala()
+
   ) {
     this.mostrarAlertaWarning = true;
     this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
@@ -626,7 +633,7 @@ tieneAyudante: boolean = false;
     desc_Aplicar: this.descuento.desc_Aplicar,
     desc_FechaInicio: new Date(this.descuento.desc_FechaInicio),
     desc_FechaFin: new Date(this.descuento.desc_FechaFin),
-    desc_Observaciones: this.descuento.desc_Observaciones.trim(),
+    desc_Observaciones: 'N/A',
     usua_Creacion: this.descuento.usua_Creacion,
     desc_FechaCreacion: new Date(this.descuento.desc_FechaCreacion),
     usua_Modificacion: getUserId(),
@@ -639,9 +646,12 @@ tieneAyudante: boolean = false;
     referencias: '',
     escalas_Json: this.escalas,
     desc_TipoFactura: this.formaPago
-
+    
 
   };
+  if (this.descuento.desc_Observaciones) {
+      descuentoActualizar.desc_Observaciones = this.descuento.desc_Observaciones;
+    }
 
   console.log('datos enviados', descuentoActualizar);
 
@@ -679,13 +689,13 @@ tieneAyudante: boolean = false;
 
   validarPasoActual(): boolean {
   switch (this.activeTab) {
-    case 0: // Información general
+    case 1: // Información general
       return this.validarPasoInformacionGeneral();
-    case 1: // Aplica para
+    case 2: // Aplica para
       return this.seleccionados.length > 0;
-    case 2: // Clientes
+    case 3: // Clientes
       return this.clientesSeleccionados.length > 0;
-    case 3: // Escalas
+    case 4: // Escalas
       return this.validarEscalas();
     default:
       return false;
@@ -695,7 +705,7 @@ tieneAyudante: boolean = false;
 validarPasoInformacionGeneral(): boolean {
   const d = this.descuento;
 
-  return !!d.desc_Descripcion?.trim() &&
+  return !!d.desc_Descripcion && d.desc_Descripcion.trim() !== '' &&
          d.desc_Tipo !== null &&
          !!d.desc_FechaInicio &&
          !!d.desc_FechaFin;
@@ -715,8 +725,104 @@ irAlSiguientePaso() {
   if (this.validarPasoActual()) {
     this.mostrarErrores = false;
     this.activeTab ++;
+    
+    // Si acabamos de navegar al tab de clientes (activeTab === 3), validar clientes seleccionados
+    if (this.activeTab === 3) {
+      this.validarClientesSeleccionadosAlLlegarATab();
+    }
   } else {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning= 'Debe Completar todos los campos'
+
+    setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 2000);
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
+  }
+}
+
+validado = true;
+
+limitarValor(valor: number, escala: any): void {
+  if (this.descuento.desc_Tipo === false && valor > 100) {
+    this.validado = false;
+  } else {
+    escala.deEs_Valor = valor;
+    this.validado = true;
+
+  }
+}
+
+puedeAgregarNuevaEscala(): boolean {
+  if (!this.escalas || this.escalas.length === 0) return true;
+
+  for (let i = 0; i < this.escalas.length; i++) {
+    const escala = this.escalas[i];
+    if (
+      escala.deEs_InicioEscala == null ||
+      escala.deEs_FinEscala == null ||
+      escala.deEs_Valor == null ||
+      escala.deEs_FinEscala <= escala.deEs_InicioEscala ||
+        escala.deEs_Valor == 0
+
+    ) {
+      return false;
+    }
+
+    if (i > 0) {
+      const anterior = this.escalas[i - 1];
+      if (
+        escala.deEs_InicioEscala <= anterior.deEs_FinEscala ||
+        escala.deEs_Valor <= anterior.deEs_Valor ||
+        escala.deEs_Valor == 0
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+// Validar clientes seleccionados cuando se navega al tab de clientes
+validarClientesSeleccionadosAlLlegarATab(): void {
+  if (this.clientesSeleccionados.length === 0) {
+    return; // No hay clientes seleccionados, no hay nada que validar
+  }
+
+  const clientesConConflicto: number[] = [];
+  let mensajeConflictos = '';
+
+  // Revisar cada cliente seleccionado para ver si tiene conflictos
+  for (const clienteId of this.clientesSeleccionados) {
+    if (this.hayConflicto(clienteId)) {
+      clientesConConflicto.push(clienteId);
+    }
+  }
+
+  // Si hay clientes con conflictos, deseleccionarlos y mostrar mensaje
+  if (clientesConConflicto.length > 0) {
+    // Deseleccionar clientes con conflicto
+    this.clientesSeleccionados = this.clientesSeleccionados.filter(
+      id => !clientesConConflicto.includes(id)
+    );
+
+    // Preparar mensaje informativo
+    if (clientesConConflicto.length === 1) {
+      mensajeConflictos = 'Se ha deseleccionado 1 cliente que tenía conflicto con los ítems seleccionados.';
+    } else {
+      mensajeConflictos = `Se han deseleccionado ${clientesConConflicto.length} clientes que tenían conflictos con los ítems seleccionados.`;
+    }
+
+    // Mostrar mensaje de advertencia
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = mensajeConflictos;
+    
+    setTimeout(() => {
+      this.mostrarAlertaWarning = false;
+      this.mensajeWarning = '';
+    }, 5000);
   }
 }
 

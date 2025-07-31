@@ -365,23 +365,25 @@ constructor(public table: ReactiveTableService<PuntoEmision>,
   }
 
 
+ 
+
   private cargardatos(state: boolean): void {
-     this.mostrarOverlayCarga = state;
+    this.mostrarOverlayCarga = state;
+
     this.http.get<PuntoEmision[]>(`${environment.apiBaseUrl}/PuntoEmision/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
       setTimeout(() => {
-        this.mostrarOverlayCarga = false;
-         const tienePermisoListar = this.accionPermitida('listar');
-        const userId = getUserId();
-
-        const datosFiltrados = tienePermisoListar
-          ? data
-          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
-
         this.table.setData(datosFiltrados);
-        this.table.setData(data);
-      },500);
+        this.mostrarOverlayCarga = false;
+      }, 500);
     });
   }
 }

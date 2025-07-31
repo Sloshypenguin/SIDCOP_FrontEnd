@@ -13,6 +13,8 @@ import { Marcas } from 'src/app/Modelos/general/Marcas.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -29,9 +31,43 @@ import { DetailsComponent } from '../details/details.component';
     DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
+  // Variable para controlar el estado de carga
+  mostrarOverlayCarga = false;
   ngOnInit(): void {
     /**
      * BreadCrumb
@@ -158,7 +194,13 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   marcaAEliminar: Marcas | null = null;
 
-  constructor(public table: ReactiveTableService<Marcas>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    public table: ReactiveTableService<Marcas>,
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService
+  ) {
     this.cargardatos();
   }
 
@@ -186,6 +228,16 @@ export class ListComponent implements OnInit {
 
   guardarMarca(marca: Marcas): void {
     console.log('Marca guardada exitosamente desde create component:', marca);
+    // Mostrar mensaje de éxito
+    this.mensajeExito = `Marca "${marca.marc_Descripcion}" creada exitosamente`;
+    this.mostrarAlertaExito = true;
+    
+    // Ocultar la alerta después de 3 segundos
+    setTimeout(() => {
+      this.mostrarAlertaExito = false;
+      this.mensajeExito = '';
+    }, 3000);
+    
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormulario();
@@ -193,6 +245,16 @@ export class ListComponent implements OnInit {
 
   actualizarMarca(marca: Marcas): void {
     console.log('Marca actualizada exitosamente desde edit component:', marca);
+    // Mostrar mensaje de éxito
+    this.mensajeExito = `Marca "${marca.marc_Descripcion}" actualizada exitosamente`;
+    this.mostrarAlertaExito = true;
+    
+    // Ocultar la alerta después de 3 segundos
+    setTimeout(() => {
+      this.mostrarAlertaExito = false;
+      this.mensajeExito = '';
+    }, 3000);
+    
     // Recargar los datos de la tabla
     this.cargardatos();
     this.cerrarFormularioEdicion();
@@ -214,6 +276,7 @@ export class ListComponent implements OnInit {
     if (!this.marcaAEliminar) return;
     
     console.log('Eliminando marca:', this.marcaAEliminar);
+    this.mostrarOverlayCarga = true;
     
     this.http.post(`${environment.apiBaseUrl}/Marcas/Eliminar/${this.marcaAEliminar.marc_Id}`, {}, {
       headers: { 
@@ -238,21 +301,19 @@ export class ListComponent implements OnInit {
               this.mensajeExito = '';
             }, 3000);
             
-
             this.cargardatos();
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('Marca está siendo utilizado');
+            // Está siendo utilizado
+            console.log('Marca está siendo utilizada');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la marca está siendo utilizado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la marca está siendo utilizada.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
             
-            // Cerrar el modal de confirmación
             this.cancelarEliminar();
           } else if (response.data.code_Status === 0) {
             // Error general
@@ -265,7 +326,6 @@ export class ListComponent implements OnInit {
               this.mensajeError = '';
             }, 5000);
             
-            // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
         } else {
@@ -279,10 +339,24 @@ export class ListComponent implements OnInit {
             this.mensajeError = '';
           }, 5000);
           
-          // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
       },
+      error: (error) => {
+        console.error('Error en la petición de eliminación:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error de conexión al intentar eliminar la marca. Por favor, intente nuevamente.';
+        
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+        
+        this.cancelarEliminar();
+      },
+      complete: () => {
+        this.mostrarOverlayCarga = false;
+      }
     });
   }
 
@@ -296,11 +370,26 @@ export class ListComponent implements OnInit {
   }
 
   private cargardatos(): void {
+    this.mostrarOverlayCarga = true;
     this.http.get<Marcas[]>(`${environment.apiBaseUrl}/Marcas/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      console.log('Datos recargados:', data);
-      this.table.setData(data);
+    }).subscribe({
+      next: (data) => {
+        console.log('Datos recargados:', data);
+        this.table.setData(data);
+      },
+      error: (error) => {
+        console.error('Error al cargar los datos:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al cargar los datos de las marcas. Por favor, intente nuevamente.';
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      },
+      complete: () => {
+        this.mostrarOverlayCarga = false;
+      }
     });
   }
 }

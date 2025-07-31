@@ -70,13 +70,15 @@
     </label>
     <div class="tree-container">
       <div class="row justify-content-lg-end">
+        <div class="row justify-content-lg-start">
         <div class="col-sm-2">
-          <button type="button" class="btn btn-sm btn-outline-dark" (click)="alternarDesplegables()">
+          <button class="btn-subtle mb-3" (click)="alternarDesplegables()">
             <i [class.ri-folder-reduce-line]="hayExpandido" 
-              [class.ri-folder-add-line]="!hayExpandido"></i>
+               [class.ri-folder-add-line]="!hayExpandido"></i>
             {{ hayExpandido ? 'Contraer Todo' : 'Expandir Todo' }}
           </button>
         </div>
+      </div>
       </div>
       <div class="tree-item" *ngFor="let esquema of treeData">
         <div class="tree-node" (click)="toggleExpand(esquema)">
