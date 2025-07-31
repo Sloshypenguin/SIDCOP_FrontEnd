@@ -164,67 +164,54 @@ export class ListComponent implements OnInit {
   }
 
   eliminar(): void {
-    if (!this.caiAEliminar) return;
-    
-    console.log('Eliminando CAI:', this.caiAEliminar);
-    
-    this.http.post(`${environment.apiBaseUrl}/CAIs/Eliminar/${this.caiAEliminar.nCai_Id}`, {}, {
-      headers: { 
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        
-        // Verificar el código de estado en la respuesta
-        if (response.success && response.data) {
-          if (response.data.code_Status === 1) {
-            // Éxito: eliminado correctamente
-            console.log('CAI eliminado exitosamente');
-            this.mensajeExito = `CAI "${this.caiAEliminar!.nCai_Descripcion}" eliminado exitosamente`;
-            this.mostrarAlertaExito = true;
-            
-            // Ocultar la alerta después de 3 segundos
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.mensajeExito = '';
-            }, 3000);
-            
-            this.cargarDatos();
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === -1) {
-            //result: está siendo utilizado
-            console.log('CAI está siendo utilizado');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'No se puede eliminar: el CAI está siendo utilizado.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          } else if (response.data.code_Status === 0) {
-            // Error general
-            console.log('Error general al eliminar');
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data.message_Status || 'Error al eliminar el CAI.';
-            
-            setTimeout(() => {
-              this.mostrarAlertaError = false;
-              this.mensajeError = '';
-            }, 5000);
-            
-            // Cerrar el modal de confirmación
-            this.cancelarEliminar();
-          }
-        } else {
-          // Respuesta inesperada
-          console.log('Respuesta inesperada del servidor');
+  if (!this.caiAEliminar) return;
+  
+  console.log('Eliminando CAI:', this.caiAEliminar);
+  
+  // Cambiar de POST a PUT y ajustar la URL según el endpoint del backend
+  this.http.put(`${environment.apiBaseUrl}/CaiS/Eliminar/${this.caiAEliminar.nCai_Id}`, {}, {
+    headers: { 
+      'X-Api-Key': environment.apiKey,
+      'accept': '*/*'
+    }
+  }).subscribe({
+    next: (response: any) => {
+      console.log('Respuesta del servidor:', response);
+      
+      // Verificar el código de estado en la respuesta
+      if (response.success && response.data) {
+        if (response.data.code_Status === 1) {
+          // Éxito: eliminado correctamente
+          console.log('CAI eliminado exitosamente');
+          this.mensajeExito = `CAI "${this.caiAEliminar!.nCai_Descripcion}" eliminado exitosamente`;
+          this.mostrarAlertaExito = true;
+          
+          // Ocultar la alerta después de 3 segundos
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+          
+          this.cargarDatos();
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === -1) {
+          //result: está siendo utilizado
+          console.log('CAI está siendo utilizado');
           this.mostrarAlertaError = true;
-          this.mensajeError = response.message || 'Error inesperado al eliminar el CAI.';
+          this.mensajeError = response.data.message_Status || 'No se puede eliminar: el CAI está siendo utilizado.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === 0) {
+          // Error general
+          console.log('Error general al eliminar');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'Error al eliminar el CAI.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
@@ -234,11 +221,11 @@ export class ListComponent implements OnInit {
           // Cerrar el modal de confirmación
           this.cancelarEliminar();
         }
-      },
-      error: (error) => {
-        console.error('Error en la petición:', error);
+      } else {
+        // Respuesta inesperada
+        console.log('Respuesta inesperada del servidor');
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error de conexión al eliminar el CAI.';
+        this.mensajeError = response.message || 'Error inesperado al eliminar el CAI.';
         
         setTimeout(() => {
           this.mostrarAlertaError = false;
@@ -248,8 +235,22 @@ export class ListComponent implements OnInit {
         // Cerrar el modal de confirmación
         this.cancelarEliminar();
       }
-    });
-  }
+    },
+    error: (error) => {
+      console.error('Error en la petición:', error);
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error de conexión al eliminar el CAI.';
+      
+      setTimeout(() => {
+        this.mostrarAlertaError = false;
+        this.mensajeError = '';
+      }, 5000);
+      
+      // Cerrar el modal de confirmación
+      this.cancelarEliminar();
+    }
+  });
+}
 
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;

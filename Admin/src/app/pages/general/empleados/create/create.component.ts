@@ -24,7 +24,7 @@ export class CreateComponent {
   estadosCiviles: any[] = [];
 
   cargos: any[] = [];
-  colonias: any[] = [];
+  colonia: any[] = [];
 
   @Output() onCancel = new EventEmitter<void>();
     @Output() onSave = new EventEmitter<Empleado>();
@@ -43,7 +43,7 @@ export class CreateComponent {
       this.obtenerSucursales();
       this.obtenerEstadosCiviles();
       this.obtenerCargos();
-      this.obtenerColonias();
+      this.listarColonias();
     }
   
     empleado: Empleado = {
@@ -266,22 +266,45 @@ export class CreateComponent {
       });
     }
 
-    obtenerColonias() {
-      const headers = {
-        'X-Api-Key': environment.apiKey,
-        'Content-Type': 'application/json',
-        'accept': '*/*'
-      };
-
-      this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, { headers }).subscribe({
-        next: (data) => {
-          this.colonias = data;
-        },
-        error: (error) => {
-          console.error('Error al obtener colonias:', error);
-        }
+    ordenarPorMunicipioYDepartamento(colonias: any[]): any[] {
+      return colonias.sort((a, b) => {
+        // Primero por departamento
+        if (a.depa_Descripcion < b.depa_Descripcion) return -1;
+        if (a.depa_Descripcion > b.depa_Descripcion) return 1;
+        // Luego por municipio
+        if (a.muni_Descripcion < b.muni_Descripcion) return -1;
+        if (a.muni_Descripcion > b.muni_Descripcion) return 1;
+        return 0;
       });
     }
+
+     searchColonias = (term: string, item: any) => {
+      term = term.toLowerCase();
+      return (
+        item.colo_Descripcion?.toLowerCase().includes(term) ||
+        item.muni_Descripcion?.toLowerCase().includes(term) ||
+        item.depa_Descripcion?.toLowerCase().includes(term)
+      );
+    };
+
+    direccionExactaInicial: string = '';
+
+    onColoniaSeleccionada(colo_Id: number) {
+      const coloniaSeleccionada = this.colonia.find((c: any) => c.colo_Id === colo_Id);
+      if (coloniaSeleccionada) {
+        this.direccionExactaInicial = coloniaSeleccionada.colo_Descripcion;
+        this.empleado.empl_DireccionExacta = coloniaSeleccionada.colo_Descripcion;
+      } else {
+        this.direccionExactaInicial = '';
+        this.empleado.empl_DireccionExacta = '';
+      }
+    }
+
+    listarColonias(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe((data) => this.colonia = this.ordenarPorMunicipioYDepartamento(data));
+    };
 
 
     //Crear imagenes

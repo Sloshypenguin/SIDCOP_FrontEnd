@@ -143,7 +143,7 @@ confirmarGuardarCambios() {
         const productosdata = data;
         this.productosLista = productosdata.map((producto: any) => ({
           ...producto,
-          prod_Display: producto.prod_CodigoBarra +'  '+ producto.prod_Descripcion
+          prod_Display: producto.prod_Codigo +' — '+ producto.prod_Descripcion
           
         }));
       },

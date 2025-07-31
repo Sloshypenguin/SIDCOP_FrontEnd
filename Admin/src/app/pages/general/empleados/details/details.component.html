@@ -124,7 +124,7 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ empleadoDetalle.usua_Creacion || 'N/A' }}</span>
+          <span class="audit-user">{{ empleadoDetalle.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
           <span class="audit-date">{{ formatearFecha(empleadoDetalle.empl_FechaCreacion || null) }}</span>
@@ -137,10 +137,10 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user"></span>
+          <span class="audit-user">{{ empleadoDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date"></span>
+          <span class="audit-date">{{ formatearFecha(empleadoDetalle.empl_FechaModificacion || null) }}</span>
         </div>
       </div>
     </div>

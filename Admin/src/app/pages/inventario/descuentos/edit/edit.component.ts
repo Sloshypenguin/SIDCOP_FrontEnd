@@ -511,15 +511,22 @@ tieneAyudante: boolean = false;
       switch (this.descuento.desc_Aplicar) {
         case 'P':
           this.seccionVisible = 'productos';
+          this.tabActiva = 'productos';
           break;
         case 'C':
           this.seccionVisible = 'categorias';
+          this.tabActiva = 'categorias';
+
           break;
         case 'S':
           this.seccionVisible = 'subcategorias';
+          this.tabActiva = 'subcategorias';
+
           break;
         case 'M':
           this.seccionVisible = 'marcas';
+          this.tabActiva = 'marcas';
+
           break;
       }
       this.descuento.desc_FechaInicio = new Date(this.descuento.desc_FechaInicio);
