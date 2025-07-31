@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./error404.component.scss']
 })
   
-// error 404 component
+// Componente de error de acceso denegado
 export class Error404Component {
-// set the currenr year
-year: number = new Date().getFullYear();
+  // Año actual para el pie de página si es necesario
+  year: number = new Date().getFullYear();
 }
