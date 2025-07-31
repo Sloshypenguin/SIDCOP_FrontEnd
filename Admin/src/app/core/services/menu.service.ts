@@ -48,7 +48,10 @@ export class MenuService {
     41: '/ventas/registroscais',
     42: '/ventas/Vendedores',
     43: '/ventas/vendedoresruta',
-    45: '/general/direccionescliente'
+    45: '/general/direccionescliente',
+    57: '/ventas/ventas',
+    58: '/inventario/inventario',
+    59: '/ventas/listasprecios',
   };
 
   private menuItemsSubject: BehaviorSubject<MenuItem[]> = new BehaviorSubject<MenuItem[]>([]);
