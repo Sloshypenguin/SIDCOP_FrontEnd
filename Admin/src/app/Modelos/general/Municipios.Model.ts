@@ -5,6 +5,7 @@ export class Municipio{
   depa_Descripcion?: string;
   usua_Creacion: number = 0;
   muni_FechaCreacion: Date = new Date();
+  secuencia?: number;
   usua_Modificacion?: number;
   muni_FechaModificacion?: Date;
   usuarioCreacion: string = '';
