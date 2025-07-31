@@ -16,6 +16,7 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 
 @Component({
@@ -118,7 +119,8 @@ export class ListComponent {
   mostrarConfirmacionEliminar = false;
   subcategoriaAEliminar: Subcategoria | null = null;
 
-  constructor(public table: ReactiveTableService<Subcategoria>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Subcategoria>, private http: HttpClient, private router: Router, 
+              private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
     this.cargardatos();
 
     // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
@@ -295,7 +297,14 @@ export class ListComponent {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
-      this.table.setData(data);
+
+      // agregar el número de fila
+      const datosConIndex = data;
+      datosConIndex.forEach((item, index) => {
+        item.No = index + 1; // Agregar número de fila
+      });
+
+      this.table.setData(datosConIndex);
     });
   }
 }
