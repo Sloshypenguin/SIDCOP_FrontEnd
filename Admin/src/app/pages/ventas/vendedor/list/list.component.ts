@@ -350,18 +350,18 @@ export class ListComponent implements OnInit {
     this.http.get<Vendedor[]>(`${environment.apiBaseUrl}/Vendedores/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
       setTimeout(() => {
-        this.mostrarOverlayCarga = false;
-         const tienePermisoListar = this.accionPermitida('listar');
-        const userId = getUserId();
-
-        const datosFiltrados = tienePermisoListar
-          ? data
-          : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
-
         this.table.setData(datosFiltrados);
-        this.table.setData(data);
-      },500);
+        this.mostrarOverlayCarga = false;
+      }, 500);
+
     });
   }
 }

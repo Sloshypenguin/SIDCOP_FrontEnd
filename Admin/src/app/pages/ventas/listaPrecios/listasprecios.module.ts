@@ -9,4 +9,4 @@ import { ListasPreciosRoutingModule } from './listasprecios-routing.module';
   ]
 })
 
-export class SubcategoriasModule {}
+export class ListasPreciosModule {}

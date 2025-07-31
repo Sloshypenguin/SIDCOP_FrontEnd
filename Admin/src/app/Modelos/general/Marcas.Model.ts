@@ -10,6 +10,7 @@ export class Marcas{
     usuarioModificacion: string = "";
     code_Status: number = 0;
     message_Status: string = "";
+    secuencia: number = 0;
 
     constructor(init?: Partial<Marcas>) {
         Object.assign(this, init);

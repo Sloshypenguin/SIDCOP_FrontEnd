@@ -28,7 +28,7 @@
   
   <div class="flex-grow-1">
     <div class="row">
-      <div class="col-lg-4 ">
+      <div class="col-lg-6 ">
         <div class="mb-1">
           <label for="empl_DNI" class="form-label">DNI<span cl0.0....00.0000000000000000000000000............0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.000000000000000000000000000000000000000000.0...ass="text-danger">*</span></label>
           <div class="input-group">
@@ -51,7 +51,7 @@
       </div>
 
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="codigo-input" class="form-label">Código<span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -66,7 +66,7 @@
       </div><!--end col-->
 
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="nombres-input" class="form-label">Nombres<span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -95,7 +95,7 @@
       </div><!--end col-->
 
 
-      <div class="col-md-4">
+      <div class="col-md-6">
           <div class="mb-3">
             <label class="form-label">Sexo</label>
             <div class="sexo-toggle d-flex">
@@ -118,7 +118,7 @@
 
 
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="nacimiento-input" class="form-label">Fecha de nacimiento<span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -132,7 +132,7 @@
             
       </div><!--end col-->
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="correo-input" class="form-label">Correo electrónico<span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -146,7 +146,7 @@
             
       </div><!--end col-->
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="telefono-input" class="form-label">Teléfono<span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -161,7 +161,7 @@
       </div><!--end col-->
 
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="sucursal-input" class="form-label">Sucursal<span class="text-danger">*</span></label>
                 <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
@@ -178,7 +178,7 @@
       </div><!--end col-->
 
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="estadocivil-input" class="form-label">Estado civil<span class="text-danger">*</span></label>
                 <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
@@ -195,7 +195,7 @@
       </div><!--end col-->
 
 
-      <div class="col-lg-4">
+      <div class="col-lg-6">
             <div class="mb-3">
                 <label for="sucursal-input" class="form-label">Cargo<span class="text-danger">*</span></label>
                 <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
@@ -211,23 +211,47 @@
             </div>
       </div><!--end col-->
 
-      <div class="col-lg-4">
-            <div class="mb-3">
-                <label for="sucursal-input" class="form-label">Colonia<span class="text-danger">*</span></label>
-                <!-- <input type="number" formControlName="carg_Id"  [ngClass]="{'is-invalid': submit && form['carg_Id'].errors}" id="bedroom-input" class="form-control" placeholder="Enter Bedroom" required> -->
-                <ng-select  [class.is-invalid]="!empleado.colo_Id && mostrarErrores" [(ngModel)]="empleado.colo_Id" [items]="colonias" 
-                bindLabel="colo_Descripcion" 
-                bindValue="colo_Id"
-                placeholder="Seleccione una colonia"
-                >
-                </ng-select>
-                <div class="text-danger" *ngIf="!empleado.colo_Id && mostrarErrores">
-                    <small>La colonia es requerida</small>
-                </div>
-            </div>
-      </div><!--end col-->
 
-      <div class="col-lg-4">
+
+      <div class="col-md-6">
+        <label  class="form-label">Colonia<span class="text-danger">*</span></label>
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <i class="ri-route-line" [ngStyle]="{
+                border: (!empleado.colo_Id && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                backgroundColor: (!empleado.colo_Id && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+            </i>
+           <ng-select
+              class="w-100"
+                [items]="colonia"
+                bindLabel="colo_Descripcion"
+                bindValue="colo_Id"
+                [(ngModel)]="empleado.colo_Id"
+                [searchable]="true"
+                [clearable]="false"
+                [class.is-invalid]="!empleado.colo_Id && mostrarErrores"
+                placeholder="Seleccione una colonia"
+                required
+                [searchFn]="searchColonias"
+                (ngModelChange)="onColoniaSeleccionada($event)"
+              >
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.colo_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.colo_Descripcion }} - {{ item.muni_Descripcion }} - {{ item.depa_Descripcion }}
+              </ng-template>
+            </ng-select>
+            <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
+          </div>
+          <div class="text-danger mt-1" *ngIf="!empleado.colo_Id && mostrarErrores">
+            <small>El campo Colonia es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
             <div class="mb-3">
                 <label for="direccion-input" class="form-label">Dirección exacta<span class="text-danger">*</span></label>
                 <div class="input-group">

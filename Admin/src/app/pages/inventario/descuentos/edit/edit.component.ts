@@ -132,6 +132,7 @@ hoy: string;
     const today = new Date();
     this.hoy = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
     this.mostrarSeccion('productos');
+    this.activeTab = 1;
 
     
   }
@@ -374,9 +375,9 @@ hayConflicto(clienteId: number): boolean {
       return false;
   }
 
-  // Filtrar descuentos del mismo tipo (P, C, M o S)
+  // Filtrar descuentos del mismo tipo (P, C, M o S) y excluir el descuento actual en modo edición
   const descuentosMismoTipo = this.descuentosExistentes.filter(
-    d => d.desc_Aplicar === this.descuento.desc_Aplicar
+    d => d.desc_Aplicar === this.descuento.desc_Aplicar && d.desc_Id !== this.descuento.desc_Id
   );
 
   // Verificar conflicto
@@ -510,15 +511,22 @@ tieneAyudante: boolean = false;
       switch (this.descuento.desc_Aplicar) {
         case 'P':
           this.seccionVisible = 'productos';
+          this.tabActiva = 'productos';
           break;
         case 'C':
           this.seccionVisible = 'categorias';
+          this.tabActiva = 'categorias';
+
           break;
         case 'S':
           this.seccionVisible = 'subcategorias';
+          this.tabActiva = 'subcategorias';
+
           break;
         case 'M':
           this.seccionVisible = 'marcas';
+          this.tabActiva = 'marcas';
+
           break;
       }
       this.descuento.desc_FechaInicio = new Date(this.descuento.desc_FechaInicio);
@@ -688,13 +696,13 @@ tieneAyudante: boolean = false;
 
   validarPasoActual(): boolean {
   switch (this.activeTab) {
-    case 0: // Información general
+    case 1: // Información general
       return this.validarPasoInformacionGeneral();
-    case 1: // Aplica para
+    case 2: // Aplica para
       return this.seleccionados.length > 0;
-    case 2: // Clientes
+    case 3: // Clientes
       return this.clientesSeleccionados.length > 0;
-    case 3: // Escalas
+    case 4: // Escalas
       return this.validarEscalas();
     default:
       return false;
@@ -724,6 +732,11 @@ irAlSiguientePaso() {
   if (this.validarPasoActual()) {
     this.mostrarErrores = false;
     this.activeTab ++;
+    
+    // Si acabamos de navegar al tab de clientes (activeTab === 3), validar clientes seleccionados
+    if (this.activeTab === 3) {
+      this.validarClientesSeleccionadosAlLlegarATab();
+    }
   } else {
     this.mostrarAlertaWarning = true;
     this.mensajeWarning= 'Debe Completar todos los campos'
@@ -777,6 +790,47 @@ puedeAgregarNuevaEscala(): boolean {
   }
 
   return true;
+}
+
+// Validar clientes seleccionados cuando se navega al tab de clientes
+validarClientesSeleccionadosAlLlegarATab(): void {
+  if (this.clientesSeleccionados.length === 0) {
+    return; // No hay clientes seleccionados, no hay nada que validar
+  }
+
+  const clientesConConflicto: number[] = [];
+  let mensajeConflictos = '';
+
+  // Revisar cada cliente seleccionado para ver si tiene conflictos
+  for (const clienteId of this.clientesSeleccionados) {
+    if (this.hayConflicto(clienteId)) {
+      clientesConConflicto.push(clienteId);
+    }
+  }
+
+  // Si hay clientes con conflictos, deseleccionarlos y mostrar mensaje
+  if (clientesConConflicto.length > 0) {
+    // Deseleccionar clientes con conflicto
+    this.clientesSeleccionados = this.clientesSeleccionados.filter(
+      id => !clientesConConflicto.includes(id)
+    );
+
+    // Preparar mensaje informativo
+    if (clientesConConflicto.length === 1) {
+      mensajeConflictos = 'Se ha deseleccionado 1 cliente que tenía conflicto con los ítems seleccionados.';
+    } else {
+      mensajeConflictos = `Se han deseleccionado ${clientesConConflicto.length} clientes que tenían conflictos con los ítems seleccionados.`;
+    }
+
+    // Mostrar mensaje de advertencia
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = mensajeConflictos;
+    
+    setTimeout(() => {
+      this.mostrarAlertaWarning = false;
+      this.mensajeWarning = '';
+    }, 5000);
+  }
 }
 
 }

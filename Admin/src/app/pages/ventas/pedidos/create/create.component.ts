@@ -36,7 +36,7 @@ export class CreateComponent {
   busquedaProducto = '';
   productosFiltrados: any[] = [];
   paginaActual = 1;
-  productosPorPagina = 6;
+  productosPorPagina = 8;
 
   listarProductos(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
@@ -267,6 +267,12 @@ trackByProducto(index: number, producto: any): number {
     pedi_Estado: false,
   };
 
+    getTotalProductosSeleccionados(): number {
+    return this.productos
+      .filter(producto => producto.cantidad > 0)
+      .reduce((total, producto) => total + producto.cantidad, 0);
+  }
+  
   cancelar(): void {
     this.busquedaProducto = '';
     this.paginaActual = 1;

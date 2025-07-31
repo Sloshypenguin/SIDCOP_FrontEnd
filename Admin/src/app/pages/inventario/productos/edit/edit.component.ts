@@ -98,7 +98,12 @@ export class EditComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['productoData'] && changes['productoData'].currentValue) {
       this.producto = { ...changes['productoData'].currentValue };
-      this.productoOriginal = this.producto.prod_Descripcion || '';
+      // Obtener descripción de marca a partir del id al cargar producto
+      const marcaActual = this.marcas.find(m => m.marc_Id === this.producto.marc_Id);
+      this.producto.marc_Descripcion = marcaActual ? marcaActual.marc_Descripcion : '';
+      const proveedorActual = this.proveedores.find(p => p.prov_Id === this.producto.prov_Id);
+      this.producto.prov_NombreEmpresa = proveedorActual ? proveedorActual.prov_NombreEmpresa : '';
+      this.productoOriginal = this.producto.prod_DescripcionCorta || '';
       this.mostrarErrores = false;
       this.cerrarAlerta();
       this.producto.prod_EsPromo = this.producto.prod_EsPromo || 'N';
@@ -107,6 +112,27 @@ export class EditComponent implements OnChanges {
       this.cargarCategorias();
     }
   }
+  
+  onMarcaChange(event: any) {
+    const selectedId = +event.target.value;
+    const marcaSeleccionada = this.marcas.find(m => m.marc_Id === selectedId);
+    if (marcaSeleccionada) {
+      this.producto.marc_Descripcion = marcaSeleccionada.marc_Descripcion;
+    } else {
+      this.producto.marc_Descripcion = '';
+    }
+  }
+
+  onProveedorChange(event: any) {
+    const selectedId = +event.target.value;
+    const proveedorSeleccionado = this.proveedores.find(p => p.prov_Id === selectedId);
+    if (proveedorSeleccionado) {
+      this.producto.prov_NombreEmpresa = proveedorSeleccionado.prov_NombreEmpresa;
+    } else {
+      this.producto.prov_NombreEmpresa = '';
+    }
+  }
+
   validarPrecioUnitario() {
     const valor = this.producto.prod_PrecioUnitario;
     // Convertir a string para validar con regex
@@ -285,6 +311,8 @@ export class EditComponent implements OnChanges {
         this.producto.prod_CostoTotal !== this.productoData?.prod_CostoTotal
       if (hayCambios) {
         this.mostrarConfirmacionEditar = true;
+        console.log("Viejo: " + this.productoData?.marc_Id + this.productoData?.marc_Descripcion);
+        console.log("Nuevo: " + this.producto.marc_Id + this.producto.marc_Descripcion);
       } else {
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'No se han detectado cambios.';

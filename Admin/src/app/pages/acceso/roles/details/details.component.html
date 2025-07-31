@@ -23,15 +23,45 @@
     
     <!-- Header con descripción -->
     <div class="details-header">
-      <div class="details-title">Detalles de Rol</div>
-      <div class="details-id-row">
-        <div class="details-id">
-          <div class="details-id-label">Id</div>
-          <div class="details-id-value">{{ rolDetalle.role_Id || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Descripción</div>
-          <div class="details-id-value" [title]="rolDetalle.role_Descripcion">{{ rolDetalle.role_Descripcion || 'N/A' }}</div>
+      <div class="col-md-12">
+        <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+          <div
+            class="card-header d-flex align-items-center rounded-top details-header-custom"
+          >
+            <i class="ri-command-line fs-2"></i>
+            <h4 class="mb-0" style="color: #303d7d">Detalles del Rol</h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-sm-4" *ngIf="rolDetalle.role_Id">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white">
+                    <i class="ri-hashtag"></i>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">Id</div>
+                    <div class="detail-value">
+                      {{ rolDetalle.role_Id }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-4">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white">
+                    <i class="ri-attachment-line"></i>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">Descripción</div>
+                    <div class="detail-value">
+                      {{ rolDetalle.role_Descripcion }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

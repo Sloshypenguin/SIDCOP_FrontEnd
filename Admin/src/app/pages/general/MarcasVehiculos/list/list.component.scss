@@ -1,3 +1,127 @@
+/* Estilos específicos del componente Marcas Vehiculos */
+
+/* Estilos para las alertas flotantes */
+.alert-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 400px;
+}
+
+.floating-alert {
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el modal personalizado */
+.custom-modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.custom-modal-header {
+  padding: 1rem;
+  border-bottom: none;
+}
+
+.custom-modal-divider {
+  margin: 0;
+  opacity: 0.2;
+}
+
+.custom-modal-body {
+  padding: 1.5rem;
+}
+
+.custom-modal-footer {
+  border-top: none;
+  padding: 1rem;
+}
+
+.custom-modal-close {
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.custom-modal-text {
+  font-size: 1rem;
+}
+
+.custom-modal-alert-icon {
+  font-size: 1.5rem;
+  color: #ff5c5c;
+  vertical-align: middle;
+}
+
+/* Estilos para los botones */
+.btn-minw-5 {
+  min-width: 5rem;
+}
+
+.btn-icon {
+  margin-left: 0.5rem;
+}
+
+/* Estilos para la tabla */
+.table-radius-container {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.table-style {
+  margin-bottom: 0;
+}
+
+.table-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+}
+
+.icon-sort {
+  font-size: 14px;
+  line-height: 0.5;
+}
+
+/* Estilo para los títulos de la tabla con primera letra en mayúscula */
+.gridjs-th {
+  text-transform: capitalize !important;
+  font-size: 0.85rem;
+}
+
+/* Estilos para el menú desplegable de acciones */
+.dropdown-action-list {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.dropdown-action-btn {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-action-btn:hover {
+  background-color: #f8f9fa;
+}
+
 /* Estilos para el overlay de carga */
 .overlay-carga {
   position: fixed;
@@ -89,190 +213,5 @@
   50% {
     opacity: 0.3;
     transform: translateX(-50%) scale(0.8);
-  }
-}
-
-/* Estilos para la tabla */
-.table-gridjs {
-  width: 100%;
-  border-collapse: collapse;
-  
-  th, td {
-    padding: 0.75rem;
-    text-align: left;
-    vertical-align: middle;
-    border: 1px solid #e9ecef;
-  }
-  
-  th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #495057;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-  }
-  
-  tr:hover {
-    background-color: rgba(0, 0, 0, 0.02);
-  }
-}
-
-/* Estilos para los botones de acción */
-.dropdown-action-list {
-  position: relative;
-  display: inline-block;
-  
-  .dropdown-toggle {
-    background: transparent;
-    border: 1px solid #dee2e6;
-    color: #6c757d;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background-color: #f8f9fa;
-      border-color: #ced4da;
-    }
-    
-    i {
-      font-size: 1.1em;
-    }
-  }
-  
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    min-width: 10rem;
-    padding: 0.5rem 0;
-    margin: 0.125rem 0 0;
-    font-size: 0.875rem;
-    color: #212529;
-    text-align: left;
-    list-style: none;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 0.25rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    
-    li {
-      display: block;
-      width: 100%;
-      padding: 0;
-      clear: both;
-      font-weight: 400;
-      color: #212529;
-      text-align: inherit;
-      white-space: nowrap;
-      background-color: transparent;
-      border: 0;
-      
-      .dropdown-action-btn {
-        display: block;
-        width: 100%;
-        padding: 0.35rem 1.5rem;
-        clear: both;
-        font-weight: 400;
-        color: #212529;
-        text-align: inherit;
-        white-space: nowrap;
-        background-color: transparent;
-        border: 0;
-        transition: background-color 0.15s ease-in-out;
-        
-        &:hover {
-          background-color: #f8f9fa;
-          color: #16181b;
-        }
-        
-        i {
-          margin-right: 0.5rem;
-        }
-      }
-    }
-  }
-}
-
-/* Estilos para los encabezados de la tabla */
-.table-header-flex {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  
-  .icon-sort {
-    font-size: 1rem;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-    
-    &:hover {
-      opacity: 1;
-    }
-  }
-}
-
-/* Ajustes para el ícono de breadcrumb */
-.icon-breadcrumb {
-  object-fit: contain;
-  margin-left: 0.5rem;
-}
-
-/* Ajustes para el buscador */
-.search-box {
-  position: relative;
-  width: 250px;
-  
-  .form-control {
-    padding-left: 2.5rem;
-    border-radius: 0.25rem;
-    border: 1px solid #ced4da;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    
-    &:focus {
-      border-color: #86b7fe;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-  }
-  
-  .search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
-  }
-}
-
-/* Estilos para las alertas */
-.alert-container {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1090;
-  max-width: 400px;
-  width: auto;
-  pointer-events: none;
-}
-
-.floating-alert {
-  pointer-events: auto;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  margin-bottom: 1rem;
-  border: none;
-  border-left: 4px solid;
-  
-  .btn-close {
-    padding: 1.25rem 1rem;
-  }
-  
-  i {
-    font-size: 1.25rem;
   }
 }

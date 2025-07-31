@@ -13,6 +13,7 @@ export class Categoria{
   usuarioModificacion: string = '';
   code_Status: number = 0;
   message_Status: string ='';
+  No?: number = 0;
 
   constructor(init?: Partial<Categoria>) {
     Object.assign(this, init);
