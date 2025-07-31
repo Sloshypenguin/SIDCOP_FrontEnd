@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-edit-config-factura',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
 })
@@ -34,14 +35,10 @@ export class EditConfigFacturaComponent implements OnChanges {
   };
 
   configFacturaOriginal: any = {};
-  Departamentos: any[] = [];
-  Municipios: any[] = [];
-  Colonias: any[] = [];
-  TodosMunicipios: any[] = [];
-  TodosColonias: any[] = [];
-
-  selectedDepa = '';
-  selectedMuni = '';
+  
+  // Catálogos
+  colonia: any[] = [];
+  
   logoSeleccionado = false;
 
   mostrarErrores = false;
@@ -63,64 +60,58 @@ export class EditConfigFacturaComponent implements OnChanges {
       this.logoSeleccionado = !!this.configFactura.coFa_Logo;
       this.mostrarErrores = false;
       this.cerrarAlerta();
-      this.cargarCatalogos();
+      this.listarColonias();
     }
   }
 
-  cargarCatalogos(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (departamentos) => {
-        this.Departamentos = departamentos;
+  // Función de búsqueda para colonias (igual que en crear)
+  searchColonias = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.colo_Descripcion?.toLowerCase().includes(term) ||
+      item.muni_Descripcion?.toLowerCase().includes(term) ||
+      item.depa_Descripcion?.toLowerCase().includes(term)
+    );
+  };
 
-        this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
-          headers: { 'x-api-key': environment.apiKey }
-        }).subscribe({
-          next: (municipios) => {
-            this.TodosMunicipios = municipios;
-
-            this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
-              headers: { 'x-api-key': environment.apiKey }
-            }).subscribe({
-              next: (colonias) => {
-                this.TodosColonias = colonias;
-                this.configurarUbicacionInicial();
-              }
-            });
-          }
-        });
-      }
+  // Función para ordenar por municipio y departamento (igual que en crear)
+  ordenarPorMunicipioYDepartamento(colonias: any[]): any[] {
+    return colonias.sort((a, b) => {
+      // Primero por departamento
+      if (a.depa_Descripcion < b.depa_Descripcion) return -1;
+      if (a.depa_Descripcion > b.depa_Descripcion) return 1;
+      // Luego por municipio
+      if (a.muni_Descripcion < b.muni_Descripcion) return -1;
+      if (a.muni_Descripcion > b.muni_Descripcion) return 1;
+      return 0;
     });
   }
 
-  configurarUbicacionInicial(): void {
-    const colonia = this.TodosColonias.find(c => c.colo_Id === this.configFactura.colo_Id);
-    if (colonia) {
-      const municipio = this.TodosMunicipios.find(m => m.muni_Codigo === colonia.muni_Codigo);
-      if (municipio) {
-        this.selectedDepa = municipio.depa_Codigo;
-        this.selectedMuni = municipio.muni_Codigo;
-        this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === this.selectedDepa);
-        this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === this.selectedMuni);
-      }
+  // Cargar colonias (igual que en crear)
+  listarColonias(): void {
+    this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => this.colonia = this.ordenarPorMunicipioYDepartamento(data),
+      error: (error) => console.error('Error cargando colonias:', error)
+    });
+  }
+
+  // Variable para dirección inicial
+  direccionExactaInicial: string = '';
+
+  // Método cuando se selecciona una colonia (igual que en crear)
+  onColoniaSeleccionada(colo_Id: number) {
+    const coloniaSeleccionada = this.colonia.find((c: any) => c.colo_Id === colo_Id);
+
+    if (coloniaSeleccionada) {
+      this.direccionExactaInicial = coloniaSeleccionada.colo_Descripcion;
+      this.configFactura.coFa_DireccionEmpresa = coloniaSeleccionada.colo_Descripcion;
+    } else {
+      this.direccionExactaInicial = '';
+      this.configFactura.coFa_DireccionEmpresa = '';
     }
   }
-
-  cargarMunicipios(depaCodigo: string): void {
-    this.selectedDepa = depaCodigo;
-    this.selectedMuni = '';
-    this.configFactura.colo_Id = 0;
-    this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === depaCodigo);
-    this.Colonias = [];
-  }
-
-  cargarColonias(muniCodigo: string): void {
-    this.selectedMuni = muniCodigo;
-    this.configFactura.colo_Id = 0;
-    this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === muniCodigo);
-  }
-
 
   onImagenSeleccionada(event: any) {
     // Obtenemos el archivo seleccionado desde el input tipo file
@@ -135,12 +126,11 @@ export class EditConfigFacturaComponent implements OnChanges {
       //dbt7mxrwk es el nombre de la cuenta de Cloudinary
       const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
 
-      
       fetch(url, {
         method: 'POST',
         body: formData
       })
-      .then(response => response.json() )
+      .then(response => response.json())
       .then(data => {
         console.log('Imagen subida a Cloudinary:', data);
         this.configFactura.coFa_Logo = data.secure_url;
@@ -163,39 +153,180 @@ export class EditConfigFacturaComponent implements OnChanges {
         setTimeout(() => this.cerrarAlerta(), 4000);
       }
     } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos.';
+      // El mensaje de error ya se establece en validarCampos()
       setTimeout(() => this.cerrarAlerta(), 4000);
     }
   }
 
-  validarCampos(): boolean {
-    return !!(
-      this.configFactura.coFa_NombreEmpresa?.trim() &&
-      this.configFactura.coFa_DireccionEmpresa?.trim() &&
-      this.configFactura.coFa_RTN?.trim() &&
-      this.configFactura.coFa_Correo?.trim() &&
-      this.configFactura.coFa_Telefono1?.trim() &&
-      this.selectedDepa &&
-      this.selectedMuni &&
-      this.configFactura.colo_Id &&
-      (this.configFactura.coFa_Logo || this.logoSeleccionado)
-    );
+  // Método para validar todos los campos obligatorios - MEJORADO
+  private validarCampos(): boolean {
+    const errores: string[] = [];
+
+    // Validar campos básicos requeridos
+    if (!this.configFactura.coFa_NombreEmpresa.trim()) {
+      errores.push('Nombre de la empresa');
+    }
+
+    if (!this.configFactura.coFa_DireccionEmpresa.trim()) {
+      errores.push('Dirección de la empresa');
+    }
+
+    if (!this.configFactura.coFa_RTN.trim()) {
+      errores.push('RTN');
+    } else if (!this.isValidRTN(this.configFactura.coFa_RTN)) {
+      errores.push('RTN debe tener exactamente 14 dígitos');
+    }
+
+    if (!this.configFactura.coFa_Correo.trim()) {
+      errores.push('Correo electrónico');
+    } else if (!this.isValidEmail(this.configFactura.coFa_Correo)) {
+      errores.push('Correo electrónico debe tener un formato válido');
+    }
+
+    if (!this.configFactura.coFa_Telefono1.trim()) {
+      errores.push('Teléfono principal');
+    }
+
+    if (!this.configFactura.coFa_Logo) {
+      errores.push('Logo');
+    }
+
+    if (this.configFactura.colo_Id === 0) {
+      errores.push('Colonia');
+    }
+
+    if (errores.length > 0) {
+      this.mensajeWarning = `Por favor corrija los siguientes campos: ${errores.join(', ')}`;
+      this.mostrarAlertaWarning = true;
+      this.mostrarAlertaError = false;
+      this.mostrarAlertaExito = false;
+      return false;
+    }
+
+    return true;
   }
+
+  // Validación RTN - solo números y máximo 14 dígitos
+  onRTNInput(event: any): void {
+    let value = event.target.value;
+    // Remover todo lo que no sean números
+    value = value.replace(/\D/g, '');
+    // Limitar a 14 dígitos
+    if (value.length > 14) {
+      value = value.substring(0, 14);
+    }
+    this.configFactura.coFa_RTN = value;
+    event.target.value = value;
+  }
+
+  // Validación de correo electrónico - MEJORADA
+  isValidEmail(email: string): boolean {
+    if (!email || email.trim() === '') return false;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email.trim());
+  }
+
+  // Verificar si RTN tiene exactamente 14 dígitos - MEJORADA
+  isValidRTN(rtn: string): boolean {
+    if (!rtn || rtn.trim() === '') return false;
+    return rtn.length === 14 && /^\d{14}$/.test(rtn);
+  }
+
+  // Método para validar RTN en tiempo real
+  getRTNValidationClass(): string {
+    if (!this.mostrarErrores) return '';
+    return this.isValidRTN(this.configFactura.coFa_RTN) ? 'is-valid' : 'is-invalid';
+  }
+
+  // Método para validar email en tiempo real
+  getEmailValidationClass(): string {
+    if (!this.mostrarErrores) return '';
+    return this.isValidEmail(this.configFactura.coFa_Correo) ? 'is-valid' : 'is-invalid';
+  }
+
+  // Objeto para almacenar los cambios detectados
+  cambiosDetectados: any = {};
 
   hayDiferencias(): boolean {
     const a = this.configFactura;
     const b = this.configFacturaOriginal;
-    return (
-      a.coFa_NombreEmpresa !== b.coFa_NombreEmpresa ||
-      a.coFa_DireccionEmpresa !== b.coFa_DireccionEmpresa ||
-      a.coFa_RTN !== b.coFa_RTN ||
-      a.coFa_Correo !== b.coFa_Correo ||
-      a.coFa_Telefono1 !== b.coFa_Telefono1 ||
-      a.coFa_Telefono2 !== b.coFa_Telefono2 ||
-      a.colo_Id !== b.colo_Id ||
-      a.coFa_Logo !== b.coFa_Logo
-    );
+    this.cambiosDetectados = {};
+
+    // Verificar cada campo y almacenar los cambios
+    if (a.coFa_NombreEmpresa !== b.coFa_NombreEmpresa) {
+      this.cambiosDetectados.nombreEmpresa = {
+        anterior: b.coFa_NombreEmpresa,
+        nuevo: a.coFa_NombreEmpresa,
+        label: 'Nombre de la Empresa'
+      };
+    }
+
+    if (a.coFa_DireccionEmpresa !== b.coFa_DireccionEmpresa) {
+      this.cambiosDetectados.direccion = {
+        anterior: b.coFa_DireccionEmpresa,
+        nuevo: a.coFa_DireccionEmpresa,
+        label: 'Dirección'
+      };
+    }
+
+    if (a.coFa_RTN !== b.coFa_RTN) {
+      this.cambiosDetectados.rtn = {
+        anterior: b.coFa_RTN,
+        nuevo: a.coFa_RTN,
+        label: 'RTN'
+      };
+    }
+
+    if (a.coFa_Correo !== b.coFa_Correo) {
+      this.cambiosDetectados.correo = {
+        anterior: b.coFa_Correo,
+        nuevo: a.coFa_Correo,
+        label: 'Correo Electrónico'
+      };
+    }
+
+    if (a.coFa_Telefono1 !== b.coFa_Telefono1) {
+      this.cambiosDetectados.telefono1 = {
+        anterior: b.coFa_Telefono1,
+        nuevo: a.coFa_Telefono1,
+        label: 'Teléfono Principal'
+      };
+    }
+
+    if (a.coFa_Telefono2 !== b.coFa_Telefono2) {
+      this.cambiosDetectados.telefono2 = {
+        anterior: b.coFa_Telefono2 || 'Sin teléfono',
+        nuevo: a.coFa_Telefono2 || 'Sin teléfono',
+        label: 'Teléfono Secundario'
+      };
+    }
+
+    if (a.colo_Id !== b.colo_Id) {
+      const coloniaAnterior = this.colonia.find(c => c.colo_Id === b.colo_Id);
+      const coloniaNueva = this.colonia.find(c => c.colo_Id === a.colo_Id);
+      
+      this.cambiosDetectados.colonia = {
+        anterior: coloniaAnterior ? `${coloniaAnterior.colo_Descripcion} - ${coloniaAnterior.muni_Descripcion} - ${coloniaAnterior.depa_Descripcion}` : 'No seleccionada',
+        nuevo: coloniaNueva ? `${coloniaNueva.colo_Descripcion} - ${coloniaNueva.muni_Descripcion} - ${coloniaNueva.depa_Descripcion}` : 'No seleccionada',
+        label: 'Colonia'
+      };
+    }
+
+    if (a.coFa_Logo !== b.coFa_Logo) {
+      this.cambiosDetectados.logo = {
+        anterior: b.coFa_Logo ? 'Logo actual' : 'Sin logo',
+        nuevo: a.coFa_Logo ? 'Nuevo logo' : 'Sin logo',
+        label: 'Logo de la Empresa'
+      };
+    }
+
+    return Object.keys(this.cambiosDetectados).length > 0;
+  }
+
+  
+  // Método para obtener la lista de cambios como array
+  obtenerListaCambios(): any[] {
+    return Object.values(this.cambiosDetectados);
   }
 
   cancelarEdicion(): void {
@@ -208,6 +339,11 @@ export class EditConfigFacturaComponent implements OnChanges {
   }
 
   private guardar(): void {
+    // Validación final antes de guardar
+    if (!this.validarCampos()) {
+      return;
+    }
+
     const body = {
       ...this.configFactura,
       usua_Modificacion: getUserId(),

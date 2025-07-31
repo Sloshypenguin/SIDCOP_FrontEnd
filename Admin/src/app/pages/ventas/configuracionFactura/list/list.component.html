@@ -1,5 +1,5 @@
 <app-breadcrumbs
-  [title]="'Configuración de Factura'"
+  [title]="'Configuración de la Empresa'"
   [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" style="width: 14vh; height: 12vh;" 
@@ -24,7 +24,7 @@
        color: #5a4a3a; border-radius: 50px; padding-top: 0.2rem; padding-bottom: 0.2rem;">
        
   <i class="ri-information-line me-2"></i>
-  <small>Solo se permite una configuración de factura</small>
+  <small>Solo se permite una configuración de  empresa</small>
 </div>
 
   </div>
@@ -289,7 +289,7 @@
       <div class="modal-body custom-modal-body">
         <div class="text-center"> 
           <p class="mt-2 custom-modal-text">
-            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la configuración de factura <strong>{{ configuracionAEliminar?.coFa_NombreEmpresa }}</strong>?
+            <i class="ri-alert-line me-2 custom-modal-alert-icon" (click)="cancelarEliminar()"></i>¿Está seguro(a) que desea eliminar la configuración  <strong>{{ configuracionAEliminar?.coFa_NombreEmpresa }}</strong>?
           </p>
         </div>
       </div>
