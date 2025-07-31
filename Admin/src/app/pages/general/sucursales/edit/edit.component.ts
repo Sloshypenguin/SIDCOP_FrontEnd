@@ -39,6 +39,7 @@ export class EditComponent implements OnChanges {
 
   sucursal: Sucursales = {
     sucu_Id: 0,
+    secuencia: 0,
     sucu_Descripcion: '',
     colo_Id: 0,
     sucu_DireccionExacta: '',
