@@ -344,23 +344,25 @@ constructor(public table: ReactiveTableService<Pedido>,
   }
 
 
-   private cargardatos(state: boolean): void {
-       this.mostrarOverlayCarga = state;
-      this.http.get<Pedido[]>(`${environment.apiBaseUrl}/Pedido/Listar`, {
-        headers: { 'x-api-key': environment.apiKey }
-      }).subscribe(data => {
-        setTimeout(() => {
-          this.mostrarOverlayCarga = false;
-           const tienePermisoListar = this.accionPermitida('listar');
-          const userId = getUserId();
   
-          const datosFiltrados = tienePermisoListar
-            ? data
-            : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
-  
-          this.table.setData(datosFiltrados);
-          this.table.setData(data);
-        },500);
-      });
-    }
+
+    private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
+
+    this.http.get<Pedido[]>(`${environment.apiBaseUrl}/Pedido/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
+      const tienePermisoListar = this.accionPermitida('listar');
+      const userId = getUserId();
+
+      const datosFiltrados = tienePermisoListar
+        ? data
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+
+      setTimeout(() => {
+        this.table.setData(datosFiltrados);
+        this.mostrarOverlayCarga = false;
+      }, 500);
+    });
+  }
 }
