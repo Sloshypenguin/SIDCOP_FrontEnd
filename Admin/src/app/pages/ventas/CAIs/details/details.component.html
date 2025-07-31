@@ -1,5 +1,5 @@
 <div class="details-container">
-
+  
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
     <!-- Alerta de error -->
@@ -9,34 +9,52 @@
       <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
-
+  
   <!-- Botón de regresar -->
   <div class="details-header-button">
-    <button type="button" class="btn btn-primary" (click)="cerrar()">
+    <button type="button" class="btn btn-primary mb-3" (click)="cerrar()">
       <span class="btn-text">Regresar</span>
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
   </div>
-
+  
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && caiDetalle" class="details-content">
-
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles del CAI</div>
-      <div class="details-id-row">
-        <div class="details-id">
-          <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ caiDetalle.nCai_Codigo || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Descripción</div>
-          <div class="details-id-value">{{ caiDetalle.nCai_Descripcion || 'N/A' }}</div>
+    <div class="row g-4 align-items-stretch">
+      
+ 
+      <!-- Card derecha: Detalles -->
+      <div class="col-md-12">
+        <div class="card h-100 shadow-sm cai-details-card bg-dark-blue">
+          <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+            <i class="ri-file-list-3-line me-2 fs-4"></i>
+            <h5 class="mb-0">Detalles del CAI</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-hashtag"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Código</div>
+                    <div class="detail-value">{{ caiDetalle.nCai_Codigo || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="detail-item">
+                  <div class="detail-icon bg-dark-blue text-white"><i class="ri-file-text-line"></i></div>
+                  <div class="detail-content">
+                    <div class="detail-label">Descripción</div>
+                    <div class="detail-value">{{ caiDetalle.nCai_Descripcion || 'Sin descripción' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
 
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
@@ -46,7 +64,7 @@
           <div class="audit-col">Usuario</div>
           <div class="audit-col">Fecha</div>
         </div>
-
+      
         <!-- Fila de creación -->
         <div class="audit-row">
           <div class="audit-col">
@@ -59,7 +77,7 @@
             <span class="audit-date">{{ formatearFecha(caiDetalle.nCai_FechaCreacion) }}</span>
           </div>
         </div>
-
+        
         <!-- Fila de modificación -->
         <div class="audit-row">
           <div class="audit-col">

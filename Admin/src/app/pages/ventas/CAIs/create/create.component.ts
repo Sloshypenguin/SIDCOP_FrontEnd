@@ -65,58 +65,66 @@ export class CreateComponent {
   }
 
   guardar(): void {
-    this.mostrarErrores = true;
+  this.mostrarErrores = true;
 
-    if (this.cai.nCai_Codigo.trim() && this.cai.nCai_Descripcion.trim()) {
-      const caiGuardar = {
-        nCai_Codigo: this.cai.nCai_Codigo.trim(),
-        nCai_Descripcion: this.cai.nCai_Descripcion.trim(),
-        usua_Creacion: getUserId(),
-        nCai_FechaCreacion: new Date().toISOString()
-      };
+  if (this.cai.nCai_Codigo.trim() && this.cai.nCai_Descripcion.trim()) {
+    const caiGuardar = {
+      nCai_Id: 0,
+      nCai_Codigo: this.cai.nCai_Codigo.trim(),
+      nCai_Descripcion: this.cai.nCai_Descripcion.trim(),
+      usua_Creacion: getUserId(),
+      secuencia: 0,
+      usuarioCreacion: "",
+      usuarioModificacion: "",
+      nCai_FechaCreacion: new Date().toISOString(),
+      usua_Modificacion: 0,
+      nCai_FechaModificacion: new Date().toISOString(),
+      nCai_Estado: true,
+      estado: ""
+    };
 
-      this.http.post<any>(`${environment.apiBaseUrl}/CaiS/Crear`, caiGuardar, {
-        headers: {
-          'X-Api-Key': environment.apiKey,
-          'Content-Type': 'application/json',
-          'accept': '*/*'
-        }
-      }).subscribe({
-        next: (response) => {
-          if (response.success && response.data?.code_Status === 1) {
-            this.mensajeExito = `CAI "${this.cai.nCai_Codigo}" creado exitosamente`;
-            this.mostrarAlertaExito = true;
-            this.mostrarErrores = false;
-
-            setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.onSave.emit(this.cai);
-              this.cancelar();
-            }, 3000);
-          } else {
-            this.mostrarAlertaError = true;
-            this.mensajeError = response.data?.message_Status || 'Error al guardar el CAI.';
-          }
-        },
-        error: (error) => {
-          console.error('Error al guardar el CAI:', error);
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar el CAI. Por favor, intente nuevamente.';
+    this.http.post<any>(`${environment.apiBaseUrl}/CaiS/Crear`, caiGuardar, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        if (response.success && response.data?.code_Status === 1) {
+          this.mensajeExito = `CAI "${this.cai.nCai_Codigo}" - "${this.cai.nCai_Descripcion}" creado exitosamente`;
+          this.mostrarAlertaExito = true;
+          this.mostrarErrores = false;
 
           setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
+            this.mostrarAlertaExito = false;
+            this.onSave.emit(this.cai);
+            this.cancelar();
+          }, 3000);
+        } else {
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data?.message_Status || 'Error al guardar el CAI.';
         }
-      });
-    } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+      },
+      error: (error) => {
+        console.error('Error al guardar el CAI:', error);
+        this.mostrarAlertaError = true;
+        this.mensajeError = 'Error al guardar el CAI. Por favor, intente nuevamente.';
 
-      setTimeout(() => {
-        this.mostrarAlertaWarning = false;
-        this.mensajeWarning = '';
-      }, 4000);
-    }
+        setTimeout(() => {
+          this.mostrarAlertaError = false;
+          this.mensajeError = '';
+        }, 5000);
+      }
+    });
+  } else {
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
+
+    setTimeout(() => {
+      this.mostrarAlertaWarning = false;
+      this.mensajeWarning = '';
+    }, 4000);
   }
+}
 }
