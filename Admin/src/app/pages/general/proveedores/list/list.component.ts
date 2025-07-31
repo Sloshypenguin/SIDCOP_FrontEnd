@@ -222,35 +222,68 @@ export class ListComponent implements OnInit {
     this.proveedorAEliminar = null;
   }
 
-  eliminar(): void {
-    if (!this.proveedorAEliminar) return;
-    console.log('Eliminando proveedor:', this.proveedorAEliminar);
-    this.http.post(`${environment.apiBaseUrl}/Proveedor/Eliminar?id=${this.proveedorAEliminar.prov_Id}`,{}, {
-      headers: { 
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response: any) => {
-        this.mostrarAlertaExito = true;
-        this.mensajeExito = 'Proveedor eliminado correctamente.';
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-          this.mensajeExito = '';
-        }, 3000);
-        this.cargardatos(false);
-        this.cancelarEliminar();
-      },
-      error: (error) => {
+eliminar(): void {
+  if (!this.proveedorAEliminar) return;
+  console.log('Eliminando proveedor:', this.proveedorAEliminar);
+  this.http.post(`${environment.apiBaseUrl}/Proveedor/Eliminar?id=${this.proveedorAEliminar.prov_Id}`,{}, {
+    headers: { 
+      'X-Api-Key': environment.apiKey,
+      'accept': '*/*'
+    }
+  }).subscribe({
+    next: (response: any) => {
+      if (response.success && response.data) {
+        if (response.data.code_Status === 1) {
+          // Éxito - proveedor eliminado
+          this.mensajeExito = `Proveedor "${this.proveedorAEliminar!.prov_NombreEmpresa}" eliminado exitosamente`;
+          this.mostrarAlertaExito = true;
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+          this.cargardatos(false);
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === -1) {
+          // Error - proveedor en uso
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'No se puede eliminar: el proveedor está siendo utilizado.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === 0) {
+          // Error general
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'Error al eliminar el proveedor.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        }
+      } else {
+        // Respuesta inesperada
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al eliminar el proveedor.';
+        this.mensajeError = response.message || 'Error inesperado al eliminar el proveedor.';
         setTimeout(() => {
           this.mostrarAlertaError = false;
           this.mensajeError = '';
         }, 5000);
+        this.cancelarEliminar();
       }
-    });
-  }
+    },
+    error: (error) => {
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al eliminar el proveedor.';
+      setTimeout(() => {
+        this.mostrarAlertaError = false;
+        this.mensajeError = '';
+      }, 5000);
+      this.cancelarEliminar();
+    }
+  });
+}
 
   // Declaramos un estado en el cargarDatos, esto para hacer el overlay
   // segun dicha funcion de recargar, ya que si vienes de hacer una accion

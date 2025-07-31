@@ -42,7 +42,7 @@ const routes: Routes = [
     {
  path: 'listasprecios',
     loadChildren: () =>
-      import('./listaPrecios/listasprecios.module').then(m => m.SubcategoriasModule)
+      import('./listaPrecios/listasprecios.module').then(m => m.ListasPreciosModule)
    },
    {
     path: 'pedidos',
