@@ -19,20 +19,43 @@
   </div>
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && estadoCivilDetalle" class="details-content">
-    
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles de Estados Civiles</div>
-      <div class="details-id-row">
-    <div class="details-id">
-      <div class="details-id-label">ID</div>
-      <div class="details-id-value">{{ estadoCivilDetalle.esCv_Id || 'N/A' }}</div>
-    </div>
-    <div class="details-id">
-      <div class="details-id-label">Descripción</div>
-      <div class="details-id-value">{{ estadoCivilDetalle.esCv_Descripcion || 'N/A' }}</div>
-    </div>
-  </div>
+    <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+        <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+          <i class="ri-user-3-line me-2 fs-4"></i>
+          <h4 class="mb-0" style="color: #303d7d">Detalles de Estado Civil</h4>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-4" *ngIf="estadoCivilDetalle.esCv_Id">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-hashtag"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">ID</div>
+                  <div class="detail-value">
+                    {{ estadoCivilDetalle.esCv_Id }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-file-list-3-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Descripción</div>
+                  <div class="detail-value">
+                    {{ estadoCivilDetalle.esCv_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
       <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
     <!-- Tabla de auditoría -->
