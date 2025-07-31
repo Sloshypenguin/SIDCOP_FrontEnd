@@ -1,4 +1,4 @@
-export class DireccionPorCliente {
+export class  DireccionPorCliente {
     diCl_Id: number = 0;
     clie_Id: number = 0;
     colo_Id: number = 0;
@@ -6,6 +6,8 @@ export class DireccionPorCliente {
     diCl_Observaciones: string = '';
     diCl_Latitud: number = 0;
     diCl_Longitud: number = 0;
+    muni_Descripcion?: string = '';
+    depa_Descripcion: string = '';
     usua_Creacion: number = 0;
     diCl_FechaCreacion: Date = new Date();
     usua_Modificacion: number = 0;

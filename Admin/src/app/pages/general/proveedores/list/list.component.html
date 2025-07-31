@@ -56,20 +56,102 @@
     </div>
   </div>
 </div>
-
+<div class="table-radius-container">
         <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <table class="table table-gridjs table-style">
             <thead>
               <tr>
                 <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">No.</th>
-                <th class="gridjs-th">Código</th>
-                <th class="gridjs-th">Empresa</th>
-                <th class="gridjs-th">Contacto</th>
-                <th class="gridjs-th">Teléfono</th>
-                <th class="gridjs-th">Correo</th>
-                <th class="gridjs-th">Direccion</th>
-                <th class="gridjs-th">Observaciones</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_Id')" style="cursor:pointer;">
+  <span class="table-header-flex">
+    No.
+    <span style="display: flex; flex-direction: column;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Id' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+      </i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Id' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+      </i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_Codigo')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Código
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Codigo' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Codigo' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_NombreEmpresa')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Empresa
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_NombreEmpresa' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_NombreEmpresa' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_NombreContacto')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Contacto
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_NombreContacto' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_NombreContacto' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_Telefono')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Teléfono
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Telefono' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Telefono' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_Correo')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Correo
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Correo' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Correo' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_DireccionExacta')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Dirección
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_DireccionExacta' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_DireccionExacta' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
+                <th class="gridjs-th" (click)="table.sortBy('prov_Observaciones')" style="cursor:pointer;">
+  <span style="display: flex; align-items: center; gap: 4px;">
+    Observaciones
+    <span style="display: flex; flex-direction: column; margin-left: 6px;">
+      <i class="ri-arrow-up-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Observaciones' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+      <i class="ri-arrow-down-s-line icon-sort"
+        [ngStyle]="table.sortField === 'prov_Observaciones' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+    </span>
+  </span>
+</th>
               </tr>
             </thead>
             <tbody>
@@ -113,6 +195,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <!-- Contenedor de alertas flotantes -->
