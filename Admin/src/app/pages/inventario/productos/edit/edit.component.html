@@ -161,7 +161,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="marc_Id" class="form-label">Marca<span class="text-danger">*</span></label>
-                <select id="marc_Id" class="form-select" [(ngModel)]="producto.marc_Id" [class.is-invalid]="!producto.marc_Id && mostrarErrores" required>
+                <select id="marc_Id" class="form-select" [(ngModel)]="producto.marc_Id" (change)="onMarcaChange($event)" [class.is-invalid]="!producto.marc_Id && mostrarErrores" required>
                   <option value=0 disabled selected>Seleccione una marca</option>
                   <option *ngFor="let marc of marcas" [value]="marc.marc_Id">{{ marc.marc_Descripcion }}</option>
                 </select>
@@ -175,7 +175,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="prov_Id" class="form-label">Proveedor<span class="text-danger">*</span></label>
-                <select id="prov_Id" class="form-select" [(ngModel)]="producto.prov_Id" [class.is-invalid]="!producto.prov_Id && mostrarErrores" required>
+                <select id="prov_Id" class="form-select" [(ngModel)]="producto.prov_Id" (change)="onProveedorChange($event)" [class.is-invalid]="!producto.prov_Id && mostrarErrores" required>
                   <option value=0 disabled selected>Seleccione un proveedor</option>
                   <option *ngFor="let prov of proveedores" [value]="prov.prov_Id">{{ prov.prov_NombreEmpresa }}</option>
                 </select>
@@ -299,11 +299,67 @@
                     <hr class="custom-modal-divider">
                     <div class="modal-body custom-modal-body">
                     <div class="text-center">
-                        <p class="mt-2 custom-modal-text">
-                        <i class="ri-edit-line me-2 custom-modal-alert-icon"></i>
-                        ¿Estás seguro que deseas editar el producto
-                        <strong>"{{ productoOriginal }}"</strong>?
-                        </p>
+                      <p class="mt-2 custom-modal-text">
+                          <i class="ri-edit-line me-2 custom-modal-alert-icon"></i>
+                          ¿Estás seguro que deseas editar el producto <strong>"{{ productoOriginal }}"</strong>?
+                      </p>
+                      <table class="table table-bordered align-middle">
+                        <thead class="text-white" style="background: #141a2e">
+                          <tr class="text-white">
+                            <th class="text-white" style="width: 30%">Campo</th>
+                            <th class="text-white" style="width: 30%">Valor Original</th>
+                            <th class="text-white" style="width: 30%">Valor Nuevo</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Verificamos y mostramos solo los campos modificados -->
+                          <tr *ngIf="productoData?.prod_Codigo !== producto.prod_Codigo">
+                            <td>Código:</td>
+                            <td>{{ productoData?.prod_Codigo }}</td>
+                            <td>{{ producto.prod_Codigo }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.prod_CodigoBarra !== producto.prod_CodigoBarra">
+                            <td>Código de Barras:</td>
+                            <td>{{ productoData?.prod_CodigoBarra }}</td>
+                            <td>{{ producto.prod_CodigoBarra }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.prod_Descripcion !== producto.prod_Descripcion">
+                            <td>Nombre del Producto:</td>
+                            <td>{{ productoData?.prod_Descripcion }}</td>
+                            <td>{{ producto.prod_Descripcion }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.prod_DescripcionCorta !== producto.prod_DescripcionCorta">
+                            <td>Descripcion Corta:</td>
+                            <td>{{ productoData?.prod_DescripcionCorta }}</td>
+                            <td>{{ producto.prod_DescripcionCorta }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.marc_Id !== producto.marc_Id">
+                            <td>Marca:</td>
+                            <td>{{ productoData?.marc_Descripcion }}</td>
+                            <td>{{ producto.marc_Descripcion }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.prov_Id !== producto.prov_Id">
+                            <td>Proveedor:</td>
+                            <td>{{ productoData?.prov_NombreEmpresa }}</td>
+                            <td>{{ producto.prov_NombreEmpresa }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.subc_Id !== producto.subc_Id">
+                            <td>Subcategoría:</td>
+                            <td>{{ productoData?.subc_Descripcion }}</td>
+                            <td>{{ producto.subc_Descripcion }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.prod_PrecioUnitario !== producto.prod_PrecioUnitario">
+                            <td>Precio Unitario:</td>
+                            <td>{{ productoData?.prod_PrecioUnitario }}</td>
+                            <td>{{ producto.prod_PrecioUnitario }}</td>
+                          </tr>
+                          <tr *ngIf="productoData?.prod_CostoTotal !== producto.prod_CostoTotal">
+                            <td>Costo Total:</td>
+                            <td>{{ productoData?.prod_CostoTotal }}</td>
+                            <td>{{ producto.prod_CostoTotal }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                     </div>
                     <div class="modal-footer custom-modal-footer">
