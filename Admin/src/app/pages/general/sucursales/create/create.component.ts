@@ -34,6 +34,7 @@ export class CreateComponent implements OnInit {
   }
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Sucursales>();
+  @Output() onOverlayChange = new EventEmitter<boolean>();
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -128,23 +129,26 @@ colonias: Colonias[] = [];
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
-    this.sucursal = {
-      sucu_Id: 0,
-      sucu_Descripcion: '',
-      colo_Id: 0,
-      sucu_DireccionExacta: '',
-      sucu_Telefono1: '',
-      sucu_Telefono2: '',
-      sucu_Correo: '',
-      usua_Creacion: getUserId(),
-      sucu_FechaCreacion: new Date(),
-      sucu_Estado: true
-    };
-    this.onCancel.emit();
-    this.departamentoSeleccionado = '';
-    this.municipioSeleccionado = '';
-    this.municipios = [];
-    this.colonias = [];
+    setTimeout(() => {
+      this.onOverlayChange.emit(false);
+      this.sucursal = {
+        sucu_Id: 0,
+        sucu_Descripcion: '',
+        colo_Id: 0,
+        sucu_DireccionExacta: '',
+        sucu_Telefono1: '',
+        sucu_Telefono2: '',
+        sucu_Correo: '',
+        usua_Creacion: getUserId(),
+        sucu_FechaCreacion: new Date(),
+        sucu_Estado: true
+      };
+      this.onCancel.emit();
+      this.departamentoSeleccionado = '';
+      this.municipioSeleccionado = '';
+      this.municipios = [];
+      this.colonias = [];
+    }, 100);
   }
 
   cerrarAlerta(): void {
@@ -158,7 +162,7 @@ colonias: Colonias[] = [];
 
   guardar(): void {
     this.mostrarErrores = true;
-
+    this.onOverlayChange.emit(true);
     if (
       this.sucursal.sucu_Descripcion.trim() &&
       this.sucursal.colo_Id &&
@@ -184,57 +188,66 @@ colonias: Colonias[] = [];
       }).subscribe({
         next: (response) => {
           if (response?.data?.code_Status === 1) {
-            this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" guardada exitosamente`;
-            this.mostrarAlertaExito = true;
             this.mostrarErrores = false;
-
             setTimeout(() => {
-              this.mostrarAlertaExito = false;
-              this.onSave.emit(this.sucursal);
-              this.cancelar();
-            }, 3000);
+              this.onOverlayChange.emit(false);
+              this.mensajeExito = response.data.message_Status || `Sucursal "${this.sucursal.sucu_Descripcion}" guardada exitosamente`;
+              this.mostrarAlertaExito = true;
+              setTimeout(() => {
+                this.mostrarAlertaExito = false;
+                setTimeout(() => {
+                  this.onSave.emit(this.sucursal);
+                  this.cancelar();
+                }, 100);
+              }, 2000);
+            }, 300);
           }
           if(response?.data?.code_Status === -1) {
+            setTimeout(() => {
+              this.onOverlayChange.emit(false);
+              this.mostrarAlertaError = true;
+              this.mensajeError = response?.data?.message_Status || 'ya existe una sucursal con estos datos.';
+              console.error('Error al guardar la sucursal:', this.mensajeError);
+              this.mostrarAlertaExito = false;
+              setTimeout(() => {
+                this.mostrarAlertaError = false;
+                this.mensajeError = '';
+              }, 5000);
+            }, 1000);
+          }
+        },
+        error: (error) => {
+          setTimeout(() => {
+            this.onOverlayChange.emit(false);
+            console.error('Error al guardar sucursal:', error);
+            const codeStatus = error?.error?.data?.code_Status;
+            const messageStatus = error?.error?.data?.message_Status;
             this.mostrarAlertaError = true;
-            this.mensajeError = response?.data?.message_Status || 'ya existe una sucursal con estos datos.';
-            console.error('Error al guardar la sucursal:', this.mensajeError);
+            if (codeStatus === 0) {
+              this.mensajeError = messageStatus || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
+            } else if (codeStatus === -1) {
+              this.mensajeError = messageStatus || 'Ya existe una sucursal con estos datos.';
+            } else {
+              this.mensajeError = error?.error?.message || 'Error inesperado al guardar la sucursal.';
+            }
             this.mostrarAlertaExito = false;
-
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
-          }
-        },
-        error: (error) => {
-          console.error('Error al guardar sucursal:', error);
-          const codeStatus = error?.error?.data?.code_Status;
-          const messageStatus = error?.error?.data?.message_Status;
-          this.mostrarAlertaError = true;
-          if (codeStatus === 0) {
-            this.mensajeError = messageStatus || 'Error al guardar la sucursal. Por favor, intente nuevamente.';
-          } else if (codeStatus === -1) {
-            this.mensajeError = messageStatus || 'Ya existe una sucursal con estos datos.';
-          } else {
-            this.mensajeError = error?.error?.message || 'Error inesperado al guardar la sucursal.';
-          }
-          this.mostrarAlertaExito = false;
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
+          }, 1000);
         }
       });
     } else {
+      this.onOverlayChange.emit(false);
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor complete todos los campos requeridos antes de guardar.';
       this.mostrarAlertaError = false;
       this.mostrarAlertaExito = false;
-
       setTimeout(() => {
         this.mostrarAlertaWarning = false;
         this.mensajeWarning = '';
       }, 4000);
-    } 
+    }
   }
 }

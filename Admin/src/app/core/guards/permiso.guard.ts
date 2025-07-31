@@ -18,9 +18,9 @@ export class PermisoGuard {
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     
-    // Permitir siempre acceso a rutas de login y acceso denegado
+    // Permitir siempre acceso a rutas de login y página de error
     if (state.url.includes('/account/login') || 
-        state.url.includes('/acceso-denegado')) {
+        state.url.includes('/account/auth/errors/error404')) {
       return true;
     }
     
@@ -63,7 +63,7 @@ export class PermisoGuard {
     const tienePermiso = this.permisosService.tienePantallaPermiso(pantallaId);
     
     if (!tienePermiso) {
-      return this.router.createUrlTree(['/acceso-denegado']);
+      return this.router.createUrlTree(['/account/auth/errors/error404']);
     }
     
     return true;
