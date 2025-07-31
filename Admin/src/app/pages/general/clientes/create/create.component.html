@@ -1125,7 +1125,7 @@
                     Seleccione una Colonia
                   </option>
                   <option *ngFor="let colonia of TodasColonias" [value]="colonia.colo_Id">
-                    {{ colonia.colo_Descripcion }}
+                    {{ colonia.colo_Descripcion }} - {{ colonia.muni_Descripcion }} - {{ colonia.depa_Descripcion }}
                   </option>
                 </select>
                 <div *ngIf="cargandoColonias" class="form-text text-muted">
