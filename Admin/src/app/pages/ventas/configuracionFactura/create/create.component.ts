@@ -46,6 +46,30 @@ export class CreateComponent {
     this.listarColonias();
   }
 
+  // Validación RTN - solo números y máximo 14 dígitos
+  onRTNInput(event: any): void {
+    let value = event.target.value;
+    // Remover todo lo que no sean números
+    value = value.replace(/\D/g, '');
+    // Limitar a 14 dígitos
+    if (value.length > 14) {
+      value = value.substring(0, 14);
+    }
+    this.configFactura.coFa_RTN = value;
+    event.target.value = value;
+  }
+
+  // Validación de correo electrónico
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
+  // Verificar si RTN tiene exactamente 14 dígitos
+  isValidRTN(rtn: string): boolean {
+    return rtn.length === 14 && /^\d{14}$/.test(rtn);
+  }
+
   // Función de búsqueda para colonias
   searchColonias = (term: string, item: any) => {
     term = term.toLowerCase();
@@ -139,28 +163,45 @@ export class CreateComponent {
 
   // Método para validar todos los campos obligatorios
   private validarCampos(): boolean {
-    const camposObligatorios = [
-      { campo: this.configFactura.coFa_NombreEmpresa.trim(), nombre: 'Nombre de la empresa' },
-      { campo: this.configFactura.coFa_DireccionEmpresa.trim(), nombre: 'Dirección de la empresa' },
-      { campo: this.configFactura.coFa_RTN.trim(), nombre: 'RTN' },
-      { campo: this.configFactura.coFa_Correo.trim(), nombre: 'Correo electrónico' },
-      { campo: this.configFactura.coFa_Telefono1.trim(), nombre: 'Teléfono principal' },
-      { campo: this.configFactura.coFa_Logo, nombre: 'Logo' },
-      { campo: this.configFactura.colo_Id, nombre: 'Colonia' }
-    ];
+    const errores: string[] = [];
 
-    const camposVacios = camposObligatorios.filter(item => {
-      // Para colo_Id verificamos que sea mayor a 0
-      if (item.nombre === 'Colonia') {
-        return item.campo === 0;
-      }
-      // Para el resto verificamos que no esté vacío
-      return !item.campo;
-    });
+    // Validar campos obligatorios básicos
+    if (!this.configFactura.coFa_NombreEmpresa.trim()) {
+      errores.push('Nombre de la empresa');
+    }
 
-    if (camposVacios.length > 0) {
-      const nombresCampos = camposVacios.map(item => item.nombre).join(', ');
-      this.mensajeWarning = `Por favor complete los siguientes campos obligatorios: ${nombresCampos}`;
+    if (!this.configFactura.coFa_DireccionEmpresa.trim()) {
+      errores.push('Dirección de la empresa');
+    }
+
+    // Validar RTN
+    if (!this.configFactura.coFa_RTN.trim()) {
+      errores.push('RTN');
+    } else if (!this.isValidRTN(this.configFactura.coFa_RTN)) {
+      errores.push('RTN debe tener exactamente 14 dígitos');
+    }
+
+    // Validar correo
+    if (!this.configFactura.coFa_Correo.trim()) {
+      errores.push('Correo electrónico');
+    } else if (!this.isValidEmail(this.configFactura.coFa_Correo)) {
+      errores.push('Correo electrónico debe tener un formato válido');
+    }
+
+    if (!this.configFactura.coFa_Telefono1.trim()) {
+      errores.push('Teléfono principal');
+    }
+
+    if (!this.configFactura.coFa_Logo) {
+      errores.push('Logo');
+    }
+
+    if (this.configFactura.colo_Id === 0) {
+      errores.push('Colonia');
+    }
+
+    if (errores.length > 0) {
+      this.mensajeWarning = `Por favor complete o corrija los siguientes campos: ${errores.join(', ')}`;
       this.mostrarAlertaWarning = true;
       this.mostrarAlertaError = false;
       this.mostrarAlertaExito = false;
