@@ -162,17 +162,13 @@ export class EditComponent implements OnChanges {
       return;
     }
     console.log('Filtrando subcategorías para categoría:', categoriaId);
-    this.filtrarSubcategoriasPorCategoria(categoriaId);
+    this.filtrarSubcategoriasPorCategoria(categoriaId, true);
   }
 
   onSubcategoriaChange(event: any): void {
     const selectedId = +event.target.value;
     const subcategoriaSeleccionada = this.subcategoriasFiltradas.find(s => s.subc_Id === selectedId);
-    if (subcategoriaSeleccionada) {
-      this.producto.subc_Descripcion = subcategoriaSeleccionada.subC_Descripcion;
-    } else {
-      this.producto.subc_Descripcion = '';
-    }
+    this.producto.subc_Descripcion = subcategoriaSeleccionada ? subcategoriaSeleccionada.subC_Descripcion : '';
   }
 
   cargarMarcas() {
@@ -241,7 +237,7 @@ export class EditComponent implements OnChanges {
 
   isCargandoSubcategorias: boolean = false;
 
-  filtrarSubcategoriasPorCategoria(categoriaId: number) {
+  filtrarSubcategoriasPorCategoria(categoriaId: number, limpiarSubcategoria: boolean = false) {
     console.log('Filtrando subcategorías para categoría:', categoriaId);
     if (!categoriaId) {
       this.subcategoriasFiltradas = [];
@@ -273,6 +269,17 @@ export class EditComponent implements OnChanges {
         }
     }).subscribe(response  => {
       this.subcategoriasFiltradas = response.data;
+      const existeActual = this.subcategoriasFiltradas.find(s => s.subc_Id === this.producto.subc_Id);
+      if (!existeActual || limpiarSubcategoria) {
+        this.producto.subc_Id = 0;
+        this.producto.subc_Descripcion = '';
+      }
+
+      if (this.subcategoriasFiltradas.length === 1) {
+        const unica = this.subcategoriasFiltradas[0];
+        this.producto.subc_Id = unica.subc_Id;
+        this.producto.subc_Descripcion = unica.subC_Descripcion;
+      }
       console.log('Subcategorías filtradas:', this.subcategoriasFiltradas);
       // this.producto.subc_Id = 0; // Reset subcategory selection
       this.isCargandoSubcategorias = false; // terminó carga
