@@ -111,6 +111,13 @@ export class EditComponent implements OnChanges{
     this.guardar();
   }
 
+  onAdminToggle(): void {
+    if (this.usuario.usua_EsAdmin) {
+      this.usuario.role_Id = 1;
+      this.usuario.usua_IdPersona = 0;
+    }
+  }
+
   guardar(): void {
     this.mostrarErrores = true;
     if (this.usuario.usua_Usuario.trim() && this.usuario.role_Id && this.usuario.usua_IdPersona) 
