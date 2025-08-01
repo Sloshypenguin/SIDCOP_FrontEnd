@@ -361,6 +361,36 @@ export class EditComponent implements OnChanges {
       };
     }
 
+    if (a.subc_Id !== b.subc_Id) {
+      // Usar la descripción original preservada
+      let subcategoriaAnteriorDesc: string = this.subcategoriaOriginalDescripcion;
+      
+      // Si no tenemos la descripción preservada, buscarla en todas las subcategorías
+      if (!subcategoriaAnteriorDesc && b.subc_Id) {
+        const subcategoriaAnterior = this.subcategorias.find(c => c.subc_Id === b.subc_Id);
+        subcategoriaAnteriorDesc = subcategoriaAnterior?.subC_Descripcion ?? 'No seleccionada';
+      }
+      
+      // Para la nueva, buscar en las filtradas o en todas si no está
+      let subcategoriaNuevaDesc: string = 'No seleccionada';
+      if (a.subc_Id) {
+        const subcategoriaNuevaFiltrada = this.subcategoriasFiltradas.find(c => c.subc_Id === a.subc_Id);
+        if (subcategoriaNuevaFiltrada) {
+          subcategoriaNuevaDesc = subcategoriaNuevaFiltrada.subC_Descripcion ?? 'No seleccionada';
+        } else {
+          // Buscar en todas las subcategorías como respaldo
+          const subcategoriaNuevaTodas = this.subcategorias.find(c => c.subc_Id === a.subc_Id);
+          subcategoriaNuevaDesc = subcategoriaNuevaTodas?.subC_Descripcion ?? 'No seleccionada';
+        }
+      }
+
+      this.cambiosDetectados.subcategoriasFiltradas = {
+        anterior: subcategoriaAnteriorDesc || 'No seleccionada',
+        nuevo: subcategoriaNuevaDesc,
+        label: 'Subcategoría'
+      };
+    }
+
     if (a.marc_Id !== b.marc_Id) {
       this.cambiosDetectados.marca = {
         anterior: b.marc_Descripcion,
@@ -393,33 +423,11 @@ export class EditComponent implements OnChanges {
       };
     }
 
-    if (a.subc_Id !== b.subc_Id) {
-      // Usar la descripción original preservada
-      let subcategoriaAnteriorDesc: string = this.subcategoriaOriginalDescripcion;
-      
-      // Si no tenemos la descripción preservada, buscarla en todas las subcategorías
-      if (!subcategoriaAnteriorDesc && b.subc_Id) {
-        const subcategoriaAnterior = this.subcategorias.find(c => c.subc_Id === b.subc_Id);
-        subcategoriaAnteriorDesc = subcategoriaAnterior?.subC_Descripcion ?? 'No seleccionada';
-      }
-      
-      // Para la nueva, buscar en las filtradas o en todas si no está
-      let subcategoriaNuevaDesc: string = 'No seleccionada';
-      if (a.subc_Id) {
-        const subcategoriaNuevaFiltrada = this.subcategoriasFiltradas.find(c => c.subc_Id === a.subc_Id);
-        if (subcategoriaNuevaFiltrada) {
-          subcategoriaNuevaDesc = subcategoriaNuevaFiltrada.subC_Descripcion ?? 'No seleccionada';
-        } else {
-          // Buscar en todas las subcategorías como respaldo
-          const subcategoriaNuevaTodas = this.subcategorias.find(c => c.subc_Id === a.subc_Id);
-          subcategoriaNuevaDesc = subcategoriaNuevaTodas?.subC_Descripcion ?? 'No seleccionada';
-        }
-      }
-
-      this.cambiosDetectados.subcategoriasFiltradas = {
-        anterior: subcategoriaAnteriorDesc || 'No seleccionada',
-        nuevo: subcategoriaNuevaDesc,
-        label: 'Subcategoría'
+    if (a.impu_Id !== b.impu_Id) {
+      this.cambiosDetectados.impuesto = {
+        anterior: b.impu_Descripcion,
+        nuevo: a.impu_Descripcion,
+        label: 'Impuesto'
       };
     }
 
