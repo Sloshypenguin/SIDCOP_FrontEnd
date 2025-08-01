@@ -1,4 +1,64 @@
-/* Estilos generales */
+// Estilos para el contenedor de las tarjetas de detalles
+.details-card-body {
+  padding: 1.5rem; // Espaciado interior general
+}
+
+// Contenedor de la fila de detalles para usar Flexbox
+.detail-row {
+  display: flex;
+  flex-wrap: wrap; // Permitir que los elementos se ajusten en pantallas pequeñas
+  gap: 1.5rem; // Espacio entre las tarjetas
+  justify-content: flex-start; // Alinear tarjetas al inicio
+}
+
+// Estilo de cada tarjeta de detalle individual (Código, Descripción, etc.)
+.detail-box {
+  background: #fff; // Fondo blanco para la tarjeta
+  border-radius: 12px; // Bordes redondeados
+  padding: 1.5rem; // Espaciado interior
+  flex: 1; // Flex-grow, flex-shrink y base width. Permite que crezcan pero tengan un tamaño base.
+  display: flex;
+  align-items: center;
+  gap: 1rem; // Espacio entre el ícono y el texto
+  border: 1px solid #e9ecef; // Borde sutil
+  box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1); // Sombreado suave
+}
+
+// Estilos para el ícono dentro de la tarjeta
+.detail-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #f8f9fa; // Fondo claro para el ícono
+  color: #5a6a85; // Color del ícono
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem; // Tamaño del ícono
+  border: 1px solid #e9ecef;
+}
+
+// Contenedor para la información de texto
+.detail-info {
+  flex: 1;
+}
+
+// Etiqueta (ej. "Código")
+.detail-label {
+  font-size: 0.9rem;
+  color: #878a99; // Color de la etiqueta
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+// Valor (ej. "21")
+.detail-value {
+  font-size: 1.1rem;
+  color: #212529; // Color del valor
+  font-weight: 600;
+  word-break: break-word;
+}
+
 .details-container {
   padding: 1rem;
 }
