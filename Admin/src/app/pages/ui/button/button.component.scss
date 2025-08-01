@@ -7,6 +7,8 @@ $gray-bg: #E8E8E8;
 $gray-color: rgb(135, 135, 135);
 $red-bg: #FFD8D8;
 $red-color: rgb(175, 29, 29);
+$green-bg: #D8FFD8;
+$green-color: rgb(33, 115, 70);
 $white: rgb(255, 255, 255);
 
 // Base button styles
@@ -145,6 +147,7 @@ $white: rgb(255, 255, 255);
   &.gold { @include color-variant($gold-bg, rgb(102, 77, 45), $gold-color); }
   &.gray { @include color-variant($gray-bg, $gray-color, $gray-color); }
   &.red { @include color-variant($red-bg, $red-color, $red-color); }
+  &.green { @include color-variant($green-bg, $green-color, $green-color); }
 }
 .btn-primary span:empty + span.icon-dark {
   width: 100%;
