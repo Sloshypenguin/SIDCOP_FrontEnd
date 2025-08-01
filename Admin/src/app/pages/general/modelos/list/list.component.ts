@@ -15,6 +15,18 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
+// Importaciones para exportación
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+// Declaración de tipos para jsPDF
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
+
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -75,6 +87,208 @@ export class ListComponent implements OnInit {
     ];
     this.cargarAccionesUsuario();
   }
+
+  // ===== MÉTODOS DE EXPORTACIÓN =====
+
+  /**
+   * Exporta los datos a Excel (.xlsx)
+   */
+  exportarExcel(): void {
+    try {
+      const datos = this.obtenerDatosParaExportar();
+      
+      if (datos.length === 0) {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'No hay datos para exportar';
+        setTimeout(() => this.mostrarAlertaWarning = false, 3000);
+        return;
+      }
+
+      // Crear libro de trabajo
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datos);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      
+      // Agregar hoja al libro
+      XLSX.utils.book_append_sheet(wb, ws, 'Modelos');
+      
+      // Configurar ancho de columnas
+      const colWidths = [
+        { wch: 8 },   // No.
+        { wch: 20 },  // Marca
+        { wch: 30 }   // Descripción
+      ];
+      ws['!cols'] = colWidths;
+      
+      // Generar archivo
+      const fecha = new Date().toISOString().split('T')[0];
+      const nombreArchivo = `Modelos_${fecha}.xlsx`;
+      
+      XLSX.writeFile(wb, nombreArchivo);
+      
+      // Mostrar mensaje de éxito
+      this.mostrarAlertaExito = true;
+      this.mensajeExito = 'Archivo Excel exportado exitosamente';
+      setTimeout(() => this.mostrarAlertaExito = false, 3000);
+      
+    } catch (error) {
+      console.error('Error al exportar Excel:', error);
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al exportar el archivo Excel';
+      setTimeout(() => this.mostrarAlertaError = false, 3000);
+    }
+  }
+
+  /**
+   * Exporta los datos a PDF
+   */
+  exportarPDF(): void {
+    try {
+      const datos = this.obtenerDatosParaExportar();
+      
+      if (datos.length === 0) {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'No hay datos para exportar';
+        setTimeout(() => this.mostrarAlertaWarning = false, 3000);
+        return;
+      }
+
+      // Crear documento PDF
+      const doc = new jsPDF('l', 'mm', 'a4'); // landscape, milímetros, A4
+      
+      // Título
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Listado de Modelos', 14, 15);
+      
+      // Fecha de generación
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      const fechaActual = new Date().toLocaleDateString('es-ES');
+      doc.text(`Fecha de generación: ${fechaActual}`, 14, 25);
+      
+      // Preparar datos para la tabla
+      const columnas = ['No.', 'Marca', 'Descripción'];
+      const filas = datos.map(item => [
+        item['No.'].toString(),
+        item['Marca'],
+        item['Descripción']
+      ]);
+      
+      // Generar tabla
+      doc.autoTable({
+        head: [columnas],
+        body: filas,
+        startY: 35,
+        styles: {
+          fontSize: 9,
+          cellPadding: 3
+        },
+        headStyles: {
+          fillColor: [52, 73, 94],
+          textColor: 255,
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        margin: { left: 14, right: 14 }
+      });
+      
+      // Guardar archivo
+      const fecha = new Date().toISOString().split('T')[0];
+      const nombreArchivo = `Modelos_${fecha}.pdf`;
+      doc.save(nombreArchivo);
+      
+      // Mostrar mensaje de éxito
+      this.mostrarAlertaExito = true;
+      this.mensajeExito = 'Archivo PDF exportado exitosamente';
+      setTimeout(() => this.mostrarAlertaExito = false, 3000);
+      
+    } catch (error) {
+      console.error('Error al exportar PDF:', error);
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al exportar el archivo PDF';
+      setTimeout(() => this.mostrarAlertaError = false, 3000);
+    }
+  }
+
+  /**
+   * Exporta los datos a CSV
+   */
+  exportarCSV(): void {
+    try {
+      const datos = this.obtenerDatosParaExportar();
+      
+      if (datos.length === 0) {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'No hay datos para exportar';
+        setTimeout(() => this.mostrarAlertaWarning = false, 3000);
+        return;
+      }
+
+      // Crear contenido CSV
+      const headers = Object.keys(datos[0]);
+      const csvContent = [
+        headers.join(','), // Encabezados
+        ...datos.map(row => 
+          headers.map(header => {
+            const value = row[header];
+            // Escapar valores que contengan comas o comillas
+            if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+              return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+          }).join(',')
+        )
+      ].join('\n');
+      
+      // Crear blob y descargar
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        
+        const fecha = new Date().toISOString().split('T')[0];
+        const nombreArchivo = `Modelos_${fecha}.csv`;
+        link.setAttribute('download', nombreArchivo);
+        
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      // Mostrar mensaje de éxito
+      this.mostrarAlertaExito = true;
+      this.mensajeExito = 'Archivo CSV exportado exitosamente';
+      setTimeout(() => this.mostrarAlertaExito = false, 3000);
+      
+    } catch (error) {
+      console.error('Error al exportar CSV:', error);
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al exportar el archivo CSV';
+      setTimeout(() => this.mostrarAlertaError = false, 3000);
+    }
+  }
+
+  /**
+   * Obtiene los datos actuales de la tabla para exportar
+   */
+  private obtenerDatosParaExportar(): any[] {
+    // Obtener datos actuales del servicio de tabla
+    const datosActuales = this.table.data$.value;
+    
+    // Mapear a formato para exportación
+    return datosActuales.map(modelo => ({
+      'No.': modelo.No,
+      'Marca': modelo.maVe_Marca || '',
+      'Descripción': modelo.mode_Descripcion || ''
+    }));
+  }
+
+  // ===== MÉTODOS EXISTENTES =====
 
   // Método para validar si una acción está permitida
   accionPermitida(accion: string): boolean {

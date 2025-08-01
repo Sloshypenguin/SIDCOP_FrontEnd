@@ -14,9 +14,29 @@
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>
           </button>
-          <div class="search-box mb-2">
-            <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
-            <i class="ri-search-line search-icon"></i>
+          
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- Botones de exportación -->
+            <div class="export-buttons d-flex gap-1 mb-2">
+          <button type="button" class="btn btn-primary me-2 mb-2" (click)="exportarExcel()">
+            <span class="btn-text">Excel</span>
+            <span class="btn-icon"><i class="ri-file-excel-2-line"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary me-2 mb-2" (click)="exportarPDF()">
+            <span class="btn-text">PDF</span>
+            <span class="btn-icon"><i class="ri-file-pdf-line"></i></span>
+          </button>
+
+              <button type="button" class="btn btn-outline-info btn-sm" (click)="exportarCSV()" title="Exportar a CSV">
+                <span class="btn-icon"><i class="ri-file-text-line"></i></span>
+              </button>
+            </div>
+            
+            <!-- Campo de búsqueda -->
+            <div class="search-box mb-2">
+              <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
+              <i class="ri-search-line search-icon"></i>
+            </div>
           </div>
         </div>
         
