@@ -157,9 +157,29 @@ $white: rgb(255, 255, 255);
   }
   
   &.gold { @include color-variant($gold-bg, rgb(102, 77, 45), $gold-color); }
+  &.gold:hover {
+    border-color: $gold-color !important;
+    background-color: $gold-color !important;
+    color: $white !important;
+  }
   &.gray { @include color-variant($gray-bg, $gray-color, $gray-color); }
+  &.gray:hover {
+    border-color: $gray-color !important;
+    background-color: $gray-color !important;
+    color: $white !important;
+  }
   &.red { @include color-variant($red-bg, $red-color, $red-color); }
+  &.red:hover {
+    border-color: $red-color !important;
+    background-color: $red-color !important;
+    color: $white !important;
+  }
   &.green { @include color-variant($green-bg, $green-color, $green-color ); }
+  &.green:hover {
+    border-color: $green-color !important;
+    background-color: $green-color !important;
+    color: $white !important;
+  }
 }
 .btn-primary span:empty + span.icon-dark {
   width: 100%;
