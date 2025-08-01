@@ -20,7 +20,8 @@ export class PermisoGuard {
     
     // Permitir siempre acceso a rutas de login y página de error
     if (state.url.includes('/account/login') || 
-        state.url.includes('/account/auth/errors/error404')) {
+        state.url.includes('/error-404/404') ||
+        state.url.includes('/acceso-denegado')) {
       return true;
     }
     
@@ -63,7 +64,7 @@ export class PermisoGuard {
     const tienePermiso = this.permisosService.tienePantallaPermiso(pantallaId);
     
     if (!tienePermiso) {
-      return this.router.createUrlTree(['/account/auth/errors/error404']);
+      return this.router.createUrlTree(['/acceso-denegado']);
     }
     
     return true;
