@@ -8,48 +8,50 @@
 }
 
 
-.details-header-button .split-button {
+/* Eliminamos los estilos antiguos del split-button que ya no se usa */
+
+.details-header-button .btn-primary {
+  display: flex;
   padding: 0;
+  border-radius: 4px;
+  background-color: transparent;
+  border: none;
+  color: #212529;
+  font-weight: 500;
+  box-shadow: none;
   overflow: hidden;
 }
 
-.details-header-button .split-button .btn-text {
+.details-header-button .btn-primary:hover {
+  background-color: transparent;
+}
+
+.details-header-button .btn-text {
   padding: 0.5rem 1rem;
   background-color: #f8f9fa;
   color: #212529;
+  border: 1px solid #dee2e6;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
 }
 
-.details-header-button .split-button .dark-part {
-  background-color: #1a1d3a; // el lado oscuro
-  color: white;
+.details-header-button .btn-icon {
   padding: 0.5rem 0.75rem;
+  background-color: #343a40;
+  color: white;
+  border: 1px solid #343a40;
+  border-radius: 0 4px 4px 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.details-header-button .btn-primary {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  color: #212529;
-  font-weight: 500;
-  box-shadow: none;
-}
-
-.details-header-button .btn-primary:hover {
+.details-header-button .btn-primary:hover .btn-text {
   background-color: #e9ecef;
-  border-color: #dee2e6;
 }
 
-.details-header-button .btn-icon {
-  display: flex;
-  align-items: center;
+.details-header-button .btn-primary:hover .btn-icon {
+  background-color: #23272b;
 }
 
 /* Estilos para la tarjeta de detalles */
