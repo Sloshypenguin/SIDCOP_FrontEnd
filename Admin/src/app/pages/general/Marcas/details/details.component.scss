@@ -4,7 +4,7 @@
   padding: 1rem;
 }
 
-/* Botón de regresar */
+/* Botón de regresar - Estados Civiles style */
 .details-header-button {
   margin-bottom: 1.5rem;
 
@@ -30,7 +30,7 @@
       border: 1px solid #dee2e6;
       border-right: none;
       border-radius: 4px 0 0 4px;
-      transition: background-color 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .btn-icon {
@@ -42,7 +42,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     &:hover .btn-text {
