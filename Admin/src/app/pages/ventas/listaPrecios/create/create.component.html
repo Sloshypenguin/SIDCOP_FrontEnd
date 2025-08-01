@@ -3,7 +3,7 @@
   [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb" style="width: 14vh; height: 12vh;" 
-       src="assets/images/imagenes/FACTURADOS.svg" alt="icono breadcrumb" />
+       src="assets/images/imagenes/listassvg.svg" alt="icono breadcrumb" />
 </app-breadcrumbs>
 
 <div class="row">
@@ -74,7 +74,16 @@
               <div class="row mb-3">
                 <div class="col-md-3">
                   <label>Precio Contado</label>
-                  <input type="number" class="form-control" [(ngModel)]="newLista.precioContado" min="1" required />
+                  <div class="d-flex align-items-center">
+                      <i class="ri-coin-fill" [ngStyle]="{
+                        border: (!newLista.precioContado) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                        backgroundColor: (!newLista.precioContado) ? '#fff5f6' : '#f2f3f9',
+                        padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                      </i>
+                  <input type="text" class="form-control"
+                          currencyMask [options]="{ prefix: 'L. ', thousands: ',', decimal: '.', precision: 2 }"
+                           [(ngModel)]="newLista.precioContado" required  />
+                  </div>
                   <!-- <div *ngIf="inputErrors.precioContado" class="alert alert-danger custom-alert mt-2">
                     {{ inputErrors.precioContado }}
                   </div> -->
@@ -85,21 +94,44 @@
                 </div>
                 <div class="col-md-3">
                   <label>Precio Crédito</label>
-                  <input type="number" class="form-control" [(ngModel)]="newLista.precioCredito" min="1" required />
+                  <div class="d-flex align-items-center">
+                    <i class="ri-coin-fill" [ngStyle]="{
+                      border: (!newLista.precioCredito) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                      backgroundColor: (!newLista.precioCredito) ? '#fff5f6' : '#f2f3f9',
+                      padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                    </i>                  
+                  <input type="text" class="form-control"
+                        currencyMask [options]="{ prefix: 'L. ', thousands: ',', decimal: '.', precision: 2 }"
+                        [(ngModel)]="newLista.precioCredito" required />
+                  </div>
                   <div *ngIf="inputErrors.precioCredito" class="text-danger mt-1">
                     {{ inputErrors.precioCredito }}
                   </div>
                 </div>
                 <div class="col-md-3">
                   <label>Inicio Escala</label>
+                  <div class="d-flex align-items-center">
+                    <i class="ri-arrow-up-fill" [ngStyle]="{
+                      border: (!newLista.inicioEscala) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                      backgroundColor: (!newLista.inicioEscala) ? '#fff5f6' : '#f2f3f9',
+                      padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                    </i>    
                   <input type="number" class="form-control" [(ngModel)]="newLista.inicioEscala" min="0" required />
+                  </div>
                   <div *ngIf="inputErrors.inicioEscala" class="text-danger mt-1">
                     {{ inputErrors.inicioEscala }}
                   </div>
-                </div>
+                </div> 
                 <div class="col-md-3">
                   <label>Fin Escala</label>
+                  <div class="d-flex align-items-center">
+                    <i class="ri-arrow-down-fill" [ngStyle]="{
+                      border: (!newLista.finEscala) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                      backgroundColor: (!newLista.finEscala) ? '#fff5f6' : '#f2f3f9',
+                      padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                    </i>    
                   <input type="number" class="form-control" [(ngModel)]="newLista.finEscala" min="0" required />
+                  </div>
                   <div *ngIf="inputErrors.finEscala" class="text-danger mt-1">
                     {{ inputErrors.finEscala }}
                   </div>
@@ -251,28 +283,60 @@
                   <div class="row mb-3">
                     <div class="col-md-3">
                       <label>Precio Contado</label>
-                      <input type="number" class="form-control" [(ngModel)]="lista.precioContado" min="1" required />
+                      <div class="d-flex align-items-center">
+                      <i class="ri-coin-fill" [ngStyle]="{
+                        border: (!lista.precioContado) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                        backgroundColor: (!lista.precioContado) ? '#fff5f6' : '#f2f3f9',
+                        padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                      </i>
+                      <input type="text" class="form-control" [(ngModel)]="lista.precioContado" 
+                              currencyMask [options]="{ prefix: 'L. ', thousands: ',', decimal: '.', precision: 2 }" required />
+                      </div>
                       <div *ngIf="lista.inputErrors?.precioContado" class="text-danger mt-1">
                         {{ lista.inputErrors.precioContado }}
                       </div>
                     </div>
                     <div class="col-md-3">
                       <label>Precio Crédito</label>
-                      <input type="number" class="form-control" [(ngModel)]="lista.precioCredito" min="1" required />
+                      <div class="d-flex align-items-center">
+                      <i class="ri-coin-fill" [ngStyle]="{
+                        border: (!lista.precioCredito) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                        backgroundColor: (!lista.precioCredito) ? '#fff5f6' : '#f2f3f9',
+                        padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                      </i>
+                      
+                      <input type="text" class="form-control" [(ngModel)]="lista.precioCredito" 
+                              currencyMask [options]="{ prefix: 'L. ', thousands: ',', decimal: '.', precision: 2 }" required />
+                      </div>
                       <div *ngIf="lista.inputErrors?.precioCredito" class="text-danger mt-1">
                         {{ lista.inputErrors.precioCredito }}
                       </div>
                     </div>
                     <div class="col-md-3">
                       <label>Inicio Escala</label>
+                      <div class="d-flex align-items-center">
+                      <i class="ri-arrow-up-fill" [ngStyle]="{
+                        border: (!lista.inicioEscala) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                        backgroundColor: (!lista.inicioEscala) ? '#fff5f6' : '#f2f3f9',
+                        padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                      </i>
+                      
                       <input type="number" class="form-control" [(ngModel)]="lista.inicioEscala" min="0" required />
+                      </div>
                       <div *ngIf="lista.inputErrors?.inicioEscala" class="text-danger mt-1">
                         {{ lista.inputErrors.inicioEscala }}
                       </div>
                     </div>
                     <div class="col-md-3">
                       <label>Fin Escala</label>
+                       <div class="d-flex align-items-center">
+                      <i class="ri-arrow-down-fill" [ngStyle]="{
+                        border: (!lista.finEscala) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                        backgroundColor: (!lista.finEscala) ? '#fff5f6' : '#f2f3f9',
+                        padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
+                      </i>
                       <input type="number" class="form-control" [(ngModel)]="lista.finEscala" min="0" required />
+                      </div>
                       <div *ngIf="lista.inputErrors?.finEscala" class="text-danger mt-1">
                         {{ lista.inputErrors.finEscala }}
                       </div>
