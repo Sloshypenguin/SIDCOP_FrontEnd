@@ -27,6 +27,8 @@ export class EditComponent implements OnChanges {
   marcas: any[] = [];
   proveedores: any[] = [];
   impuestos: any[] = [];
+  subcategoriaOriginalDescripcion: string = '';
+  categoriaOriginalId: number = 0;
   
   categoria: Categoria = {
     cate_Id: 0,
@@ -105,15 +107,14 @@ export class EditComponent implements OnChanges {
       const proveedorActual = this.proveedores.find(p => p.prov_Id === this.producto.prov_Id);
       this.producto.prov_NombreEmpresa = proveedorActual ? proveedorActual.prov_NombreEmpresa : '';
       this.productoOriginal = { ...this.productoData };
+      this.subcategoriaOriginalDescripcion = this.productoData?.subc_Descripcion ?? '';
+      this.categoriaOriginalId = this.productoData?.cate_Id ?? 0;
       this.mostrarErrores = false;
       this.cerrarAlerta();
       this.producto.prod_EsPromo = this.producto.prod_EsPromo || 'N';
       this.producto.prod_PagaImpuesto = this.producto.prod_PagaImpuesto || 'N';
       this.producto.impu_Id = this.producto.impu_Id || 0;
       this.cargarCategorias();
-
-      const subcategoriaActual = this.subcategorias.find(s => s.subc_Id === this.producto.subc_Id);
-      this.producto.subc_Descripcion = subcategoriaActual ? subcategoriaActual.subC_Descripcion : '';
     }
   }
   
@@ -219,15 +220,25 @@ export class EditComponent implements OnChanges {
     }).subscribe(data => {
       this.subcategorias = data;
       if (this.producto.subc_Id) {
-        // Si existe subc_Id, asignamos la categoría relacionada a esa subcategoría
+        // Buscar la subcategoría actual en la lista completa
         const subcategoriaActual = this.subcategorias.find(s => s.subc_Id === this.producto.subc_Id);
         if (subcategoriaActual) {
+          // Si no teníamos la descripción original, la obtenemos ahora
+          if (!this.subcategoriaOriginalDescripcion) {
+            this.subcategoriaOriginalDescripcion = subcategoriaActual.subC_Descripcion ?? '';
+          }
+          
+          // Asignar la categoría si no está asignada
+          if (!this.producto.cate_Id) {
+            this.producto.cate_Id = subcategoriaActual.cate_Id;
+          }
+          
           this.categoriaSeleccionada = subcategoriaActual.cate_Id;
-        } else {
-          this.categoriaSeleccionada = 0;
+          this.producto.subc_Descripcion = subcategoriaActual.subC_Descripcion;
         }
-        // Llamamos a filtrar subcategorías por categoría seleccionada
-        this.filtrarSubcategoriasPorCategoria(this.categoriaSeleccionada);
+        
+        // Filtrar subcategorías para la categoría actual
+        this.filtrarSubcategoriasPorCategoria(this.producto.cate_Id || this.categoriaSeleccionada);
       }
     }, error => {
         console.error('Error al cargar las subcategorías:', error);
@@ -242,6 +253,7 @@ export class EditComponent implements OnChanges {
     if (!categoriaId) {
       this.subcategoriasFiltradas = [];
       this.producto.subc_Id = 0;
+      this.producto.subc_Descripcion = '';
       this.isCargandoSubcategorias = false;
       return;
     }
@@ -270,12 +282,13 @@ export class EditComponent implements OnChanges {
     }).subscribe(response  => {
       this.subcategoriasFiltradas = response.data;
       const existeActual = this.subcategoriasFiltradas.find(s => s.subc_Id === this.producto.subc_Id);
-      if (!existeActual || limpiarSubcategoria) {
+      if (limpiarSubcategoria || !existeActual) {
         this.producto.subc_Id = 0;
         this.producto.subc_Descripcion = '';
       }
 
-      if (this.subcategoriasFiltradas.length === 1) {
+      // Auto-seleccionar si solo hay una opción y no hay ninguna seleccionada
+      if (this.subcategoriasFiltradas.length === 1 && (!this.producto.subc_Id || this.producto.subc_Id === 0)) {
         const unica = this.subcategoriasFiltradas[0];
         this.producto.subc_Id = unica.subc_Id;
         this.producto.subc_Descripcion = unica.subC_Descripcion;
@@ -381,12 +394,31 @@ export class EditComponent implements OnChanges {
     }
 
     if (a.subc_Id !== b.subc_Id) {
-      const subcategoriaAnterior = this.subcategoriasFiltradas.find(c => c.subc_Id === b.subc_Id);
-      const subcategoriaNueva = this.subcategoriasFiltradas.find(c => c.subc_Id === a.subc_Id);
+      // Usar la descripción original preservada
+      let subcategoriaAnteriorDesc: string = this.subcategoriaOriginalDescripcion;
+      
+      // Si no tenemos la descripción preservada, buscarla en todas las subcategorías
+      if (!subcategoriaAnteriorDesc && b.subc_Id) {
+        const subcategoriaAnterior = this.subcategorias.find(c => c.subc_Id === b.subc_Id);
+        subcategoriaAnteriorDesc = subcategoriaAnterior?.subC_Descripcion ?? 'No seleccionada';
+      }
+      
+      // Para la nueva, buscar en las filtradas o en todas si no está
+      let subcategoriaNuevaDesc: string = 'No seleccionada';
+      if (a.subc_Id) {
+        const subcategoriaNuevaFiltrada = this.subcategoriasFiltradas.find(c => c.subc_Id === a.subc_Id);
+        if (subcategoriaNuevaFiltrada) {
+          subcategoriaNuevaDesc = subcategoriaNuevaFiltrada.subC_Descripcion ?? 'No seleccionada';
+        } else {
+          // Buscar en todas las subcategorías como respaldo
+          const subcategoriaNuevaTodas = this.subcategorias.find(c => c.subc_Id === a.subc_Id);
+          subcategoriaNuevaDesc = subcategoriaNuevaTodas?.subC_Descripcion ?? 'No seleccionada';
+        }
+      }
 
       this.cambiosDetectados.subcategoriasFiltradas = {
-        anterior: subcategoriaAnterior?.subC_Descripcion || 'No seleccionada',
-        nuevo: subcategoriaNueva?.subC_Descripcion || 'No seleccionada',
+        anterior: subcategoriaAnteriorDesc || 'No seleccionada',
+        nuevo: subcategoriaNuevaDesc,
         label: 'Subcategoría'
       };
     }
