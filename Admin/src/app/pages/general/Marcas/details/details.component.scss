@@ -1,120 +1,61 @@
-// Estilos para el contenedor de las tarjetas de detalles
-.details-card-body {
-  padding: 1.5rem; // Espaciado interior general
-}
-
-// Contenedor de la fila de detalles para usar Flexbox
-.detail-row {
-  display: flex;
-  flex-wrap: wrap; // Permitir que los elementos se ajusten en pantallas pequeñas
-  gap: 1.5rem; // Espacio entre las tarjetas
-  justify-content: flex-start; // Alinear tarjetas al inicio
-}
-
-// Estilo de cada tarjeta de detalle individual (Código, Descripción, etc.)
-.detail-box {
-  background: #fff; // Fondo blanco para la tarjeta
-  border-radius: 12px; // Bordes redondeados
-  padding: 1.5rem; // Espaciado interior
-  flex: 1; // Flex-grow, flex-shrink y base width. Permite que crezcan pero tengan un tamaño base.
-  display: flex;
-  align-items: center;
-  gap: 1rem; // Espacio entre el ícono y el texto
-  border: 1px solid #e9ecef; // Borde sutil
-  box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1); // Sombreado suave
-}
-
-// Estilos para el ícono dentro de la tarjeta
-.detail-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: #f8f9fa; // Fondo claro para el ícono
-  color: #5a6a85; // Color del ícono
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem; // Tamaño del ícono
-  border: 1px solid #e9ecef;
-}
-
-// Contenedor para la información de texto
-.detail-info {
-  flex: 1;
-}
-
-// Etiqueta (ej. "Código")
-.detail-label {
-  font-size: 0.9rem;
-  color: #878a99; // Color de la etiqueta
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-}
-
-// Valor (ej. "21")
-.detail-value {
-  font-size: 1.1rem;
-  color: #212529; // Color del valor
-  font-weight: 600;
-  word-break: break-word;
-}
+/* Estilos unificados para el componente de detalles */
 
 .details-container {
   padding: 1rem;
 }
 
+/* Botón de regresar */
 .details-header-button {
   margin-bottom: 1.5rem;
+
+  .btn-primary {
+    display: flex;
+    padding: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    border: none;
+    color: #212529;
+    font-weight: 500;
+    box-shadow: none;
+    overflow: hidden;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    .btn-text {
+      padding: 0.5rem 1rem;
+      background-color: #f8f9fa;
+      color: #212529;
+      border: 1px solid #dee2e6;
+      border-right: none;
+      border-radius: 4px 0 0 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-icon {
+      padding: 0.5rem 0.75rem;
+      background-color: #343a40;
+      color: white;
+      border: 1px solid #343a40;
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+    }
+
+    &:hover .btn-text {
+      background-color: #e9ecef;
+    }
+
+    &:hover .btn-icon {
+      background-color: #23272b;
+    }
+  }
 }
 
-
-/* Eliminamos los estilos antiguos del split-button que ya no se usa */
-
-.details-header-button .btn-primary {
-  display: flex;
-  padding: 0;
-  border-radius: 4px;
-  background-color: transparent;
-  border: none;
-  color: #212529;
-  font-weight: 500;
-  box-shadow: none;
-  overflow: hidden;
-}
-
-.details-header-button .btn-primary:hover {
-  background-color: transparent;
-}
-
-.details-header-button .btn-text {
-  padding: 0.5rem 1rem;
-  background-color: #f8f9fa;
-  color: #212529;
-  border: 1px solid #dee2e6;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-}
-
-.details-header-button .btn-icon {
-  padding: 0.5rem 0.75rem;
-  background-color: #343a40;
-  color: white;
-  border: 1px solid #343a40;
-  border-radius: 0 4px 4px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.details-header-button .btn-primary:hover .btn-text {
-  background-color: #e9ecef;
-}
-
-.details-header-button .btn-primary:hover .btn-icon {
-  background-color: #23272b;
-}
-
-/* Estilos para la tarjeta de detalles */
+/* Tarjeta principal de detalles */
 .details-card {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -126,51 +67,52 @@
 .details-card-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 2px solid #D6B68A; /* Línea dorada debajo del título */
   background-color: #fff;
-}
 
-.details-card-header i {
-  color: #D6B68A;
-  font-size: 1.2rem;
-}
+  i {
+    color: #D6B68A; /* Color de ícono dorado */
+    font-size: 1.4rem;
+  }
 
-.details-card-header span {
-  color: #333;
-  font-size: 1.1rem;
-  font-weight: 600;
+  span {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
 }
 
 .details-card-body {
-  padding: 0;
+  padding: 1.5rem; // Espaciado interior para el contenido
 }
 
-.detail-row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
+/* Estilo de cada caja de detalle individual (Código, Descripción, etc.) */
 .detail-box {
-  flex: 1;
-  min-width: 250px;
-  padding: 1rem;
-  background-color: #f9f9f9;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+  flex: 1;
+  min-width: 250px;
 }
 
 .detail-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #D6B68A;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #D6B68A; /* Fondo dorado */
+  color: #fff; /* Ícono blanco */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  font-size: 1.6rem;
+  border: 1px solid #e9ecef;
 }
 
 .detail-info {
@@ -178,25 +120,22 @@
 }
 
 .detail-label {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 0.25rem;
+  font-size: 0.97rem;
+  color: #D6B68A; /* Color dorado */
+  font-weight: 600;
+  margin-bottom: 0.19rem;
+  letter-spacing: 0.02em;
+  opacity: 0.95;
 }
 
 .detail-value {
-  font-size: 1rem;
-  color: #333;
-  font-weight: 500;
-}
-
-/* Estilos para el historial */
-.historial-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  color: #212529;
   font-weight: 600;
-  margin: 1.5rem 0 1rem;
-  color: #333;
+  word-break: break-word;
 }
 
+/* Tabla de historial */
 .historial-table {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -213,10 +152,10 @@
 .historial-row {
   display: flex;
   border-bottom: 1px solid #e0e0e0;
-}
 
-.historial-row:last-child {
-  border-bottom: none;
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .historial-col {
@@ -224,7 +163,7 @@
   padding: 0.75rem 1rem;
 }
 
-/* Estilos para alertas flotantes */
+/* Alertas flotantes */
 .alert-container {
   position: fixed;
   top: 20px;
@@ -234,7 +173,7 @@
 }
 
 .floating-alert {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: slideIn 0.3s ease-out forwards;
 }
 
@@ -254,55 +193,4 @@
   .detail-row {
     flex-direction: column;
   }
-  
-  .detail-box {
-    width: 100%;
-  }
-}
-.details-header-button {
-  margin-bottom: 1.5rem;
-}
-
-.details-header-button .btn-primary {
-  display: flex;
-  padding: 0;
-  border-radius: 4px;
-  background-color: transparent;
-  border: none;
-  color: #212529;
-  font-weight: 500;
-  box-shadow: none;
-  overflow: hidden;
-}
-
-.details-header-button .btn-primary:hover {
-  background-color: transparent;
-}
-
-.details-header-button .btn-text {
-  padding: 0.5rem 1rem;
-  background-color: #f8f9fa;
-  color: #212529;
-  border: 1px solid #dee2e6;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-}
-
-.details-header-button .btn-icon {
-  padding: 0.5rem 0.75rem;
-  background-color: #343a40;
-  color: white;
-  border: 1px solid #343a40;
-  border-radius: 0 4px 4px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.details-header-button .btn-primary:hover .btn-text {
-  background-color: #e9ecef;
-}
-
-.details-header-button .btn-primary:hover .btn-icon {
-  background-color: #23272b;
 }
