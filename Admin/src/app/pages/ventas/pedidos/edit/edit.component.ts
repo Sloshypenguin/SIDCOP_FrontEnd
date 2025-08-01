@@ -29,33 +29,135 @@ export class EditComponent implements OnInit, OnChanges {
   //Clientes: any[] = [];
   //Direccines: any[] = [];
   productos: any[] = [];
-
+  busquedaProducto = '';
+  productosFiltrados: any[] = [];
+  paginaActual = 1;
+  productosPorPagina = 8;
   
 
-  aumentarCantidad(index: number): void {
-  this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
-}
-
-disminuirCantidad(index: number): void {
-  if (this.productos[index].cantidad > 0) {
-    this.productos[index].cantidad--;
+ buscarProductos(): void {
+    this.paginaActual = 1;
+    this.aplicarFiltros();
   }
-}
 
-validarCantidad(index: number): void {
-  const cantidad = this.productos[index].cantidad;
-  this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad || 0));
-}
+  limpiarBusqueda(): void {
+    this.busquedaProducto = '';
+    this.paginaActual = 1;
+    this.aplicarFiltros();
+  }
 
-obtenerProductosSeleccionados(): any[] {
-  return this.productos
-    .filter(p => p.cantidad > 0)
-    .map(p => ({
-      prod_Id: p.prod_Id,
-      peDe_Cantidad: p.cantidad,
-      peDe_ProdPrecio: p.precio || 0
-    }));
-}
+  private aplicarFiltros(): void {
+    if (!this.busquedaProducto.trim()) {
+      this.productosFiltrados = [...this.productos];
+    } else {
+      const termino = this.busquedaProducto.toLowerCase().trim();
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.prod_Descripcion.toLowerCase().includes(termino)
+      );
+    }
+  }
+
+  getProductosFiltrados(): any[] {
+    return this.productosFiltrados;
+  }
+
+  getProductosPaginados(): any[] {
+    const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+    const fin = inicio + this.productosPorPagina;
+    return this.productosFiltrados.slice(inicio, fin);
+  }
+
+  getTotalPaginas(): number {
+    return Math.ceil(this.productosFiltrados.length / this.productosPorPagina);
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.getTotalPaginas()) {
+      this.paginaActual = pagina;
+    }
+  }
+
+  getPaginasVisibles(): number[] {
+    const totalPaginas = this.getTotalPaginas();
+    const paginaActual = this.paginaActual;
+    const paginas: number[] = [];
+
+    if (totalPaginas <= 5) {
+      for (let i = 1; i <= totalPaginas; i++) {
+        paginas.push(i);
+      }
+    } else {
+      if (paginaActual <= 3) {
+        for (let i = 1; i <= 5; i++) {
+          paginas.push(i);
+        }
+      } else if (paginaActual >= totalPaginas - 2) {
+        for (let i = totalPaginas - 4; i <= totalPaginas; i++) {
+          paginas.push(i);
+        }
+      } else {
+        for (let i = paginaActual - 2; i <= paginaActual + 2; i++) {
+          paginas.push(i);
+        }
+      }
+    }
+
+    return paginas;
+  }
+
+  getInicioRegistro(): number {
+    return (this.paginaActual - 1) * this.productosPorPagina + 1;
+  }
+
+  getFinRegistro(): number {
+    const fin = this.paginaActual * this.productosPorPagina;
+    return Math.min(fin, this.productosFiltrados.length);
+  }
+
+  // Método para obtener el índice real del producto en el array principal
+  getProductoIndex(prodId: number): number {
+    return this.productos.findIndex(p => p.prod_Id === prodId);
+  }
+
+  // ========== MÉTODOS DE CANTIDAD MEJORADOS ==========
+
+  aumentarCantidad(prodId: number): void {
+    const index = this.getProductoIndex(prodId);
+    if (index >= 0 && index < this.productos.length) {
+      this.productos[index].cantidad = (this.productos[index].cantidad || 0) + 1;
+    }
+  }
+
+  disminuirCantidad(prodId: number): void {
+    const index = this.getProductoIndex(prodId);
+    if (index >= 0 && index < this.productos.length && this.productos[index].cantidad > 0) {
+      this.productos[index].cantidad--;
+    }
+  }
+
+  validarCantidad(prodId: number): void {
+    const index = this.getProductoIndex(prodId);
+    if (index >= 0 && index < this.productos.length) {
+      const cantidad = this.productos[index].cantidad || 0;
+      this.productos[index].cantidad = Math.max(0, Math.min(999, cantidad));
+    }
+  }
+
+  // Método para obtener la cantidad de un producto específico
+  getCantidadProducto(prodId: number): number {
+    const producto = this.productos.find(p => p.prod_Id === prodId);
+    return producto ? (producto.cantidad || 0) : 0;
+  }
+
+  obtenerProductosSeleccionados(): any[] {
+    return this.productos
+      .filter(p => p.cantidad > 0)
+      .map(p => ({
+        prod_Id: p.prod_Id,
+        peDe_Cantidad: p.cantidad,
+        peDe_ProdPrecio: p.precio || 0
+      }));
+  }
 
 listarProductosDesdePedido(): void {
   this.http.get<any>(`${environment.apiBaseUrl}/Productos/Listar`, {
@@ -127,12 +229,19 @@ listarProductosDesdePedido(): void {
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
  
+  trackByProducto(index: number, producto: any): number {
+  return producto.prod_Id;
+}
 
+ getTotalProductosSeleccionados(): number {
+    return this.productos
+      .filter(producto => producto.cantidad > 0)
+      .reduce((total, producto) => total + producto.cantidad, 0);
+  }
   Math = Math; // para usar Math en la plantilla
-  productosFiltrados: any[] = []; // resultado después del filtro
+ 
   productosPaginados: any[] = []; // productos que se muestran en la página actual
-  paginaActual: number = 1;
-  productosPorPagina: number = 6;
+ 
 
   TodasDirecciones: any;
   Clientes: any;
@@ -188,14 +297,7 @@ actualizarProductosPaginados(): void {
 }
 
 
-cambiarPagina(delta: number): void {
-  const totalPaginas = Math.ceil(this.productosFiltrados.length / this.productosPorPagina);
-  const nuevaPagina = this.paginaActual + delta;
-  if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-    this.paginaActual = nuevaPagina;
-    this.actualizarProductosPaginados();
-  }
-}
+
 
 
   constructor(private http: HttpClient) {

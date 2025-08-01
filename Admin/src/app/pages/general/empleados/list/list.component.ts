@@ -19,6 +19,8 @@ import { getUserId } from 'src/app/core/utils/user-utils';
 import { isTrustedHtml } from 'ngx-editor/lib/trustedTypesUtil';
 import { Empleado } from 'src/app/Modelos/general/Empleado.Model';
 
+import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
+
 import { CreateComponent } from '../create/create.component';
 import { DetailsComponent } from '../details/details.component';
 import { EditComponent } from '../edit/edit.component';
@@ -132,6 +134,7 @@ export class ListComponent {
   editData: any = null;
 
   constructor(private formBuilder: UntypedFormBuilder, private http: HttpClient) {}
+  
 
   ngOnInit(): void {
     /**
@@ -165,6 +168,7 @@ export class ListComponent {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.instructorGrid = data || [];
+      this.usuarioGrid = data || [];
       this.instructors = cloneDeep(this.instructorGrid.slice(0, 10));
       this.isLoading = false;
     });
@@ -178,6 +182,7 @@ export class ListComponent {
   };
 
   uploadedFiles: any[] = [];
+
 
   // File Upload
   imageURL: any;
@@ -223,12 +228,20 @@ export class ListComponent {
 
   // filterdata
   filterdata() {
-    if (this.term) {
-      this.instructors = this.instructorGrid.filter((el: any) => el.name?.toLowerCase().includes(this.term.toLowerCase()));
+    if (this.term && this.term.trim() !== '') {
+      const termLower = this.term.toLowerCase();
+      this.instructors = this.instructorGrid.filter((el: any) =>
+        (el.empl_Nombres && el.empl_Nombres.toLowerCase().includes(termLower)) ||
+        (el.empl_Apellidos && el.empl_Apellidos.toLowerCase().includes(termLower)) ||
+        (el.empl_Correo && el.empl_Correo.toLowerCase().includes(termLower)) ||
+        (el.empl_Codigo && el.empl_Codigo.toLowerCase().includes(termLower))
+      );
     } else {
-      this.instructors = this.instructorGrid.slice(0, 10);
+      // Mostrar la página actual completa si no hay término de búsqueda
+      const startItem = (this.currentPage - 1) * this.itemsPerPage;
+      const endItem = this.currentPage * this.itemsPerPage;
+      this.instructors = this.instructorGrid.slice(startItem, endItem);
     }
-    // noResultElement
     this.updateNoResultDisplay();
   }
 
@@ -435,4 +448,21 @@ export class ListComponent {
       this.showEditForm = false;
       this.empleadoEditando = null;
     }
+
+       
+
+    // Paginacion
+    usuarioGrid: any = [];
+    currentPage: number = 1;
+  itemsPerPage: number = 12;
+
+  get startIndex(): number {
+    return this.usuarioGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
+  }
+
+  get endIndex(): number {
+    if (!this.usuarioGrid?.length) return 0;
+    const end = this.currentPage * this.itemsPerPage;
+    return end > this.usuarioGrid.length ? this.usuarioGrid.length : end;
+  }
 }

@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NgSelectModule],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
 })
@@ -39,54 +40,83 @@ export class CreateComponent {
   };
 
   // Catálogos
-  Departamentos: any[] = [];
-  TodosMunicipios: any[] = [];
-  TodosColonias: any[] = [];
-
-  Municipios: any[] = [];
-  Colonias: any[] = [];
-
-  selectedDepa: string = '';
-  selectedMuni: string = '';
+  colonia: any[] = [];
 
   constructor(private http: HttpClient) {
-    this.cargarListados();
+    this.listarColonias();
   }
 
-  cargarListados(): void {
-    this.http.get<any>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => this.Departamentos = data,
-      error: (error) => console.error('Error cargando departamentos:', error)
-    });
+  // Validación RTN - solo números y máximo 14 dígitos
+  onRTNInput(event: any): void {
+    let value = event.target.value;
+    // Remover todo lo que no sean números
+    value = value.replace(/\D/g, '');
+    // Limitar a 14 dígitos
+    if (value.length > 14) {
+      value = value.substring(0, 14);
+    }
+    this.configFactura.coFa_RTN = value;
+    event.target.value = value;
+  }
 
-    this.http.get<any>(`${environment.apiBaseUrl}/Municipios/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => this.TodosMunicipios = data,
-      error: (error) => console.error('Error cargando municipios:', error)
-    });
+  // Validación de correo electrónico
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
 
+  // Verificar si RTN tiene exactamente 14 dígitos
+  isValidRTN(rtn: string): boolean {
+    return rtn.length === 14 && /^\d{14}$/.test(rtn);
+  }
+
+  // Función de búsqueda para colonias
+  searchColonias = (term: string, item: any) => {
+    term = term.toLowerCase();
+    return (
+      item.colo_Descripcion?.toLowerCase().includes(term) ||
+      item.muni_Descripcion?.toLowerCase().includes(term) ||
+      item.depa_Descripcion?.toLowerCase().includes(term)
+    );
+  };
+
+  // Función para ordenar por municipio y departamento
+  ordenarPorMunicipioYDepartamento(colonias: any[]): any[] {
+    return colonias.sort((a, b) => {
+      // Primero por departamento
+      if (a.depa_Descripcion < b.depa_Descripcion) return -1;
+      if (a.depa_Descripcion > b.depa_Descripcion) return 1;
+      // Luego por municipio
+      if (a.muni_Descripcion < b.muni_Descripcion) return -1;
+      if (a.muni_Descripcion > b.muni_Descripcion) return 1;
+      return 0;
+    });
+  }
+
+  // Cargar colonias
+  listarColonias(): void {
     this.http.get<any>(`${environment.apiBaseUrl}/Colonia/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
-      next: (data) => this.TodosColonias = data,
+      next: (data) => this.colonia = this.ordenarPorMunicipioYDepartamento(data),
       error: (error) => console.error('Error cargando colonias:', error)
     });
   }
 
-  cargarMunicipios(codigoDepa: string): void {
-    this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
-    this.Colonias = [];
-    this.selectedMuni = '';
-    this.configFactura.colo_Id = 0;
-  }
+  // Variable para dirección inicial
+  direccionExactaInicial: string = '';
 
-  cargarColonias(codigoMuni: string): void {
-    this.Colonias = this.TodosColonias.filter(c => c.muni_Codigo === codigoMuni);
-    this.configFactura.colo_Id = 0;
-    console.log("Colonias cargadas:", this.Colonias);
+  // Método cuando se selecciona una colonia
+  onColoniaSeleccionada(colo_Id: number) {
+    const coloniaSeleccionada = this.colonia.find((c: any) => c.colo_Id === colo_Id);
+
+    if (coloniaSeleccionada) {
+      this.direccionExactaInicial = coloniaSeleccionada.colo_Descripcion;
+      this.configFactura.coFa_DireccionEmpresa = coloniaSeleccionada.colo_Descripcion;
+    } else {
+      this.direccionExactaInicial = '';
+      this.configFactura.coFa_DireccionEmpresa = '';
+    }
   }
 
   onImagenSeleccionada(event: any) {
@@ -102,7 +132,6 @@ export class CreateComponent {
       //dbt7mxrwk es el nombre de la cuenta de Cloudinary
       const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
 
-      
       fetch(url, {
         method: 'POST',
         body: formData
@@ -129,35 +158,50 @@ export class CreateComponent {
   cancelar(): void {
     this.cerrarAlerta();
     this.onCancel.emit();
-  this.recargarPagina();
+    this.recargarPagina();
   }
 
   // Método para validar todos los campos obligatorios
   private validarCampos(): boolean {
-    const camposObligatorios = [
-      { campo: this.configFactura.coFa_NombreEmpresa.trim(), nombre: 'Nombre de la empresa' },
-      { campo: this.configFactura.coFa_DireccionEmpresa.trim(), nombre: 'Dirección de la empresa' },
-      { campo: this.configFactura.coFa_RTN.trim(), nombre: 'RTN' },
-      { campo: this.configFactura.coFa_Correo.trim(), nombre: 'Correo electrónico' },
-      { campo: this.configFactura.coFa_Telefono1.trim(), nombre: 'Teléfono principal' },
-      { campo: this.configFactura.coFa_Logo, nombre: 'Logo' },
-      { campo: this.selectedDepa, nombre: 'Departamento' },
-      { campo: this.selectedMuni, nombre: 'Municipio' },
-      { campo: this.configFactura.colo_Id, nombre: 'Colonia' }
-    ];
+    const errores: string[] = [];
 
-    const camposVacios = camposObligatorios.filter(item => {
-      // Para colo_Id verificamos que sea mayor a 0
-      if (item.nombre === 'Colonia') {
-        return item.campo === 0;
-      }
-      // Para el resto verificamos que no esté vacío
-      return !item.campo;
-    });
+    // Validar campos obligatorios básicos
+    if (!this.configFactura.coFa_NombreEmpresa.trim()) {
+      errores.push('Nombre de la empresa');
+    }
 
-    if (camposVacios.length > 0) {
-      const nombresCampos = camposVacios.map(item => item.nombre).join(', ');
-      this.mensajeWarning = `Por favor complete los siguientes campos obligatorios: ${nombresCampos}`;
+    if (!this.configFactura.coFa_DireccionEmpresa.trim()) {
+      errores.push('Dirección de la empresa');
+    }
+
+    // Validar RTN
+    if (!this.configFactura.coFa_RTN.trim()) {
+      errores.push('RTN');
+    } else if (!this.isValidRTN(this.configFactura.coFa_RTN)) {
+      errores.push('RTN debe tener exactamente 14 dígitos');
+    }
+
+    // Validar correo
+    if (!this.configFactura.coFa_Correo.trim()) {
+      errores.push('Correo electrónico');
+    } else if (!this.isValidEmail(this.configFactura.coFa_Correo)) {
+      errores.push('Correo electrónico debe tener un formato válido');
+    }
+
+    if (!this.configFactura.coFa_Telefono1.trim()) {
+      errores.push('Teléfono principal');
+    }
+
+    if (!this.configFactura.coFa_Logo) {
+      errores.push('Logo');
+    }
+
+    if (this.configFactura.colo_Id === 0) {
+      errores.push('Colonia');
+    }
+
+    if (errores.length > 0) {
+      this.mensajeWarning = `Por favor complete o corrija los siguientes campos: ${errores.join(', ')}`;
       this.mostrarAlertaWarning = true;
       this.mostrarAlertaError = false;
       this.mostrarAlertaExito = false;
@@ -172,30 +216,6 @@ export class CreateComponent {
     }
 
     return true;
-  }
-
-  // Método para debugging (remover en producción)
-  private debugResponse(response: any, isError: boolean = false): void {
-    console.log('=== DEBUGGING RESPONSE ===');
-    console.log('Es error:', isError);
-    console.log('Tipo de respuesta:', typeof response);
-    console.log('Respuesta completa:', response);
-    
-    if (response) {
-      console.log('Propiedades del objeto:', Object.keys(response));
-      
-      if (response.body) {
-        console.log('Body existe:', response.body);
-        console.log('Tipo de body:', typeof response.body);
-        console.log('Propiedades del body:', Object.keys(response.body));
-      }
-      
-      if (response.data) {
-        console.log('Data existe:', response.data);
-        console.log('Propiedades de data:', Object.keys(response.data));
-      }
-    }
-    console.log('=========================');
   }
 
   guardar(): void {
@@ -354,9 +374,17 @@ export class CreateComponent {
     });
   }
 
+  private debugResponse(response: any, isError: boolean): void {
+    console.log(isError ? 'Error Response:' : 'Success Response:', response);
+    if (response && response.body) {
+      console.log('Response Body:', response.body);
+    }
+    if (response && response.status) {
+      console.log('Response Status:', response.status);
+    }
+  }
+
   private recargarPagina(): void {
     window.location.reload();
   }
-
-
 }

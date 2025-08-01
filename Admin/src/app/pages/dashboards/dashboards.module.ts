@@ -11,8 +11,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 // Components
 import { IndexComponent } from './index/index.component';
 import { LocalstorageDebugComponent } from './index/localstorage-debug.component';
-import { PermisosDebugComponent } from './permisos-debug/permisos-debug.component';
-import { PermisosEjemploComponent } from './permisos-ejemplo/permisos-ejemplo.component';
+
 
 // UI y librerías
 import { SimplebarAngularModule } from 'simplebar-angular';
@@ -45,9 +44,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ModalModule.forRoot(),
     BsDatepickerModule.forRoot(),
     // Importar componentes standalone
-    LocalstorageDebugComponent,
-    PermisosDebugComponent,
-    PermisosEjemploComponent
+    LocalstorageDebugComponent
   ],
   providers: [
     DatePipe

@@ -54,6 +54,7 @@ colonias: Colonias[] = [];
 
   sucursal: Sucursales = {
     sucu_Id: 0,
+    secuencia: 0,
     sucu_Descripcion: '',
     colo_Id: 0,
     sucu_DireccionExacta: '',
@@ -132,6 +133,7 @@ colonias: Colonias[] = [];
     setTimeout(() => {
       this.onOverlayChange.emit(false);
       this.sucursal = {
+        secuencia: 0,
         sucu_Id: 0,
         sucu_Descripcion: '',
         colo_Id: 0,

@@ -1,15 +1,16 @@
 <div class="details-container">
-  
+
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
     <!-- Alerta de error -->
-    <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
+    <div *ngIf="mostrarAlertaError"
+      class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
       <strong>¡Error!</strong> {{ mensajeError }}
       <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
-  
+
   <!-- Botón de regresar -->
   <div class="details-header-button">
     <button type="button" class="btn btn-primary" (click)="cerrar()">
@@ -19,57 +20,99 @@
   </div>
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && RegistroCAIDetalle" class="details-content">
-    
+
     <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles de Registros CAI</div>
-      <div class="details-id-row">
-  <div class="details-id">
-    <div class="details-id-label">Código</div>
-    <div class="details-id-value">{{ RegistroCAIDetalle.regC_Descripcion || 'N/A' }}</div>
-  </div>
+    
 
-  <!-- Sucursal -->
-<div class="details-id">
-  <div class="details-id-label">Sucursal</div>
-  <div class="details-id-value">{{ RegistroCAIDetalle.sucu_Descripcion || 'N/A' }}</div>
-</div>
+    <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+        <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+          <i class="ri-file-paper-2-line me-2 fs-4"></i>
+          <h5 class="mb-0">Detalles del Registro CAI</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-attachment-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Descripción</div>
+                  <div class="detail-value">{{ RegistroCAIDetalle.regC_Descripcion || 'N/A' }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-building-2-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Sucursal</div>
+                  <div class="detail-value"> {{ RegistroCAIDetalle.sucu_Descripcion || 'N/A' }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-price-tag-3-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Punto de Emisión</div>
+                  <div class="detail-value"> {{ RegistroCAIDetalle.puEm_Codigo }} - {{
+                    RegistroCAIDetalle.puEm_Descripcion ||
+                    'N/A' }}</div>
+                </div>
+              </div>
+            </div>
 
-<!-- Punto de emisión -->
-<div class="details-id">
-  <div class="details-id-label">Punto de Emisión</div>
-  <div class="details-id-value">{{ RegistroCAIDetalle.puEm_Codigo }} - {{ RegistroCAIDetalle.puEm_Descripcion || 'N/A' }}</div>
-</div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-voice-recognition-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Número CAI</div>
+                  <div class="detail-value"> {{ RegistroCAIDetalle.nCai_Codigo }} - {{
+                    RegistroCAIDetalle.nCai_Descripcion ||
+                    'N/A' }}</div>
+                </div>
+              </div>
+            </div>
 
-<!-- Número CAI -->
-<div class="details-id">
-  <div class="details-id-label">Número CAI</div>
-  <div class="details-id-value">{{ RegistroCAIDetalle.nCai_Codigo }} - {{ RegistroCAIDetalle.nCai_Descripcion || 'N/A' }}</div>
-</div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-arrow-up-down-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Rango</div>
+                  <div class="detail-value"> {{ RegistroCAIDetalle.regC_RangoInicial }} - {{
+            RegistroCAIDetalle.regC_RangoFinal }}</div>
+                </div>
+              </div>
+            </div>
 
-<!-- Rango -->
-<div class="details-id">
-  <div class="details-id-label">Rango</div>
-  <div class="details-id-value">{{ RegistroCAIDetalle.regC_RangoInicial }} - {{ RegistroCAIDetalle.regC_RangoFinal }}</div>
-</div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-calendar-event-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Fecha Inicial de Emisión</div>
+                  <div class="detail-value"> {{ formatearFecha(RegistroCAIDetalle.regC_FechaInicialEmision) }}</div>
+                </div>
+              </div>
+            </div>
 
-<!-- Fecha inicial de emisión -->
-<div class="details-id">
-  <div class="details-id-label">Fecha Inicial de Emisión</div>
-  <div class="details-id-value">{{ formatearFecha(RegistroCAIDetalle.regC_FechaInicialEmision) }}</div>
-</div>
-
-<!-- Fecha final de emisión -->
-<div class="details-id">
-  <div class="details-id-label">Fecha Final de Emisión</div>
-  <div class="details-id-value">{{ formatearFecha(RegistroCAIDetalle.regC_FechaFinalEmision) }}</div>
-</div>
+            <div class="col-12 col-sm-6">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white"><i class="ri-calendar-event-line"></i></div>
+                <div class="detail-content">
+                  <div class="detail-label">Fecha Final de Emisión</div>
+                  <div class="detail-value"> {{ formatearFecha(RegistroCAIDetalle.regC_FechaFinalEmision) }}</div>
+                </div>
+              </div>
+            </div>
 
 
-  
-</div>
+          </div>
+        </div>
+      </div>
     </div>
-      <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+
+
+    <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
       <div class="audit-table">
@@ -78,34 +121,37 @@
           <div class="audit-col">Usuario</div>
           <div class="audit-col">Fecha</div>
         </div>
-      
-      <!-- Fila de creación -->
-      <div class="audit-row">
-        <div class="audit-col">
-          <span class="audit-action">Creador</span>
+
+        <!-- Fila de creación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Creador</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user">{{ RegistroCAIDetalle.usuarioCreacion}}</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date">{{ formatearFecha(RegistroCAIDetalle.regC_FechaCreacion) }}</span>
+          </div>
         </div>
-        <div class="audit-col">
-          <span class="audit-user">{{ RegistroCAIDetalle.usuarioCreacion}}</span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(RegistroCAIDetalle.regC_FechaCreacion) }}</span>
-        </div>
-      </div>
-      
-      <!-- Fila de modificación -->
-      <div class="audit-row">
-        <div class="audit-col">
-          <span class="audit-action">Modificación</span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-user">{{ RegistroCAIDetalle.usuarioModificacion || 'N/A' }}</span>
-        </div>
-        <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(RegistroCAIDetalle.regC_FechaModificacion ?? null) }}</span>
+
+        <!-- Fila de modificación -->
+        <div class="audit-row">
+          <div class="audit-col">
+            <span class="audit-action">Modificación</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-user">{{ RegistroCAIDetalle.usuarioModificacion || 'N/A' }}</span>
+          </div>
+          <div class="audit-col">
+            <span class="audit-date">{{ formatearFecha(RegistroCAIDetalle.regC_FechaModificacion ?? null) }}</span>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-    
+
+
+
+
   </div>
 </div>
