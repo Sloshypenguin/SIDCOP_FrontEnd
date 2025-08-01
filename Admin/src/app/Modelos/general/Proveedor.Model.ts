@@ -13,7 +13,7 @@ export class Proveedor{
   muni_Descripcion: string = '';
 depa_Codigo: string = '';
   muni_Codigo: string = '';
-  
+  No: number = 0;
 
   usua_Creacion: number = 0;
   fechaCreacion: Date = new Date();

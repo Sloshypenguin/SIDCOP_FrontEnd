@@ -167,10 +167,10 @@
           <span class="audit-action">Creador</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ descuentoDetalle?.usuarioCreacion || 'N/A' }}</span>
+          <span class="audit-user">{{ descuentoDetalle.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(descuentoDetalle?.desc_FechaCreacion ?? null) || 'N/A' }}</span>
+          <span class="audit-date">{{ formatearFecha(descuentoDetalle.desc_FechaCreacion) || 'N/A' }}</span>
         </div>
       </div>
       
@@ -180,10 +180,10 @@
           <span class="audit-action">Modificación</span>
         </div>
         <div class="audit-col">
-          <span class="audit-user">{{ descuentoDetalle?.usuarioModificacion || 'N/A' }}</span>
+          <span class="audit-user">{{ descuentoDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(descuentoDetalle?.desc_FechaModificacion ?? null ) || 'N/A' }}</span>
+          <span class="audit-date">{{ formatearFecha(descuentoDetalle.desc_FechaModificacion ?? null ) || 'N/A' }}</span>
         </div>
       </div>
     </div>
