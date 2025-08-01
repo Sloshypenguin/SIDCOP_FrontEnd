@@ -43,7 +43,7 @@ export class CreateComponent {
   nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
   direccion = { colo_Id: '' };
   direccionAval = { colo_Id: '' };
-  activeTab = 1;
+  activeTab = 2;
 
   nacionalidades: any[] = [];
   paises: any[] = [];
