@@ -132,6 +132,7 @@
                   name="subc_Id"
                   class="form-select"
                   [(ngModel)]="producto.subc_Id"
+                  (change)="onSubcategoriaChange($event)"
                   [class.is-invalid]="!producto.subc_Id && mostrarErrores"
                   required
                   [disabled]="!producto.cate_Id || producto.cate_Id === 0"

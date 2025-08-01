@@ -111,6 +111,9 @@ export class EditComponent implements OnChanges {
       this.producto.prod_PagaImpuesto = this.producto.prod_PagaImpuesto || 'N';
       this.producto.impu_Id = this.producto.impu_Id || 0;
       this.cargarCategorias();
+
+      const subcategoriaActual = this.subcategorias.find(s => s.subc_Id === this.producto.subc_Id);
+      this.producto.subc_Descripcion = subcategoriaActual ? subcategoriaActual.subC_Descripcion : '';
     }
   }
   
@@ -160,6 +163,16 @@ export class EditComponent implements OnChanges {
     }
     console.log('Filtrando subcategorías para categoría:', categoriaId);
     this.filtrarSubcategoriasPorCategoria(categoriaId);
+  }
+
+  onSubcategoriaChange(event: any): void {
+    const selectedId = +event.target.value;
+    const subcategoriaSeleccionada = this.subcategoriasFiltradas.find(s => s.subc_Id === selectedId);
+    if (subcategoriaSeleccionada) {
+      this.producto.subc_Descripcion = subcategoriaSeleccionada.subC_Descripcion;
+    } else {
+      this.producto.subc_Descripcion = '';
+    }
   }
 
   cargarMarcas() {
@@ -361,12 +374,12 @@ export class EditComponent implements OnChanges {
     }
 
     if (a.subc_Id !== b.subc_Id) {
-      const subcategoriaAnterior = this.subcategorias.find(c => c.subc_Id === b.subc_Id);
-      const subcategoriaNueva = this.subcategorias.find(c => c.subc_Id === a.subc_Id);
-      
-      this.cambiosDetectados.subcategorias = {
-        anterior: subcategoriaAnterior ? `${subcategoriaAnterior.subC_Descripcion}` : 'No seleccionada',
-        nuevo: subcategoriaNueva ? `${subcategoriaNueva.subC_Descripcion}` : 'No seleccionada',
+      const subcategoriaAnterior = this.subcategoriasFiltradas.find(c => c.subc_Id === b.subc_Id);
+      const subcategoriaNueva = this.subcategoriasFiltradas.find(c => c.subc_Id === a.subc_Id);
+
+      this.cambiosDetectados.subcategoriasFiltradas = {
+        anterior: subcategoriaAnterior?.subC_Descripcion || 'No seleccionada',
+        nuevo: subcategoriaNueva?.subC_Descripcion || 'No seleccionada',
         label: 'Subcategoría'
       };
     }
