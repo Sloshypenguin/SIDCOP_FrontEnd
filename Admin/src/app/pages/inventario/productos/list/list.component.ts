@@ -376,7 +376,7 @@ export class ListComponent implements OnInit {
           ? data
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
         this.productoGrid = datosFiltrados || [];
-        this.productos = this.productoGrid.slice(0, 12);
+        this.productos = this.productoGrid.slice(0, 8);
         this.filtradorProductos();
       },500);
     });

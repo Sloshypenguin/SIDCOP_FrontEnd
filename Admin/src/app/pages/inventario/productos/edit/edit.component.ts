@@ -76,7 +76,8 @@ export class EditComponent implements OnChanges {
     message_Status: '',
   };
 
-  productoOriginal = '';
+  productoOriginal: any = {};
+  imagenSeleccionada = false;
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -103,7 +104,7 @@ export class EditComponent implements OnChanges {
       this.producto.marc_Descripcion = marcaActual ? marcaActual.marc_Descripcion : '';
       const proveedorActual = this.proveedores.find(p => p.prov_Id === this.producto.prov_Id);
       this.producto.prov_NombreEmpresa = proveedorActual ? proveedorActual.prov_NombreEmpresa : '';
-      this.productoOriginal = this.producto.prod_DescripcionCorta || '';
+      this.productoOriginal = { ...this.productoData };
       this.mostrarErrores = false;
       this.cerrarAlerta();
       this.producto.prod_EsPromo = this.producto.prod_EsPromo || 'N';
@@ -283,6 +284,104 @@ export class EditComponent implements OnChanges {
     this.mensajeWarning = '';
   }
 
+  obtenerListaCambios(): any[] {
+    return Object.values(this.cambiosDetectados);
+  }
+
+  cambiosDetectados: any = {};
+
+  hayDiferencias(): boolean {
+    const a = this.producto;
+    const b = this.productoOriginal;
+    this.cambiosDetectados = {};
+
+    // Verificar cada campo y almacenar los cambios
+    if (a.prod_Codigo !== b.prod_Codigo) {
+      this.cambiosDetectados.codigo = {
+        anterior: b.prod_Codigo,
+        nuevo: a.prod_Codigo,
+        label: 'Código del Producto'
+      };
+    }
+
+    if (a.prod_CodigoBarra !== b.prod_CodigoBarra) {
+      this.cambiosDetectados.codigoBarra = {
+        anterior: b.prod_CodigoBarra,
+        nuevo: a.prod_CodigoBarra,
+        label: 'Código de Barras'
+      };
+    }
+
+    if (a.prod_Descripcion !== b.prod_Descripcion) {
+      this.cambiosDetectados.descripcion = {
+        anterior: b.prod_Descripcion,
+        nuevo: a.prod_Descripcion,
+        label: 'Descripción del Producto'
+      };
+    }
+
+    if (a.prod_DescripcionCorta !== b.prod_DescripcionCorta) {
+      this.cambiosDetectados.descripcionCorta = {
+        anterior: b.prod_DescripcionCorta,
+        nuevo: a.prod_DescripcionCorta,
+        label: 'Descripción Corta del Producto'
+      };
+    }
+
+    if (a.marc_Id !== b.marc_Id) {
+      this.cambiosDetectados.marca = {
+        anterior: b.marc_Descripcion,
+        nuevo: a.marc_Descripcion,
+        label: 'Marca'
+      };
+    }
+
+    if (a.prov_Id !== b.prov_Id) {
+      this.cambiosDetectados.proveedor = {
+        anterior: b.prov_NombreEmpresa,
+        nuevo: a.prov_NombreEmpresa,
+        label: 'Proveedor'
+      };
+    }
+
+    if (a.prod_PrecioUnitario !== b.prod_PrecioUnitario) {
+      this.cambiosDetectados.precioUnitario = {
+        anterior: b.prod_PrecioUnitario,
+        nuevo: a.prod_PrecioUnitario,
+        label: 'Precio Unitario'
+      };
+    }
+
+    if (a.prod_CostoTotal !== b.prod_CostoTotal) {
+      this.cambiosDetectados.costoTotal = {
+        anterior: b.prod_CostoTotal,
+        nuevo: a.prod_CostoTotal,
+        label: 'Costo Total'
+      };
+    }
+
+    if (a.subc_Id !== b.subc_Id) {
+      const subcategoriaAnterior = this.subcategorias.find(c => c.subc_Id === b.subc_Id);
+      const subcategoriaNueva = this.subcategorias.find(c => c.subc_Id === a.subc_Id);
+      
+      this.cambiosDetectados.subcategorias = {
+        anterior: subcategoriaAnterior ? `${subcategoriaAnterior.subC_Descripcion}` : 'No seleccionada',
+        nuevo: subcategoriaNueva ? `${subcategoriaNueva.subC_Descripcion}` : 'No seleccionada',
+        label: 'Subcategoría'
+      };
+    }
+
+    if (a.prod_Imagen !== b.prod_Imagen) {
+      this.cambiosDetectados.imagen = {
+        anterior: b.prod_Imagen ? 'Imagen actual' : 'Sin imagen',
+        nuevo: a.prod_Imagen ? 'Nueva imagen' : 'Sin imagen',
+        label: 'Imagen del Producto'
+      };
+    }
+
+    return Object.keys(this.cambiosDetectados).length > 0;
+  }
+
   validarEdicion(): void {
     this.mostrarErrores = true;
 
@@ -299,20 +398,18 @@ export class EditComponent implements OnChanges {
       this.producto.prod_CostoTotal >= 0 &&
       this.producto.prod_PrecioUnitario >= this.producto.prod_CostoTotal
     ) {
-      const hayCambios = 
-        this.producto.prod_Imagen !== this.productoData?.prod_Imagen ||
-        this.producto.prod_Codigo.trim() !== this.productoData?.prod_Codigo?.trim() ||
-        this.producto.prod_Descripcion.trim() !== this.productoData?.prod_Descripcion?.trim() ||
-        this.producto.prod_DescripcionCorta.trim() !== this.productoData?.prod_DescripcionCorta?.trim() ||
-        this.producto.subc_Id !== this.productoData?.subc_Id ||
-        this.producto.marc_Id !== this.productoData?.marc_Id ||
-        this.producto.prov_Id !== this.productoData?.prov_Id ||
-        this.producto.prod_PrecioUnitario !== this.productoData?.prod_PrecioUnitario ||
-        this.producto.prod_CostoTotal !== this.productoData?.prod_CostoTotal
-      if (hayCambios) {
+      // const hayCambios = 
+      //   this.producto.prod_Imagen !== this.productoData?.prod_Imagen ||
+      //   this.producto.prod_Codigo.trim() !== this.productoData?.prod_Codigo?.trim() ||
+      //   this.producto.prod_Descripcion.trim() !== this.productoData?.prod_Descripcion?.trim() ||
+      //   this.producto.prod_DescripcionCorta.trim() !== this.productoData?.prod_DescripcionCorta?.trim() ||
+      //   this.producto.subc_Id !== this.productoData?.subc_Id ||
+      //   this.producto.marc_Id !== this.productoData?.marc_Id ||
+      //   this.producto.prov_Id !== this.productoData?.prov_Id ||
+      //   this.producto.prod_PrecioUnitario !== this.productoData?.prod_PrecioUnitario ||
+      //   this.producto.prod_CostoTotal !== this.productoData?.prod_CostoTotal
+      if (this.hayDiferencias()) {
         this.mostrarConfirmacionEditar = true;
-        console.log("Viejo: " + this.productoData?.marc_Id + this.productoData?.marc_Descripcion);
-        console.log("Nuevo: " + this.producto.marc_Id + this.producto.marc_Descripcion);
       } else {
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'No se han detectado cambios.';
