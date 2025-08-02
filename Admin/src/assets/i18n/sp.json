@@ -50,13 +50,15 @@
       "TEXT": "Logistica",
       "LIST": {
         "BODEGAS": "Bodegas",
-        "TRASLADOS": "Traslados"
+        "TRASLADOS": "Traslados",
+        "REPORTEPRODUCTOS": "Reporte Productos" 
       }
     },
       "REPORTES": {
       "TEXT": "Reportes",
       "LIST": {
-        "REPORTESPRODUCTOS": "ReporteProductos"      }
+        "REPORTEPRODUCTOS": "Reporte Productos"      
+      }
     },
     "DASHBOARD": {
       "TEXT": "Tableros",

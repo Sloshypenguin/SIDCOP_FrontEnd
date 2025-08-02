@@ -1,22 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermisoGuard } from '../../core/guards/permiso.guard';
 
 const routes: Routes = [
   {
-    path: 'reportes',
+    path: 'reporteproductos',
     loadChildren: () =>
-      import('../reportes/reporteProductos/reporteProductos.module').then(m => m.ReporteProductosModule)
+      import('../reportes/reporteProductos/reporteProductos.module').then(m => m.ReporteProductosModule),
+    canActivate: [PermisoGuard],
+    data: { pantallaId: 61 } // ID 61: Reporte Productos
   }
   //  ,{
   //   path: 'traslados',
   //   loadChildren: () =>
   //     import('./traslados/traslado.module').then(m => m.TrasladoModule)
   // },
-  // {
-  //   path: 'recargas',
-  //   loadChildren: () =>
-  //     import('./recargas/recarga.module').then(m => m.RecargaModule)
-  // }
+
 ];
 
 @NgModule({
