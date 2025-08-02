@@ -14,6 +14,9 @@ import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
 import { Subcategoria } from 'src/app/Modelos/inventario/SubcategoriaModel';
 import { TreeKeyManager } from '@angular/cdk/a11y';
+import { NgxMaskService } from 'ngx-mask';
+import { CurrencyMaskModule } from "ng2-currency-mask";
+
 
 @Component({
   selector: 'app-create',
@@ -28,7 +31,9 @@ import { TreeKeyManager } from '@angular/cdk/a11y';
     ReactiveFormsModule,
     NgSelectModule,
     CollapseModule,
-    AccordionModule
+    AccordionModule,
+    CurrencyMaskModule
+    
   ],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
@@ -51,10 +56,10 @@ export class CreateComponent {
 
   isCreatingNewLista = false;
   newLista = {
-    precioContado: null,
-    precioCredito: null,
-    inicioEscala: null,
-    finEscala: null,
+    precioContado: 0,
+    precioCredito: 0,
+    inicioEscala: 0,
+    finEscala: 0,
     canalesOpen: {} as { [key: number]: boolean },
     clientesChecked: [] as number[]
   };
@@ -294,10 +299,10 @@ confirmarGuardarCambios() {
       clientesChecked: ''
     };
     this.newLista = {
-      precioContado: null,
-      precioCredito: null,
-      inicioEscala: null,
-      finEscala: null,
+      precioContado: 1,
+      precioCredito: 1,
+      inicioEscala: 1,
+      finEscala: 1,
       canalesOpen: {},
       clientesChecked: []
     };
