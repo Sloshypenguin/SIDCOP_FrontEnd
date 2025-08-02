@@ -15,7 +15,7 @@ const routes: Routes = [
       },
       {
         path: 'list',
-        loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
+        loadComponent: () => import('./list/list.component').then(m => m.ReporteProductosComponent),
         data: {
           title: 'Reporte de Productos',
         }

@@ -53,6 +53,11 @@
         "TRASLADOS": "Traslados"
       }
     },
+      "REPORTES": {
+      "TEXT": "Reportes",
+      "LIST": {
+        "REPORTESPRODUCTOS": "ReporteProductos"      }
+    },
     "DASHBOARD": {
       "TEXT": "Tableros",
       "LIST": {

@@ -289,4 +289,19 @@ export const MENU: MenuItem[] = [
       // Puedes añadir más subitems aquí según sea necesario
     ],
   },
+  {
+    id: 4,
+    label: 'MENUITEMS.REPORTES.TEXT',
+    icon: 'ri-layout-grid-fill',
+    subItems: [
+      {
+        id: 21,
+        label: 'MENUITEMS.REPORTES.LIST.REPORTEPRODUCTOS',
+        link: '/reportes/reporteproductos',
+        parentId: 4,
+        icon: 'ri-truck-line',
+      },
+  
+    ],
+  },
 ];
