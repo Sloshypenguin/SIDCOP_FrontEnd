@@ -5,7 +5,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Usuario } from 'src/app/Modelos/acceso/usuarios.Model';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
-import { set } from 'lodash';
 
 @Component({
   selector: 'app-edit',
@@ -19,7 +18,6 @@ export class EditComponent implements OnChanges{
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Usuario>();
 
-  usuarioOriginal = '';
   mostrarErrores = false;
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -55,6 +53,8 @@ export class EditComponent implements OnChanges{
     message_Status: '',
   };
 
+  usuarioOriginal: any = {};
+
   constructor(private http: HttpClient) {
     this.cargarRoles();
     this.cargarEmpleados();
@@ -82,9 +82,12 @@ export class EditComponent implements OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['usuarioData'] && changes['usuarioData'].currentValue) {
       this.usuario = { ...changes['usuarioData'].currentValue };
-      this.usuarioOriginal = this.usuario.usua_Usuario || '';
+      this.usuarioOriginal = { ...this.usuarioOriginal };
       this.mostrarErrores = false;
       this.cerrarAlerta();
+      this.cargarRoles();
+      this.cargarVendedores();
+      this.cargarEmpleados();
     }
   }
 
@@ -116,6 +119,45 @@ export class EditComponent implements OnChanges{
       this.usuario.role_Id = 1;
       this.usuario.usua_IdPersona = 0;
     }
+  }
+
+  cambiosDetectados: any = {};
+
+  hayDiferencias(): boolean {
+    const a = this.usuario;
+    const b = this.usuarioOriginal;
+
+    if(a.usua_Usuario !== b.usua_Usuario){
+      this.cambiosDetectados.nombreUsuario = {
+        anterior: b.usua_Usuario,
+        nuevo: a.usua_Usuario,
+        label: 'Usuarios'
+      }
+    }
+
+    if(a.role_Id !== b.role_Id){
+      const rolAnterior = this.roles.find(c => c.role_Id === b.role_Id);
+      const rolNueva = this.roles.find(c => c.role_Id === a.role_Id);
+
+      this.cambiosDetectados.role = {
+        anterior: rolAnterior ? `${rolAnterior.role_Descripcion}` : 'No seleccionado',
+        nuevo: rolNueva ? `${rolNueva.role_Descripcion}` : 'No seleccionado',
+        label: 'Rol'
+      }
+    }
+
+    if(a.usua_IdPersona !== b.usua_IdPersona){
+      const empleadoAnterior = this.empleados.find(c => c.empleado_Id === b.usua_IdPersona);
+      const empleadoNuevo = this.empleados.find(c => c.empleado_Id === a.usua_IdPersona);
+
+      this.cambiosDetectados.empleado = {
+        anterior: empleadoAnterior ? `${empleadoAnterior.nombreCompleto}` : 'No seleccionado',
+        nuevo: empleadoNuevo ? `${empleadoNuevo.nombreCompleto}` : 'No seleccionado',
+        label: 'Empleado'
+      }
+    }
+
+    return Object.keys(this.cambiosDetectados).length > 0;
   }
 
   guardar(): void {
