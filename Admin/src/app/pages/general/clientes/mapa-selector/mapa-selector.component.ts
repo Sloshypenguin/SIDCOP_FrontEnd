@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
-//Pucha Helen
 
 interface PuntoVista {
   lat: number;
@@ -44,12 +43,13 @@ export class MapaSelectorComponent implements AfterViewInit {
 
   private cargarGoogleMapsScript(): Promise<void> {
     return new Promise((resolve) => {
-      if ((window as any)['google']) {
+      if (window.google && window.google.maps) {
         resolve();
         return;
       }
 
       const script = document.createElement('script');
+      console.log('Usando API Key de Google Maps:', environment.googleMapsApiKey);
       script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`;
       script.async = true;
       script.defer = true;
@@ -119,7 +119,7 @@ export class MapaSelectorComponent implements AfterViewInit {
     logoDiv.innerHTML = `
       <img src="https://res.cloudinary.com/dbt7mxrwk/image/upload/v1753586701/iod3sxxvwyr1sgsyjql6.png"
            alt="SIDCOP Logo"
-           style="width: 50px; height: auto; opacity: 0.9; border-radius: 8px;" />
+           style="width: 60px; height: auto; position: relative; top: 20px; right: 12px" />
     `;
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(logoDiv);
 
