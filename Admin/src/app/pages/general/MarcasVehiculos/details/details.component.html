@@ -26,24 +26,28 @@
         </div>
         
         <div class="details-card-body">
-          <div class="detail-row">
-            <div class="detail-box">
-              <div class="detail-icon">
-                <i class="ri-hashtag"></i>
-              </div>
-              <div class="detail-info detail-content">
-                <div class="detail-label">Código</div>
-                <div class="detail-value">{{ marcasVehiculosDetalle.maVe_Id }}</div>
+          <div class="detail-row row">
+            <div class="col-4">
+              <div class="detail-box">
+                <div class="detail-icon">
+                  <i class="ri-hashtag"></i>
+                </div>
+                <div class="detail-info">
+                  <div class="detail-label">Código</div>
+                  <div class="detail-value">{{ marcasVehiculosDetalle.maVe_Id }}</div>
+                </div>
               </div>
             </div>
             
-            <div class="detail-box">
-              <div class="detail-icon">
-                <i class="ri-file-list-3-line"></i>
-              </div>
-              <div class="detail-info">
-                <div class="detail-label">Marca</div>
-                <div class="detail-value">{{ marcasVehiculosDetalle.maVe_Marca || 'N/A' }}</div>
+            <div class="col-4">
+              <div class="detail-box">
+                <div class="detail-icon">
+                  <i class="ri-file-list-3-line"></i>
+                </div>
+                <div class="detail-info">
+                  <div class="detail-label">Marca</div>
+                  <div class="detail-value">{{ marcasVehiculosDetalle.maVe_Marca || 'N/A' }}</div>
+                </div>
               </div>
             </div>
           </div>
