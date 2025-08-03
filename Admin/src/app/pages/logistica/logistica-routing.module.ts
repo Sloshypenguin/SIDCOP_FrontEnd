@@ -16,6 +16,11 @@ const routes: Routes = [
     path: 'recargas',
     loadChildren: () =>
       import('./recargas/recarga.module').then(m => m.RecargaModule)
+  },
+  {
+    path: 'rutas',
+    loadChildren: () =>
+      import('./rutas/rutas.module').then(m => m.RutasModule) 
   }
 ];
 

@@ -227,6 +227,13 @@ export const MENU: MenuItem[] = [
         parentId: 4,
         icon: 'ri-truck-line',
       },
+      {
+        id: 30,
+        label: 'MENUITEMS.LOGISTICA.LIST.RUTAS',
+        link: '/logistica/rutas',
+        parentId: 4,
+        icon: 'ri-truck-line',
+      },
       // {
       //   id: 29,
       //   label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
