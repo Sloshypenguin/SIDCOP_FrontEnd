@@ -43,7 +43,7 @@ export class CreateComponent {
   nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
   direccion = { colo_Id: '' };
   direccionAval = { colo_Id: '' };
-  activeTab = 1;
+  activeTab = 2;
 
   nacionalidades: any[] = [];
   paises: any[] = [];
@@ -265,16 +265,20 @@ export class CreateComponent {
     }
 
     if (no == 2) {
-      this.mostrarErrores = true
-      if (this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim() &&
-        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion) {
+      this.mostrarErrores = true;
+      // Solo validar imagen, nombre del negocio, canal y ruta
+      if (
+        this.cliente.clie_NombreNegocio.trim() &&
+        this.cliente.clie_ImagenDelNegocio.trim() &&
+        this.cliente.ruta_Id &&
+        this.cliente.cana_Id
+      ) {
         this.mostrarErrores = false;
-        this.activeTab = 3;
-      }
-      else {
-        this.validarDireccion = true;
+        // Ir directo al tab 5
+        this.activeTab = 5;
+      } else {
         this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios del negocio.';
         setTimeout(() => {
           this.mostrarAlertaWarning = false;
           this.mensajeWarning = '';
@@ -462,28 +466,28 @@ export class CreateComponent {
     });
   }
 
-  onDepartamentoChange(): void {
-    this.cargarMunicipios(this.selectedDepa);
-    this.nuevaColonia.muni_Codigo = '';
-    this.direccion.colo_Id = '';
-    this.Colonias = [];
-    this.selectedMuni = '';
-    this.selectedColonia = '';
-  }
+  // onDepartamentoChange(): void {
+  //   this.cargarMunicipios(this.selectedDepa);
+  //   this.nuevaColonia.muni_Codigo = '';
+  //   this.direccion.colo_Id = '';
+  //   this.Colonias = [];
+  //   this.selectedMuni = '';
+  //   this.selectedColonia = '';
+  // }
 
-  onDepartamentoAvalChange(): void {
-    this.cargarMunicipiosAval(this.selectedDepaAval);
-    this.nuevaColoniaAval.muni_Codigo = '';
-    this.direccionAval.colo_Id = '';
-    this.ColoniasAval = [];
-    this.selectedMuniAval = '';
-    this.selectedColoniaAval = '';
-  }
+  // onDepartamentoAvalChange(): void {
+  //   this.cargarMunicipiosAval(this.selectedDepaAval);
+  //   this.nuevaColoniaAval.muni_Codigo = '';
+  //   this.direccionAval.colo_Id = '';
+  //   this.ColoniasAval = [];
+  //   this.selectedMuniAval = '';
+  //   this.selectedColoniaAval = '';
+  // }
 
-  cargarMunicipios(codigoDepa: string): void {
-    this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
-    this.selectedMuni = '';
-  }
+  // cargarMunicipios(codigoDepa: string): void {
+  //   this.Municipios = this.TodosMunicipios.filter(m => m.depa_Codigo === codigoDepa);
+  //   this.selectedMuni = '';
+  // }
 
   cargarColonias(codigoMuni: string): void {
     console.log('Cargando colonias para municipio:', codigoMuni);
@@ -492,10 +496,10 @@ export class CreateComponent {
     this.selectedColonia = '';
   }
 
-  cargarMunicipiosAval(codigoDepaAval: string): void {
-    this.MunicipiosAval = this.TodosMunicipiosAval.filter(m => m.depa_Codigo === codigoDepaAval);
-    this.selectedMuniAval = '';
-  }
+  // cargarMunicipiosAval(codigoDepaAval: string): void {
+  //   this.MunicipiosAval = this.TodosMunicipiosAval.filter(m => m.depa_Codigo === codigoDepaAval);
+  //   this.selectedMuniAval = '';
+  // }
 
   cargarColoniasAval(codigoMuniAval: string): void {
     console.log('Cargando colonias para municipio:', codigoMuniAval);

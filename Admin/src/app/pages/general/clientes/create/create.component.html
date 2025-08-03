@@ -802,7 +802,7 @@
             </div>
           </div>
           <!-- Departamento -->
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <div class="mb-3">
               <label for="depa_Codigo" class="form-label">Departamento</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
@@ -829,9 +829,9 @@
                 <small>El campo Departamento es requerido</small>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- Municipio -->
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <div class="mb-3">
               <label for="muni_Codigo" class="form-label">Municipio</label>
               <span class="text-danger" *ngIf="mostrarErrores">*</span>
@@ -858,7 +858,7 @@
                 <small>El campo Municipio es requerido</small>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- Colonia -->
           <div class="col-md-6">
             <div class="mb-3">
@@ -1125,7 +1125,7 @@
                     Seleccione una Colonia
                   </option>
                   <option *ngFor="let colonia of TodasColonias" [value]="colonia.colo_Id">
-                    {{ colonia.colo_Descripcion }} - {{ colonia.muni_Descripcion }} - {{ colonia.depa_Descripcion }}
+                    {{ colonia.colo_Descripcion }}, {{ colonia.muni_Descripcion }}, {{ colonia.depa_Descripcion }}
                   </option>
                 </select>
                 <div *ngIf="cargandoColonias" class="form-text text-muted">
