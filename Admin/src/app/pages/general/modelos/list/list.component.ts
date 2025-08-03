@@ -15,6 +15,18 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
+// Importaciones para exportación
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+// Declaración de tipos para jsPDF
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
+
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -75,6 +87,295 @@ export class ListComponent implements OnInit {
     ];
     this.cargarAccionesUsuario();
   }
+
+
+  // ===== MÉTODOS DE EXPORTACIÓN OPTIMIZADOS =====
+
+/**
+ * Exporta los datos a Excel con diseño básico
+ */
+exportarExcel(): void {
+  try {
+    const datos = this.obtenerDatosParaExportar();
+    
+    if (datos.length === 0) {
+      this.mostrarMensaje('warning', 'No hay datos para exportar');
+      return;
+    }
+
+    // Crear hoja de trabajo con estilos básicos
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datos);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    
+    // Configurar anchos de columnas
+    ws['!cols'] = [
+      { wch: 10 },  // No.
+      { wch: 25 },  // Marca
+      { wch: 40 }   // Descripción
+    ];
+    
+    XLSX.utils.book_append_sheet(wb, ws, 'Modelos');
+    
+    // Guardar archivo
+    const nombreArchivo = `Modelos_${this.obtenerFechaArchivo()}.xlsx`;
+    XLSX.writeFile(wb, nombreArchivo);
+    
+    this.mostrarMensaje('success', 'Archivo Excel exportado exitosamente');
+    
+  } catch (error) {
+    console.error('Error al exportar Excel:', error);
+    this.mostrarMensaje('error', 'Error al exportar el archivo Excel');
+  }
+}
+
+/**
+ * Exporta los datos a PDF (versión simplificada y funcional)
+ */
+exportarPDF(): void {
+  try {
+    const datos = this.obtenerDatosParaExportar();
+    
+    if (datos.length === 0) {
+      this.mostrarMensaje('warning', 'No hay datos para exportar');
+      return;
+    }
+
+    const doc = new jsPDF('l', 'mm', 'a4');
+    
+    // Encabezado
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('LISTADO DE MODELOS', 14, 15);
+    
+    // Información
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 14, 25);
+    doc.text(`Total: ${datos.length} registros`, 14, 30);
+    
+    // Verificar si autoTable está disponible
+    if (typeof doc.autoTable === 'function') {
+      // Usar autoTable si está disponible
+      const columnas = ['No.', 'Marca', 'Descripcion'];
+      const filas = datos.map(item => [
+        String(item['No.']),
+        this.limpiarTexto(item['Marca']),
+        this.limpiarTexto(item['Descripción'])
+      ]);
+      
+      doc.autoTable({
+        head: [columnas],
+        body: filas,
+        startY: 35,
+        styles: { fontSize: 9, cellPadding: 3 },
+        headStyles: { fillColor: [52, 73, 94], textColor: 255 },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        margin: { left: 14, right: 14 }
+      });
+    } else {
+      // Método alternativo sin autoTable
+      this.generarTablaManual(doc, datos);
+    }
+    
+    // Guardar archivo
+    const nombreArchivo = `Modelos_${this.obtenerFechaArchivo()}.pdf`;
+    doc.save(nombreArchivo);
+    
+    this.mostrarMensaje('success', 'Archivo PDF exportado exitosamente');
+    
+  } catch (error) {
+    console.error('Error al exportar PDF:', error);
+    // Intentar método de respaldo
+    this.exportarPDFBasico();
+  }
+}
+
+/**
+ * Genera tabla manual en PDF sin autoTable
+ */
+private generarTablaManual(doc: jsPDF, datos: any[]): void {
+  let yPosition = 40;
+  doc.setFontSize(10);
+  
+  // Encabezados
+  doc.setFont('helvetica', 'bold');
+  doc.text('No.', 14, yPosition);
+  doc.text('Marca', 30, yPosition);
+  doc.text('Descripcion', 80, yPosition);
+  
+  // Línea separadora
+  doc.line(14, yPosition + 2, 200, yPosition + 2);
+  yPosition += 8;
+  
+  // Datos
+  doc.setFont('helvetica', 'normal');
+  datos.forEach((item) => {
+    if (yPosition > 190) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.text(String(item['No.']), 14, yPosition);
+    doc.text(this.limpiarTexto(item['Marca']), 30, yPosition);
+    doc.text(this.limpiarTexto(item['Descripción']), 80, yPosition);
+    
+    yPosition += 6;
+  });
+}
+
+/**
+ * Método de respaldo para PDF básico
+ */
+private exportarPDFBasico(): void {
+  try {
+    const datos = this.obtenerDatosParaExportar();
+    const doc = new jsPDF('l', 'mm', 'a4');
+    
+    doc.setFontSize(14);
+    doc.text('LISTADO DE MODELOS', 14, 15);
+    
+    this.generarTablaManual(doc, datos);
+    
+    const nombreArchivo = `Modelos_${this.obtenerFechaArchivo()}.pdf`;
+    doc.save(nombreArchivo);
+    
+    this.mostrarMensaje('success', 'Archivo PDF exportado (versión básica)');
+    
+  } catch (error) {
+    console.error('Error en PDF básico:', error);
+    this.mostrarMensaje('error', 'Error crítico al generar PDF');
+  }
+}
+
+/**
+ * Exporta los datos a CSV con UTF-8
+ */
+exportarCSV(): void {
+  try {
+    const datos = this.obtenerDatosParaExportar();
+    
+    if (datos.length === 0) {
+      this.mostrarMensaje('warning', 'No hay datos para exportar');
+      return;
+    }
+
+    // Crear contenido CSV
+    const headers = Object.keys(datos[0]);
+    const csvRows = [
+      headers.join(','),
+      ...datos.map(row => 
+        headers.map(header => this.escaparCSV(row[header])).join(',')
+      )
+    ];
+    
+    // Agregar BOM para UTF-8
+    const csvContent = '\uFEFF' + csvRows.join('\n');
+    
+    // Descargar archivo
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.href = url;
+    link.download = `Modelos_${this.obtenerFechaArchivo()}.csv`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+    
+    this.mostrarMensaje('success', 'Archivo CSV exportado exitosamente');
+    
+  } catch (error) {
+    console.error('Error al exportar CSV:', error);
+    this.mostrarMensaje('error', 'Error al exportar el archivo CSV');
+  }
+}
+
+// ===== MÉTODOS DE UTILIDAD OPTIMIZADOS =====
+
+/**
+ * Obtiene datos limpios para exportar
+ */
+private obtenerDatosParaExportar(): any[] {
+  try {
+    const datosActuales = this.table.data$.value;
+    
+    if (!Array.isArray(datosActuales)) return [];
+    
+    return datosActuales.map((modelo, index) => ({
+      'No.': modelo?.No || (index + 1),
+      'Marca': this.limpiarTexto(modelo?.maVe_Marca),
+      'Descripción': this.limpiarTexto(modelo?.mode_Descripcion)
+    }));
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+    return [];
+  }
+}
+
+/**
+ * Limpia texto para exportación
+ */
+private limpiarTexto(texto: any): string {
+  if (!texto) return '';
+  
+  return String(texto)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Quitar acentos
+    .replace(/[^\x20-\x7E]/g, '') // Solo caracteres ASCII
+    .replace(/\s+/g, ' ')
+    .trim()
+    .substring(0, 100);
+}
+
+/**
+ * Escapa valores para CSV
+ */
+private escaparCSV(value: any): string {
+  if (!value) return '';
+  
+  let stringValue = String(value).replace(/[\r\n]/g, ' ');
+  
+  if (stringValue.includes(',') || stringValue.includes('"')) {
+    stringValue = `"${stringValue.replace(/"/g, '""')}"`;
+  }
+  
+  return stringValue;
+}
+
+/**
+ * Obtiene fecha formateada para nombres de archivo
+ */
+private obtenerFechaArchivo(): string {
+  return new Date().toISOString().split('T')[0];
+}
+
+/**
+ * Muestra mensajes de alerta de forma centralizada
+ */
+private mostrarMensaje(tipo: 'success' | 'error' | 'warning', mensaje: string): void {
+  // Limpiar alertas previas
+  this.cerrarAlerta();
+  
+  switch (tipo) {
+    case 'success':
+      this.mostrarAlertaExito = true;
+      this.mensajeExito = mensaje;
+      setTimeout(() => this.mostrarAlertaExito = false, 3000);
+      break;
+    case 'error':
+      this.mostrarAlertaError = true;
+      this.mensajeError = mensaje;
+      setTimeout(() => this.mostrarAlertaError = false, 5000);
+      break;
+    case 'warning':
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = mensaje;
+      setTimeout(() => this.mostrarAlertaWarning = false, 3000);
+      break;
+  }
+}
+
+  // ===== MÉTODOS EXISTENTES =====
 
   // Método para validar si una acción está permitida
   accionPermitida(accion: string): boolean {
