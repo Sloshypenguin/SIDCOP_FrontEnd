@@ -90,7 +90,8 @@
 
 /* Estilo de cada caja de detalle individual (Código, Descripción, etc.) */
 .detail-box {
-  background: #fff;
+  // background: #fff;
+  background: #f8f9fa;
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -126,6 +127,7 @@
   margin-bottom: 0.19rem;
   letter-spacing: 0.02em;
   opacity: 0.95;
+  
 }
 
 .detail-value {
@@ -195,5 +197,6 @@
   
   .detail-box {
     width: 100%;
+    
   }
 }
