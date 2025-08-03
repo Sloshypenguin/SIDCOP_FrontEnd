@@ -4,6 +4,55 @@
   overflow: hidden;
 }
 
+// Two-tone button styling to match Estados Civiles
+.btn-primary {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0;
+  
+  .btn-text {
+    background-color: #007bff;
+    color: white;
+    padding: 0.375rem 0.75rem;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-icon {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 45px;
+    transition: all 0.2s ease;
+  }
+  
+  &:hover {
+    .btn-text {
+      background-color: #0056b3;
+    }
+    
+    .btn-icon {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+  
+  &:active, &:focus {
+    .btn-text {
+      background-color: #004085;
+    }
+    
+    .btn-icon {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+
 .employee-photo-card {
 //overflow: hidden;
   min-height: 300px;
