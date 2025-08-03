@@ -112,7 +112,7 @@ export class LoginComponent {
         } else {
           // Error genérico si no hay estructura de error esperada
           this.alertType = 'danger';
-          this.alertMessage = error.message || 'Error al iniciar sesión';
+          this.alertMessage = 'Error al iniciar sesión';
         }
         
         this.showAlert = true;
