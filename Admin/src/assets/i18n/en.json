@@ -61,6 +61,13 @@
         "RUTAS": "Rutas"
       }
     },
+     "REPORTES": {
+      "TEXT": "Reportes",
+      "LIST": {
+        "REPORTEPRODUCTOS": "ReporteProductos"
+        
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {

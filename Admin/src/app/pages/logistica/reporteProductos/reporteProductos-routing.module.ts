@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PermisoGuard } from '../../../core/guards/permiso.guard';
 
 const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Roles',
+      title: 'Reportes  de Productos'
     },
     children: [
       { 
@@ -16,11 +15,9 @@ const routes: Routes = [
       },
       {
         path: 'list',
-        loadComponent: () => import('./list/list.component').then(m => m.ListComponent),
-        canActivate: [PermisoGuard],
+        loadComponent: () => import('./list/list.component').then(m => m.ReporteProductosComponent),
         data: {
-          title: 'Listado de Roles',
-          pantallaId: 62  // ID 6: Roles según la tabla de pantallas
+          title: 'Reporte Productos',
         }
       },
     ]
@@ -31,4 +28,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class RolesRoutingModule {}
+export class reporteProductosRoutingModule {}
