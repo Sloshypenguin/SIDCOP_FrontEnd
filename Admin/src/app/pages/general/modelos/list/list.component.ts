@@ -15,7 +15,7 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
-// Importar el servicio de exportación
+// Importar el servicio de exportación optimizado
 import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
 
 @Component({
@@ -36,6 +36,32 @@ import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  // ===== CONFIGURACIÓN FÁCIL DE EXPORTACIÓN =====
+  // 🔧 PERSONALIZA AQUÍ TU CONFIGURACIÓN DE EXPORTACIÓN 🔧
+  private readonly exportConfig = {
+    // Configuración básica
+    title: 'Listado de Modelos',                    // Título del reporte
+    filename: 'Modelos',                           // Nombre base del archivo
+    department: 'General',                         // Departamento
+    additionalInfo: 'Sistema de Gestión',         // Información adicional
+    
+    // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
+    columns: [
+      { key: 'No', header: 'No.', width: 8, align: 'center' as const },
+      { key: 'Marca', header: 'Marca', width: 25, align: 'left' as const },
+      { key: 'Descripción', header: 'Descripción', width: 50, align: 'left' as const }
+    ] as ExportColumn[],
+    
+    // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
+    dataMapping: (modelo: Modelo, index: number) => ({
+      'No': modelo?.No || (index + 1),
+      'Marca': this.limpiarTexto(modelo?.maVe_Marca),
+      'Descripción': this.limpiarTexto(modelo?.mode_Descripcion)
+      // Agregar más campos aquí según necesites:
+      // 'Campo': this.limpiarTexto(modelo?.campo),
+    })
+  };
+
   // Breadcrumb items
   breadCrumbItems!: Array<{}>;
 
@@ -61,12 +87,9 @@ export class ListComponent implements OnInit {
   mostrarConfirmacionEliminar = false;
   modeloAEliminar: Modelo | null = null;
 
-  // Configuración de exportación
-  private exportColumns: ExportColumn[] = [
-    { key: 'No', header: 'No.', width: 8, align: 'center' },
-    { key: 'Marca', header: 'Marca', width: 25, align: 'left' },
-    { key: 'Descripción', header: 'Descripción', width: 50, align: 'left' }
-  ];
+  // Estado de exportación
+  exportando = false;
+  tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
 
   constructor(
     public table: ReactiveTableService<Modelo>,
@@ -74,7 +97,7 @@ export class ListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService,
-    private exportService: ExportService // Inyectar el servicio
+    private exportService: ExportService
   ) {
     this.cargarDatos();
   }
@@ -87,135 +110,193 @@ export class ListComponent implements OnInit {
     this.cargarAccionesUsuario();
   }
 
-  // ===== MÉTODOS DE EXPORTACIÓN SIMPLIFICADOS =====
+  // ===== MÉTODOS DE EXPORTACIÓN OPTIMIZADOS =====
 
   /**
-   * Exporta los datos a Excel usando el servicio
+   * Método unificado para todas las exportaciones
+   */
+  async exportar(tipo: 'excel' | 'pdf' | 'csv'): Promise<void> {
+    if (this.exportando) {
+      this.mostrarMensaje('warning', 'Ya hay una exportación en progreso...');
+      return;
+    }
+
+    if (!this.validarDatosParaExport()) {
+      return;
+    }
+
+    try {
+      this.exportando = true;
+      this.tipoExportacion = tipo;
+      this.mostrarMensaje('info', `Generando archivo ${tipo.toUpperCase()}...`);
+      
+      const config = this.crearConfiguracionExport();
+      let resultado;
+      
+      switch (tipo) {
+        case 'excel':
+          resultado = await this.exportService.exportToExcel(config);
+          break;
+        case 'pdf':
+          resultado = await this.exportService.exportToPDF(config);
+          break;
+        case 'csv':
+          resultado = await this.exportService.exportToCSV(config);
+          break;
+      }
+      
+      this.manejarResultadoExport(resultado);
+      
+    } catch (error) {
+      console.error(`Error en exportación ${tipo}:`, error);
+      this.mostrarMensaje('error', `Error al exportar archivo ${tipo.toUpperCase()}`);
+    } finally {
+      this.exportando = false;
+      this.tipoExportacion = null;
+    }
+  }
+
+  /**
+   * Métodos específicos para cada tipo (para usar en templates)
    */
   async exportarExcel(): Promise<void> {
-    const config = this.createExportConfig();
-    const result = await this.exportService.exportToExcel(config);
-    this.handleExportResult(result);
+    await this.exportar('excel');
   }
 
-  /**
-   * Exporta los datos a PDF usando el servicio
-   */
   async exportarPDF(): Promise<void> {
-    const config = this.createExportConfig();
-    const result = await this.exportService.exportToPDF(config);
-    this.handleExportResult(result);
+    await this.exportar('pdf');
   }
 
-  /**
-   * Exporta los datos a CSV usando el servicio
-   */
   async exportarCSV(): Promise<void> {
-    const config = this.createExportConfig();
-    const result = await this.exportService.exportToCSV(config);
-    this.handleExportResult(result);
+    await this.exportar('csv');
   }
 
   /**
-   * Crea la configuración para la exportación
+   * Verifica si se puede exportar un tipo específico
    */
-  private createExportConfig(): ExportConfig {
-    const datos = this.obtenerDatosParaExportar();
-    
+  puedeExportar(tipo?: 'excel' | 'pdf' | 'csv'): boolean {
+    if (this.exportando) {
+      return tipo ? this.tipoExportacion !== tipo : false;
+    }
+    return this.table.data$.value?.length > 0;
+  }
+
+  // ===== MÉTODOS PRIVADOS DE EXPORTACIÓN =====
+
+  /**
+   * Crea la configuración de exportación de forma dinámica
+   */
+  private crearConfiguracionExport(): ExportConfig {
     return {
-      title: 'Listado de Modelos',
-      filename: 'Modelos',
-      data: datos,
-      columns: this.exportColumns,
+      title: this.exportConfig.title,
+      filename: this.exportConfig.filename,
+      data: this.obtenerDatosExport(),
+      columns: this.exportConfig.columns,
       metadata: {
-        department: 'General',
-        user: this.obtenerUsuarioActual(),
-        additionalInfo: 'Sistema de Gestión'
+        department: this.exportConfig.department,
+        additionalInfo: this.exportConfig.additionalInfo
       }
     };
   }
 
   /**
-   * Obtiene los datos preparados para exportar
+   * Obtiene y prepara los datos para exportación
    */
-  private obtenerDatosParaExportar(): any[] {
+  private obtenerDatosExport(): any[] {
     try {
-      const datosActuales = this.table.data$.value;
+      const datos = this.table.data$.value;
       
-      if (!Array.isArray(datosActuales)) return [];
+      if (!Array.isArray(datos) || datos.length === 0) {
+        throw new Error('No hay datos disponibles para exportar');
+      }
       
-      return datosActuales.map((modelo, index) => ({
-        'No': modelo?.No || (index + 1),
-        'Marca': this.limpiarTexto(modelo?.maVe_Marca),
-        'Descripción': this.limpiarTexto(modelo?.mode_Descripcion)
-      }));
+      // Usar el mapeo configurado
+      return datos.map((modelo, index) => 
+        this.exportConfig.dataMapping.call(this, modelo, index)
+      );
+      
     } catch (error) {
-      console.error('Error al obtener datos:', error);
-      return [];
+      console.error('Error obteniendo datos:', error);
+      throw error;
     }
   }
 
-  /**
-   * Obtiene el usuario actual del sistema
-   */
-  private obtenerUsuarioActual(): string {
-    // Aquí puedes implementar la lógica para obtener el usuario actual
-    // Por ejemplo, desde localStorage, un servicio de autenticación, etc.
-    const usuario = localStorage.getItem('nombreUsuario') || 
-                   localStorage.getItem('usuario') || 
-                   'Usuario del Sistema';
-    return usuario;
-  }
 
   /**
    * Maneja el resultado de las exportaciones
    */
-  private handleExportResult(result: { success: boolean; message: string }): void {
-    if (result.success) {
-      this.mostrarMensaje('success', result.message);
+  private manejarResultadoExport(resultado: { success: boolean; message: string }): void {
+    if (resultado.success) {
+      this.mostrarMensaje('success', resultado.message);
     } else {
-      this.mostrarMensaje('error', result.message);
+      this.mostrarMensaje('error', resultado.message);
     }
   }
 
   /**
-   * Limpia texto para exportación
+   * Valida datos antes de exportar
+   */
+  private validarDatosParaExport(): boolean {
+    const datos = this.table.data$.value;
+    
+    if (!Array.isArray(datos) || datos.length === 0) {
+      this.mostrarMensaje('warning', 'No hay datos disponibles para exportar');
+      return false;
+    }
+    
+    if (datos.length > 10000) {
+      const continuar = confirm(
+        `Hay ${datos.length.toLocaleString()} registros. ` +
+        'La exportación puede tomar varios minutos. ¿Desea continuar?'
+      );
+      if (!continuar) return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Limpia texto para exportación de manera más eficiente
    */
   private limpiarTexto(texto: any): string {
     if (!texto) return '';
     
     return String(texto)
       .replace(/\s+/g, ' ')
+      .replace(/[^\w\s\-.,;:()\[\]]/g, '')
       .trim()
-      .substring(0, 100);
+      .substring(0, 150);
   }
 
   /**
-   * Muestra mensajes de alerta de forma centralizada
+   * Sistema de mensajes mejorado con tipos adicionales
    */
-  private mostrarMensaje(tipo: 'success' | 'error' | 'warning', mensaje: string): void {
-    // Limpiar alertas previas
+  private mostrarMensaje(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string): void {
     this.cerrarAlerta();
+    
+    const duracion = tipo === 'error' ? 5000 : 3000;
     
     switch (tipo) {
       case 'success':
         this.mostrarAlertaExito = true;
         this.mensajeExito = mensaje;
-        setTimeout(() => this.mostrarAlertaExito = false, 3000);
+        setTimeout(() => this.mostrarAlertaExito = false, duracion);
         break;
+        
       case 'error':
         this.mostrarAlertaError = true;
         this.mensajeError = mensaje;
-        setTimeout(() => this.mostrarAlertaError = false, 5000);
+        setTimeout(() => this.mostrarAlertaError = false, duracion);
         break;
+        
       case 'warning':
+      case 'info':
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = mensaje;
-        setTimeout(() => this.mostrarAlertaWarning = false, 3000);
+        setTimeout(() => this.mostrarAlertaWarning = false, duracion);
         break;
     }
   }
-
   // ===== MÉTODOS EXISTENTES (SIN CAMBIOS) =====
 
   // Método para validar si una acción está permitida
@@ -273,17 +354,13 @@ export class ListComponent implements OnInit {
   guardarModelo(modelo: Modelo): void {
     this.cargarDatos();
     this.cerrarFormulario();
-    this.mostrarAlertaExito = true;
-    this.mensajeExito = 'Modelo guardado exitosamente';
-    setTimeout(() => this.mostrarAlertaExito = false, 3000);
+    this.mostrarMensaje('success', 'Modelo guardado exitosamente');
   }
 
   actualizarModelo(modelo: Modelo): void {
     this.cargarDatos();
     this.cerrarFormularioEdicion();
-    this.mostrarAlertaExito = true;
-    this.mensajeExito = 'Modelo actualizado exitosamente';
-    setTimeout(() => this.mostrarAlertaExito = false, 3000);
+    this.mostrarMensaje('success', 'Modelo actualizado exitosamente');
   }
 
   // Método de eliminación optimizado
@@ -297,39 +374,20 @@ export class ListComponent implements OnInit {
       }
     }).subscribe({
       next: (response: any) => {
-        // Extraer resultado del SP
         const resultado = this.extraerResultadoSP(response);
         
         if (resultado.code_Status === 1) {
-          // Éxito
-          this.mensajeExito = resultado.message_Status || 'Modelo eliminado correctamente.';
-          this.mostrarAlertaExito = true;
-          setTimeout(() => {
-            this.mostrarAlertaExito = false;
-            this.mensajeExito = '';
-          }, 3000);
+          this.mostrarMensaje('success', resultado.message_Status || 'Modelo eliminado correctamente.');
           this.cargarDatos();
           this.cancelarEliminar();
-          
         } else {
-          // Error (-1 o 0)
-          this.mostrarAlertaError = true;
-          this.mensajeError = resultado.message_Status || 'Error al eliminar el modelo.';
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 5000);
+          this.mostrarMensaje('error', resultado.message_Status || 'Error al eliminar el modelo.');
           this.cancelarEliminar();
         }
       },
       error: (error) => {
         console.error('Error al eliminar modelo:', error);
-        this.mostrarAlertaError = true;
-        this.mensajeError = this.obtenerMensajeError(error);
-        setTimeout(() => {
-          this.mostrarAlertaError = false;
-          this.mensajeError = '';
-        }, 5000);
+        this.mostrarMensaje('error', this.obtenerMensajeError(error));
         this.cancelarEliminar();
       }
     });

@@ -19,8 +19,7 @@ export interface ExportConfig {
     department?: string;
     user?: string;
     additionalInfo?: string;
-    company?: string;
-    reportType?: string;
+    logoUrl?: string;
   };
 }
 
@@ -29,7 +28,11 @@ export interface ExportColumn {
   header: string;
   width?: number;
   align?: 'left' | 'center' | 'right';
-  format?: 'text' | 'number' | 'currency' | 'date' | 'percentage';
+}
+
+interface ExportResult {
+  success: boolean;
+  message: string;
 }
 
 @Injectable({
@@ -37,471 +40,364 @@ export interface ExportColumn {
 })
 export class ExportService {
   
-  // Colores corporativos específicos mejorados
+  // Paleta de colores corporativos optimizada
   private readonly COLORS = {
-    // Colores principales
-    primary: [20, 26, 47] as [number, number, number],          // #141a2f - Azul principal
-    secondary: [214, 182, 138] as [number, number, number],     // #d6b68a - Dorado principal
-    
-    // Variaciones del azul principal
-    primaryLight: [35, 45, 75] as [number, number, number],     // Azul más claro
-    primaryDark: [15, 20, 35] as [number, number, number],      // Azul más oscuro
-    primaryUltraLight: [65, 75, 105] as [number, number, number], // Azul ultra claro
-    
-    // Variaciones del dorado
-    secondaryLight: [234, 212, 182] as [number, number, number], // Dorado claro
-    secondaryDark: [180, 155, 115] as [number, number, number],  // Dorado oscuro
-    secondaryUltraLight: [248, 238, 220] as [number, number, number], // Dorado ultra claro
-    
-    // Neutros mejorados
-    white: [255, 255, 255] as [number, number, number],
-    lightGray: [248, 249, 250] as [number, number, number],
-    mediumGray: [203, 213, 225] as [number, number, number],
-    darkGray: [71, 85, 105] as [number, number, number],
-    black: [15, 23, 42] as [number, number, number],
-    
-    // Colores de acento
-    success: [34, 197, 94] as [number, number, number],
-    warning: [251, 191, 36] as [number, number, number],
-    error: [239, 68, 68] as [number, number, number],
-    info: [59, 130, 246] as [number, number, number]
-  };
-
-  // Configuraciones de estilo mejoradas
-  private readonly STYLES = {
-    fonts: {
-      title: { size: 20, weight: 'bold' },
-      subtitle: { size: 14, weight: 'bold' },
-      header: { size: 12, weight: 'bold' },
-      body: { size: 10, weight: 'normal' },
-      small: { size: 8, weight: 'normal' },
-      footer: { size: 8, weight: 'normal' }
-    },
-    spacing: {
-      headerHeight: 55,
-      infoHeight: 35,
-      footerHeight: 25,
-      marginX: 15,
-      marginY: 10,
-      lineSpacing: 1.2
-    }
-  };
+    primary: { rgb: [20, 26, 47], hex: '#141a2f' },
+    secondary: { rgb: [214, 182, 138], hex: '#d6b68a' },
+    primaryLight: { rgb: [35, 45, 75], hex: '#232d4b' },
+    secondaryLight: { rgb: [234, 212, 182], hex: '#ead4b6' },
+    white: { rgb: [255, 255, 255], hex: '#ffffff' },
+    lightGray: { rgb: [248, 249, 250], hex: '#f8f9fa' },
+    mediumGray: { rgb: [203, 213, 225], hex: '#cbd5e1' },
+    textDark: { rgb: [15, 23, 42], hex: '#0f172a' },
+    accent: { rgb: [59, 130, 246], hex: '#3b82f6' },
+    success: { rgb: [34, 197, 94], hex: '#22c55e' }
+  } as const;
 
   constructor() { }
 
-  /**
-   * Exporta datos a Excel con diseño profesional mejorado
-   */
-  async exportToExcel(config: ExportConfig): Promise<{ success: boolean; message: string }> {
+  // ===== MÉTODOS PÚBLICOS DE EXPORTACIÓN =====
+
+  async exportToExcel(config: ExportConfig): Promise<ExportResult> {
     try {
-      if (!config.data || config.data.length === 0) {
-        return { success: false, message: 'No hay datos para exportar' };
-      }
-
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      this.validateConfig(config);
       
-      // Crear estructura del reporte mejorada
-      const companyName = config.metadata?.company || 'LA ROCA';
-      const reportType = config.metadata?.reportType || 'INFORME EJECUTIVO';
+      const workbook = XLSX.utils.book_new();
+      const worksheetData = this.buildExcelData(config);
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
       
-      const datosConEncabezado = [
-        [`${companyName} - ${reportType}`], // Título principal
-        [`${config.title.toUpperCase()}`], // Subtítulo
-        [], // Separador
-        [`═══════════════════════════════════════════════════════════════════`],
-        [`📊 INFORMACIÓN DEL REPORTE`],
-        [`═══════════════════════════════════════════════════════════════════`],
-        [`📅 Fecha de Generación: ${this.getFechaCompleta()}`],
-        [`📈 Total de Registros: ${config.data.length.toLocaleString('es-ES')} elementos`],
-        [`👤 Usuario Responsable: ${config.metadata?.user || 'Sistema Automatizado'}`],
-        ...(config.metadata?.department ? [[`🏢 Departamento: ${config.metadata.department}`]] : []),
-        ...(config.metadata?.additionalInfo ? [[`ℹ️ Información Adicional: ${config.metadata.additionalInfo}`]] : []),
-        [`🔒 Nivel de Confidencialidad: Interno`],
-        [`═══════════════════════════════════════════════════════════════════`],
-        [], // Separador antes de la tabla
-        config.columns.map(col => col.header), // Encabezados
-        ...config.data.map(item => 
-          config.columns.map(col => this.formatCellValue(item[col.key], col.format))
-        )
-      ];
-
-      const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datosConEncabezado);
+      this.applyAdvancedExcelStyles(worksheet, config);
+      XLSX.utils.book_append_sheet(workbook, worksheet, this.sanitizeSheetName(config.title));
       
-      this.applyEnhancedExcelStyles(ws, config);
+      const filename = this.generateFilename(config.filename, 'xlsx');
+      XLSX.writeFile(workbook, filename);
       
-      XLSX.utils.book_append_sheet(wb, ws, this.sanitizeSheetName(config.title));
-      
-      const nombreArchivo = `${config.filename}_${this.getFileDate()}.xlsx`;
-      XLSX.writeFile(wb, nombreArchivo);
-      
-      return { success: true, message: 'Archivo Excel exportado exitosamente con diseño profesional mejorado' };
+      return { success: true, message: `Archivo Excel exportado: ${filename}` };
       
     } catch (error) {
-      console.error('Error al exportar Excel:', error);
-      return { success: false, message: 'Error al exportar el archivo Excel' };
+      console.error('Error exportando Excel:', error);
+      return { success: false, message: 'Error al exportar archivo Excel' };
     }
   }
 
-  /**
-   * Exporta datos a PDF con diseño profesional mejorado
-   */
-  async exportToPDF(config: ExportConfig): Promise<{ success: boolean; message: string }> {
+  async exportToPDF(config: ExportConfig): Promise<ExportResult> {
     try {
-      if (!config.data || config.data.length === 0) {
-        return { success: false, message: 'No hay datos para exportar' };
-      }
-
-      // Formato vertical (portrait) con configuración mejorada
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true
-      });
+      this.validateConfig(config);
       
+      const doc = new jsPDF('p', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.width;
       
-      await this.createEnhancedPDFHeader(doc, config, pageWidth);
+      // Header profesional mejorado
+      this.createEnhancedPDFHeader(doc, config, pageWidth);
+      
+      // Información del reporte con mejor espaciado
       this.createEnhancedPDFInfo(doc, config, pageWidth);
       
-      if (typeof doc.autoTable === 'function') {
-        this.createEnhancedPDFTable(doc, config);
-      } else {
-        this.createManualEnhancedPDFTable(doc, config, this.STYLES.spacing.headerHeight + this.STYLES.spacing.infoHeight);
-      }
+      // Tabla de datos
+      await this.createPDFTable(doc, config);
       
-      const nombreArchivo = `${config.filename}_${this.getFileDate()}.pdf`;
-      doc.save(nombreArchivo);
+      const filename = this.generateFilename(config.filename, 'pdf');
+      doc.save(filename);
       
-      return { success: true, message: 'Archivo PDF exportado exitosamente con diseño profesional mejorado' };
+      return { success: true, message: `Archivo PDF exportado: ${filename}` };
       
     } catch (error) {
-      console.error('Error al exportar PDF:', error);
-      return this.exportEnhancedBasicPDF(config);
+      console.error('Error exportando PDF:', error);
+      return this.createBasicPDF(config);
     }
   }
 
-  /**
-   * Exporta datos a CSV con formato profesional mejorado
-   */
-  async exportToCSV(config: ExportConfig): Promise<{ success: boolean; message: string }> {
+  async exportToCSV(config: ExportConfig): Promise<ExportResult> {
     try {
-      if (!config.data || config.data.length === 0) {
-        return { success: false, message: 'No hay datos para exportar' };
-      }
-
-      const separator = '═'.repeat(80);
-      const doubleSeparator = '╔' + '═'.repeat(78) + '╗';
-      const endSeparator = '╚' + '═'.repeat(78) + '╝';
-      const minorSeparator = '─'.repeat(60);
+      this.validateConfig(config);
       
-      const companyName = config.metadata?.company || 'LA ROCA';
-      const reportType = config.metadata?.reportType || 'INFORME EJECUTIVO';
+      const csvContent = this.buildCSVContent(config);
+      const filename = this.generateFilename(config.filename, 'csv');
       
-      const encabezado = [
-        doubleSeparator,
-        `║ ${this.centerText(`${companyName} - ${reportType}`, 76)} ║`,
-        `║ ${this.centerText(`${config.title.toUpperCase()}`, 76)} ║`,
-        `║ ${this.centerText(`Generado el ${this.getFechaCompleta()}`, 76)} ║`,
-        endSeparator,
-        '',
-        '📊 INFORMACIÓN DETALLADA DEL REPORTE',
-        separator,
-        `📅 Fecha de Generación: ${this.getFechaCompleta()}`,
-        `📈 Total de Registros: ${config.data.length.toLocaleString('es-ES')} elementos procesados`,
-        `👤 Usuario Responsable: ${config.metadata?.user || 'Sistema Automatizado'}`,
-        ...(config.metadata?.department ? [`🏢 Departamento/Módulo: ${config.metadata.department}`] : []),
-        ...(config.metadata?.additionalInfo ? [`ℹ️ Información Adicional: ${config.metadata.additionalInfo}`] : []),
-        `🔒 Clasificación: Documento Interno Confidencial`,
-        `🌐 Zona Horaria: America/Tegucigalpa (GMT-6)`,
-        '',
-        minorSeparator,
-        '📋 INICIO DE DATOS TABULARES',
-        minorSeparator,
-        ''
-      ];
+      this.downloadFile(csvContent, filename, 'text/csv');
       
-      const headers = config.columns.map(col => `"${col.header}"`);
-      const csvRows = [
-        ...encabezado,
-        headers.join(','),
-        ...config.data.map(row => 
-          config.columns.map(col => this.escapeCSV(this.formatCellValue(row[col.key], col.format))).join(',')
-        ),
-        '',
-        minorSeparator,
-        '📄 FIN DE DATOS TABULARES',
-        minorSeparator,
-        '',
-        `📊 RESUMEN ESTADÍSTICO:`,
-        `   • Total de registros procesados: ${config.data.length.toLocaleString('es-ES')}`,
-        `   • Número de columnas: ${config.columns.length}`,
-        `   • Archivo generado automáticamente: ${new Date().toISOString()}`,
-        `   • Sistema: Gestión Empresarial Avanzada v2.0`,
-        '',
-        separator,
-        `🔐 AVISO LEGAL: Este documento es propiedad de ${companyName} y contiene`,
-        `información confidencial. Su distribución está limitada a personal autorizado.`,
-        separator,
-        `📧 Para consultas técnicas, contacte al administrador del sistema.`,
-        endSeparator
-      ];
-      
-      const csvContent = '\uFEFF' + csvRows.join('\n');
-      this.downloadFile(csvContent, `${config.filename}_${this.getFileDate()}.csv`, 'text/csv');
-      
-      return { success: true, message: 'Archivo CSV exportado exitosamente con formato profesional mejorado' };
+      return { success: true, message: `Archivo CSV exportado: ${filename}` };
       
     } catch (error) {
-      console.error('Error al exportar CSV:', error);
-      return { success: false, message: 'Error al exportar el archivo CSV' };
+      console.error('Error exportando CSV:', error);
+      return { success: false, message: 'Error al exportar archivo CSV' };
     }
   }
 
-  // ===== MÉTODOS PRIVADOS PARA EXCEL CON DISEÑO MEJORADO =====
+  // ===== MÉTODOS PRIVADOS - EXCEL MEJORADO =====
 
-  private applyEnhancedExcelStyles(ws: XLSX.WorkSheet, config: ExportConfig): void {
-    const range = XLSX.utils.decode_range(ws['!ref']!);
+  private buildExcelData(config: ExportConfig): any[][] {
+    const metadata = this.getReportMetadata(config);
     
-    // Estilo para el título principal mejorado
-    if (ws['A1']) {
-      ws['A1'].s = {
-        font: { bold: true, sz: 18, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "141A2F" } },
-        alignment: { horizontal: "center", vertical: "center", wrapText: false },
-        border: this.createBorder("141A2F", "medium")
-      };
+    return [
+      // Título principal con espacio
+      [`REPORTE EMPRESARIAL`],
+      [config.title.toUpperCase()],
+      [],
+      // Sección de metadata con títulos
+      ['INFORMACIÓN DEL REPORTE'],
+      [],
+      ...metadata.map(item => [item]),
+      [],
+      // Sección de estadísticas
+      ['RESUMEN ESTADÍSTICO'],
+      [],
+      [`Total de registros: ${config.data.length}`],
+      [`Columnas incluidas: ${config.columns.length}`],
+      [`Fecha de generación: ${this.getCurrentDate()}`],
+      [],
+      // Separador visual
+      ['DATOS'],
+      [],
+      // Encabezados de tabla
+      config.columns.map(col => col.header),
+      // Datos
+      ...config.data.map(item => 
+        config.columns.map(col => this.cleanValue(item[col.key]))
+      )
+    ];
+  }
+
+  private applyAdvancedExcelStyles(worksheet: XLSX.WorkSheet, config: ExportConfig): void {
+    if (!worksheet['!ref']) return;
+    
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const metadataRows = this.getReportMetadata(config).length;
+    const dataStartRow = metadataRows + 11; // Ajustado para el nuevo diseño
+    
+    // Título principal (fila 1)
+    this.setExcelCellStyle(worksheet, 'A1', {
+      font: { bold: true, sz: 24, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: this.COLORS.primary.hex.substring(1) } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    });
+    
+    // Subtítulo (fila 2)
+    this.setExcelCellStyle(worksheet, 'A2', {
+      font: { bold: true, sz: 16, color: { rgb: this.COLORS.primary.hex.substring(1) } },
+      fill: { fgColor: { rgb: this.COLORS.secondaryLight.hex.substring(1) } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    });
+    
+    // Título de sección "INFORMACIÓN DEL REPORTE" (fila 4)
+    this.setExcelCellStyle(worksheet, 'A4', {
+      font: { bold: true, sz: 14, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: this.COLORS.secondary.hex.substring(1) } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    });
+    
+    // Estilos de metadata (filas 6 en adelante)
+    for (let row = 6; row <= 5 + metadataRows; row++) {
+      this.setExcelCellStyle(worksheet, `A${row}`, {
+        font: { sz: 11, color: { rgb: this.COLORS.textDark.hex.substring(1) } },
+        fill: { fgColor: { rgb: this.COLORS.lightGray.hex.substring(1) } },
+        alignment: { horizontal: 'left', vertical: 'center' }
+      });
     }
     
-    // Estilo para el subtítulo
-    if (ws['A2']) {
-      ws['A2'].s = {
-        font: { bold: true, sz: 14, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "232D4B" } }, // Azul un poco más claro
-        alignment: { horizontal: "center", vertical: "center" },
-        border: this.createBorder("232D4B", "thin")
-      };
+    // Título "RESUMEN ESTADÍSTICO"
+    const statsRow = 6 + metadataRows + 1;
+    this.setExcelCellStyle(worksheet, `A${statsRow}`, {
+      font: { bold: true, sz: 14, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: this.COLORS.accent.hex.substring(1) } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    });
+    
+    // Estadísticas (3 filas después del título)
+    for (let row = statsRow + 2; row <= statsRow + 4; row++) {
+      this.setExcelCellStyle(worksheet, `A${row}`, {
+        font: { sz: 10, color: { rgb: this.COLORS.textDark.hex.substring(1) } },
+        fill: { fgColor: { rgb: this.COLORS.white.hex.substring(1) } },
+        alignment: { horizontal: 'left', vertical: 'center' }
+      });
     }
     
-    // Estilos para separadores decorativos
-    if (ws['A4']) {
-      ws['A4'].s = {
-        font: { bold: true, sz: 12, color: { rgb: "D6B68A" } },
-        fill: { fgColor: { rgb: "F8F9FA" } },
-        alignment: { horizontal: "center", vertical: "center" }
-      };
-    }
+    // Título "DATOS"
+    const dataTitleRow = statsRow + 6;
+    this.setExcelCellStyle(worksheet, `A${dataTitleRow}`, {
+      font: { bold: true, sz: 14, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: this.COLORS.success.hex.substring(1) } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    });
     
-    // Estilos para encabezado de información
-    if (ws['A5']) {
-      ws['A5'].s = {
-        font: { bold: true, sz: 12, color: { rgb: "141A2F" } },
-        fill: { fgColor: { rgb: "EAD4B6" } },
-        alignment: { horizontal: "center", vertical: "center" },
-        border: this.createBorder("D6B68A", "thin")
-      };
-    }
-    
-    // Estilos para información del reporte con iconos
-    const infoStartRow = 7;
-    const infoEndRow = this.calculateInfoEndRow(config);
-    
-    for (let row = infoStartRow; row <= infoEndRow; row++) {
-      const cellRef = `A${row}`;
-      if (ws[cellRef]) {
-        const isEvenRow = (row - infoStartRow) % 2 === 0;
-        ws[cellRef].s = {
-          font: { bold: false, sz: 11, color: { rgb: "141A2F" } },
-          fill: { fgColor: { rgb: isEvenRow ? "F8F9FA" : "FFFFFF" } },
-          alignment: { horizontal: "left", vertical: "center", indent: 1 },
-          border: this.createBorder("E5E7EB", "thin")
-        };
-      }
-    }
-    
-    // Localizar fila de encabezados de tabla
-    const headerRowIndex = infoEndRow + 3;
-    
-    // Estilos para encabezados de tabla mejorados
+    // Encabezados de tabla
+    const headerRow = dataStartRow;
     for (let col = 0; col < config.columns.length; col++) {
-      const cellRef = XLSX.utils.encode_cell({ r: headerRowIndex, c: col });
-      if (ws[cellRef]) {
-        ws[cellRef].s = {
-          font: { bold: true, sz: 11, color: { rgb: "FFFFFF" } },
-          fill: { fgColor: { rgb: "141A2F" } },
-          alignment: { horizontal: "center", vertical: "center", wrapText: true },
-          border: this.createBorder("FFFFFF", "medium")
-        };
-      }
+      const cellRef = XLSX.utils.encode_cell({ r: headerRow, c: col });
+      this.setExcelCellStyle(worksheet, cellRef, {
+        font: { bold: true, sz: 12, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: this.COLORS.primary.hex.substring(1) } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: {
+          top: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } },
+          bottom: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } },
+          left: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } },
+          right: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } }
+        }
+      });
     }
     
-    // Estilos para datos con mejoras visuales
-    for (let row = headerRowIndex + 1; row <= range.e.r; row++) {
+    // Datos con filas alternas y bordes
+    for (let row = headerRow + 1; row <= range.e.r; row++) {
+      const isEvenRow = (row - headerRow - 1) % 2 === 0;
       for (let col = 0; col < config.columns.length; col++) {
         const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-        if (ws[cellRef]) {
-          const isEvenRow = (row - headerRowIndex - 1) % 2 === 0;
-          const column = config.columns[col];
-          
-          ws[cellRef].s = {
-            font: { sz: 10, color: { rgb: "141A2F" } },
-            fill: { fgColor: { rgb: isEvenRow ? "FFFFFF" : "F8F9FA" } },
-            alignment: { 
-              horizontal: this.getAlignmentForFormat(column.format, column.align), 
-              vertical: "center",
-              wrapText: column.format === 'text'
-            },
-            border: this.createBorder("E5E7EB", "thin"),
-            numFmt: this.getNumberFormatForColumn(column.format)
-          };
-        }
+        this.setExcelCellStyle(worksheet, cellRef, {
+          font: { sz: 10, color: { rgb: this.COLORS.textDark.hex.substring(1) } },
+          fill: { fgColor: { rgb: isEvenRow ? 'FFFFFF' : this.COLORS.lightGray.hex.substring(1) } },
+          alignment: { horizontal: config.columns[col].align || 'left', vertical: 'center' },
+          border: {
+            top: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } },
+            bottom: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } },
+            left: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } },
+            right: { style: 'thin', color: { rgb: this.COLORS.mediumGray.hex.substring(1) } }
+          }
+        });
       }
     }
     
-    // Configurar anchos de columnas inteligentes
-    ws['!cols'] = config.columns.map(col => ({ 
-      wch: this.calculateColumnWidth(col) 
-    }));
+    // Configurar anchos de columna mejorados
+    worksheet['!cols'] = config.columns.map(col => ({ wch: col.width || 25 }));
     
-    // Fusionar celdas mejorado
-    const merges = [
-      { s: { r: 0, c: 0 }, e: { r: 0, c: config.columns.length - 1 } }, // Título principal
-      { s: { r: 1, c: 0 }, e: { r: 1, c: config.columns.length - 1 } }, // Subtítulo
-      { s: { r: 3, c: 0 }, e: { r: 3, c: config.columns.length - 1 } }, // Separador
-      { s: { r: 4, c: 0 }, e: { r: 4, c: config.columns.length - 1 } }, // Info header
-      { s: { r: 5, c: 0 }, e: { r: 5, c: config.columns.length - 1 } }  // Separador info
+    // Fusiones de celdas mejoradas
+    worksheet['!merges'] = [
+      // Título principal
+      { s: { r: 0, c: 0 }, e: { r: 0, c: config.columns.length - 1 } },
+      // Subtítulo
+      { s: { r: 1, c: 0 }, e: { r: 1, c: config.columns.length - 1 } },
+      // Sección información
+      { s: { r: 3, c: 0 }, e: { r: 3, c: config.columns.length - 1 } },
+      // Metadata
+      ...Array.from({ length: metadataRows }, (_, i) => ({
+        s: { r: i + 5, c: 0 }, e: { r: i + 5, c: config.columns.length - 1 }
+      })),
+      // Sección estadísticas
+      { s: { r: statsRow - 1, c: 0 }, e: { r: statsRow - 1, c: config.columns.length - 1 } },
+      // Estadísticas
+      { s: { r: statsRow + 1, c: 0 }, e: { r: statsRow + 1, c: config.columns.length - 1 } },
+      { s: { r: statsRow + 2, c: 0 }, e: { r: statsRow + 2, c: config.columns.length - 1 } },
+      { s: { r: statsRow + 3, c: 0 }, e: { r: statsRow + 3, c: config.columns.length - 1 } },
+      // Título datos
+      { s: { r: dataTitleRow - 1, c: 0 }, e: { r: dataTitleRow - 1, c: config.columns.length - 1 } }
     ];
     
-    // Fusionar celdas de información
-    for (let row = infoStartRow - 1; row < headerRowIndex - 1; row++) {
-      if (row !== 2 && row !== infoEndRow + 1) { // No fusionar filas vacías
-        merges.push({ s: { r: row, c: 0 }, e: { r: row, c: config.columns.length - 1 } });
-      }
-    }
-    
-    ws['!merges'] = merges;
+    // Altura de filas para mejor presentación
+    worksheet['!rows'] = [
+      { hpt: 30 }, // Título principal
+      { hpt: 25 }, // Subtítulo
+      { hpt: 15 }, // Espacio
+      { hpt: 20 }, // Sección información
+      { hpt: 15 }, // Espacio
+      ...Array.from({ length: metadataRows }, () => ({ hpt: 18 })), // Metadata
+      { hpt: 15 }, // Espacio
+      { hpt: 20 }, // Sección estadísticas
+      { hpt: 15 }, // Espacio
+      { hpt: 18 }, // Estadística 1
+      { hpt: 18 }, // Estadística 2
+      { hpt: 18 }, // Estadística 3
+      { hpt: 15 }, // Espacio
+      { hpt: 20 }, // Título datos
+      { hpt: 15 }, // Espacio
+      { hpt: 22 }, // Headers
+      ...Array.from({ length: config.data.length }, () => ({ hpt: 20 })) // Data rows
+    ];
   }
 
-  // ===== MÉTODOS PRIVADOS PARA PDF CON DISEÑO MEJORADO =====
+  private setExcelCellStyle(worksheet: XLSX.WorkSheet, cellRef: string, style: any): void {
+    if (worksheet[cellRef]) {
+      worksheet[cellRef].s = style;
+    }
+  }
 
-  private async createEnhancedPDFHeader(doc: jsPDF, config: ExportConfig, pageWidth: number): Promise<void> {
-    const headerHeight = this.STYLES.spacing.headerHeight;
+  // ===== MÉTODOS PRIVADOS - PDF MEJORADO =====
+
+  private createEnhancedPDFHeader(doc: jsPDF, config: ExportConfig, pageWidth: number): void {
+    // Fondo principal con gradiente simulado
+    doc.setFillColor(...this.COLORS.primary.rgb);
+    doc.rect(0, 0, pageWidth, 50, 'F');
     
-    // Fondo azul principal
-    doc.setFillColor(...this.COLORS.primary);
-    doc.rect(0, 0, pageWidth, headerHeight, 'F');
+    // Franja superior decorativa
+    doc.setFillColor(...this.COLORS.secondary.rgb);
+    doc.rect(0, 0, pageWidth, 4, 'F');
     
-    // Franja dorada superior
-    doc.setFillColor(...this.COLORS.secondary);
-    doc.rect(0, 0, pageWidth, 3, 'F');
+    // Franja inferior decorativa
+    doc.setFillColor(...this.COLORS.secondary.rgb);
+    doc.rect(0, 46, pageWidth, 4, 'F');
     
-    // Franja dorada inferior del header
-    doc.setFillColor(...this.COLORS.secondary);
-    doc.rect(0, headerHeight - 3, pageWidth, 3, 'F');
+    // Líneas decorativas internas
+    doc.setDrawColor(...this.COLORS.secondaryLight.rgb);
+    doc.setLineWidth(0.5);
+    doc.line(20, 8, pageWidth - 20, 8);
+    doc.line(20, 42, pageWidth - 20, 42);
     
-    // Área del logo mejorada
-    doc.setFillColor(...this.COLORS.secondaryUltraLight);
-    doc.rect(pageWidth - 55, 10, 40, 35, 'F');
-    
-    // Borde del logo
-    doc.setDrawColor(...this.COLORS.secondary);
-    doc.setLineWidth(1);
-    doc.rect(pageWidth - 55, 10, 40, 35, 'S');
-    
-    // Texto del logo mejorado
-    doc.setTextColor(...this.COLORS.primary);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text('LA ROCA', pageWidth - 35, 24, { align: 'center' });
-    
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Excellence', pageWidth - 35, 32, { align: 'center' });
-    doc.text('& Quality', pageWidth - 35, 38, { align: 'center' });
-    
-    // Información de la empresa
-    const companyName = config.metadata?.company || 'LA ROCA';
-    const reportType = config.metadata?.reportType || 'INFORME EJECUTIVO';
-    
-    // Título principal mejorado
-    doc.setTextColor(...this.COLORS.white);
+    // Título principal
+    doc.setTextColor(...this.COLORS.white.rgb);
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text(companyName, 20, 20);
+    doc.text('REPORTE EMPRESARIAL', pageWidth / 2, 20, { align: 'center' });
     
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'normal');
-    doc.text(reportType, 20, 28);
-    
+    // Subtítulo
     doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.text(config.title, 20, 38);
+    doc.setFont('helvetica', 'normal');
+    doc.text(config.title, pageWidth / 2, 30, { align: 'center' });
     
-    // Líneas decorativas mejoradas
-    doc.setDrawColor(...this.COLORS.secondary);
-    doc.setLineWidth(2);
-    doc.line(20, 42, pageWidth - 65, 42);
-    
-    doc.setLineWidth(1);
-    doc.line(20, 44, pageWidth - 65, 44);
+    // Fecha en el header
+    doc.setFontSize(10);
+    doc.setTextColor(...this.COLORS.secondaryLight.rgb);
+    doc.text(`Generado: ${this.getCurrentDate()}`, pageWidth / 2, 38, { align: 'center' });
   }
 
   private createEnhancedPDFInfo(doc: jsPDF, config: ExportConfig, pageWidth: number): void {
-    const startY = this.STYLES.spacing.headerHeight;
-    const infoHeight = this.STYLES.spacing.infoHeight;
+    const startY = 55;
+    const metadata = this.getReportMetadata(config);
     
-    // Fondo de información
-    doc.setFillColor(...this.COLORS.lightGray);
-    doc.rect(0, startY, pageWidth, infoHeight, 'F');
+    // Fondo de información con bordes redondeados simulados
+    doc.setFillColor(...this.COLORS.lightGray.rgb);
+    doc.rect(15, startY, pageWidth - 30, 35, 'F');
     
-    // Borde superior dorado
-    doc.setFillColor(...this.COLORS.secondaryLight);
-    doc.rect(0, startY, pageWidth, 2, 'F');
+    // Borde decorativo
+    doc.setDrawColor(...this.COLORS.secondary.rgb);
+    doc.setLineWidth(1);
+    doc.rect(15, startY, pageWidth - 30, 35);
     
-    // Marco decorativo
-    doc.setDrawColor(...this.COLORS.mediumGray);
-    doc.setLineWidth(0.5);
-    doc.rect(10, startY + 5, pageWidth - 20, infoHeight - 10, 'S');
+    // Título de la sección
+    doc.setFillColor(...this.COLORS.primary.rgb);
+    doc.rect(20, startY + 3, pageWidth - 40, 8, 'F');
     
-    // Información del reporte en diseño mejorado
-    doc.setTextColor(...this.COLORS.primary);
+    doc.setTextColor(...this.COLORS.white.rgb);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
+    doc.text('INFORMACIÓN DEL REPORTE', pageWidth / 2, startY + 8, { align: 'center' });
+    
+    // Información en dos columnas con mejor espaciado
+    doc.setTextColor(...this.COLORS.textDark.rgb);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    
+    const leftColumn = metadata.slice(0, Math.ceil(metadata.length / 2));
+    const rightColumn = metadata.slice(Math.ceil(metadata.length / 2));
     
     // Columna izquierda
-    doc.text('📊 DETALLES DEL REPORTE', 15, startY + 12);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.text(`📅 Fecha: ${this.getFechaCompleta()}`, 15, startY + 18);
-    doc.text(`📈 Registros: ${config.data.length.toLocaleString('es-ES')} elementos`, 15, startY + 23);
-    doc.text(`⏰ Hora: ${new Date().toLocaleTimeString('es-ES')}`, 15, startY + 28);
-    
-    // Columna central
-    const centerX = pageWidth / 2 - 20;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text('👤 INFORMACIÓN DEL USUARIO', centerX, startY + 12);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.text(`Usuario: ${config.metadata?.user || 'Sistema'}`, centerX, startY + 18);
-    
-    if (config.metadata?.department) {
-      doc.text(`🏢 Módulo: ${config.metadata.department}`, centerX, startY + 23);
-    }
+    leftColumn.forEach((item, index) => {
+      doc.text(`• ${item}`, 25, startY + 18 + (index * 6));
+    });
     
     // Columna derecha
-    const rightX = pageWidth - 60;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text('🔒 CLASIFICACIÓN', rightX, startY + 12);
-    doc.setFont('helvetica', 'normal');
+    rightColumn.forEach((item, index) => {
+      doc.text(`• ${item}`, pageWidth / 2 + 10, startY + 18 + (index * 6));
+    });
+    
+    // Estadísticas adicionales
+    doc.setFillColor(...this.COLORS.accent.rgb);
+    doc.rect(20, startY + 28, pageWidth - 40, 5, 'F');
+    
+    doc.setTextColor(...this.COLORS.white.rgb);
     doc.setFontSize(9);
-    doc.text('Interno', rightX, startY + 18);
-    doc.text('Confidencial', rightX, startY + 23);
-    doc.text(`Cols: ${config.columns.length}`, rightX, startY + 28);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${config.data.length} registros | ${config.columns.length} columnas | Sistema de Gestión Empresarial`, pageWidth / 2, startY + 31.5, { align: 'center' });
   }
 
-  private createEnhancedPDFTable(doc: jsPDF, config: ExportConfig): void {
+  private async createPDFTable(doc: jsPDF, config: ExportConfig): Promise<void> {
     const columns = config.columns.map(col => ({
       header: col.header,
       dataKey: col.key
@@ -510,174 +406,103 @@ export class ExportService {
     const body = config.data.map(item => {
       const row: any = {};
       config.columns.forEach(col => {
-        row[col.key] = this.formatCellValue(item[col.key], col.format);
+        row[col.key] = this.cleanValue(item[col.key]);
       });
       return row;
     });
     
-    const startY = this.STYLES.spacing.headerHeight + this.STYLES.spacing.infoHeight + 5;
-    
-    doc.autoTable({
-      columns: columns,
-      body: body,
-      startY: startY,
-      theme: 'grid',
-      styles: {
-        fontSize: 8,
-        cellPadding: { top: 3, right: 2, bottom: 3, left: 2 },
-        textColor: this.COLORS.primary,
-        lineColor: this.COLORS.mediumGray,
-        lineWidth: 0.2,
-        font: 'helvetica',
-        overflow: 'linebreak',
-        cellWidth: 'wrap'
-      },
-      headStyles: {
-        fillColor: this.COLORS.primary,
-        textColor: this.COLORS.white,
-        fontSize: 9,
-        fontStyle: 'bold',
-        halign: 'center',
-        valign: 'middle',
-        lineColor: this.COLORS.white,
-        lineWidth: 0.5,
-        cellPadding: { top: 4, right: 2, bottom: 4, left: 2 }
-      },
-      bodyStyles: {
-        alternateRowStyles: {
-          fillColor: this.COLORS.lightGray
+    if (typeof doc.autoTable === 'function') {
+      doc.autoTable({
+        columns,
+        body,
+        startY: 95, // Ajustado para el nuevo header
+        theme: 'grid',
+        styles: {
+          fontSize: 9,
+          cellPadding: 4,
+          textColor: this.COLORS.textDark.rgb,
+          lineColor: this.COLORS.mediumGray.rgb,
+          lineWidth: 0.5
+        },
+        headStyles: {
+          fillColor: this.COLORS.primary.rgb,
+          textColor: this.COLORS.white.rgb,
+          fontSize: 10,
+          fontStyle: 'bold',
+          halign: 'center',
+          minCellHeight: 12
+        },
+        bodyStyles: {
+          minCellHeight: 10,
+          alternateRowStyles: {
+            fillColor: this.COLORS.lightGray.rgb
+          }
+        },
+        columnStyles: this.getColumnStyles(config.columns),
+        margin: { left: 15, right: 15 },
+        didDrawPage: (data: any) => {
+          this.addEnhancedPDFFooter(doc, data.pageNumber, data.pageCount || 1);
         }
-      },
-      columnStyles: this.getEnhancedColumnStyles(config.columns),
-      margin: { left: this.STYLES.spacing.marginX, right: this.STYLES.spacing.marginX },
-      tableWidth: 'auto',
-      didDrawPage: (data: any) => {
-        this.addEnhancedPDFFooter(doc, data.pageNumber, data.pageCount || 1, config);
-      }
-    });
-  }
-
-  private createManualEnhancedPDFTable(doc: jsPDF, config: ExportConfig, startY: number): void {
-    let yPosition = startY;
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-    
-    const totalWidth = pageWidth - (this.STYLES.spacing.marginX * 2);
-    const colWidth = totalWidth / config.columns.length;
-    
-    // Encabezados con estilo profesional mejorado
-    doc.setFillColor(...this.COLORS.primary);
-    doc.rect(this.STYLES.spacing.marginX, yPosition - 8, totalWidth, 12, 'F');
-    
-    doc.setTextColor(...this.COLORS.white);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    
-    config.columns.forEach((col, index) => {
-      const x = this.STYLES.spacing.marginX + (index * colWidth) + 3;
-      const text = col.header.length > 15 ? col.header.substring(0, 15) + '...' : col.header;
-      doc.text(text, x, yPosition - 1);
-    });
-    
-    yPosition += 8;
-    
-    // Datos con alternancia de colores mejorada
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    
-    config.data.forEach((item, index) => {
-      if (yPosition > pageHeight - 50) {
-        this.addEnhancedPDFFooter(doc, 1, 1, config);
-        doc.addPage();
-        yPosition = 30;
-      }
-      
-      if (index % 2 === 0) {
-        doc.setFillColor(...this.COLORS.lightGray);
-        doc.rect(this.STYLES.spacing.marginX, yPosition - 4, totalWidth, 10, 'F');
-      }
-      
-      doc.setTextColor(...this.COLORS.primary);
-      
-      config.columns.forEach((col, colIndex) => {
-        const x = this.STYLES.spacing.marginX + (colIndex * colWidth) + 3;
-        const value = this.formatCellValue(item[col.key], col.format);
-        const text = String(value).length > 25 ? String(value).substring(0, 25) + '...' : String(value);
-        doc.text(text, x, yPosition + 2);
       });
-      
-      yPosition += 10;
-    });
-    
-    this.addEnhancedPDFFooter(doc, 1, 1, config);
+    } else {
+      this.createManualTable(doc, config, 95);
+    }
   }
 
-  private addEnhancedPDFFooter(doc: jsPDF, pageNumber: number, totalPages: number, config: ExportConfig): void {
+  private addEnhancedPDFFooter(doc: jsPDF, pageNumber: number, totalPages: number): void {
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-    const footerHeight = this.STYLES.spacing.footerHeight;
     
-    // Fondo del pie de página
-    doc.setFillColor(...this.COLORS.primary);
-    doc.rect(0, pageHeight - footerHeight, pageWidth, footerHeight, 'F');
+    // Fondo del footer
+    doc.setFillColor(...this.COLORS.primary.rgb);
+    doc.rect(0, pageHeight - 18, pageWidth, 18, 'F');
     
-    // Franja dorada superior del footer
-    doc.setFillColor(...this.COLORS.secondary);
-    doc.rect(0, pageHeight - footerHeight, pageWidth, 2, 'F');
+    // Franja decorativa superior
+    doc.setFillColor(...this.COLORS.secondary.rgb);
+    doc.rect(0, pageHeight - 18, pageWidth, 2, 'F');
     
-    // Información del pie en tres secciones
-    doc.setTextColor(...this.COLORS.white);
+    // Información del footer con mejor espaciado
+    doc.setTextColor(...this.COLORS.white.rgb);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     
-    // Sección izquierda
-    const leftText = `📄 Página ${pageNumber} de ${totalPages}`;
-    doc.text(leftText, 15, pageHeight - 8);
+    // Izquierda: Fecha
+    doc.text(`Generado: ${this.getCurrentDate()}`, 15, pageHeight - 8);
     
-    // Sección central
-    const centerText = `${config.metadata?.company || 'LA ROCA'} - Sistema de Gestión Empresarial`;
-    doc.text(centerText, pageWidth / 2, pageHeight - 12, { align: 'center' });
+    // Centro: Sistema
+    doc.text('Sistema de Gestión Empresarial', pageWidth / 2, pageHeight - 8, { align: 'center' });
     
-    const confidentialText = '🔒 Documento Confidencial - Uso Interno';
-    doc.text(confidentialText, pageWidth / 2, pageHeight - 5, { align: 'center' });
+    // Derecha: Paginación
+    doc.text(`Página ${pageNumber} de ${totalPages}`, pageWidth - 15, pageHeight - 8, { align: 'right' });
     
-    // Sección derecha
-    const rightText = `⏰ ${new Date().toLocaleString('es-ES', { 
-      timeZone: 'America/Tegucigalpa',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })}`;
-    doc.text(rightText, pageWidth - 15, pageHeight - 8, { align: 'right' });
+    // Línea decorativa
+    doc.setDrawColor(...this.COLORS.secondaryLight.rgb);
+    doc.setLineWidth(0.3);
+    doc.line(15, pageHeight - 12, pageWidth - 15, pageHeight - 12);
   }
 
-  private exportEnhancedBasicPDF(config: ExportConfig): { success: boolean; message: string } {
+  private createBasicPDF(config: ExportConfig): ExportResult {
     try {
       const doc = new jsPDF('p', 'mm', 'a4');
       
-      // Header básico pero profesional mejorado
-      doc.setFillColor(...this.COLORS.primary);
-      doc.rect(0, 0, doc.internal.pageSize.width, 30, 'F');
+      // Header básico mejorado
+      doc.setFillColor(...this.COLORS.primary.rgb);
+      doc.rect(0, 0, doc.internal.pageSize.width, 25, 'F');
       
-      doc.setFillColor(...this.COLORS.secondary);
-      doc.rect(0, 0, doc.internal.pageSize.width, 3, 'F');
-      
-      doc.setTextColor(...this.COLORS.white);
-      doc.setFontSize(16);
+      doc.setTextColor(...this.COLORS.white.rgb);
+      doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      doc.text(config.title, 15, 18);
+      doc.text('REPORTE EMPRESARIAL', doc.internal.pageSize.width / 2, 12, { align: 'center' });
       
-      doc.setFontSize(10);
-      doc.text(`Generado: ${this.getFechaCompleta()}`, 15, 25);
+      doc.setFontSize(12);
+      doc.text(config.title, doc.internal.pageSize.width / 2, 19, { align: 'center' });
       
-      this.createManualEnhancedPDFTable(doc, config, 40);
+      this.createManualTable(doc, config, 35);
       
-      const nombreArchivo = `${config.filename}_${this.getFileDate()}.pdf`;
-      doc.save(nombreArchivo);
+      const filename = this.generateFilename(config.filename, 'pdf');
+      doc.save(filename);
       
-      return { success: true, message: 'Archivo PDF exportado (versión básica profesional mejorada)' };
+      return { success: true, message: `PDF básico exportado: ${filename}` };
       
     } catch (error) {
       console.error('Error en PDF básico:', error);
@@ -685,276 +510,194 @@ export class ExportService {
     }
   }
 
-  // ===== MÉTODOS DE UTILIDAD MEJORADOS =====
+  private createManualTable(doc: jsPDF, config: ExportConfig, startY: number): void {
+    let yPosition = startY;
+    const pageWidth = doc.internal.pageSize.width;
+    const colWidth = (pageWidth - 30) / config.columns.length; // Más margen
+    
+    // Headers con mejor diseño
+    doc.setFillColor(...this.COLORS.primary.rgb);
+    doc.rect(15, yPosition - 6, pageWidth - 30, 12, 'F');
+    
+    doc.setTextColor(...this.COLORS.white.rgb);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    
+    config.columns.forEach((col, index) => {
+      const x = 15 + (index * colWidth) + (colWidth / 2);
+      doc.text(col.header, x, yPosition, { align: 'center' });
+    });
+    
+    yPosition += 10;
+    
+    // Data rows con mejor espaciado
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...this.COLORS.textDark.rgb);
+    
+    config.data.forEach((item, index) => {
+      if (yPosition > doc.internal.pageSize.height - 35) {
+        doc.addPage();
+        yPosition = 25;
+      }
+      
+      // Fila alterna con mejor contraste
+      if (index % 2 === 0) {
+        doc.setFillColor(...this.COLORS.lightGray.rgb);
+        doc.rect(15, yPosition - 4, pageWidth - 30, 10, 'F');
+      }
+      
+      config.columns.forEach((col, colIndex) => {
+        const x = 15 + (colIndex * colWidth) + 3;
+        const text = String(this.cleanValue(item[col.key])).substring(0, 30);
+        doc.text(text, x, yPosition + 2);
+      });
+      
+      yPosition += 10;
+    });
+    
+    this.addEnhancedPDFFooter(doc, 1, 1);
+  }
 
-  private getEnhancedColumnStyles(columns: ExportColumn[]): any {
+  // ===== MÉTODOS PRIVADOS - CSV =====
+
+  private buildCSVContent(config: ExportConfig): string {
+    const separator = '='.repeat(80);
+    const metadata = this.getReportMetadata(config);
+    
+    const lines = [
+      separator,
+      `REPORTE EMPRESARIAL - ${config.title.toUpperCase()}`,
+      separator,
+      '',
+      'INFORMACIÓN DEL REPORTE:',
+      ''.padEnd(40, '-'),
+      ...metadata,
+      '',
+      'RESUMEN ESTADÍSTICO:',
+      ''.padEnd(40, '-'),
+      `Total de registros: ${config.data.length}`,
+      `Columnas incluidas: ${config.columns.length}`,
+      `Fecha de generación: ${this.getCurrentDate()}`,
+      '',
+      'DATOS DEL REPORTE:',
+      ''.padEnd(40, '-'),
+      '',
+      config.columns.map(col => col.header).join(','),
+      ...config.data.map(row => 
+        config.columns.map(col => this.escapeCSV(row[col.key])).join(',')
+      ),
+      '',
+      separator,
+      `Archivo generado por Sistema de Gestión Empresarial`,
+      `Fecha y hora: ${new Date().toISOString()}`,
+      separator
+    ];
+    
+    return '\uFEFF' + lines.join('\n');
+  }
+
+  // ===== MÉTODOS DE UTILIDAD =====
+
+  private validateConfig(config: ExportConfig): void {
+    if (!config.data || !Array.isArray(config.data) || config.data.length === 0) {
+      throw new Error('No hay datos para exportar');
+    }
+    if (!config.columns || config.columns.length === 0) {
+      throw new Error('No se han definido columnas');
+    }
+  }
+
+  private getReportMetadata(config: ExportConfig): string[] {
+    const metadata = [
+      `Fecha de Generación: ${this.getCurrentDate()}`,
+      `Total de Registros: ${config.data.length}`,
+    ];
+    
+    if (config.metadata?.department) {
+      metadata.push(`Departamento: ${config.metadata.department}`);
+    }
+    
+    if (config.metadata?.user) {
+      metadata.push(`Usuario: ${config.metadata.user}`);
+    }
+    
+    if (config.metadata?.additionalInfo) {
+      metadata.push(`Información: ${config.metadata.additionalInfo}`);
+    }
+    
+    return metadata;
+  }
+
+  private getColumnStyles(columns: ExportColumn[]): any {
     const styles: any = {};
     columns.forEach(col => {
       styles[col.key] = {
-        halign: this.getAlignmentForFormat(col.format, col.align),
-        cellWidth: this.calculatePDFColumnWidth(col),
-        textColor: this.COLORS.primary,
-        fontSize: 8,
-        fontStyle: col.format === 'number' || col.format === 'currency' ? 'normal' : 'normal'
+        halign: col.align || 'left',
+        cellWidth: col.width ? (col.width * 2.8) : 'auto'
       };
     });
     return styles;
   }
 
-  private createBorder(color: string, style: string): any {
-    return {
-      top: { style: style, color: { rgb: color } },
-      bottom: { style: style, color: { rgb: color } },
-      left: { style: style, color: { rgb: color } },
-      right: { style: style, color: { rgb: color } }
-    };
-  }
-
-  private calculateInfoEndRow(config: ExportConfig): number {
-    let endRow = 12; // Base: separador + info header + separador + fecha + total + usuario + confidencial
-    if (config.metadata?.department) endRow++;
-    if (config.metadata?.additionalInfo) endRow++;
-    return endRow;
-  }
-
-  private calculateColumnWidth(col: ExportColumn): number {
-    if (col.width) return col.width;
-    
-    switch (col.format) {
-      case 'date': return 18;
-      case 'currency': return 15;
-      case 'number': return 12;
-      case 'percentage': return 10;
-      default: return Math.max(col.header.length + 5, 20);
-    }
-  }
-
-  private calculatePDFColumnWidth(col: ExportColumn): number | string {
-    if (col.width) return col.width;
-    
-    switch (col.format) {
-      case 'date': return 25;
-      case 'currency': return 20;
-      case 'number': return 15;
-      case 'percentage': return 15;
-      default: return 'auto';
-    }
-  }
-
-  private getAlignmentForFormat(format?: string, defaultAlign?: string): string {
-    if (defaultAlign) return defaultAlign;
-    
-    switch (format) {
-      case 'number':
-      case 'currency':
-      case 'percentage':
-        return 'right';
-      case 'date':
-        return 'center';
-      default:
-        return 'left';
-    }
-  }
-
-  private getNumberFormatForColumn(format?: string): string {
-    switch (format) {
-      case 'currency': return '#,##0.00"$"';
-      case 'number': return '#,##0.00';
-      case 'percentage': return '0.00%';
-      case 'date': return 'dd/mm/yyyy';
-      default: return 'General';
-    }
-  }
-
-  private formatCellValue(value: any, format?: string): string {
-    if (!value && value !== 0) return '';
-    
-    switch (format) {
-      case 'currency':
-        const num = parseFloat(value);
-        return isNaN(num) ? value : `L. ${num.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      
-      case 'number':
-        const number = parseFloat(value);
-        return isNaN(number) ? value : number.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      
-      case 'percentage':
-        const percent = parseFloat(value);
-        return isNaN(percent) ? value : `${(percent * 100).toFixed(2)}%`;
-      
-      case 'date':
-        const date = new Date(value);
-        return isNaN(date.getTime()) ? value : date.toLocaleDateString('es-ES');
-      
-      default:
-        return this.cleanText(value);
-    }
-  }
-
-  private centerText(text: string, width: number): string {
-    const textLength = text.length;
-    if (textLength >= width) return text.substring(0, width);
-    
-    const padding = Math.floor((width - textLength) / 2);
-    return ' '.repeat(padding) + text + ' '.repeat(width - textLength - padding);
-  }
-
-  private cleanText(text: any): string {
-    if (!text && text !== 0) return '';
-    
-    return String(text)
+  private cleanValue(value: any): string {
+    if (value === null || value === undefined) return '';
+    return String(value)
       .replace(/\s+/g, ' ')
-      .replace(/[^\w\s\-.,;:()\[\]áéíóúñüÁÉÍÓÚÑÜ]/g, '') // Incluir caracteres especiales del español
+      .replace(/[^\w\s\-.,;:()\[\]]/g, '')
       .trim()
-      .substring(0, 200);
+      .substring(0, 100);
   }
 
   private escapeCSV(value: any): string {
-    if (!value && value !== 0) return '';
+    if (!value) return '';
+    let stringValue = this.cleanValue(value);
     
-    let stringValue = String(value)
-      .replace(/[\r\n]/g, ' ')
-      .replace(/[^\w\s\-.,;:()\[\]áéíóúñüÁÉÍÓÚÑÜ]/g, ''); // Incluir caracteres especiales del español
-    
-    if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+    if (stringValue.includes(',') || stringValue.includes('"')) {
       stringValue = `"${stringValue.replace(/"/g, '""')}"`;
     }
     
     return stringValue;
   }
 
-  private getFechaCompleta(): string {
+  private getCurrentDate(): string {
     return new Date().toLocaleDateString('es-ES', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      timeZone: 'America/Tegucigalpa',
-      weekday: 'long'
+      timeZone: 'America/Tegucigalpa'
     });
   }
 
-  private getFileDate(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    
-    return `${year}${month}${day}_${hours}${minutes}${seconds}`;
+  private generateFilename(base: string, extension: string): string {
+    const timestamp = new Date().toISOString()
+      .replace(/[:.]/g, '-')
+      .substring(0, 19);
+    return `${base}_${timestamp}.${extension}`;
   }
 
   private sanitizeSheetName(name: string): string {
     return name
       .replace(/[\\\/\?\*\[\]:]/g, '')
-      .replace(/[^\w\s\-áéíóúñüÁÉÍÓÚÑÜ]/g, '') // Incluir caracteres especiales del español
+      .replace(/[^\w\s\-]/g, '')
       .substring(0, 31);
   }
 
   private downloadFile(content: string, filename: string, mimeType: string): void {
-    const blob = new Blob([content], { type: `${mimeType};charset=utf-8;` });
+    const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     
     link.href = url;
     link.download = filename;
     link.style.display = 'none';
+    
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     
     setTimeout(() => URL.revokeObjectURL(url), 100);
-  }
-
-  // ===== MÉTODOS PÚBLICOS ADICIONALES PARA CONFIGURACIÓN =====
-
-  /**
-   * Permite configurar colores personalizados manteniendo la estructura
-   */
-  public setCustomColors(customColors: Partial<typeof this.COLORS>): void {
-    Object.assign(this.COLORS, customColors);
-  }
-
-  /**
-   * Permite configurar estilos personalizados
-   */
-  public setCustomStyles(customStyles: Partial<typeof this.STYLES>): void {
-    Object.assign(this.STYLES, customStyles);
-  }
-
-  /**
-   * Exporta múltiples hojas en un solo archivo Excel
-   */
-  async exportMultiSheetExcel(configs: ExportConfig[]): Promise<{ success: boolean; message: string }> {
-    try {
-      if (!configs.length) {
-        return { success: false, message: 'No hay configuraciones para exportar' };
-      }
-
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      
-      for (const config of configs) {
-        if (config.data && config.data.length > 0) {
-          const companyName = config.metadata?.company || 'LA ROCA';
-          const reportType = config.metadata?.reportType || 'INFORME EJECUTIVO';
-          
-          const datosConEncabezado = [
-            [`${companyName} - ${reportType}`],
-            [`${config.title.toUpperCase()}`],
-            [],
-            [`📊 Fecha: ${this.getFechaCompleta()}`],
-            [`📈 Registros: ${config.data.length.toLocaleString('es-ES')}`],
-            [`👤 Usuario: ${config.metadata?.user || 'Sistema'}`],
-            [],
-            config.columns.map(col => col.header),
-            ...config.data.map(item => 
-              config.columns.map(col => this.formatCellValue(item[col.key], col.format))
-            )
-          ];
-
-          const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datosConEncabezado);
-          this.applyEnhancedExcelStyles(ws, config);
-          
-          XLSX.utils.book_append_sheet(wb, ws, this.sanitizeSheetName(config.title));
-        }
-      }
-      
-      const nombreArchivo = `Reporte_Consolidado_${this.getFileDate()}.xlsx`;
-      XLSX.writeFile(wb, nombreArchivo);
-      
-      return { success: true, message: `Archivo Excel con ${configs.length} hojas exportado exitosamente` };
-      
-    } catch (error) {
-      console.error('Error al exportar Excel multi-hoja:', error);
-      return { success: false, message: 'Error al exportar el archivo Excel consolidado' };
-    }
-  }
-
-  /**
-   * Obtiene una vista previa de cómo se verá el reporte
-   */
-  public getExportPreview(config: ExportConfig): {
-    estimatedSize: string;
-    columns: number;
-    rows: number;
-    estimatedPages: number;
-    filenameSuggestion: string;
-  } {
-    const rows = config.data.length;
-    const columns = config.columns.length;
-    const estimatedSize = `${Math.round((rows * columns * 50) / 1024)} KB`;
-    const estimatedPages = Math.ceil(rows / 35); // Aproximadamente 35 filas por página
-    const filenameSuggestion = `${config.filename}_${this.getFileDate()}`;
-
-    return {
-      estimatedSize,
-      columns,
-      rows,
-      estimatedPages,
-      filenameSuggestion
-    };
   }
 }
