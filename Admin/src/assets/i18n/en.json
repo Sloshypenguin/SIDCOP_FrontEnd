@@ -57,8 +57,7 @@
       "LIST": {
         "BODEGAS": "Bodegas",
         "TRASLADOS": "Traslados",
-        "RECARGAS": "Recargas",
-        "REPORTEPRODUCTOS": "ReporteProductos"
+        "RECARGAS": "Recargas"
       }
     },
      "REPORTES": {

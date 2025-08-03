@@ -10,8 +10,7 @@ import { Permiso } from '../../Modelos/acceso/permisos.model';
 export class MenuService {
   // Mapeo de IDs de pantallas a rutas de menú
   private pantallaIdToMenuMap: { [key: number]: string } = {
-    6: '/acceso/roles',
-    7: '/acceso/usuarios',
+
     8: '/general/canales',
     9: '/general/cargos',
     10: '/general/clientes',
@@ -52,7 +51,9 @@ export class MenuService {
     57: '/ventas/ventas',
     58: '/inventario/inventario',
     59: '/ventas/listasprecios',
-    61: '/logistica/reporteproductos'
+    61: '/reportes/reporteproductos',
+    62: '/acceso/roles',
+    63: '/acceso/usuarios',
   };
 
   private menuItemsSubject: BehaviorSubject<MenuItem[]> = new BehaviorSubject<MenuItem[]>([]);

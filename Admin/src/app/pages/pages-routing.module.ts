@@ -63,12 +63,12 @@ const routes: Routes = [
     canActivate: [PermisoGuard],
     data: { pantallaId: 5 } // ID 5: Ventas (módulo padre)
   },
-    {
+  {
     path: 'reportes',
     loadChildren: () =>
       import('./reportes/reportes.module').then((m) => m.ReportesModule),
     canActivate: [PermisoGuard],
-    data: { pantallaId: 60 } // ID 5: Ventas (módulo padre)
+    data: { pantallaId: 7 } 
   },
   
 ];
