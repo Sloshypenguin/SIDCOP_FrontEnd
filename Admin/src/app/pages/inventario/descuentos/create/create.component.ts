@@ -666,7 +666,9 @@ irAlSiguientePaso() {
 
   if (this.validarPasoActual()) {
     this.mostrarErrores = false;
+   
     this.activeTab ++;
+    
   } else {
     this.mostrarAlertaWarning = true;
     this.mensajeWarning= 'Debe Completar todos los campos'
@@ -676,6 +678,70 @@ irAlSiguientePaso() {
           this.mensajeError = '';
         }, 2000);
     // Podrías mostrar una alerta o dejar que los mensajes de error visibles lo indiquen
+  }
+}
+
+// Nueva función para navegación inteligente de tabs
+navegar(tabDestino: number) {
+  // Si intenta ir hacia atrás, permitir siempre
+  if (tabDestino < this.activeTab) {
+    this.activeTab = tabDestino;
+    this.mostrarErrores = false;
+    return;
+  }
+  
+  // Si intenta ir hacia adelante, validar todos los pasos intermedios
+  if (tabDestino > this.activeTab) {
+    // Validar todos los pasos desde el actual hasta el destino
+    for (let paso = this.activeTab; paso < tabDestino; paso++) {
+      if (!this.validarPaso(paso)) {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = `Debe completar todos los campos del paso ${this.getNombrePaso(paso)} antes de continuar.`;
+        
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+        return;
+      }
+    }
+    
+    // Si todos los pasos intermedios están válidos, navegar
+    this.activeTab = tabDestino;
+    this.mostrarErrores = false;
+    return;
+  }
+  
+  // Si es el mismo tab, no hacer nada
+  if (tabDestino === this.activeTab) {
+    return;
+  }
+}
+
+// Función auxiliar para validar un paso específico
+validarPaso(paso: number): boolean {
+  switch (paso) {
+    case 1: // Información general
+      return this.validarPasoInformacionGeneral();
+    case 2: // Aplica para
+      return this.seleccionados.length > 0;
+    case 3: // Clientes
+      return this.clientesSeleccionados.length > 0;
+    case 4: // Escalas
+      return this.validarEscalas();
+    default:
+      return false;
+  }
+}
+
+// Función auxiliar para obtener el nombre del paso
+getNombrePaso(paso: number): string {
+  switch (paso) {
+    case 1: return 'Información General';
+    case 2: return 'Aplicar para';
+    case 3: return 'Clientes';
+    case 4: return 'Escalas';
+    default: return 'Paso ' + paso;
   }
 }
 
