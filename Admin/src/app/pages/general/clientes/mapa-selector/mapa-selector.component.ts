@@ -6,7 +6,8 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
@@ -31,6 +32,7 @@ export class MapaSelectorComponent implements AfterViewInit {
   @Input() puntosVista: PuntoVista[] = [];
   @Output() coordenadasSeleccionadas = new EventEmitter<{ lat: number, lng: number }>();
 
+  @Input() mostrar: boolean = false;
   @ViewChild('mapaContainer', { static: true }) mapaContainer!: ElementRef;
 
   private map!: google.maps.Map;
@@ -38,7 +40,15 @@ export class MapaSelectorComponent implements AfterViewInit {
   private mapaInicializado = false;
 
   ngAfterViewInit() {
-    this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    if (this.mostrar) {
+      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['mostrar'] && this.mostrar && !this.mapaInicializado && this.mapaContainer) {
+      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    }
   }
 
   private cargarGoogleMapsScript(): Promise<void> {
