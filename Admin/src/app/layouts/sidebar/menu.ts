@@ -16,7 +16,7 @@ export const MENU: MenuItem[] = [
         label: 'MENUITEMS.DASHBOARD.LIST.ECOMMERCE',
         link: '/',
         parentId: 2,
-      }
+      },
     ],
   },
   {
@@ -25,16 +25,16 @@ export const MENU: MenuItem[] = [
     icon: 'ri-lock-line',
     subItems: [
       {
-        id: 61,
+        id: 63,
         label: 'MENUITEMS.ACCESO.LIST.USUARIOS',
         link: '/acceso/usuarios',
-        parentId: 6,
+        parentId: 1,
       },
       {
         id: 62,
         label: 'MENUITEMS.ACCESO.LIST.ROLES',
         link: '/acceso/roles',
-        parentId: 6,
+        parentId: 1,
       },
     ],
   },
@@ -235,17 +235,8 @@ export const MENU: MenuItem[] = [
         parentId: 4,
         icon: 'ri-truck-line',
       },
-      // {
-      //   id: 29,
-      //   label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
-      //   link: '/logistica/recargas',
-      //   parentId: 4,
-      //   icon: 'ri-truck-line',
-      // },
-      // Puedes añadir más subitems aquí según sea necesario
     ],
   },
-
   {
     id: 3,
     label: 'MENUITEMS.INVENTARIO.TEXT',
@@ -287,6 +278,20 @@ export const MENU: MenuItem[] = [
       //   icon: 'ri-truck-line',
       // },
       // Puedes añadir más subitems aquí según sea necesario
+    ],
+  },
+  {
+    id: 7,
+    label: 'MENUITEMS.REPORTES.TEXT',
+    icon: 'ri-layout-grid-fill',
+    subItems: [
+      {
+        id: 61,
+        label: 'MENUITEMS.REPORTES.LIST.REPORTEPRODUCTOS',
+        link: '/reportes/reporteproductos',
+        parentId: 7,
+        icon: 'ri-truck-line',
+      }
     ],
   },
 ];

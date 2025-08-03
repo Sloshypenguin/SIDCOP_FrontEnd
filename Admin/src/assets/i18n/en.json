@@ -60,6 +60,13 @@
         "RECARGAS": "Recargas"
       }
     },
+     "REPORTES": {
+      "TEXT": "Reportes",
+      "LIST": {
+        "REPORTEPRODUCTOS": "ReporteProductos"
+        
+      }
+    },
     "DASHBOARD": {
       "TEXT": "Dashboards",
       "LIST": {
