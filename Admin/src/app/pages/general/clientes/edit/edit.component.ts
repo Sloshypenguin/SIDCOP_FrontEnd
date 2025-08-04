@@ -78,7 +78,7 @@ export class EditComponent implements OnChanges {
       this.cliente = { ...changes['clienteData'].currentValue };
       this.clienteOriginal = { ...changes['clienteData'].currentValue };
       this.idDelCliente = this.cliente.clie_Id;
-      
+
       this.cargarDireccionesExistentes();
       this.cargarAvalesExistentes();
     }
@@ -90,7 +90,7 @@ export class EditComponent implements OnChanges {
   scrollToAval(index: number) {
     const container = this.tabsScroll?.nativeElement;
     if (!container) return;
-    
+
     const avalElements = container.querySelectorAll('.aval-tab');
 
     if (avalElements[index]) {
@@ -454,12 +454,11 @@ export class EditComponent implements OnChanges {
   // Métodos para cargar datos existentes
   cargarDireccionesExistentes() {
     if (!this.idDelCliente) return;
-    
+
     this.http.get<any[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
-        // Filtrar por el cliente actual
         this.direccionesPorCliente = data.filter(d => d.clie_Id === this.idDelCliente);
         this.direccionesOriginales = [...this.direccionesPorCliente];
         this.validarDireccion = this.direccionesPorCliente.length === 0;
@@ -472,16 +471,14 @@ export class EditComponent implements OnChanges {
 
   cargarAvalesExistentes() {
     if (!this.idDelCliente) return;
-    
+
     this.http.get<any[]>(`${environment.apiBaseUrl}/Aval/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
-        // Filtrar por el cliente actual
         this.avales = data.filter(a => a.clie_Id === this.idDelCliente);
         this.avalesOriginales = [...this.avales];
-        
-        // Si no hay avales, crear uno vacío para mantener la funcionalidad
+
         if (this.avales.length === 0) {
           this.avales = [this.nuevoAval()];
         }
@@ -634,7 +631,7 @@ export class EditComponent implements OnChanges {
     if (this.entrando) {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
-      
+
       const clienteActualizar = {
         clie_Id: this.cliente.clie_Id,
         clie_Codigo: this.cliente.clie_Codigo.trim(),
@@ -695,10 +692,10 @@ export class EditComponent implements OnChanges {
             }, 3000);
             return;
           }
-          
+
           // Actualizar direcciones y avales
           this.actualizarDireccionesYAvales();
-          
+
           this.mostrarAlertaExito = true;
           this.mensajeExito = 'Cliente actualizado correctamente';
           setTimeout(() => {
@@ -725,53 +722,41 @@ export class EditComponent implements OnChanges {
     }
   }
 
-  // Método para gestionar direcciones y avales
   actualizarDireccionesYAvales(): void {
     this.procesarDirecciones();
     this.procesarAvales();
   }
 
-  // Procesar direcciones (actualizar, insertar, eliminar)
   procesarDirecciones(): void {
-    // Eliminar direcciones marcadas para eliminación
     this.direccionesEliminadas.forEach(direccionId => {
       this.eliminarDireccionServidor(direccionId);
     });
 
-    // Procesar direcciones actuales
     this.direccionesPorCliente.forEach(direccion => {
       if (direccion.diCl_Id === 0) {
-        // Nueva dirección - insertar
         this.insertarDireccion(direccion);
       } else {
-        // Dirección existente - actualizar
         this.actualizarDireccion(direccion);
       }
     });
   }
 
-  // Procesar avales (actualizar, insertar, eliminar)
   procesarAvales(): void {
-    // Eliminar avales marcados para eliminación
     this.avalesEliminados.forEach(avalId => {
       this.eliminarAvalServidor(avalId);
     });
 
-    // Solo procesar avales si hay datos de crédito
     if (this.tieneDatosCredito()) {
       this.avales.forEach(aval => {
         if (aval.aval_Id === 0) {
-          // Nuevo aval - insertar
           this.insertarAval(aval);
         } else {
-          // Aval existente - actualizar
           this.actualizarAval(aval);
         }
       });
     }
   }
 
-  // Métodos para direcciones
   insertarDireccion(direccion: DireccionPorCliente): void {
     const direccionInsertar = {
       ...direccion,
@@ -838,7 +823,6 @@ export class EditComponent implements OnChanges {
     });
   }
 
-  // Métodos para avales
   insertarAval(aval: Aval): void {
     const avalInsertar = {
       ...aval,
@@ -904,10 +888,9 @@ export class EditComponent implements OnChanges {
     });
   }
 
-  // Métodos para manejo de direcciones en la UI
   agregarDireccion() {
     this.mostrarErrores = true;
-    if(!this.direccionPorCliente.diCl_Longitud && !this.direccionPorCliente.diCl_Latitud){
+    if (!this.direccionPorCliente.diCl_Longitud && !this.direccionPorCliente.diCl_Latitud) {
       this.mostrarErrores = true;
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor, seleccione una ubicación en el mapa.';
@@ -917,7 +900,7 @@ export class EditComponent implements OnChanges {
       }, 3000);
       return;
     }
-    
+
     if (this.direccionPorCliente.diCl_DireccionExacta.trim() && this.direccionPorCliente.colo_Id && this.direccionPorCliente.diCl_Observaciones) {
       this.mostrarErrores = false;
       const colonia = this.TodasColonias.find(c => c.colo_Id == this.direccionPorCliente.colo_Id);
@@ -937,7 +920,7 @@ export class EditComponent implements OnChanges {
       this.cerrarMapa();
       this.validarDireccion = false;
     }
-    else{
+    else {
       this.mostrarErrores = true;
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'Por favor, complete todos los campos obligatorios de la dirección.';
@@ -960,13 +943,11 @@ export class EditComponent implements OnChanges {
 
   eliminarDireccion(index: number) {
     const direccion = this.direccionesPorCliente[index];
-    
-    // Si la dirección tiene ID, marcarla para eliminación en el servidor
+
     if (direccion.diCl_Id > 0) {
       this.direccionesEliminadas.push(direccion.diCl_Id);
     }
-    
-    // Eliminar de la lista local
+
     this.direccionesPorCliente.splice(index, 1);
     this.validarDireccion = this.direccionesPorCliente.length === 0;
   }
@@ -989,7 +970,6 @@ export class EditComponent implements OnChanges {
     };
   }
 
-  // Métodos para manejo de avales en la UI
   agregarAval() {
     this.avales.push(this.nuevoAval());
     this.avalActivoIndex = this.avales.length - 1;
@@ -998,21 +978,17 @@ export class EditComponent implements OnChanges {
 
   eliminarAval(index: number) {
     const aval = this.avales[index];
-    
-    // Si el aval tiene ID, marcarla para eliminación en el servidor
+
     if (aval.aval_Id > 0) {
       this.avalesEliminados.push(aval.aval_Id);
     }
-    
-    // Eliminar de la lista local
+
     this.avales.splice(index, 1);
-    
-    // Ajustar el índice activo
+
     if (this.avalActivoIndex >= this.avales.length) {
       this.avalActivoIndex = this.avales.length - 1;
     }
-    
-    // Si no quedan avales y hay crédito, agregar uno nuevo
+
     if (this.avales.length === 0 && this.tieneDatosCredito()) {
       this.avales.push(this.nuevoAval());
       this.avalActivoIndex = 0;
