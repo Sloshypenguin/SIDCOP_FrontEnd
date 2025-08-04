@@ -101,17 +101,19 @@ export class ListComponent {
     
     // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
     columns: [
-      { key: 'No', header: 'No.', width: 8, align: 'center' as const },
-      { key: 'Codigo', header: 'Codigo', width: 25, align: 'left' as const },
+      { key: 'No', header: 'No.', width: 3, align: 'center' as const },
+      { key: 'Codigo', header: 'Codigo', width: 15, align: 'left' as const },
+      { key: 'RTN', header: 'RTN', width: 40, align: 'left' as const },
       { key: 'Nombres', header: 'Nombres', width: 50, align: 'left' as const },
       { key: 'Apellidos', header: 'Apellidos', width: 50, align: 'left' as const },
-      { key: 'Telefono', header: 'Telefono', width: 50, align: 'left' as const }
+      { key: 'Telefono', header: 'Telefono', width: 40, align: 'left' as const }
     ] as ExportColumn[],
     
     // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
     dataMapping: (cliente: Cliente, index: number) => ({
       'No': cliente?.No || (index + 1),
       'Codigo': this.limpiarTexto(cliente?.clie_Codigo),
+      'RTN': this.limpiarTexto(cliente?.clie_RTN),
       'Nombres': this.limpiarTexto(cliente?.clie_Nombres),
       'Apellidos': this.limpiarTexto(cliente?.clie_Apellidos),
       'Telefono': this.limpiarTexto(cliente?.clie_Telefono)
