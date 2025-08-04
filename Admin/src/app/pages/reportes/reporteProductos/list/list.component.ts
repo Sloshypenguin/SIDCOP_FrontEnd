@@ -1,71 +1,11 @@
+// reporte-productos.component.ts - VERSIÓN SIMPLIFICADA
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-
-interface ConfiguracionFactura {
-  coFa_NombreEmpresa: string;
-  coFa_DireccionEmpresa: string;
-  coFa_RTN: string;
-  coFa_Correo: string;
-  coFa_Telefono1: string;
-  coFa_Telefono2: string;
-  coFa_Logo: string;
-  colo_Descripcion: string;
-  muni_Descripcion: string;
-  depa_Descripcion: string;
-}
-
-interface Producto {
-  secuencia: number;
-  prod_Id: number;
-  prod_Codigo: string;
-  prod_CodigoBarra: string;
-  prod_Descripcion: string;
-  prod_DescripcionCorta: string;
-  prod_Imagen: string;
-  prod_PrecioUnitario: number;
-  prod_CostoTotal: number;
-  prod_PagaImpuesto: string;
-  prod_esPromo: string;
-  marc_Id: number;
-  marc_Descripcion: string;
-  cate_Id: number;
-  cate_Descripcion: string;
-  subc_Id: number;
-  subc_Descripcion: string;
-  prov_Id: number;
-  prov_NombreEmpresa: string;
-  impu_Id: number;
-  impu_Descripcion: string;
-  usua_Creacion: number;
-  usuarioCreacion: string;
-  prod_FechaCreacion: string;
-  usua_Modificacion: number;
-  usuarioModificacion: string;
-  prod_FechaModificacion: string;
-}
-
-interface Marca {
-  marc_Id: number;
-  marc_Descripcion: string;
-}
-
-interface Categoria {
-  cate_Id: number;
-  cate_Descripcion: string;
-}
-
-interface FiltrosReporte {
-  fechaInicio: string;
-  fechaFin: string;
-  marcaId: number | null;
-  categoriaId: number | null;
-}
-
+import { PdfReportService, ReportConfig, TableData } from 'src/app/reporteGlobal';
 @Component({
   selector: 'app-reporte-productos',
   standalone: true,
@@ -74,370 +14,160 @@ interface FiltrosReporte {
   styleUrls: ['./list.component.scss']
 })
 export class ReporteProductosComponent implements OnInit {
-  productos: Producto[] = [];
-  marcas: Marca[] = [];
-  categorias: Categoria[] = [];
-  configuracionEmpresa: ConfiguracionFactura | null = null;
-  
-  filtros: FiltrosReporte = {
-    fechaInicio: '',
-    fechaFin: '',
-    marcaId: null,
-    categoriaId: null
-  };
-  
-  mostrarOverlayCarga = false;
-  mostrarAlertaError = false;
-  mensajeError = '';
-  fechaGeneracion = new Date();
-  cargandoPDF = false;
+  productos: any[] = [];
+  pdfUrl: SafeResourceUrl | null = null;
+  cargando = false;
 
-  constructor(private http: HttpClient) {}
+  // Filtros
+  fechaInicio: string | null = null;
+  fechaFin: string | null = null;
+  marcas: any[] = [];
+  categorias: any[] = [];
+  marcaSeleccionada: number | null = null;
+  categoriaSeleccionada: number | null = null;
 
-  ngOnInit(): void {
+  constructor(
+    private http: HttpClient, 
+    private sanitizer: DomSanitizer,
+    private pdfService: PdfReportService // ¡Inyectar el servicio!
+  ) {}
+
+  ngOnInit() {
     this.cargarDatosIniciales();
   }
 
-  private cargarDatosIniciales(): void {
-    this.cargarConfiguracionEmpresa();
-    this.cargarMarcas();
-    this.cargarCategorias();
-  }
-
-  private cargarConfiguracionEmpresa(): void {
-    this.http.get<ConfiguracionFactura[]>(`${environment.apiBaseUrl}/ConfiguracionFactura/Listar`, {
+  cargarDatosIniciales() {
+    this.cargando = true;
+    
+    // Cargar marcas y categorías para los filtros
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Marcas/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
-        if (data && data.length > 0) {
-          this.configuracionEmpresa = data[0];
-        }
-      },
-      error: (error) => {
-        console.error('Error al cargar configuración de empresa:', error);
-      }
-    });
-  }
-
-  private cargarMarcas(): void {
-    this.http.get<Marca[]>(`${environment.apiBaseUrl}/Marcas/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: (data) => {
-        this.marcas = data || [];
+        this.marcas = data;
       },
       error: (error) => {
         console.error('Error al cargar marcas:', error);
       }
     });
-  }
 
-  private cargarCategorias(): void {
-    this.http.get<Categoria[]>(`${environment.apiBaseUrl}/Categorias/Listar`, {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Categorias/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
-        this.categorias = data || [];
+        this.categorias = data;
+        this.cargando = false;
       },
       error: (error) => {
         console.error('Error al cargar categorías:', error);
+        this.cargando = false;
       }
     });
   }
 
-  generarReporte(): void {
-    this.mostrarOverlayCarga = true;
-    this.fechaGeneracion = new Date();
+  generarReporte() {
+    this.cargando = true;
     
+    // Parámetros para el SP
     const params: any = {};
-    
-    if (this.filtros.fechaInicio) {
-      params.fechaInicio = this.filtros.fechaInicio;
-    }
-    if (this.filtros.fechaFin) {
-      params.fechaFin = this.filtros.fechaFin;
-    }
-    if (this.filtros.marcaId) {
-      params.marcaId = this.filtros.marcaId;
-    }
-    if (this.filtros.categoriaId) {
-      params.categoriaId = this.filtros.categoriaId;
-    }
+    if (this.fechaInicio) params.fechaInicio = this.fechaInicio;
+    if (this.fechaFin) params.fechaFin = this.fechaFin;
+    if (this.marcaSeleccionada) params.marcaId = this.marcaSeleccionada;
+    if (this.categoriaSeleccionada) params.categoriaId = this.categoriaSeleccionada;
 
-    this.http.get<Producto[]>(`${environment.apiBaseUrl}/Productos/ReporteProductos`, {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Reportes/ReporteDeProductos`, {
       headers: { 'x-api-key': environment.apiKey },
       params: params
     }).subscribe({
       next: (data) => {
-        this.productos = data || [];
-        this.mostrarOverlayCarga = false;
+        this.productos = data;
+        this.generarPDF();
+        this.cargando = false;
       },
       error: (error) => {
         console.error('Error al generar reporte:', error);
-        this.mostrarOverlayCarga = false;
-        this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al generar el reporte. Por favor, inténtelo de nuevo más tarde.';
-        this.productos = [];
+        this.cargando = false;
       }
     });
   }
 
-  limpiarFiltros(): void {
-    this.filtros = {
-      fechaInicio: '',
-      fechaFin: '',
-      marcaId: null,
-      categoriaId: null
+  async generarPDF() {
+    // CONFIGURACIÓN DEL REPORTE
+    const config: ReportConfig = {
+      titulo: 'REPORTE DE PRODUCTOS',
+      orientacion: 'landscape',
+      mostrarResumen: true,
+      textoResumen: `Total de productos: ${this.productos.length}`,
+      filtros: this.construirFiltros()
     };
-    this.productos = [];
-  }
 
-  async exportarPDF(): Promise<void> {
-    if (this.productos.length === 0) {
-      return;
-    }
+    //  DATOS DE LA TABLA
+    const tableData: TableData = {
+      head: [
+        [
+          { content: '#', styles: { halign: 'center', cellWidth: 15 } },
+          { content: 'Código', styles: { cellWidth: 25 } },
+          { content: 'Descripción', styles: { cellWidth: 60 } },
+          { content: 'Marca', styles: { cellWidth: 30 } },
+          { content: 'Categoría', styles: { cellWidth: 30 } },
+          { content: 'Subcategoría', styles: { cellWidth: 35 } },
+          { content: 'Precio', styles: { halign: 'right', cellWidth: 25 } },
+          { content: 'Costo', styles: { halign: 'right', cellWidth: 25 } },
+          { content: 'Impuesto', styles: { halign: 'center', cellWidth: 20 } }
+        ]
+      ],
+      body: this.productos.map((p, index) => [
+        { content: (index + 1).toString(), styles: { halign: 'center' } },
+        p.prod_Codigo || 'N/A',
+        this.pdfService.truncateText(p.prod_Descripcion || '', 40),
+        p.marc_Descripcion || 'N/A',
+        p.cate_Descripcion || 'N/A',
+        p.subc_Descripcion || 'N/A',
+        { content: `L. ${this.pdfService.formatearNumero(p.prod_PrecioUnitario)}`, styles: { halign: 'right' } },
+        { content: `L. ${this.pdfService.formatearNumero(p.prod_CostoTotal)}`, styles: { halign: 'right' } },
+        { content: p.prod_PagaImpuesto ? 'Sí' : 'No', styles: { halign: 'center' } }
+      ])
+    };
 
-    this.cargandoPDF = true;
-
+    // GENERAR EL PDF
     try {
-      const doc = new jsPDF('l', 'mm', 'a4'); // Landscape orientation
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      
-      // Configurar fuentes
-      doc.setFont('helvetica');
-      
-      let yPosition = 20;
-      
-      // Logo de la empresa (si existe)
-      if (this.configuracionEmpresa?.coFa_Logo) {
-        try {
-          const logoImg = await this.loadImage(this.configuracionEmpresa.coFa_Logo);
-          doc.addImage(logoImg, 'JPEG', 15, yPosition, 30, 20);
-        } catch (error) {
-          console.warn('No se pudo cargar el logo:', error);
-        }
-      }
-      
-      // Encabezado de la empresa
-      if (this.configuracionEmpresa) {
-        doc.setFontSize(16);
-        doc.setFont('helvetica', 'bold');
-        doc.text(this.configuracionEmpresa.coFa_NombreEmpresa, pageWidth / 2, yPosition + 5, { align: 'center' });
-        
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        yPosition += 12;
-        doc.text(`RTN: ${this.configuracionEmpresa.coFa_RTN}`, pageWidth / 2, yPosition, { align: 'center' });
-        
-        yPosition += 5;
-        const direccionCompleta = `${this.configuracionEmpresa.coFa_DireccionEmpresa}, ${this.getDireccionCompleta()}`;
-        doc.text(`Dirección: ${direccionCompleta}`, pageWidth / 2, yPosition, { align: 'center' });
-        
-        yPosition += 5;
-        const telefonos = this.configuracionEmpresa.coFa_Telefono2 
-          ? `${this.configuracionEmpresa.coFa_Telefono1} / ${this.configuracionEmpresa.coFa_Telefono2}`
-          : this.configuracionEmpresa.coFa_Telefono1;
-        doc.text(`Teléfonos: ${telefonos}`, pageWidth / 2, yPosition, { align: 'center' });
-        
-        yPosition += 5;
-        doc.text(`Correo: ${this.configuracionEmpresa.coFa_Correo}`, pageWidth / 2, yPosition, { align: 'center' });
-      }
-      
-      // Línea separadora
-      yPosition += 10;
-      doc.setLineWidth(0.5);
-      doc.line(15, yPosition, pageWidth - 15, yPosition);
-      
-      // Título del reporte
-      yPosition += 10;
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('REPORTE DE PRODUCTOS', pageWidth / 2, yPosition, { align: 'center' });
-      
-      // Fecha de generación
-      yPosition += 8;
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Fecha de generación: ${this.fechaGeneracion.toLocaleDateString('es-HN')} ${this.fechaGeneracion.toLocaleTimeString('es-HN')}`, pageWidth / 2, yPosition, { align: 'center' });
-      
-      // Filtros aplicados
-      if (this.hayFiltrosAplicados()) {
-        yPosition += 10;
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Filtros aplicados:', 15, yPosition);
-        
-        doc.setFont('helvetica', 'normal');
-        yPosition += 5;
-        
-        if (this.filtros.fechaInicio) {
-          doc.text(`• Fecha inicio: ${new Date(this.filtros.fechaInicio).toLocaleDateString('es-HN')}`, 20, yPosition);
-          yPosition += 4;
-        }
-        if (this.filtros.fechaFin) {
-          doc.text(`• Fecha fin: ${new Date(this.filtros.fechaFin).toLocaleDateString('es-HN')}`, 20, yPosition);
-          yPosition += 4;
-        }
-        if (this.filtros.marcaId) {
-          doc.text(`• Marca: ${this.getMarcaDescripcion(this.filtros.marcaId)}`, 20, yPosition);
-          yPosition += 4;
-        }
-        if (this.filtros.categoriaId) {
-          doc.text(`• Categoría: ${this.getCategoriaDescripcion(this.filtros.categoriaId)}`, 20, yPosition);
-          yPosition += 4;
-        }
-      }
-      
-      // Total de registros
-      yPosition += 8;
-      doc.setFont('helvetica', 'bold');
-      doc.text(`Total de productos: ${this.productos.length}`, 15, yPosition);
-      
-      // Preparar datos para la tabla
-      const headers = [
-        ['#', 'Código', 'Código Barra', 'Descripción', 'Marca', 'Categoría', 'Precio', 'Costo', 'Impuesto', 'Proveedor', 'Fecha Creación']
-      ];
-      
-      const data = this.productos.map(producto => [
-        producto.secuencia.toString(),
-        producto.prod_Codigo || '',
-        producto.prod_CodigoBarra || 'N/A',
-        this.truncateText(producto.prod_Descripcion, 25),
-        producto.marc_Descripcion || 'N/A',
-        producto.cate_Descripcion || 'N/A',
-        `L. ${producto.prod_PrecioUnitario.toFixed(2)}`,
-        `L. ${producto.prod_CostoTotal.toFixed(2)}`,
-        producto.prod_PagaImpuesto,
-        this.truncateText(producto.prov_NombreEmpresa || 'N/A', 20),
-        new Date(producto.prod_FechaCreacion).toLocaleDateString('es-HN')
-      ]);
-      
-      // Generar tabla
-      yPosition += 10;
-      autoTable(doc, {
-        head: headers,
-        body: data,
-        startY: yPosition,
-        styles: {
-          fontSize: 8,
-          cellPadding: 2,
-        },
-        headStyles: {
-          fillColor: [52, 58, 64],
-          textColor: 255,
-          fontStyle: 'bold'
-        },
-        alternateRowStyles: {
-          fillColor: [248, 249, 250]
-        },
-        columnStyles: {
-          0: { halign: 'center', cellWidth: 15 }, // #
-          1: { cellWidth: 20 }, // Código
-          2: { cellWidth: 25 }, // Código Barra
-          3: { cellWidth: 45 }, // Descripción
-          4: { cellWidth: 25 }, // Marca
-          5: { cellWidth: 25 }, // Categoría
-          6: { halign: 'right', cellWidth: 20 }, // Precio
-          7: { halign: 'right', cellWidth: 20 }, // Costo
-          8: { halign: 'center', cellWidth: 15 }, // Impuesto
-          9: { cellWidth: 35 }, // Proveedor
-          10: { halign: 'center', cellWidth: 25 } // Fecha
-        },
-        margin: { left: 15, right: 15 },
-        pageBreak: 'auto',
-        showHead: 'everyPage'
-      });
-      
-      // Pie de página en todas las páginas
-      const totalPages = doc.getNumberOfPages();
-      for (let i = 1; i <= totalPages; i++) {
-        doc.setPage(i);
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-        doc.text(`Generado el ${this.fechaGeneracion.toLocaleDateString('es-HN')} a las ${this.fechaGeneracion.toLocaleTimeString('es-HN')}`, 15, pageHeight - 10);
-      }
-      
-      // Guardar el PDF
-      const fileName = `Reporte_Productos_${this.fechaGeneracion.toISOString().split('T')[0]}.pdf`;
-      doc.save(fileName);
-      
+      const pdfBlob = await this.pdfService.generarReportePDF(config, tableData, this.productos);
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(pdfUrl);
     } catch (error) {
       console.error('Error al generar PDF:', error);
-      this.mostrarAlertaError = true;
-      this.mensajeError = 'Error al generar el archivo PDF. Por favor, inténtelo de nuevo.';
-    } finally {
-      this.cargandoPDF = false;
     }
-  }
-  
-  private loadImage(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx?.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/jpeg'));
-      };
-      img.onerror = reject;
-      img.src = url;
-    });
-  }
-  
-  private truncateText(text: string, maxLength: number): string {
-    if (!text) return '';
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   }
 
-  hayFiltrosAplicados(): boolean {
-    return !!(this.filtros.fechaInicio || this.filtros.fechaFin || this.filtros.marcaId || this.filtros.categoriaId);
-  }
+  //aqui van los filtros
+  private construirFiltros(): { label: string; valor: string }[] {
+    const filtros: { label: string; valor: string }[] = [];
 
-  getDireccionCompleta(): string {
-    if (!this.configuracionEmpresa) return '';
-    
-    const direccionParts = [];
-    if (this.configuracionEmpresa.colo_Descripcion) {
-      direccionParts.push(this.configuracionEmpresa.colo_Descripcion);
-    }
-    if (this.configuracionEmpresa.muni_Descripcion) {
-      direccionParts.push(this.configuracionEmpresa.muni_Descripcion);
-    }
-    if (this.configuracionEmpresa.depa_Descripcion) {
-      direccionParts.push(this.configuracionEmpresa.depa_Descripcion);
+    if (this.fechaInicio) {
+      filtros.push({ label: 'Desde', valor: this.fechaInicio });
     }
     
-    return direccionParts.join(', ');
+    if (this.fechaFin) {
+      filtros.push({ label: 'Hasta', valor: this.fechaFin });
+    }
+    
+    if (this.marcaSeleccionada) {
+      const marca = this.marcas.find(m => m.marc_Id === this.marcaSeleccionada);
+      filtros.push({ label: 'Marca', valor: marca?.marc_Descripcion || 'N/A' });
+    }
+    
+    if (this.categoriaSeleccionada) {
+      const categoria = this.categorias.find(c => c.cate_Id === this.categoriaSeleccionada);
+      filtros.push({ label: 'Categoría', valor: categoria?.cate_Descripcion || 'N/A' });
+    }
+
+    return filtros;
   }
 
-  getMarcaDescripcion(marcaId: number): string {
-    const marca = this.marcas.find(m => m.marc_Id === marcaId);
-    return marca ? marca.marc_Descripcion : '';
-  }
-
-  getCategoriaDescripcion(categoriaId: number): string {
-    const categoria = this.categorias.find(c => c.cate_Id === categoriaId);
-    return categoria ? categoria.cate_Descripcion : '';
-  }
-
-  // Métodos para cálculos estadísticos
-  calcularPromedioPrecios(): number {
-    if (this.productos.length === 0) return 0;
-    const total = this.productos.reduce((sum, producto) => sum + producto.prod_PrecioUnitario, 0);
-    return total / this.productos.length;
-  }
-
-  contarProductosConImpuesto(): number {
-    return this.productos.filter(producto => producto.prod_PagaImpuesto === 'Si').length;
-  }
-
-  contarMarcasUnicas(): number {
-    const marcasUnicas = new Set(this.productos.map(producto => producto.marc_Id).filter(id => id !== null));
-    return marcasUnicas.size;
+  limpiarFiltros() {
+    this.fechaInicio = null;
+    this.fechaFin = null;
+    this.marcaSeleccionada = null;
+    this.categoriaSeleccionada = null;
   }
 }

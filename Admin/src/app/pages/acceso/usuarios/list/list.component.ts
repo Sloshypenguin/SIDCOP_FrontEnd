@@ -507,7 +507,7 @@ export class ListComponent {
         const permisos = JSON.parse(permisosRaw);
         let modulo = null;
         if(Array.isArray(permisos)){
-          modulo = permisos.find((m: any) => m.Pant_Id === 7);
+          modulo = permisos.find((m: any) => m.Pant_Id === 63);
         } else if (typeof permisos === 'object' && permisos !== null) {
           modulo = permisos['Usuarios'] || permisos['usuarios'] || null;
         }
