@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { getUserId } from 'src/app/core/utils/user-utils';
 
 export interface ExportConfig {
   title: string;
@@ -60,7 +59,7 @@ export class ExportService {
     try {
       this.validateConfig(config);
       
-      const doc = new jsPDF('portrait');
+      const doc = new jsPDF('landscape');
       
       // Crear encabezado y obtener posición Y donde empezar la tabla
       const startY = await this.crearEncabezado(doc, config);
@@ -301,7 +300,6 @@ export class ExportService {
       return '';
     }
     
- 
     return String(valor).trim();
   }
 
