@@ -230,6 +230,7 @@ export class ListComponent implements OnInit {
     this.http.get<Departamento[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
+      console.log('Datos obtenidos:', data);
       this.mostrarOverlayCarga = false;
       const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();

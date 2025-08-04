@@ -305,6 +305,11 @@ eliminar(): void {
           this.mostrarOverlayCarga = false;
           this.table.setData(datosFiltrados);
         }, 500);
+
+        // Asignar numeración de filas
+        datosFiltrados.forEach((proveedor, index) => {
+          proveedor.No = index + 1;
+        });
       },
       error: error => {
         console.error('Error al cargar proveedores:', error);
