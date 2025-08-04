@@ -34,9 +34,8 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
   @Output() coordenadasSeleccionadas = new EventEmitter<{ lat: number, lng: number }>();
 
   @Input() mostrar: boolean = false;
+  @Input() mostrarPuntos: boolean = false;
   @ViewChild('mapaContainer', { static: true }) mapaContainer!: ElementRef;
-
-  tienepuntosVista: boolean = false;
 
   private map!: google.maps.Map;
   private marker: google.maps.Marker | null = null;
@@ -126,7 +125,6 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
 
     if (this.puntosVista.length > 0) {
       this.agregarPuntosVistaAlMapa();
-      this.tienepuntosVista = true;  
     } else {
       if (this.coordenadasIniciales) {
         this.marker = new google.maps.Marker({
@@ -136,7 +134,7 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
         });
       }
 
-      if (this.tienepuntosVista) {
+      if (!this.mostrarPuntos) {
         this.map.addListener('click', (e: google.maps.MapMouseEvent) => {
           if (!e.latLng) return;
           const lat = e.latLng.lat();
