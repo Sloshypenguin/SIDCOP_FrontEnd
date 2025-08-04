@@ -310,7 +310,7 @@ export class ListComponent implements OnInit {
         let modulo = null;
         if (Array.isArray(permisos)) {
           // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES POR ID
-          modulo = permisos.find((m: any) => m.Pant_Id === 6);
+          modulo = permisos.find((m: any) => m.Pant_Id === 62);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
           modulo = permisos['Roles'] || permisos['roles'] || null;
