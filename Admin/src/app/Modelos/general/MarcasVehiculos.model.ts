@@ -11,6 +11,7 @@ export class MarcasVehiculos{
     usuarioModificacion: string = "";
     code_Status: number = 0;
     message_Status: string = "";
+    secuencia: number = 0;
 
     constructor(init?: Partial<MarcasVehiculos>) {
         Object.assign(this, init);

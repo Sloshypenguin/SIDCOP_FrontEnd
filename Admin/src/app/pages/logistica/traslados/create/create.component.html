@@ -102,8 +102,8 @@
                     [(ngModel)]="traslado.tras_Destino"
                     required>
                         <option value="0" disabled selected>Seleccione destino</option>
-                        <option *ngFor="let destino of destinos" [value]="destino.sucu_Id">
-                            {{ destino.sucu_Descripcion }}
+                        <option *ngFor="let destino of destinos" [value]="destino.bode_Id">
+                            {{ destino.bode_Descripcion }}
                         </option>
                 </select>
                 <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
