@@ -15,7 +15,11 @@ import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 // Importar el servicio de exportación optimizado
-import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
+import {
+  ExportService,
+  ExportConfig,
+  ExportColumn,
+} from 'src/app/shared/export.service';
 
 import {
   trigger,
@@ -77,36 +81,128 @@ import { set } from 'lodash';
   //Animaciones para collapse
 })
 export class ListComponent implements OnInit {
-  private readonly exportConfig = {
-      // Configuración básica
-      title: 'Listado de Puntos de Emision',                    // Título del reporte
-      filename: 'Puntos de Emisión',                           // Nombre base del archivo
-      department: 'Ventas',                         // Departamento
-      additionalInfo: 'Sistema de Gestión',         // Información adicional
-      
-      // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
-      columns: [
-        { key: 'No', header: 'No.', width: 8, align: 'center' as const },
-        { key: 'Codigo', header: 'Codigo', width: 25, align: 'left' as const },
-        { key: 'Descripción', header: 'Descripción', width: 50, align: 'left' as const },
-          { key: 'Sucursal', header: 'Sucursal', width: 75, align: 'left' as const }
-      ] as ExportColumn[],
-      
-      // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
-      dataMapping: (modelo: RegistroCAI, index: number) => ({
-        'No': modelo?.secuencia || (index + 1),
-        'Codigo': this.limpiarTexto(modelo?.puEm_Codigo),
-        'Descripción': this.limpiarTexto(modelo?.puEm_Descripcion),
-         'Sucursal': this.limpiarTexto(modelo?.sucu_Descripcion)
-        // Agregar más campos aquí según necesites:
-        // 'Campo': this.limpiarTexto(modelo?.campo),
-      })
-    };
+   registroCai: RegistroCAI = {
+    regC_Id: 0,
+    regC_Descripcion: '',
+    sucu_Id: 0,
+    puEm_Id: 0,
+    nCai_Id: 0,
+    regC_RangoInicial: '',
+    regC_RangoFinal: '',
+    regC_FechaInicialEmision: new Date(),
+    regC_FechaFinalEmision: new Date(),
 
-     exportando = false;
-  tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
+    usua_Creacion: 0,
+    usua_Modificacion: 0,
+   
+    regC_FechaCreacion: new Date(),
+    regC_FechaModificacion: new Date(),
+    code_Status: 0,
+    message_Status: '',
+    usuarioCreacion: '',
+    usuarioModificacion: '',
+    regC_Estado: true,
+
+    sucu_Descripcion: '',
+    puEm_Codigo: '',
+    nCai_Codigo: '',
+    nCai_Descripcion: '',
+    puEm_Descripcion: '',
+  };
+
+
+    get fechaInicioFormato(): string {
+  return new Date(this.registroCai.regC_FechaInicialEmision).toISOString().split('T')[0];
+}
+
+set fechaInicioFormato(value: string) {
+  this.registroCai.regC_FechaInicialEmision = new Date(value);
+}
+
+get fechaFinFormato(): string {
+  return new Date(this.registroCai.regC_FechaFinalEmision).toISOString().split('T')[0];
+}
+
+set fechaFinFormato(value: string) {
+  this.registroCai.regC_FechaFinalEmision = new Date(value);
+}
+
+
+
+  private readonly exportConfig = {
+    // Configuración básica
+    title: 'Listado de Registros CAI', // Título del reporte
+    filename: 'Registros CAI', // Nombre base del archivo
+    department: 'Ventas', // Departamento
+    additionalInfo: 'SIDCOP', // Información adicional
+
+    // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
+    columns: [
+      { key: 'No', header: 'No.', width: 10, align: 'center' as const },
+      {
+        key: 'Descripción',
+        header: 'Descripción',
+        width: 20,
+        align: 'left' as const,
+      },
+      {
+        key: 'Sucursal',
+        header: 'Sucursal',
+        width: 30,
+        align: 'left' as const,
+      },
+      { key: 'CAI', header: 'CAI', width: 40, align: 'left' as const },
+      {
+        key: 'Rango Inicial',
+        header: 'Rango Inicial',
+        width: 50,
+        align: 'center' as const,
+      },
+      {
+        key: 'Rango Final',
+        header: 'Rango Final',
+        width: 60,
+        align: 'center' as const,
+      },
+      {
+        key: 'Fecha Inicial de Emision',
+        header: 'Fecha Inicial',
+        width: 70,
+        align: 'center' as const,
+      },
+      {
+        key: 'Fecha Final de Emision',
+        header: 'Fecha Final',
+        width: 80,
+        align: 'center' as const,
+      },
+      { key: 'Estado', header: 'Estado', width: 90, align: 'center' as const },
+    ] as ExportColumn[],
+
+    // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
+    dataMapping: (modelo: RegistroCAI, index: number) => ({
+      No: modelo?.secuencia || index + 1,
+      Descripción: this.limpiarTexto(modelo?.regC_Descripcion),
+      Sucursal: this.limpiarTexto(modelo?.sucu_Descripcion),
+      CAI: this.limpiarTexto(modelo?.nCai_Descripcion),
+      'Rango Inicial': this.limpiarTexto(modelo?.regC_RangoInicial),
+      'Rango Final': this.limpiarTexto(modelo?.regC_RangoFinal),
+      'Fecha Inicial de Emision': this.limpiarTexto(
+        modelo?.regC_FechaInicialEmision
+      ),
+      'Fecha Final de Emision': this.limpiarTexto(
+        modelo?.regC_FechaFinalEmision
+      ),
+      Estado: this.limpiarTexto(modelo?.estado),
+      // Agregar más campos aquí según necesites:
+      // 'Campo': this.limpiarTexto(modelo?.campo),
+    }),
+  };
+
   
 
+  exportando = false;
+  tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
 
   // bread crumb items
   breadCrumbItems!: Array<{}>;
@@ -193,7 +289,7 @@ export class ListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService,
-     private exportService: ExportService
+    private exportService: ExportService
   ) {
     this.cargardatos(true);
   }
@@ -211,11 +307,11 @@ export class ListComponent implements OnInit {
     try {
       this.exportando = true;
       this.tipoExportacion = tipo;
-       this.mostrarMensaje('info', `Generando archivo ${tipo.toUpperCase()}...`);
-      
+      this.mostrarMensaje('info', `Generando archivo ${tipo.toUpperCase()}...`);
+
       const config = this.crearConfiguracionExport();
       let resultado;
-      
+
       switch (tipo) {
         case 'excel':
           resultado = await this.exportService.exportToExcel(config);
@@ -227,12 +323,14 @@ export class ListComponent implements OnInit {
           resultado = await this.exportService.exportToCSV(config);
           break;
       }
-      
+
       this.manejarResultadoExport(resultado);
-      
     } catch (error) {
-       console.error(`Error en exportación ${tipo}:`, error);
-      this.mostrarMensaje('error', `Error al exportar archivo ${tipo.toUpperCase()}`);
+      console.error(`Error en exportación ${tipo}:`, error);
+      this.mostrarMensaje(
+        'error',
+        `Error al exportar archivo ${tipo.toUpperCase()}`
+      );
     } finally {
       this.exportando = false;
       this.tipoExportacion = null;
@@ -252,8 +350,8 @@ export class ListComponent implements OnInit {
       columns: this.exportConfig.columns,
       metadata: {
         department: this.exportConfig.department,
-        additionalInfo: this.exportConfig.additionalInfo
-      }
+        additionalInfo: this.exportConfig.additionalInfo,
+      },
     };
   }
 
@@ -263,27 +361,28 @@ export class ListComponent implements OnInit {
   private obtenerDatosExport(): any[] {
     try {
       const datos = this.table.data$.value;
-      
+
       if (!Array.isArray(datos) || datos.length === 0) {
         throw new Error('No hay datos disponibles para exportar');
       }
-      
+
       // Usar el mapeo configurado
-      return datos.map((modelo, index) => 
+      return datos.map((modelo, index) =>
         this.exportConfig.dataMapping.call(this, modelo, index)
       );
-      
     } catch (error) {
       console.error('Error obteniendo datos:', error);
       throw error;
     }
   }
 
-
   /**
    * Maneja el resultado de las exportaciones
    */
-  private manejarResultadoExport(resultado: { success: boolean; message: string }): void {
+  private manejarResultadoExport(resultado: {
+    success: boolean;
+    message: string;
+  }): void {
     if (resultado.success) {
       this.mostrarMensaje('success', resultado.message);
     } else {
@@ -296,20 +395,20 @@ export class ListComponent implements OnInit {
    */
   private validarDatosParaExport(): boolean {
     const datos = this.table.data$.value;
-    
+
     if (!Array.isArray(datos) || datos.length === 0) {
       this.mostrarMensaje('warning', 'No hay datos disponibles para exportar');
       return false;
     }
-    
+
     if (datos.length > 10000) {
       const continuar = confirm(
         `Hay ${datos.length.toLocaleString()} registros. ` +
-        'La exportación puede tomar varios minutos. ¿Desea continuar?'
+          'La exportación puede tomar varios minutos. ¿Desea continuar?'
       );
       if (!continuar) return false;
     }
-    
+
     return true;
   }
 
@@ -318,7 +417,7 @@ export class ListComponent implements OnInit {
    */
   private limpiarTexto(texto: any): string {
     if (!texto) return '';
-    
+
     return String(texto)
       .replace(/\s+/g, ' ')
       .replace(/[^\w\s\-.,;:()\[\]]/g, '')
@@ -329,29 +428,32 @@ export class ListComponent implements OnInit {
   /**
    * Sistema de mensajes mejorado con tipos adicionales
    */
-  private mostrarMensaje(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string): void {
+  private mostrarMensaje(
+    tipo: 'success' | 'error' | 'warning' | 'info',
+    mensaje: string
+  ): void {
     this.cerrarAlerta();
-    
+
     const duracion = tipo === 'error' ? 5000 : 3000;
-    
+
     switch (tipo) {
       case 'success':
         this.mostrarAlertaExito = true;
         this.mensajeExito = mensaje;
-        setTimeout(() => this.mostrarAlertaExito = false, duracion);
+        setTimeout(() => (this.mostrarAlertaExito = false), duracion);
         break;
-        
+
       case 'error':
         this.mostrarAlertaError = true;
         this.mensajeError = mensaje;
-        setTimeout(() => this.mostrarAlertaError = false, duracion);
+        setTimeout(() => (this.mostrarAlertaError = false), duracion);
         break;
-        
+
       case 'warning':
       case 'info':
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = mensaje;
-        setTimeout(() => this.mostrarAlertaWarning = false, duracion);
+        setTimeout(() => (this.mostrarAlertaWarning = false), duracion);
         break;
     }
   }
@@ -475,7 +577,7 @@ export class ListComponent implements OnInit {
                 this.mensajeExito = '';
               }, 3000);
 
-               this.cargardatos(false);
+              this.cargardatos(false);
               this.cancelarEliminar();
             } else if (response.data.code_Status === -1) {
               //result: está siendo utilizado
@@ -571,26 +673,27 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
- 
-   
-
-    private cargardatos(state: boolean): void {
+  private cargardatos(state: boolean): void {
     this.mostrarOverlayCarga = state;
 
-    this.http.get<RegistroCAI[]>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      const tienePermisoListar = this.accionPermitida('listar');
-      const userId = getUserId();
+    this.http
+      .get<RegistroCAI[]>(`${environment.apiBaseUrl}/RegistrosCaiS/Listar`, {
+        headers: { 'x-api-key': environment.apiKey },
+      })
+      .subscribe((data) => {
+        const tienePermisoListar = this.accionPermitida('listar');
+        const userId = getUserId();
 
-      const datosFiltrados = tienePermisoListar
-        ? data
-        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+        const datosFiltrados = tienePermisoListar
+          ? data
+          : data.filter(
+              (r) => r.usua_Creacion?.toString() === userId.toString()
+            );
 
-      setTimeout(() => {
-        this.table.setData(datosFiltrados);
-        this.mostrarOverlayCarga = false;
-      }, 500);
-    });
+        setTimeout(() => {
+          this.table.setData(datosFiltrados);
+          this.mostrarOverlayCarga = false;
+        }, 500);
+      });
   }
 }
