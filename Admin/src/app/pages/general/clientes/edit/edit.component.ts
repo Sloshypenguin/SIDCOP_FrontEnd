@@ -1,9 +1,10 @@
-import { Component, Output, EventEmitter, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core'; //***
+import { Component, Output, EventEmitter, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { environment } from 'src/environments/environment.prod';
+import { ChangeDetectorRef } from '@angular/core';
 
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
@@ -22,73 +23,15 @@ import { Router } from '@angular/router';
   styleUrl: './edit.component.scss',
   providers: [provideNgxMask()]
 })
-export class EditComponent implements OnChanges { //***
-
-  @Input() clienteData: Cliente | null = null; //***
+export class EditComponent implements OnChanges {
+  @Input() clienteData: Cliente | null = null;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<Cliente>();
   @ViewChild('tabsScroll', { static: false }) tabsScroll!: ElementRef<HTMLDivElement>;
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
   entrando = true;
-  tabActual = 1;
-
-  //*** Copia original para comparar cambios
-  clienteOriginal: Cliente | null = null; //***
-  mostrarConfirmacionEditar = false; //***
-  mensajeConfirmacionEditar = ''; //***
-
-get fechaNacimientoFormato(): string {
-  return this.cliente.clie_FechaNacimiento
-    ? new Date(this.cliente.clie_FechaNacimiento).toISOString().split('T')[0]
-    : '';
-}
-set fechaNacimientoFormato(value: string) {
-  this.cliente.clie_FechaNacimiento = value ? new Date(value) : null;
-}
-
-  ngOnChanges(changes: SimpleChanges): void { //***
-    if (changes['clienteData']?.currentValue) {
-      this.cliente = { ...changes['clienteData'].currentValue };
-      this.clienteOriginal = { ...changes['clienteData'].currentValue };
-      
-        // Cargar las direcciones del cliente
-    if (this.cliente.clie_Id) {
-      this.cargarDireccionesDelCliente(this.cliente.clie_Id);
-    }
-
-    // Formatear fecha si es necesario
-    if (this.cliente.clie_FechaNacimiento) {
-      // Tu lógica existente para formatear la fecha
-    }
-      this.mostrarErrores = false;
-      this.cerrarAlerta();
-      // Asegura que la fecha de nacimiento esté en formato dd-yyyy-MM para el input type=date
-// if (this.cliente.clie_FechaNacimiento) {
-//   let fecha = this.cliente.clie_FechaNacimiento;
-//   if (typeof fecha === 'string') {
-//     // Admite dd-mm-yyyy o dd/mm/yyyy
-//     const fechaStr: string = fecha as string;
-//     let partes = fechaStr.includes('-') ? fechaStr.split('-') : fechaStr.split('/');
-//     if (partes.length === 3) {
-//       // partes[0]=día, partes[1]=mes, partes[2]=año
-//       const dateObj = new Date(
-//         Number(partes[2]),
-//         Number(partes[1]) - 1,
-//         Number(partes[0])
-//       );
-//       // Si la fecha es inválida, asigna null
-//       this.cliente.clie_FechaNacimiento = isNaN(dateObj.getTime()) ? null : dateObj;
-//     } else {
-//       // Si el string no es válido, intenta parsear con Date
-//       const dateObj = new Date(fechaStr);
-//       this.cliente.clie_FechaNacimiento = isNaN(dateObj.getTime()) ? null : dateObj;
-//     }
-//   }
-//   // Si ya es Date, no hace nada
-// }
-    }
-  }
+  activeTab = 1;
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -99,11 +42,7 @@ set fechaNacimientoFormato(value: string) {
   mensajeWarning = '';
   mostrarMapa = false;
 
-  nuevaColonia: { muni_Codigo: string } = { muni_Codigo: '' };
-  direccion = { colo_Id: '' };
-  direccionAval = { colo_Id: '' };
-  activeTab = 1;
-
+  //Arreglos de las listas
   nacionalidades: any[] = [];
   paises: any[] = [];
   tiposDeVivienda: any[] = [];
@@ -111,44 +50,47 @@ set fechaNacimientoFormato(value: string) {
   canales: any[] = [];
   rutas: any[] = [];
   parentescos: any[] = [];
+  TodasColonias: any[] = [];
+  TodasColoniasAval: any[] = [];
 
+  //Variables para el mapa
   latitudSeleccionada: number | null = null;
   longitudSeleccionada: number | null = null;
 
+  //Estados de carga
   cargando = false;
   cargandoColonias = false;
-  Departamentos: any[] = [];
-
-  TodosMunicipios: any[] = [];
-  Municipios: any[] = [];
-
-  TodasColonias: any[] = [];
-  Colonias: any[] = [];
-
-  selectedDepa: string = '';
-  selectedMuni: string = '';
-  selectedColonia: string = '';
-
-  idDelCliente: number = 0;
-  idDeLaDireccionDelCliente: number = 0;
-
-  nuevaColoniaAval: { muni_Codigo: string } = { muni_Codigo: '' };
   cargandoAval = false;
   cargandoColoniasAval = false;
 
-  DepartamentosAval: any[] = [];
-  TodosMunicipiosAval: any[] = [];
-  MunicipiosAval: any[] = [];
-  TodasColoniasAval: any[] = [];
-  ColoniasAval: any[] = [];
-  selectedDepaAval: string = '';
-  selectedMuniAval: string = '';
-  selectedColoniaAval: string = '';
+  //Info del cliente
+  idDelCliente: number = 0;
+  clienteOriginal: Cliente | null = null;
 
+  // Arrays para controlar que direcciones y avales son nuevos vs existentes
+  direccionesOriginales: DireccionPorCliente[] = [];
+  avalesOriginales: Aval[] = [];
+  direccionesEliminadas: number[] = [];
+  avalesEliminados: number[] = [];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['clienteData']?.currentValue) {
+      this.cliente = { ...changes['clienteData'].currentValue };
+      this.clienteOriginal = { ...changes['clienteData'].currentValue };
+      this.idDelCliente = this.cliente.clie_Id;
+      
+      this.cargarDireccionesExistentes();
+      this.cargarAvalesExistentes();
+    }
+  }
+
+  //Declarado para validar la direccion
   validarDireccion: boolean = false;
-
+  //Validacion para que no se desplace con el tab de arriba
   scrollToAval(index: number) {
-    const container = this.tabsScroll.nativeElement;
+    const container = this.tabsScroll?.nativeElement;
+    if (!container) return;
+    
     const avalElements = container.querySelectorAll('.aval-tab');
 
     if (avalElements[index]) {
@@ -207,13 +149,13 @@ set fechaNacimientoFormato(value: string) {
         this.cliente.clie_NombreNegocio.trim() &&
         this.cliente.clie_ImagenDelNegocio.trim() &&
         this.cliente.ruta_Id &&
-        this.cliente.cana_Id 
-        // this.validarDireccion
+        this.cliente.cana_Id &&
+        this.direccionesPorCliente.length > 0
       ) {
         this.mostrarErrores = false;
         this.activeTab = 3;
       } else {
-        // this.validarDireccion = true;
+        this.validarDireccion = true;
         this.mostrarAlertaWarning = true;
         this.mensajeWarning = 'Por favor, complete todos los campos obligatorios del negocio.';
         setTimeout(() => {
@@ -225,46 +167,84 @@ set fechaNacimientoFormato(value: string) {
     }
 
     if (no === 3) {
-      // this.mostrarErrores = true;
-      // if (
-      //   (!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito) ||
-      //   (this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito)
-      // ) {
+      this.mostrarErrores = true;
+      if (
+        (!this.cliente.clie_LimiteCredito && !this.cliente.clie_DiasCredito) ||
+        (this.cliente.clie_LimiteCredito && this.cliente.clie_DiasCredito)
+      ) {
         this.mostrarErrores = false;
-        this.activeTab = 5;
-      // } else {
-      //   this.mostrarAlertaWarning = true;
-      //   this.mensajeWarning = 'Complete correctamente los datos de crédito.';
-      //   setTimeout(() => {
-      //     this.mostrarAlertaWarning = false;
-      //     this.mensajeWarning = '';
-      //   }, 3000);
-      // }
+        this.activeTab = 4;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'Complete correctamente los datos de crédito.';
+        setTimeout(() => {
+          this.mostrarAlertaWarning = false;
+          this.mensajeWarning = '';
+        }, 3000);
+      }
       return;
     }
 
-    // if (no === 4) {
-    //   this.mostrarErrores = true;
-    //   if (this.tieneDatosCredito()) {
-    //     if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
-    //       this.mostrarErrores = false;
-    //       this.activeTab = 5;
-    //     } else {
-    //       this.mostrarAlertaWarning = true;
-    //       this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
-    //       setTimeout(() => {
-    //         this.mostrarAlertaWarning = false;
-    //         this.mensajeWarning = '';
-    //       }, 3000);
-    //     }
-    //   } else {
-    //     this.mostrarErrores = false;
-    //     this.activeTab = 5;
-    //   }
-    //   return;
-    // }
+    if (no === 4) {
+      this.mostrarErrores = true;
+      if (this.tieneDatosCredito()) {
+        if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
+          this.mostrarErrores = false;
+          this.activeTab = 5;
+        } else {
+          this.mostrarAlertaWarning = true;
+          this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
+          setTimeout(() => {
+            this.mostrarAlertaWarning = false;
+            this.mensajeWarning = '';
+          }, 3000);
+        }
+      } else {
+        this.mostrarErrores = false;
+        this.activeTab = 5;
+      }
+      return;
+    }
   }
 
+  //Es una funcion creada para el if 4 que es de corroborar
+  //que haya un credito para que el aval sea obligatorio
+  tieneDatosCredito(): boolean {
+    return (
+      !!this.cliente.clie_LimiteCredito &&
+      !!this.cliente.clie_DiasCredito
+    );
+  }
+
+  //Verifica si el aval es valido- Si nungo campo este vacio
+  esAvalValido(aval: Aval): boolean {
+    let fechaValida = false;
+    if (aval.aval_FechaNacimiento) {
+      const fecha = typeof aval.aval_FechaNacimiento === 'string'
+        ? new Date(aval.aval_FechaNacimiento)
+        : aval.aval_FechaNacimiento;
+      fechaValida = fecha instanceof Date && !isNaN(fecha.getTime());
+    }
+
+    return (
+      typeof aval.aval_DNI === 'string' && aval.aval_DNI.trim().length > 0 &&
+      !isNaN(Number(aval.pare_Id)) && Number(aval.pare_Id) > 0 &&
+      typeof aval.aval_Nombres === 'string' && aval.aval_Nombres.trim().length > 0 &&
+      typeof aval.aval_Apellidos === 'string' && aval.aval_Apellidos.trim().length > 0 &&
+      !isNaN(Number(aval.esCv_Id)) && Number(aval.esCv_Id) > 0 &&
+      typeof aval.aval_Telefono === 'string' && aval.aval_Telefono.trim().length > 0 &&
+      !isNaN(Number(aval.tiVi_Id)) && Number(aval.tiVi_Id) > 0 &&
+      !isNaN(Number(aval.colo_Id)) && Number(aval.colo_Id) > 0 &&
+      typeof aval.aval_DireccionExacta === 'string' && aval.aval_DireccionExacta.trim().length > 0 &&
+      fechaValida
+    );
+  }
+
+  get avalesValidos(): boolean {
+    return this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval));
+  }
+
+  //Parametros para evaluar antes de pasar al siguiente tabulador
   tabuladores(no: number) {
     if (no == 1) {
       this.mostrarErrores = true
@@ -275,7 +255,6 @@ set fechaNacimientoFormato(value: string) {
         this.cliente.clie_Telefono.trim()) {
         this.mostrarErrores = false;
         this.activeTab = 2;
-        this.tabActual = 2;
       }
       else {
         this.mostrarAlertaWarning = true;
@@ -288,16 +267,20 @@ set fechaNacimientoFormato(value: string) {
     }
 
     if (no == 2) {
-      this.mostrarErrores = true
-      if (this.cliente.clie_NombreNegocio.trim() && this.cliente.clie_ImagenDelNegocio.trim() &&
-        this.cliente.ruta_Id && this.cliente.cana_Id && this.validarDireccion) {
+      this.mostrarErrores = true;
+      if (
+        this.cliente.clie_NombreNegocio.trim() &&
+        this.cliente.clie_ImagenDelNegocio.trim() &&
+        this.cliente.ruta_Id &&
+        this.cliente.cana_Id &&
+        this.direccionesPorCliente.length > 0
+      ) {
         this.mostrarErrores = false;
         this.activeTab = 3;
-      }
-      else {
-        this.validarDireccion = true;
+      } else {
+        this.validarDireccion = this.direccionesPorCliente.length === 0;
         this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios del negocio.';
         setTimeout(() => {
           this.mostrarAlertaWarning = false;
           this.mensajeWarning = '';
@@ -344,46 +327,39 @@ set fechaNacimientoFormato(value: string) {
       }
     }
 
-    // if (no == 4) {
-    //   this.mostrarErrores = true;
-    //   if (this.tieneDatosCredito()) {
-    //     if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
-    //       this.mostrarErrores = false;
-    //       this.activeTab = 5;
-    //     } else {
-    //       this.mostrarErrores = true;
-    //       this.mostrarAlertaWarning = true;
-    //       this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
-    //       setTimeout(() => {
-    //         this.mostrarAlertaWarning = false;
-    //         this.mensajeWarning = '';
-    //       }, 3000);
-    //     }
-    //   }
-    //   else {
-    //     this.mostrarErrores = false;
-    //     this.activeTab = 5;
-    //   }
-    // }
+    if (no == 4) {
+      this.mostrarErrores = true;
+      if (this.tieneDatosCredito()) {
+        if (this.avales.length > 0 && this.avales.every(aval => this.esAvalValido(aval))) {
+          this.mostrarErrores = false;
+          this.activeTab = 5;
+        } else {
+          this.mostrarErrores = true;
+          this.mostrarAlertaWarning = true;
+          this.mensajeWarning = 'Por favor complete correctamente todos los registros de Aval.';
+          setTimeout(() => {
+            this.mostrarAlertaWarning = false;
+            this.mensajeWarning = '';
+          }, 3000);
+        }
+      }
+      else {
+        this.mostrarErrores = false;
+        this.activeTab = 5;
+      }
+    }
 
     if (no == 5) {
       this.mostrarErrores = false;
     }
   }
 
-  tieneDatosCredito(): boolean {
-    return (
-      !!this.cliente.clie_LimiteCredito &&
-      !!this.cliente.clie_DiasCredito
-    );
-  }
-
-
   trackByIndex(index: number) { return index; }
 
   onCoordenadasSeleccionadas(coords: { lat: number, lng: number }) {
     this.direccionPorCliente.diCl_Latitud = coords.lat;
     this.direccionPorCliente.diCl_Longitud = coords.lng;
+    this.cdr.detectChanges();
   }
 
   coordenadaPrevia: { lat: number, lng: number } | null = null;
@@ -413,51 +389,19 @@ set fechaNacimientoFormato(value: string) {
     }
   }
 
-  // Agrega esto en tu componente
-cargarDireccionesDelCliente(clie_Id: number): void {
-  this.http.get<DireccionPorCliente[]>(
-    `${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${clie_Id}`,
-    { headers: { 'X-Api-Key': environment.apiKey } }
-  ).subscribe({
-    next: (direcciones) => {
-      this.direccionesPorCliente = direcciones;
-      // Si no hay direcciones, inicializa con una vacía
-      this.direccionesPorCliente = [{
-        diCl_Id: 0, // Esto está bien para nueva dirección
-        clie_Id: clie_Id, // Aquí sí usa el ID del cliente
-        colo_Id: Number(this.selectedColonia) || 0, // Usa el seleccionado si existe
-        diCl_DireccionExacta: '',
-        diCl_Observaciones: '',
-        diCl_Latitud: this.latitudSeleccionada || 0, // Usa coordenadas si existen
-        diCl_Longitud: this.longitudSeleccionada || 0,
-        muni_Descripcion: this.selectedMuni || '',
-        depa_Descripcion: this.selectedDepa || '',
-        usua_Creacion: getUserId(), // Mejor usar el ID real
-        diCl_FechaCreacion: new Date(),
-        usua_Modificacion: getUserId(),
-        diCl_FechaModificacion: new Date()
-      }];
-    },
-    error: (err) => {
-      console.error('Error al cargar direcciones:', err);
-      this.mostrarAlertaError = true;
-      this.mensajeError = 'Error al cargar las direcciones del cliente';
-      setTimeout(() => this.cerrarAlerta(), 3000);
-    }
-  });
-}
-  
-    constructor(public http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private cdr: ChangeDetectorRef) {
     this.cargarPaises();
     this.cargarTiposDeVivienda();
     this.cargarEstadosCiviles();
     this.cargarCanales();
     this.cargarRutas();
-
-    this.router.navigate(['/general/clientes/list']);
+    this.cargarParentescos();
+    this.cargarColoniasCliente();
+    this.cargarColoniasAval();
   }
 
-    cargarPaises() {
+  //Metodos para cargar los datos de la listas
+  cargarPaises() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Pais/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(
@@ -499,6 +443,53 @@ cargarDireccionesDelCliente(clie_Id: number): void {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/ListarMunicipiosyDepartamentos`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => this.TodasColonias = data);
+  }
+
+  cargarColoniasAval() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/ListarMunicipiosyDepartamentos`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => this.TodasColoniasAval = data);
+  }
+
+  // Métodos para cargar datos existentes
+  cargarDireccionesExistentes() {
+    if (!this.idDelCliente) return;
+    
+    this.http.get<any[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        // Filtrar por el cliente actual
+        this.direccionesPorCliente = data.filter(d => d.clie_Id === this.idDelCliente);
+        this.direccionesOriginales = [...this.direccionesPorCliente];
+        this.validarDireccion = this.direccionesPorCliente.length === 0;
+      },
+      error: (error) => {
+        console.error('Error cargando direcciones:', error);
+      }
+    });
+  }
+
+  cargarAvalesExistentes() {
+    if (!this.idDelCliente) return;
+    
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Aval/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe({
+      next: (data) => {
+        // Filtrar por el cliente actual
+        this.avales = data.filter(a => a.clie_Id === this.idDelCliente);
+        this.avalesOriginales = [...this.avales];
+        
+        // Si no hay avales, crear uno vacío para mantener la funcionalidad
+        if (this.avales.length === 0) {
+          this.avales = [this.nuevoAval()];
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando avales:', error);
+      }
+    });
   }
 
   cliente: Cliente = {
@@ -543,7 +534,7 @@ cargarDireccionesDelCliente(clie_Id: number): void {
     usuaM_Nombre: ''
   };
 
-    direccionesPorCliente: DireccionPorCliente[] = [];
+  direccionesPorCliente: DireccionPorCliente[] = [];
   direccionPorCliente: DireccionPorCliente = {
     diCl_Id: 0,
     clie_Id: 0,
@@ -561,34 +552,38 @@ cargarDireccionesDelCliente(clie_Id: number): void {
   };
   direccionEditandoIndex: number | null = null;
 
-  //*** Compara cliente vs clienteOriginal y muestra confirmación
-  validarEdicion(): void { //***
-    this.mostrarErrores = true;
-    if (this.hayDiferencias()) {
-      this.mostrarConfirmacionEditar = true;
-      this.mensajeConfirmacionEditar = '¿Desea guardar los cambios realizados?';
-    } else {
-      this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'No se han detectado cambios.';
-      setTimeout(() => this.cerrarAlerta(), 4000);
-    }
-  }
+  avales: Aval[] = [];
+  avalActivoIndex: number = 0;
 
-  hayDiferencias(): boolean { //***
-    if (!this.clienteOriginal) return false;
-    const a = this.cliente;
-    const b = this.clienteOriginal;
-    return (Object.keys(a) as (keyof Cliente)[]).some(key => a[key] !== b[key]);
-  }
-
-  cancelarEdicion(): void { //***
-    this.mostrarConfirmacionEditar = false;
-  }
-
-  confirmarEdicion(): void { //***
-    this.mostrarConfirmacionEditar = false;
-    this.guardarCliente();
-  }
+  nuevoAval(): Aval {
+    return {
+      aval_Id: 0,
+      clie_Id: this.idDelCliente,
+      aval_Nombres: '',
+      aval_Apellidos: '',
+      pare_Id: 0,
+      aval_DNI: '',
+      aval_Telefono: '',
+      tiVi_Id: 0,
+      aval_Observaciones: '',
+      aval_DireccionExacta: '',
+      colo_Id: 0,
+      aval_FechaNacimiento: null,
+      esCv_Id: 0,
+      aval_Sexo: 'M',
+      pare_Descripcion: '',
+      esCv_Descripcion: '',
+      tiVi_Descripcion: '',
+      muni_Descripcion: '',
+      depa_Descripcion: '',
+      usua_Creacion: getUserId(),
+      usuarioCreacion: '',
+      aval_FechaCreacion: new Date(),
+      usua_Modificacion: 0,
+      usuarioModificacion: '',
+      aval_FechaModificacion: new Date()
+    };
+  };
 
   cancelar(): void {
     this.mostrarErrores = false;
@@ -598,54 +593,11 @@ cargarDireccionesDelCliente(clie_Id: number): void {
     this.mensajeError = '';
     this.mostrarAlertaWarning = false;
     this.mensajeWarning = '';
-    this.cliente = {
-      clie_Id: 0,
-      clie_Codigo: '',
-      clie_Nacionalidad: '',
-      pais_Descripcion: '',
-      clie_DNI: '',
-      clie_RTN: '',
-      clie_Nombres: '',
-      clie_Apellidos: '',
-      clie_NombreNegocio: '',
-      clie_ImagenDelNegocio: '',
-      clie_Telefono: '',
-      clie_Correo: '',
-      clie_Sexo: 'M',
-      clie_FechaNacimiento: new Date(),
-      tiVi_Id: 0,
-      tiVi_Descripcion: '',
-      cana_Id: 0,
-      cana_Descripcion: '',
-      esCv_Id: 0,
-      esCv_Descripcion: '',
-      ruta_Id: 0,
-      ruta_Descripcion: '',
-      clie_LimiteCredito: 0,
-      clie_DiasCredito: 0,
-      clie_Saldo: 0,
-      clie_Vencido: true,
-      clie_Observaciones: '',
-      clie_ObservacionRetiro: '',
-      clie_Confirmacion: true,
-      clie_Estado: true,
-      usua_Creacion: 0,
-      usua_Modificacion: 0,
-      secuencia: 0,
-      clie_FechaCreacion: new Date(),
-      clie_FechaModificacion: new Date(),
-      code_Status: 0,
-      message_Status: '',
-      usuaC_Nombre: '',
-      usuaM_Nombre: '',
-    };
-    // this.direccionesPorCliente = [];
-    // this.avales = [];
     this.activeTab = 1;
     this.onCancel.emit();
   }
 
-   cerrarAlerta(): void {
+  cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
     this.mensajeExito = '';
     this.mostrarAlertaError = false;
@@ -656,13 +608,11 @@ cargarDireccionesDelCliente(clie_Id: number): void {
 
   onImagenSeleccionada(event: any) {
     const file = event.target.files[0];
-
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', 'subidas_usuarios');
       const url = 'https://api.cloudinary.com/v1_1/dbt7mxrwk/upload';
-
 
       fetch(url, {
         method: 'POST',
@@ -680,113 +630,281 @@ cargarDireccionesDelCliente(clie_Id: number): void {
   }
 
   guardarCliente(): void {
-    try{
-        this.mostrarErrores = true;
-      if (this.entrando) {
-        this.mostrarAlertaWarning = false;
-        this.mostrarAlertaError = false;
-        const clienteGuardar = {
-          clie_Id: this.cliente.clie_Id,
-          clie_Codigo: this.cliente.clie_Codigo.trim(),
-          clie_Nacionalidad: this.cliente.clie_Nacionalidad,
-          pais_Descripcion: this.cliente.pais_Descripcion,
-          clie_DNI: this.cliente.clie_DNI.trim(),
-          clie_RTN: this.cliente.clie_RTN.trim(),
-          clie_Nombres: this.cliente.clie_Nombres.trim(),
-          clie_Apellidos: this.cliente.clie_Apellidos.trim(),
-          clie_NombreNegocio: this.cliente.clie_NombreNegocio.trim(),
-          clie_ImagenDelNegocio: this.cliente.clie_ImagenDelNegocio.trim(),
-          clie_Telefono: this.cliente.clie_Telefono.trim(),
-          clie_Correo: this.cliente.clie_Correo.trim(),
-          clie_Sexo: this.cliente.clie_Sexo,
-          clie_FechaNacimiento: new Date(),
-          tiVi_Id: this.cliente.tiVi_Id,
-          tiVi_Descripcion: this.cliente.tiVi_Descripcion,
-          cana_Id: this.cliente.cana_Id,
-          cana_Descripcion: this.cliente.cana_Descripcion,
-          esCv_Id: this.cliente.esCv_Id,
-          esCv_Descripcion: this.cliente.esCv_Descripcion,
-          ruta_Id: this.cliente.ruta_Id,
-          ruta_Descripcion: this.cliente.ruta_Descripcion,
-          clie_LimiteCredito: this.cliente.clie_LimiteCredito,
-          clie_DiasCredito: this.cliente.clie_DiasCredito,
-          clie_Saldo: 0,
-          clie_Vencido: false,
-          clie_Observaciones: this.cliente.clie_Observaciones?.trim() || '',
-          clie_ObservacionRetiro: this.cliente.clie_ObservacionRetiro?.trim() || '',
-          clie_Confirmacion: this.cliente.clie_Confirmacion,
-          clie_Estado: true,
-          usua_Creacion: environment.usua_Id,
-          usua_Modificacion: environment.usua_Id,
-          secuencia: 0,
-          clie_FechaCreacion: new Date(),
-          clie_FechaModificacion: new Date(),
-          code_Status: 0,
-          message_Status: '',
-          usuaC_Nombre: '',
-          usuaM_Nombre: ''
-        }
-        this.http.put<any>(
-          `${environment.apiBaseUrl}/Cliente/Actualizar`,
-          clienteGuardar,
-          {
-            headers: {
-              'X-Api-Key': environment.apiKey,
-              'Content-Type': 'application/json',
-              'accept': '*/*'
-            }
-          }
-        ).subscribe({
-          next: (response) => {
-            if (response.data.code_Status === -1) {
-              this.mostrarAlertaError = true;
-              this.mensajeError = response.data.message_Status;
-              this.activeTab = 1;
-              this.cliente.clie_Codigo = '';
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 3000);
-              return;
-            }
-            if (response.data.data) {
-              this.idDelCliente = response.data.data;
-              this.actualizarDirecciones(this.idDelCliente);
-              // this.guardarAvales(this.idDelCliente);
+    this.mostrarErrores = true;
+    if (this.entrando) {
+      this.mostrarAlertaWarning = false;
+      this.mostrarAlertaError = false;
+      
+      const clienteActualizar = {
+        clie_Id: this.cliente.clie_Id,
+        clie_Codigo: this.cliente.clie_Codigo.trim(),
+        clie_Nacionalidad: this.cliente.clie_Nacionalidad,
+        pais_Descripcion: this.cliente.pais_Descripcion,
+        clie_DNI: this.cliente.clie_DNI.trim(),
+        clie_RTN: this.cliente.clie_RTN.trim(),
+        clie_Nombres: this.cliente.clie_Nombres.trim(),
+        clie_Apellidos: this.cliente.clie_Apellidos.trim(),
+        clie_NombreNegocio: this.cliente.clie_NombreNegocio.trim(),
+        clie_ImagenDelNegocio: this.cliente.clie_ImagenDelNegocio,
+        clie_Telefono: this.cliente.clie_Telefono.trim(),
+        clie_Correo: this.cliente.clie_Correo.trim(),
+        clie_Sexo: this.cliente.clie_Sexo,
+        clie_FechaNacimiento: this.cliente.clie_FechaNacimiento,
+        tiVi_Id: this.cliente.tiVi_Id,
+        tiVi_Descripcion: this.cliente.tiVi_Descripcion,
+        cana_Id: this.cliente.cana_Id,
+        cana_Descripcion: this.cliente.cana_Descripcion,
+        esCv_Id: this.cliente.esCv_Id,
+        esCv_Descripcion: this.cliente.esCv_Descripcion,
+        ruta_Id: this.cliente.ruta_Id,
+        ruta_Descripcion: this.cliente.ruta_Descripcion,
+        clie_LimiteCredito: this.cliente.clie_LimiteCredito,
+        clie_DiasCredito: this.cliente.clie_DiasCredito,
+        clie_Saldo: this.cliente.clie_Saldo,
+        clie_Vencido: this.cliente.clie_Vencido,
+        clie_Observaciones: this.cliente.clie_Observaciones.trim(),
+        clie_ObservacionRetiro: this.cliente.clie_ObservacionRetiro.trim(),
+        clie_Confirmacion: this.cliente.clie_Confirmacion,
+        clie_Estado: this.cliente.clie_Estado,
+        usua_Creacion: this.cliente.usua_Creacion,
+        usua_Modificacion: environment.usua_Id,
+        secuencia: this.cliente.secuencia,
+        clie_FechaCreacion: this.cliente.clie_FechaCreacion,
+        clie_FechaModificacion: new Date(),
+        code_Status: 0,
+        message_Status: '',
+        usuaC_Nombre: this.cliente.usuaC_Nombre,
+        usuaM_Nombre: this.cliente.usuaM_Nombre
+      }
 
-              // Prueba
-              this.onSave.emit(this.cliente);
-              this.cancelar();
-            }
-          },
-          error: (error) => {
-            console.error('Error al guardar el cliente:', error);
+      this.http.put<any>(`${environment.apiBaseUrl}/Cliente/Actualizar`, clienteActualizar, {
+        headers: {
+          'X-Api-Key': environment.apiKey,
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        }
+      }).subscribe({
+        next: (response) => {
+          if (response.data?.code_Status === -1) {
             this.mostrarAlertaError = true;
-            this.mensajeError = 'Error al guardar el Cliente. Por favor, intente nuevamente.';
+            this.mensajeError = response.data.message_Status;
+            this.activeTab = 1;
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 3000);
+            return;
           }
-        });
-      } else {
-        this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
-        setTimeout(() => {
-          this.mostrarAlertaWarning = false;
-          this.mensajeWarning = '';
-        }, 3000);
-      }
-    }
-    catch (error) {
-      console.error('Error al guardar el cliente:', error);
-      this.mostrarAlertaError = true;
-      this.mensajeError = 'Ocurrió un error al guardar el cliente. Por favor, inténtelo de nuevo más tarde.';
-      setTimeout(() => this.cerrarAlerta(), 4000);
-      return;
+          
+          // Actualizar direcciones y avales
+          this.actualizarDireccionesYAvales();
+          
+          this.mostrarAlertaExito = true;
+          this.mensajeExito = 'Cliente actualizado correctamente';
+          setTimeout(() => {
+            this.onSave.emit(this.cliente);
+            this.cancelar();
+          }, 2000);
+        },
+        error: (error) => {
+          this.mostrarAlertaError = true;
+          this.mensajeError = 'Error al actualizar el Cliente. Por favor, intente nuevamente.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 3000);
+        }
+      });
+    } else {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'Por favor, complete todos los campos obligatorios.';
+      setTimeout(() => {
+        this.mostrarAlertaWarning = false;
+        this.mensajeWarning = '';
+      }, 3000);
     }
   }
 
+  // Método para gestionar direcciones y avales
+  actualizarDireccionesYAvales(): void {
+    this.procesarDirecciones();
+    this.procesarAvales();
+  }
+
+  // Procesar direcciones (actualizar, insertar, eliminar)
+  procesarDirecciones(): void {
+    // Eliminar direcciones marcadas para eliminación
+    this.direccionesEliminadas.forEach(direccionId => {
+      this.eliminarDireccionServidor(direccionId);
+    });
+
+    // Procesar direcciones actuales
+    this.direccionesPorCliente.forEach(direccion => {
+      if (direccion.diCl_Id === 0) {
+        // Nueva dirección - insertar
+        this.insertarDireccion(direccion);
+      } else {
+        // Dirección existente - actualizar
+        this.actualizarDireccion(direccion);
+      }
+    });
+  }
+
+  // Procesar avales (actualizar, insertar, eliminar)
+  procesarAvales(): void {
+    // Eliminar avales marcados para eliminación
+    this.avalesEliminados.forEach(avalId => {
+      this.eliminarAvalServidor(avalId);
+    });
+
+    // Solo procesar avales si hay datos de crédito
+    if (this.tieneDatosCredito()) {
+      this.avales.forEach(aval => {
+        if (aval.aval_Id === 0) {
+          // Nuevo aval - insertar
+          this.insertarAval(aval);
+        } else {
+          // Aval existente - actualizar
+          this.actualizarAval(aval);
+        }
+      });
+    }
+  }
+
+  // Métodos para direcciones
+  insertarDireccion(direccion: DireccionPorCliente): void {
+    const direccionInsertar = {
+      ...direccion,
+      clie_Id: this.idDelCliente,
+      usua_Creacion: environment.usua_Id,
+      diCl_FechaCreacion: new Date(),
+      usua_Modificacion: environment.usua_Id,
+      diCl_FechaModificacion: new Date()
+    };
+
+    this.http.post<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Insertar`, direccionInsertar, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        console.log('Dirección insertada correctamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al insertar dirección:', error);
+      }
+    });
+  }
+
+  actualizarDireccion(direccion: DireccionPorCliente): void {
+    const direccionActualizar = {
+      ...direccion,
+      usua_Modificacion: environment.usua_Id,
+      diCl_FechaModificacion: new Date()
+    };
+
+    this.http.put<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Actualizar`, direccionActualizar, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        console.log('Dirección actualizada correctamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al actualizar dirección:', error);
+      }
+    });
+  }
+
+  eliminarDireccionServidor(direccionId: number): void {
+    this.http.post(`${environment.apiBaseUrl}/DireccionesPorCliente/Eliminar/${direccionId}`, {}, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        console.log('Dirección eliminada correctamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al eliminar dirección:', error);
+      }
+    });
+  }
+
+  // Métodos para avales
+  insertarAval(aval: Aval): void {
+    const avalInsertar = {
+      ...aval,
+      clie_Id: this.idDelCliente,
+      usua_Creacion: environment.usua_Id,
+      aval_FechaCreacion: new Date(),
+      usua_Modificacion: environment.usua_Id,
+      aval_FechaModificacion: new Date()
+    };
+
+    this.http.post<any>(`${environment.apiBaseUrl}/Aval/Insertar`, avalInsertar, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        console.log('Aval insertado correctamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al insertar aval:', error);
+      }
+    });
+  }
+
+  actualizarAval(aval: Aval): void {
+    const avalActualizar = {
+      ...aval,
+      usua_Modificacion: environment.usua_Id,
+      aval_FechaModificacion: new Date()
+    };
+
+    this.http.put<any>(`${environment.apiBaseUrl}/Aval/Actualizar`, avalActualizar, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        console.log('Aval actualizado correctamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al actualizar aval:', error);
+      }
+    });
+  }
+
+  eliminarAvalServidor(avalId: number): void {
+    this.http.delete<any>(`${environment.apiBaseUrl}/Aval/Eliminar/${avalId}`, {
+      headers: {
+        'X-Api-Key': environment.apiKey,
+        'accept': '*/*'
+      }
+    }).subscribe({
+      next: (response) => {
+        console.log('Aval eliminado correctamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al eliminar aval:', error);
+      }
+    });
+  }
+
+  // Métodos para manejo de direcciones en la UI
   agregarDireccion() {
     this.mostrarErrores = true;
     if(!this.direccionPorCliente.diCl_Longitud && !this.direccionPorCliente.diCl_Latitud){
@@ -799,6 +917,7 @@ cargarDireccionesDelCliente(clie_Id: number): void {
       }, 3000);
       return;
     }
+    
     if (this.direccionPorCliente.diCl_DireccionExacta.trim() && this.direccionPorCliente.colo_Id && this.direccionPorCliente.diCl_Observaciones) {
       this.mostrarErrores = false;
       const colonia = this.TodasColonias.find(c => c.colo_Id == this.direccionPorCliente.colo_Id);
@@ -816,6 +935,7 @@ cargarDireccionesDelCliente(clie_Id: number): void {
       }
       this.limpiarDireccionModal();
       this.cerrarMapa();
+      this.validarDireccion = false;
     }
     else{
       this.mostrarErrores = true;
@@ -834,18 +954,27 @@ cargarDireccionesDelCliente(clie_Id: number): void {
     this.direccionPorCliente = { ...this.direccionesPorCliente[index] };
     this.mostrarMapa = true;
     setTimeout(() => {
-      this.mapaSelectorComponent.inicializarMapa();
+      this.mapaSelectorComponent?.inicializarMapa();
     }, 300);
   }
 
   eliminarDireccion(index: number) {
+    const direccion = this.direccionesPorCliente[index];
+    
+    // Si la dirección tiene ID, marcarla para eliminación en el servidor
+    if (direccion.diCl_Id > 0) {
+      this.direccionesEliminadas.push(direccion.diCl_Id);
+    }
+    
+    // Eliminar de la lista local
     this.direccionesPorCliente.splice(index, 1);
+    this.validarDireccion = this.direccionesPorCliente.length === 0;
   }
 
   limpiarDireccionModal() {
     this.direccionPorCliente = {
       diCl_Id: 0,
-      clie_Id: 0,
+      clie_Id: this.idDelCliente,
       colo_Id: 0,
       diCl_DireccionExacta: '',
       diCl_Observaciones: '',
@@ -860,79 +989,46 @@ cargarDireccionesDelCliente(clie_Id: number): void {
     };
   }
 
-  guardarDireccionesPorCliente(clie_Id: number): void {
-    for (const direccion of this.direccionesPorCliente) {
-      const direccionPorClienteGuardar = {
-        ...direccion,
-        clie_Id: clie_Id,
-        usua_Creacion: environment.usua_Id,
-        diCl_FechaCreacion: new Date(),
-        usua_Modificacion: environment.usua_Id,
-        diCl_FechaModificacion: new Date()
-      };
-      this.http.put<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Actualizar`, direccionPorClienteGuardar, {
-        headers: {
-          'X-Api-Key': environment.apiKey,
-          'Content-Type': 'application/json',
-          'accept': '*/*'
-        }
-      }).subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (error) => {
-          this.mostrarAlertaError = true;
-          this.mensajeError = 'Error al guardar la dirección del Cliente. Por favor, intente nuevamente.';
-          setTimeout(() => {
-            this.mostrarAlertaError = false;
-            this.mensajeError = '';
-          }, 3000);
-        }
-      });
+  // Métodos para manejo de avales en la UI
+  agregarAval() {
+    this.avales.push(this.nuevoAval());
+    this.avalActivoIndex = this.avales.length - 1;
+    this.scrollToAval(this.avalActivoIndex);
+  }
+
+  eliminarAval(index: number) {
+    const aval = this.avales[index];
+    
+    // Si el aval tiene ID, marcarla para eliminación en el servidor
+    if (aval.aval_Id > 0) {
+      this.avalesEliminados.push(aval.aval_Id);
+    }
+    
+    // Eliminar de la lista local
+    this.avales.splice(index, 1);
+    
+    // Ajustar el índice activo
+    if (this.avalActivoIndex >= this.avales.length) {
+      this.avalActivoIndex = this.avales.length - 1;
+    }
+    
+    // Si no quedan avales y hay crédito, agregar uno nuevo
+    if (this.avales.length === 0 && this.tieneDatosCredito()) {
+      this.avales.push(this.nuevoAval());
+      this.avalActivoIndex = 0;
     }
   }
 
-  async actualizarDirecciones(clie_Id: number): Promise<void> {
-  try {
-    // Preparar todas las actualizaciones
-    const actualizaciones = this.direccionesPorCliente.map(direccion => {
-      const payload = {
-        ...direccion,
-        clie_Id: clie_Id,
-        usua_Modificacion: environment.usua_Id,
-        diCl_FechaModificacion: new Date()
-      };
-
-      return this.http.put<any>(
-        `${environment.apiBaseUrl}/DireccionesPorCliente/Actualizar`,
-        payload,
-        {
-          headers: {
-            'X-Api-Key': environment.apiKey,
-            'Content-Type': 'application/json'
-          }
-        }
-      ).toPromise();
-    });
-
-    // Esperar a que todas se completen
-    await Promise.all(actualizaciones);
-    
-    this.mostrarAlertaExito = true;
-    this.mensajeExito = 'Cliente y direcciones actualizados correctamente';
-    this.onSave.emit(this.cliente);
-    setTimeout(() => this.cancelar(), 2000);
-    
-  } catch (error) {
-    console.error('Error al actualizar direcciones:', error);
-    this.mostrarAlertaError = true;
-    this.mensajeError = 'El cliente se guardó pero hubo un error con las direcciones';
-    setTimeout(() => {
-      this.onSave.emit(this.cliente);
-      this.cancelar();
-    }, 3000);
-  } finally {
-    this.cargando = false;
+  seleccionarAval(index: number) {
+    this.avalActivoIndex = index;
   }
-}
+
+  cambiarAval(direccion: number) {
+    const nuevoIndex = this.avalActivoIndex + direccion;
+
+    if (nuevoIndex >= 0 && nuevoIndex < this.avales.length) {
+      this.avalActivoIndex = nuevoIndex;
+      this.scrollToAval(nuevoIndex);
+    }
+  }
 }

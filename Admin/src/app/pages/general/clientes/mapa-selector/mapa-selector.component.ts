@@ -33,6 +33,7 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
   @Input() puntosVista: PuntoVista[] = [];
   @Output() coordenadasSeleccionadas = new EventEmitter<{ lat: number, lng: number }>();
 
+  @Input() mostrar: boolean = false;
   @ViewChild('mapaContainer', { static: true }) mapaContainer!: ElementRef;
 
   private map!: google.maps.Map;
@@ -43,10 +44,16 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
     if (changes['puntosVista'] && this.map && this.mapaInicializado) {
       this.agregarPuntosVistaAlMapa();
     }
+
+    if (changes['mostrar'] && this.mostrar && !this.mapaInicializado && this.mapaContainer) {
+      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    }
   }
 
   ngAfterViewInit() {
-    this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    if (this.mostrar) {
+      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    }
   }
 
   private cargarGoogleMapsScript(): Promise<void> {
