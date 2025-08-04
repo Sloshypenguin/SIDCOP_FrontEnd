@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -9,13 +10,11 @@ import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Rol } from 'src/app/Modelos/acceso/roles.Model';
+import { Ruta } from 'src/app/Modelos/logistica/Rutas.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { set } from 'lodash';
 
 // Importar el servicio de exportación optimizado
 import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
@@ -67,33 +66,39 @@ import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export
         )
       ])
     ])
-  ]  
+  ]
 })
 export class ListComponent implements OnInit {
-  // ===== CONFIGURACIÓN FÁCIL DE EXPORTACIÓN =====
+   // ===== CONFIGURACIÓN FÁCIL DE EXPORTACIÓN =====
   // 🔧 PERSONALIZA AQUÍ TU CONFIGURACIÓN DE EXPORTACIÓN 🔧
   private readonly exportConfig = {
     // Configuración básica
-    title: 'Listado de Roles',                    // Título del reporte
-    filename: 'Roles',                           // Nombre base del archivo
-    department: 'Acceso',                         // Departamento
+    title: 'Listado de Modelos',                    // Título del reporte
+    filename: 'Rutas',                           // Nombre base del archivo
+    department: 'Logistica',                         // Departamento
     additionalInfo: 'Sistema de Gestión',         // Información adicional
     
     // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
     columns: [
       { key: 'No', header: 'No.', width: 8, align: 'center' as const },
-      { key: 'Descripción', header: 'Descripción', width: 50, align: 'left' as const }
+      { key: 'Código', header: 'Código', width: 25, align: 'left' as const }, 
+      { key: 'Descripción', header: 'Descripción', width: 50, align: 'left' as const },
+      { key: 'Observaciones', header: 'Observaciones', width: 50, align: 'left' as const } 
     ] as ExportColumn[],
     
     // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
-    dataMapping: (rol: Rol, index: number) => ({ 
-      'No': rol?.secuencia || (index + 1),
-      'Descripción': this.limpiarTexto(rol?.role_Descripcion)
+    dataMapping: (ruta: Ruta, index: number) => ({
+      'No': ruta?.secuencia || (index + 1),
+      'Código': this.limpiarTexto(ruta?.ruta_Codigo),
+      'Descripción': this.limpiarTexto(ruta?.ruta_Descripcion),
+      'Observaciones': this.limpiarTexto(ruta?.ruta_Observaciones)
       // Agregar más campos aquí según necesites:
       // 'Campo': this.limpiarTexto(modelo?.campo),
     })
   };
 
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
@@ -110,13 +115,13 @@ export class ListComponent implements OnInit {
      * BreadCrumb
      */
     this.breadCrumbItems = [
-      { label: 'Acceso' },
-      { label: 'Roles', active: true }
+      { label: 'Logistica' },
+      { label: 'RUtas', active: true }
     ];
 
     // OBTENER ACCIONES DISPONIBLES DEL USUARIO
     this.cargarAccionesUsuario();
-    // console.log('Acciones disponibles:', this.accionesDisponibles);
+    console.log('Acciones disponibles:', this.accionesDisponibles);
   }
 
   // ===== MÉTODOS DE EXPORTACIÓN OPTIMIZADOS =====
@@ -308,37 +313,39 @@ export class ListComponent implements OnInit {
   }
   // ===== MÉTODOS EXISTENTES (SIN CAMBIOS) =====
 
+  // Métodos para los botones de acción principales (crear, editar, detalles)
   crear(): void {
     console.log('Toggleando formulario de creación...');
     this.showCreateForm = !this.showCreateForm;
-    this.showEditForm = false;
-    this.showDetailsForm = false;
-    this.activeActionRow = null;
-    this.rolEditando = null;
-    this.rolDetalle = null;
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  editar(rol: Rol): void {
+  editar(rutas: Ruta): void {
+    console.log('Abriendo formulario de edición para:', rutas);
     console.log('Datos específicos:', {
-      id: rol.role_Id,
-      descripcion: rol.role_Descripcion,
-      completo: rol
+      id: rutas.ruta_Id,
+      codigo: rutas.ruta_Codigo,
+      descripcion: rutas.ruta_Descripcion,
+      completo: rutas
     });
-    this.rolEditando = { ...rol }; 
+    this.rutaEditando = { ...rutas }; // Hacer copia profunda
     this.showEditForm = true;
-    this.showCreateForm = false; 
-    this.showDetailsForm = false;
-    this.activeActionRow = null; 
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
-  detalles(rol: Rol): void {
-    this.rolDetalle = { ...rol };
+  detalles(rutas: Ruta): void {
+    console.log('Abriendo detalles para:', rutas);
+    this.rutaDetalle = { ...rutas }; // Hacer copia profunda
     this.showDetailsForm = true;
-    this.showCreateForm = false; 
-    this.showEditForm = false; 
-    this.activeActionRow = null;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
   }
-   constructor(public table: ReactiveTableService<Rol>, 
+   constructor(public table: ReactiveTableService<Ruta>, 
     private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute,
@@ -347,29 +354,29 @@ export class ListComponent implements OnInit {
   )
     {
     this.cargardatos(true);
-    this.cargarPantallas();
   }   
 
   activeActionRow: number | null = null;
   showEdit = true;
   showDetails = true;
   showDelete = true;
-  showCreateForm = false; 
-  showEditForm = false; 
-  showDetailsForm = false;
-  rolEditando: Rol | null = null;
-  rolDetalle: Rol | null = null;
+  showCreateForm = false; // Control del collapse
+  showEditForm = false; // Control del collapse de edición
+  showDetailsForm = false; // Control del collapse de detalles
+  rutaEditando: Ruta | null = null;
+  rutaDetalle: Ruta | null = null;
   
+  // Propiedades para alertas
   mostrarAlertaExito = false;
-  mostrarOverlayCarga = false;
   mensajeExito = '';
   mostrarAlertaError = false;
   mensajeError = '';
   mostrarAlertaWarning = false;
   mensajeWarning = '';
   
+  // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  rolAEliminar: Rol | null = null;
+  rutasAEliminar: Ruta | null = null;
 
   // Estado de exportación
   exportando = false;
@@ -380,116 +387,90 @@ export class ListComponent implements OnInit {
   }
 
   cerrarFormularioEdicion(): void {
+    this.mostrarOverlayCarga = false;
     this.showEditForm = false;
-    this.rolEditando = null;
+    this.rutaEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.rolDetalle = null;
+    this.rutaDetalle = null;
   }
 
-  guardarRol(rol: Rol): void {
-    this.mostrarOverlayCarga = true;
-    setTimeout(()=> {
-      this.cargardatos(false);
-      this.showCreateForm = false;
-      this.mensajeExito = `Rol guardado exitosamente`;
-      this.mostrarAlertaExito = true;
-      setTimeout(() => {
-        this.mostrarAlertaExito = false;
-        this.mensajeExito = '';
-      }, 3000);
-    }, 1000);
+  guardarRuta(rutas: Ruta): void {
+    console.log('Ruta guardada exitosamente desde create component:', rutas);
+    // Recargar los datos de la tabla sin overlay
+    this.cargardatos(false);
+    this.cerrarFormulario();
   }
 
-  actualizarRol(rol: Rol): void {
-    this.mostrarOverlayCarga = true;
-    setTimeout(() => {
-      this.cargardatos(false);
-      this.showEditForm = false;
-      this.mensajeExito = `Rol actualizado exitosamente`;
-      this.mostrarAlertaExito = true;
-      setTimeout(() => {
-        this.mostrarAlertaExito = false;
-        this.mensajeExito = '';
-      }, 3000);
-    }, 1000);
+  actualizarRuta(rutas: Ruta): void {
+    console.log('Ruta actualizada exitosamente desde edit component:', rutas); 
+    // Recargar los datos de la tabla sin overlay
+    this.cargardatos(false);
+    this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(rol: Rol): void {
-    this.rolAEliminar = rol;
+  confirmarEliminar(rutas: Ruta): void {
+    console.log('Solicitando confirmación para eliminar:', rutas);
+    this.rutasAEliminar = rutas;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null; 
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.rolAEliminar = null;
+    this.rutasAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.rolAEliminar) return;
-        
-    this.mostrarOverlayCarga = true;
-    this.http.post(`${environment.apiBaseUrl}/Roles/Eliminar/${this.rolAEliminar.role_Id}`, {}, {
+    if (!this.rutasAEliminar) return;
+    
+    console.log('Eliminando estado civil:', this.rutasAEliminar);
+    
+    this.http.put(`${environment.apiBaseUrl}/Rutas/Eliminar/${this.rutasAEliminar.ruta_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
       next: (response: any) => {
-        setTimeout(() => {
-          this.mostrarOverlayCarga = false;
-          console.log('Respuesta del servidor:', response);
+        console.log('Respuesta del servidor:', response);
         
-          if (response.success && response.data) {
-            if (response.data.code_Status === 1) {
-              // Éxito: eliminado correctamente
-              this.mensajeExito = `Rol "${this.rolAEliminar!.role_Descripcion}" eliminado exitosamente`;
-              this.mostrarAlertaExito = true;
-              
-              // Ocultar la alerta después de 3 segundos
-              setTimeout(() => {
-                this.mostrarAlertaExito = false;
-                this.mensajeExito = '';
-              }, 3000);
-              
+        // Verificar el código de estado en la respuesta
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Estado civil eliminado exitosamente');
+            this.mensajeExito = `Estado civil "${this.rutasAEliminar!.ruta_Descripcion}" eliminado exitosamente`;
+            this.mostrarAlertaExito = true;
+            
+            // Ocultar la alerta después de 3 segundos
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            
 
-              this.cargardatos(false);
-              this.cancelarEliminar();
-            } else if (response.data.code_Status === -1) {
-              //result: está siendo utilizado
-              console.log('Rol está siendo utilizado');
-              this.mostrarAlertaError = true;
-              this.mensajeError = response.data.message_Status || 'No se puede eliminar: el rol está siendo utilizado.';
-              
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-              
-              // Cerrar el modal de confirmación
-              this.cancelarEliminar();
-            } else if (response.data.code_Status === 0) {
-              // Error general
-              console.log('Error general al eliminar');
-              this.mostrarAlertaError = true;
-              this.mensajeError = response.data.message_Status || 'Error al eliminar el rol.';
-              
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-              
-              // Cerrar el modal de confirmación
-              this.cancelarEliminar();
-            }
-          } else {
-            // Respuesta inesperada
-            console.log('Respuesta inesperada del servidor');
+            this.cargardatos(false);
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            //result: está siendo utilizado
+            console.log('Ruta está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.message || 'Error inesperado al eliminar el rol.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la ruta está siendo utilizado.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar la ruta.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
@@ -499,7 +480,20 @@ export class ListComponent implements OnInit {
             // Cerrar el modal de confirmación
             this.cancelarEliminar();
           }
-        })
+        } else {
+          // Respuesta inesperada
+          console.log('Respuesta inesperada del servidor');
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.message || 'Error inesperado al eliminar la ruta.';
+          
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          
+          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        }
       },
     });
   }
@@ -517,6 +511,7 @@ export class ListComponent implements OnInit {
   private cargarAccionesUsuario(): void {
     // OBTENEMOS PERMISOSJSON DEL LOCALSTORAGE
     const permisosRaw = localStorage.getItem('permisosJson');
+    console.log('Valor bruto en localStorage (permisosJson):', permisosRaw);
     let accionesArray: string[] = [];
     if (permisosRaw) {
       try {
@@ -525,15 +520,15 @@ export class ListComponent implements OnInit {
         let modulo = null;
         if (Array.isArray(permisos)) {
           // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES POR ID
-          modulo = permisos.find((m: any) => m.Pant_Id === 62);
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
-          modulo = permisos['Roles'] || permisos['roles'] || null;
+          modulo = permisos['Rutas'] || permisos['Rutas'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
           accionesArray = modulo.Acciones.map((a: any) => a.Accion).filter((a: any) => typeof a === 'string');
-          // console.log('Acciones del módulo:', accionesArray);
+          console.log('Acciones del módulo:', accionesArray);
         }
       } catch (e) {
         console.error('Error al parsear permisosJson:', e);
@@ -541,13 +536,13 @@ export class ListComponent implements OnInit {
     } 
     // AQUI FILTRAMOS Y NORMALIZAMOS LAS ACCIONES
     this.accionesDisponibles = accionesArray.filter(a => typeof a === 'string' && a.length > 0).map(a => a.trim().toLowerCase());
-    // console.log('Acciones finales:', this.accionesDisponibles);
+    console.log('Acciones finales:', this.accionesDisponibles);
   }
 
   private cargardatos(state: boolean): void {
     this.mostrarOverlayCarga = state;
 
-    this.http.get<Rol[]>(`${environment.apiBaseUrl}/Roles/Listar`, {
+    this.http.get<Ruta[]>(`${environment.apiBaseUrl}/Rutas/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       const tienePermisoListar = this.accionPermitida('listar');
@@ -563,31 +558,4 @@ export class ListComponent implements OnInit {
       }, 500);
     });
   }
-
-
-  private cargarPantallas(): void {
-    this.http.get(`${environment.apiBaseUrl}/Roles/ListarPantallas`, {
-      headers: { 'x-api-key': environment.apiKey },
-      responseType: 'text' // <-- Recibe como texto
-    }).subscribe({
-      next: raw => {
-        try {
-          // Intenta arreglar el JSON agregando corchetes si es necesario
-          let data = raw.trim();
-          if (!data.startsWith('[')) {
-            data = `[${data}]`;
-          }
-          const parsed = JSON.parse(data);
-          // console.log('Pantallas cargadas:', parsed);
-          // Aquí podrías hacer algo con los datos de las pantallas si es necesario
-        } catch (e) {
-          console.error('No se pudo parsear la respuesta de pantallas:', e, raw);
-        }
-      },
-      error: err => {
-        console.error('Error al cargar pantallas:', err);
-      }
-    });
-  }
 }
-
