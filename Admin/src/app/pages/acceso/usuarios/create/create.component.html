@@ -207,6 +207,18 @@
             </div>
           </div>
 
+          <div class="col-12 col-md-6">
+            <div class="mb-3">
+              <label class="form-label">¿Tiene Permisos?</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="usua_TienePermisos" [(ngModel)]="usuario.usua_TienePermisos"/>
+                <label class="form-check-label" for="usua_TienePermisos">
+                  {{ usuario.usua_TienePermisos ? 'Sí' : 'No' }}
+                </label>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
