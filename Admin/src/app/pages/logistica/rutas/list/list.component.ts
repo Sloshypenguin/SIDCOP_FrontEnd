@@ -13,7 +13,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { Ruta } from 'src/app/Modelos/logistica/Rutas.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
-// import { DetailsComponent } from '../details/details.component';
+import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 @Component({
   selector: 'app-list',
@@ -27,7 +27,7 @@ import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
     PaginationModule,
     CreateComponent,
     EditComponent,
-    // DetailsComponent
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
