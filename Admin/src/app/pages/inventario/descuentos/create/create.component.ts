@@ -305,7 +305,7 @@ hoy: string;
       canal,
       filtro: '', // Se agrega filtro para el buscador individual
       clientes: agrupados[canal],
-      collapsed: false // Inicialmente todos los canales están expandidos
+      collapsed: true // Inicialmente todos los canales están expandidos
     }));
   });
 }
