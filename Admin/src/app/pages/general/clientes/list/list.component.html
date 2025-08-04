@@ -16,8 +16,25 @@
             <span class="btn-icon"><i class="ri-add-line"></i></span>
           </button>
         </div>
-        <div class="col-6">
-
+        <div class="col-6 d-flex justify-content-end">
+          <!-- Opciones de exportación alineadas a la derecha -->
+          <div class="export-buttons d-flex gap-1 mb-2">
+            <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarExcel()"
+              title="Exportar a Excel">
+              <span class="btn-text">Excel</span>
+              <span class="btn-icon"><i class="ri-file-excel-2-line" style="font-weight: 100;"></i></span>
+            </button>
+            <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarPDF()"
+              title="Exportar a PDF">
+              <span class="btn-text">PDF</span>
+              <span class="btn-icon"><i class="ri-file-ppt-line" style="font-weight: 100;"></i></span>
+            </button>
+            <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarCSV()"
+              title="Exportar a CSV">
+              <span class="btn-text">CSV</span>
+              <span class="btn-icon"><i class="ri-file-text-line" style="font-weight: 100;"></i></span>
+            </button>
+          </div>
         </div>
         <div class="col-1 position-relative">
           <i id="campanita" class="ri-notification-2-fill"
@@ -35,6 +52,8 @@
             style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
         </div>
       </div>
+
+
     </div>
 
     <div class="row align-items-center g-2" *ngIf="listadoClientesSinConfirmar" [@fadeExpand]>
