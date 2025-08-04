@@ -394,7 +394,7 @@ export class ExportService {
     doc.setTextColor(...this.COLORS.white.rgb);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${config.data.length} registros | ${config.columns.length} columnas | Sistema de Gestión Empresarial`, pageWidth / 2, startY + 31.5, { align: 'center' });
+    doc.text(`${config.data.length} registros | ${config.columns.length} columnas | SIDCOP`, pageWidth / 2, startY + 31.5, { align: 'center' });
   }
 
   private async createPDFTable(doc: jsPDF, config: ExportConfig): Promise<void> {
@@ -470,7 +470,7 @@ export class ExportService {
     doc.text(`Generado: ${this.getCurrentDate()}`, 15, pageHeight - 8);
     
     // Centro: Sistema
-    doc.text('Sistema de Gestión Empresarial', pageWidth / 2, pageHeight - 8, { align: 'center' });
+    doc.text('SIDCOP', pageWidth / 2, pageHeight - 8, { align: 'center' });
     
     // Derecha: Paginación
     doc.text(`Página ${pageNumber} de ${totalPages}`, pageWidth - 15, pageHeight - 8, { align: 'right' });
@@ -589,7 +589,7 @@ export class ExportService {
       ),
       '',
       separator,
-      `Archivo generado por Sistema de Gestión Empresarial`,
+      `Archivo generado por SIDCOP`,
       `Fecha y hora: ${new Date().toISOString()}`,
       separator
     ];
