@@ -31,7 +31,7 @@ export class CreateComponent {
   mapaSelectorComponent!: MapaSelectorComponent;
   
   entrando = true;
-  activeTab = 2;
+  activeTab = 1;
 
   mostrarErrores = false;
   mostrarAlertaExito = false;
@@ -456,7 +456,7 @@ export class CreateComponent {
     esCv_Descripcion: '',
     ruta_Id: 0,
     ruta_Descripcion: '',
-    clie_LimiteCredito: 0,
+    clie_LimiteCredito: 0.00,
     clie_DiasCredito: 0,
     clie_Saldo: 0,
     clie_Vencido: true,
@@ -867,4 +867,17 @@ export class CreateComponent {
       });
     }
   }
+
+formatearLimiteCredito() {
+  let valor = this.cliente.clie_LimiteCredito;
+
+  if (valor === null || valor === undefined || isNaN(valor)) {
+    this.cliente.clie_LimiteCredito = 0.00;
+  } else {
+    // Redondear a dos decimales correctamente
+    this.cliente.clie_LimiteCredito = Math.round(valor * 100) / 100;
+  }
 }
+
+}
+

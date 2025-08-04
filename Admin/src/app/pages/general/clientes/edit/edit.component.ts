@@ -873,9 +873,10 @@ export class EditComponent implements OnChanges {
   }
 
   eliminarAvalServidor(avalId: number): void {
-    this.http.delete<any>(`${environment.apiBaseUrl}/Aval/Eliminar/${avalId}`, {
+    this.http.put(`${environment.apiBaseUrl}/Aval/Eliminar/${avalId}`, {}, {
       headers: {
         'X-Api-Key': environment.apiKey,
+        'Content-Type': 'application/json',
         'accept': '*/*'
       }
     }).subscribe({
