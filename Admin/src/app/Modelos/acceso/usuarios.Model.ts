@@ -9,7 +9,8 @@ export class Usuario {
     usua_IdPersona: number = 0;
     usua_EsVendedor: boolean = false;
     usua_EsAdmin: boolean = false;
-    usua_Imagen?: string;   
+    usua_Imagen?: string;
+    usua_TienePermisos: boolean = false;
     usua_Creacion: number = 0;
     usua_FechaCreacion: Date = new Date();
     usua_Modificacion?: number;
