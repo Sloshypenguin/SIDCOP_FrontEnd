@@ -519,14 +519,16 @@
           <div class="mb-3">
             <label for="clienteLimiteCredito" class="form-label">Límite de Crédito</label>
             <div class="d-flex align-items-center">
-              <i class="ri-money-euro-circle-line"
+              <span 
                 [ngStyle]="{
                 border: '1px solid #e9ecf5',
                 backgroundColor: '#f2f3f9',
-                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}">
-              </i>
-              <input type="number" class="form-control" id="clienteLimiteCredito" step="0.01"
-                [(ngModel)]="cliente.clie_LimiteCredito" placeholder="Ingrese el límite de crédito" />
+                padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', 
+                borderBottomLeftRadius: '8px'}"> L.
+              </span>
+              <input type="text" class="form-control" mask="separator.2" thousandSeparator=","
+                [dropSpecialCharacters]="true" [ngModel]="cliente.clie_LimiteCredito"
+                (ngModelChange)="cliente.clie_LimiteCredito = $event" placeholder="0.00" />
             </div>
           </div>
         </div>
@@ -958,7 +960,7 @@
       </div>
       <hr class="custom-modal-divider" />
       <div class="modal-body custom-modal-body">
-        <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)"></app-mapa-selector>
+        <app-mapa-selector (coordenadasSeleccionadas)="onCoordenadasSeleccionadas($event)" [mostrar]="mostrarMapa"></app-mapa-selector>
 
         <div class="row mx-lg-4 mt-4">
           <div class="col-md-6">
