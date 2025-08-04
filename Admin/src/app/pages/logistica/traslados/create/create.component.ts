@@ -555,7 +555,9 @@ private cargarInventarioSucursal(): void {
       tras_FechaCreacion: new Date().toISOString(),
       usua_Modificacion: 0,
       tras_FechaModificacion: new Date().toISOString(),
-      tras_Estado: true
+      tras_Estado: true,
+      usuaCreacion: '',
+      usuaModificacion: ''
     };
 
     this.http.post<any>(`${environment.apiBaseUrl}/Traslado/Insertar`, datos, {
@@ -598,7 +600,9 @@ private cargarInventarioSucursal(): void {
         usua_Creacion: Number(environment.usua_Id),
         trDe_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: 0,
-        trDe_FechaModificacion: new Date().toISOString()
+        trDe_FechaModificacion: new Date().toISOString(),
+        prod_Descripcion: producto.prod_Descripcion,
+        prod_Imagen: producto.prod_Imagen || ''
       };
 
       this.http.post<any>(`${environment.apiBaseUrl}/Traslado/InsertarDetalle`, detalle, {

@@ -27,7 +27,7 @@ import { getUserId } from 'src/app/core/utils/user-utils';
     PaginationModule,
     CreateComponent,
     EditComponent,
-    DetailsComponent
+    DetailsComponent,
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
@@ -86,7 +86,12 @@ export class ListComponent implements OnInit {
 
   detalles(traslado: Traslado): void {
     console.log('Abriendo detalles para:', traslado);
-    this.trasladoDetalle = { ...traslado }; // Hacer copia profunda
+    console.log('ID del traslado seleccionado:', traslado.tras_Id);
+    
+    // Usar el ID para cargar datos actualizados desde el API
+    this.trasladoIdDetalle = traslado.tras_Id;
+    this.trasladoDetalle = null; // Limpiar datos previos
+    
     this.showDetailsForm = true;
     this.showCreateForm = false; // Cerrar create si está abierto
     this.showEditForm = false; // Cerrar edit si está abierto
@@ -111,6 +116,7 @@ export class ListComponent implements OnInit {
   showDetailsForm = false; // Control del collapse de detalles
   trasladoEditando: Traslado | null = null;
   trasladoDetalle: Traslado | null = null;
+  trasladoIdDetalle: number | null = null; // Nuevo: para pasar ID al componente de detalles
   
   // Propiedades para overlay de carga
   mostrarOverlayCarga = false;
@@ -139,6 +145,7 @@ export class ListComponent implements OnInit {
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
     this.trasladoDetalle = null;
+    this.trasladoIdDetalle = null; // Limpiar también el ID
   }
 
   guardarTraslado(traslado: Traslado): void {
@@ -352,5 +359,4 @@ private cargardatos(): void {
     }
   });
 }
-
 }
