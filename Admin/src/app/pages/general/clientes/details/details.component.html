@@ -21,12 +21,13 @@
   <div *ngIf="!cargando && clienteDetalle" class="details-content">
     <div class="row g-4 align-items-stretch">
       <!-- Card izquierda: Imagen negocio + nombre -->
-      <div class="col-8 mx-auto">
-        <div class="card customer-photo-card-modern">
+       <span style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 38px; text-align: center; color: #303d7d"> Información del Negocio </span>
+      <div class="col-5">
+        <div class="card-image-customer customer-photo-card-modern">
           <ng-container *ngIf="clienteDetalle?.clie_ImagenDelNegocio;">
             <div class="customer-img-container">
               <img [src]="clienteDetalle.clie_ImagenDelNegocio" alt="Imagen del negocio"
-                class="customer-img-modern customer-img-zoomout" (load)="imgLoaded = true" [class.loaded]="imgLoaded" />
+                class="customer-img-modern" (load)="imgLoaded = true" [class.loaded]="imgLoaded" />
             </div>
           </ng-container>
           <ng-template #noImage>
@@ -41,6 +42,13 @@
             {{ clienteDetalle.clie_NombreNegocio }}
           </div>
         </div>
+      </div>
+      <div class="col-6 mapa-derecha">
+        <!-- <div class="card"> -->
+          <div class="card-body">
+            <app-mapa-selector [puntosVista]="puntosVista" [mostrar]="true" [mostrarPuntos]="true"></app-mapa-selector>
+          </div>
+        <!-- </div> -->
       </div>
 
       <!-- Card derecha: Detalles del cliente -->
@@ -495,7 +503,7 @@
       </div>
     </div>
 
-    <app-mapa-selector [puntosVista]="puntosVista" [mostrar]="true"></app-mapa-selector>
+    <!-- <app-mapa-selector [puntosVista]="puntosVista" [mostrar]="true"></app-mapa-selector> -->
 
     <!-- Historial de auditoría -->
     <h4 class="details-title mt-4 mb-3" style="color: black">
