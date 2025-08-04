@@ -41,12 +41,14 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
   private mapaInicializado = false;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['puntosVista'] && this.map && this.mapaInicializado) {
-      this.agregarPuntosVistaAlMapa();
+    if (changes['mostrar'] && this.mostrar && !this.mapaInicializado && this.mapaContainer) {
+      this.cargarGoogleMapsScript().then(() => {
+        setTimeout(() => this.inicializarMapa(), 100);
+      });
     }
 
-    if (changes['mostrar'] && this.mostrar && !this.mapaInicializado && this.mapaContainer) {
-      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    if (changes['puntosVista'] && this.map && this.mapaInicializado) {
+      this.agregarPuntosVistaAlMapa();
     }
   }
 
