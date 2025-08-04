@@ -19,6 +19,7 @@ export class Usuario {
     nombreCompleto: string = '';
     code_Status: number = 0;
     message_Status: string = '';
+    No?: number = 0;
 
     constructor(init?: Partial<Usuario>) {
         Object.assign(this, init);
