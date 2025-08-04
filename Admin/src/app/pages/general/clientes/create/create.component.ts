@@ -28,6 +28,7 @@ export class CreateComponent {
   @ViewChild('tabsScroll', { static: false }) tabsScroll!: ElementRef<HTMLDivElement>;
   @ViewChild(MapaSelectorComponent)
   mapaSelectorComponent!: MapaSelectorComponent;
+  
   entrando = true;
   tabActual = 1;
 

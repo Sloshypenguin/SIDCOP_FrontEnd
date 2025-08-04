@@ -6,7 +6,9 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
@@ -26,7 +28,7 @@ declare const google: any;
   templateUrl: './mapa-selector.component.html',
   styleUrl: './mapa-selector.component.scss',
 })
-export class MapaSelectorComponent implements AfterViewInit {
+export class MapaSelectorComponent implements AfterViewInit, OnChanges {
   @Input() coordenadasIniciales: { lat: number, lng: number } | null = null;
   @Input() puntosVista: PuntoVista[] = [];
   @Output() coordenadasSeleccionadas = new EventEmitter<{ lat: number, lng: number }>();
@@ -36,6 +38,12 @@ export class MapaSelectorComponent implements AfterViewInit {
   private map!: google.maps.Map;
   private marker: google.maps.Marker | null = null;
   private mapaInicializado = false;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['puntosVista'] && this.map && this.mapaInicializado) {
+      this.agregarPuntosVistaAlMapa();
+    }
+  }
 
   ngAfterViewInit() {
     this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
@@ -58,6 +66,24 @@ export class MapaSelectorComponent implements AfterViewInit {
     });
   }
 
+  private agregarPuntosVistaAlMapa() {
+    const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
+
+    this.puntosVista.forEach(punto => {
+      const marcador = new google.maps.Marker({
+        position: { lat: punto.lat, lng: punto.lng },
+        map: this.map,
+        icon: iconUrl,
+        title: punto.nombre || ''
+      });
+
+      if (punto.nombre) {
+        const infoWindow = new google.maps.InfoWindow({ content: punto.nombre });
+        marcador.addListener('click', () => infoWindow.open(this.map, marcador));
+      }
+    });
+  }
+
   inicializarMapa() {
     if (this.mapaInicializado || !this.mapaContainer) return;
 
@@ -73,19 +99,7 @@ export class MapaSelectorComponent implements AfterViewInit {
     const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
 
     if (this.puntosVista.length > 0) {
-      this.puntosVista.forEach(punto => {
-        const marcador = new google.maps.Marker({
-          position: { lat: punto.lat, lng: punto.lng },
-          map: this.map,
-          icon: iconUrl,
-          title: punto.nombre || ''
-        });
-
-        if (punto.nombre) {
-          const infoWindow = new google.maps.InfoWindow({ content: punto.nombre });
-          marcador.addListener('click', () => infoWindow.open(this.map, marcador));
-        }
-      });
+      this.agregarPuntosVistaAlMapa();
     } else {
       if (this.coordenadasIniciales) {
         this.marker = new google.maps.Marker({
