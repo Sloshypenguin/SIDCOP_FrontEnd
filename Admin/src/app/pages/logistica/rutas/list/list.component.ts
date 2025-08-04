@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BreadcrumbsComponent } from 'src/app/shared/breadcrumbs/breadcrumbs.component';
 import { ReactiveTableService } from 'src/app/shared/reactive-table.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
+import { getUserId } from 'src/app/core/utils/user-utils';
 import { TableModule } from 'src/app/pages/table/table.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { Traslado } from 'src/app/Modelos/logistica/TrasladoModel';
+import { Ruta } from 'src/app/Modelos/logistica/Rutas.Model';
 import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
-import { getUserId } from 'src/app/core/utils/user-utils';
+
+// Importar el servicio de exportación optimizado
 import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
 
 @Component({
@@ -28,42 +31,74 @@ import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export
     PaginationModule,
     CreateComponent,
     EditComponent,
-    DetailsComponent,
+    DetailsComponent
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  animations: [
+    trigger('fadeExpand', [
+      transition(':enter', [
+        style({
+          height: '0',
+          opacity: 0,
+          transform: 'scaleY(0.90)',
+          overflow: 'hidden'
+        }),
+        animate(
+          '300ms ease-out',
+          style({
+            height: '*',
+            opacity: 1,
+            transform: 'scaleY(1)',
+            overflow: 'hidden'
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate(
+          '300ms ease-in',
+          style({
+            height: '0',
+            opacity: 0,
+            transform: 'scaleY(0.95)'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class ListComponent implements OnInit {
-
-private readonly exportConfig = {
+   // ===== CONFIGURACIÓN FÁCIL DE EXPORTACIÓN =====
+  // 🔧 PERSONALIZA AQUÍ TU CONFIGURACIÓN DE EXPORTACIÓN 🔧
+  private readonly exportConfig = {
     // Configuración básica
-    title: 'Listado de Traslados',                    // Título del reporte
-    filename: 'Traslados',                           // Nombre base del archivo
+    title: 'Listado de Modelos',                    // Título del reporte
+    filename: 'Rutas',                           // Nombre base del archivo
     department: 'Logistica',                         // Departamento
-    additionalInfo: 'SIDCOP',         // Información adicional
+    additionalInfo: 'Sistema de Gestión',         // Información adicional
     
     // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
     columns: [
       { key: 'No', header: 'No.', width: 8, align: 'center' as const },
-      { key: 'Origen', header: 'Origen', width: 25, align: 'left' as const },
-      { key: 'Destino', header: 'Destino', width: 50, align: 'left' as const },
-      { key: 'Fecha', header: 'Fecha', width: 20, align: 'center' as const },
-      { key: 'Observaciones', header: 'Observaciones', width: 50, align: 'left' as const }
+      { key: 'Código', header: 'Código', width: 25, align: 'left' as const }, 
+      { key: 'Descripción', header: 'Descripción', width: 50, align: 'left' as const },
+      { key: 'Observaciones', header: 'Observaciones', width: 50, align: 'left' as const } 
     ] as ExportColumn[],
     
     // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
-    dataMapping: (traslados: Traslado, index: number) => ({
-      'No': traslados?.No || (index + 1),
-      'Origen': this.limpiarTexto(traslados?.origen),
-      'Destino': this.limpiarTexto(traslados?.destino),
-      'Fecha': this.limpiarTexto(traslados?.tras_Fecha),
-      'Observaciones': this.limpiarTexto(traslados?.tras_Observaciones),
+    dataMapping: (ruta: Ruta, index: number) => ({
+      'No': ruta?.secuencia || (index + 1),
+      'Código': this.limpiarTexto(ruta?.ruta_Codigo),
+      'Descripción': this.limpiarTexto(ruta?.ruta_Descripcion),
+      'Observaciones': this.limpiarTexto(ruta?.ruta_Observaciones)
       // Agregar más campos aquí según necesites:
       // 'Campo': this.limpiarTexto(modelo?.campo),
     })
   };
 
-
+  // Overlay de carga animado
+  mostrarOverlayCarga = false;
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
@@ -75,76 +110,21 @@ private readonly exportConfig = {
     return this.accionesDisponibles.some(a => a.trim().toLowerCase() === accion.trim().toLowerCase());
   }
 
-  // Estado de exportación
-  exportando = false;
-  tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
-
   ngOnInit(): void {
     /**
      * BreadCrumb
      */
     this.breadCrumbItems = [
-      { label: 'Logística' },
-      { label: 'Traslados', active: true }
+      { label: 'Logistica' },
+      { label: 'RUtas', active: true }
     ];
 
     // OBTENER ACCIONES DISPONIBLES DEL USUARIO
     this.cargarAccionesUsuario();
     console.log('Acciones disponibles:', this.accionesDisponibles);
   }
-  
-  // Métodos para los botones de acción principales (crear, editar, detalles)
-  crear(): void {
-    console.log('Toggleando formulario de creación...');
-    this.showCreateForm = !this.showCreateForm;
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
 
-  editar(traslado: Traslado): void {
-    console.log('Abriendo formulario de edición para:', traslado);
-    console.log('Datos específicos:', {
-      id: traslado.tras_Id,
-      origen: traslado.origen,
-      destino: traslado.destino,
-      fecha: traslado.tras_Fecha,
-      observaciones: traslado.tras_Observaciones,
-      completo: traslado
-    });
-    this.trasladoEditando = { ...traslado }; // Hacer copia profunda
-    this.showEditForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showDetailsForm = false; // Cerrar details si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-
-  detalles(traslado: Traslado): void {
-    console.log('Abriendo detalles para:', traslado);
-    console.log('ID del traslado seleccionado:', traslado.tras_Id);
-    
-    // Usar el ID para cargar datos actualizados desde el API
-    this.trasladoIdDetalle = traslado.tras_Id;
-    this.trasladoDetalle = null; // Limpiar datos previos
-    
-    this.showDetailsForm = true;
-    this.showCreateForm = false; // Cerrar create si está abierto
-    this.showEditForm = false; // Cerrar edit si está abierto
-    this.activeActionRow = null; // Cerrar menú de acciones
-  }
-  
-  constructor(public table: ReactiveTableService<Traslado>, 
-    private http: HttpClient, 
-    private router: Router, 
-    private route: ActivatedRoute,
-    private exportService: ExportService,
-    public floatingMenuService: FloatingMenuService
-  ) {
-    this.cargardatos();
-  }   
-
-
- // ===== MÉTODOS DE EXPORTACIÓN OPTIMIZADOS =====
+  // ===== MÉTODOS DE EXPORTACIÓN OPTIMIZADOS =====
 
   /**
    * Método unificado para todas las exportaciones
@@ -331,7 +311,50 @@ private readonly exportConfig = {
         break;
     }
   }
+  // ===== MÉTODOS EXISTENTES (SIN CAMBIOS) =====
 
+  // Métodos para los botones de acción principales (crear, editar, detalles)
+  crear(): void {
+    console.log('Toggleando formulario de creación...');
+    this.showCreateForm = !this.showCreateForm;
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  editar(rutas: Ruta): void {
+    console.log('Abriendo formulario de edición para:', rutas);
+    console.log('Datos específicos:', {
+      id: rutas.ruta_Id,
+      codigo: rutas.ruta_Codigo,
+      descripcion: rutas.ruta_Descripcion,
+      completo: rutas
+    });
+    this.rutaEditando = { ...rutas }; // Hacer copia profunda
+    this.showEditForm = true;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showDetailsForm = false; // Cerrar details si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+
+  detalles(rutas: Ruta): void {
+    console.log('Abriendo detalles para:', rutas);
+    this.rutaDetalle = { ...rutas }; // Hacer copia profunda
+    this.showDetailsForm = true;
+    this.showCreateForm = false; // Cerrar create si está abierto
+    this.showEditForm = false; // Cerrar edit si está abierto
+    this.activeActionRow = null; // Cerrar menú de acciones
+  }
+   constructor(public table: ReactiveTableService<Ruta>, 
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public floatingMenuService: FloatingMenuService,
+    private exportService: ExportService
+  )
+    {
+    this.cargardatos(true);
+  }   
 
   activeActionRow: number | null = null;
   showEdit = true;
@@ -340,12 +363,8 @@ private readonly exportConfig = {
   showCreateForm = false; // Control del collapse
   showEditForm = false; // Control del collapse de edición
   showDetailsForm = false; // Control del collapse de detalles
-  trasladoEditando: Traslado | null = null;
-  trasladoDetalle: Traslado | null = null;
-  trasladoIdDetalle: number | null = null; // Nuevo: para pasar ID al componente de detalles
-  
-  // Propiedades para overlay de carga
-  mostrarOverlayCarga = false;
+  rutaEditando: Ruta | null = null;
+  rutaDetalle: Ruta | null = null;
   
   // Propiedades para alertas
   mostrarAlertaExito = false;
@@ -357,155 +376,125 @@ private readonly exportConfig = {
   
   // Propiedades para confirmación de eliminación
   mostrarConfirmacionEliminar = false;
-  trasladoAEliminar: Traslado | null = null;
+  rutasAEliminar: Ruta | null = null;
+
+  // Estado de exportación
+  exportando = false;
+  tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
 
   cerrarFormulario(): void {
     this.showCreateForm = false;
   }
 
   cerrarFormularioEdicion(): void {
+    this.mostrarOverlayCarga = false;
     this.showEditForm = false;
-    this.trasladoEditando = null;
+    this.rutaEditando = null;
   }
 
   cerrarFormularioDetalles(): void {
     this.showDetailsForm = false;
-    this.trasladoDetalle = null;
-    this.trasladoIdDetalle = null; // Limpiar también el ID
+    this.rutaDetalle = null;
   }
 
-  guardarTraslado(traslado: Traslado): void {
-    this.mostrarOverlayCarga = true;
-    setTimeout(() => {
-      console.log('Traslado guardado exitosamente desde create component:', traslado);
-      this.cargardatos();
-      this.showCreateForm = false;
-      this.mensajeExito = `Traslado guardado exitosamente`;
-      this.mostrarAlertaExito = true;
-      setTimeout(() => {
-        this.mostrarAlertaExito = false;
-        this.mensajeExito = '';
-      }, 3000);
-    }, 1000);
+  guardarRuta(rutas: Ruta): void {
+    console.log('Ruta guardada exitosamente desde create component:', rutas);
+    // Recargar los datos de la tabla sin overlay
+    this.cargardatos(false);
+    this.cerrarFormulario();
   }
 
-  actualizarTraslado(traslado: Traslado): void {
-    this.mostrarOverlayCarga = true;
-    setTimeout(() => {
-      console.log('Traslado actualizado exitosamente desde edit component:', traslado);
-      this.cargardatos();
-      this.showEditForm = false;
-      this.mensajeExito = `Traslado actualizado exitosamente`;
-      this.mostrarAlertaExito = true;
-      setTimeout(() => {
-        this.mostrarAlertaExito = false;
-        this.mensajeExito = '';
-      }, 3000);
-    }, 1000);
+  actualizarRuta(rutas: Ruta): void {
+    console.log('Ruta actualizada exitosamente desde edit component:', rutas); 
+    // Recargar los datos de la tabla sin overlay
+    this.cargardatos(false);
+    this.cerrarFormularioEdicion();
   }
 
-  confirmarEliminar(traslado: Traslado): void {
-    console.log('Solicitando confirmación para eliminar:', traslado);
-    this.trasladoAEliminar = traslado;
+  confirmarEliminar(rutas: Ruta): void {
+    console.log('Solicitando confirmación para eliminar:', rutas);
+    this.rutasAEliminar = rutas;
     this.mostrarConfirmacionEliminar = true;
-    this.activeActionRow = null; // Cerrar menú de acciones
   }
 
   cancelarEliminar(): void {
     this.mostrarConfirmacionEliminar = false;
-    this.trasladoAEliminar = null;
+    this.rutasAEliminar = null;
   }
 
   eliminar(): void {
-    if (!this.trasladoAEliminar) return;
+    if (!this.rutasAEliminar) return;
     
-    // Prevenir múltiples clicks - deshabilitar el botón
-    if (this.mostrarOverlayCarga) return;
+    console.log('Eliminando estado civil:', this.rutasAEliminar);
     
-    console.log('Eliminando traslado:', this.trasladoAEliminar);
-    this.mostrarOverlayCarga = true;
-    
-    // Cerrar el modal inmediatamente para evitar doble click
-    const trasladoTemp = { ...this.trasladoAEliminar };
-    this.mostrarConfirmacionEliminar = false;
-    
-    this.http.post(`${environment.apiBaseUrl}/Traslado/Eliminar/${trasladoTemp.tras_Id}`, {}, {
+    this.http.put(`${environment.apiBaseUrl}/Rutas/Eliminar/${this.rutasAEliminar.ruta_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
       }
     }).subscribe({
       next: (response: any) => {
-        setTimeout(() => {
-          this.mostrarOverlayCarga = false;
-          console.log('Respuesta del servidor:', response);
-          
-          // Limpiar variables
-          this.trasladoAEliminar = null;
-          
-          // Verificar el código de estado en la respuesta
-          if (response.success && response.data) {
-            if (response.data.code_Status === 1) {
-              // Éxito: eliminado correctamente
-              console.log('Traslado eliminado exitosamente');
-              this.mensajeExito = `Traslado del "${trasladoTemp.origen}" al "${trasladoTemp.destino}" eliminado exitosamente`;
-              this.mostrarAlertaExito = true;
-              
-              // Ocultar la alerta después de 3 segundos
-              setTimeout(() => {
-                this.mostrarAlertaExito = false;
-                this.mensajeExito = '';
-              }, 3000);
-              
-              this.cargardatos();
-            } else if (response.data.code_Status === -1) {
-              //result: está siendo utilizado
-              console.log('El traslado está siendo utilizado');
-              this.mostrarAlertaError = true;
-              this.mensajeError = response.data.message_Status || 'No se puede eliminar: el traslado está siendo utilizado.';
-              
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-            } else if (response.data.code_Status === 0) {
-              // Error general
-              console.log('Error general al eliminar');
-              this.mostrarAlertaError = true;
-              this.mensajeError = response.data.message_Status || 'Error al eliminar el traslado.';
-              
-              setTimeout(() => {
-                this.mostrarAlertaError = false;
-                this.mensajeError = '';
-              }, 5000);
-            }
-          } else {
-            // Respuesta inesperada
-            console.log('Respuesta inesperada del servidor');
+        console.log('Respuesta del servidor:', response);
+        
+        // Verificar el código de estado en la respuesta
+        if (response.success && response.data) {
+          if (response.data.code_Status === 1) {
+            // Éxito: eliminado correctamente
+            console.log('Estado civil eliminado exitosamente');
+            this.mensajeExito = `Estado civil "${this.rutasAEliminar!.ruta_Descripcion}" eliminado exitosamente`;
+            this.mostrarAlertaExito = true;
+            
+            // Ocultar la alerta después de 3 segundos
+            setTimeout(() => {
+              this.mostrarAlertaExito = false;
+              this.mensajeExito = '';
+            }, 3000);
+            
+
+            this.cargardatos(false);
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === -1) {
+            //result: está siendo utilizado
+            console.log('Ruta está siendo utilizado');
             this.mostrarAlertaError = true;
-            this.mensajeError = response.message || 'Error inesperado al eliminar el traslado.';
+            this.mensajeError = response.data.message_Status || 'No se puede eliminar: la ruta está siendo utilizado.';
             
             setTimeout(() => {
               this.mostrarAlertaError = false;
               this.mensajeError = '';
             }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
+          } else if (response.data.code_Status === 0) {
+            // Error general
+            console.log('Error general al eliminar');
+            this.mostrarAlertaError = true;
+            this.mensajeError = response.data.message_Status || 'Error al eliminar la ruta.';
+            
+            setTimeout(() => {
+              this.mostrarAlertaError = false;
+              this.mensajeError = '';
+            }, 5000);
+            
+            // Cerrar el modal de confirmación
+            this.cancelarEliminar();
           }
-        }, 1000);
-      },
-      error: (error) => {
-        setTimeout(() => {
-          this.mostrarOverlayCarga = false;
-          this.trasladoAEliminar = null;
-          console.error('Error en la petición:', error);
+        } else {
+          // Respuesta inesperada
+          console.log('Respuesta inesperada del servidor');
           this.mostrarAlertaError = true;
-          this.mensajeError = 'Error de conexión al eliminar el traslado.';
+          this.mensajeError = response.message || 'Error inesperado al eliminar la ruta.';
           
           setTimeout(() => {
             this.mostrarAlertaError = false;
             this.mensajeError = '';
           }, 5000);
-        }, 1000);
-      }
+          
+          // Cerrar el modal de confirmación
+          this.cancelarEliminar();
+        }
+      },
     });
   }
 
@@ -527,14 +516,14 @@ private readonly exportConfig = {
     if (permisosRaw) {
       try {
         const permisos = JSON.parse(permisosRaw);
-        // BUSCAMOS EL MÓDULO DE TRASLADOS
+        // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES
         let modulo = null;
         if (Array.isArray(permisos)) {
-          // BUSCAMOS EL MÓDULO DE TRASLADOS POR ID (cambiar ID según corresponda)
-          modulo = permisos.find((m: any) => m.Pant_Id === 15); // Ajustar ID según el módulo de traslados
+          // BUSCAMOS EL MÓDULO DE ESTADOS CIVILES POR ID
+          modulo = permisos.find((m: any) => m.Pant_Id === 14);
         } else if (typeof permisos === 'object' && permisos !== null) {
           // ESTO ES PARA CUANDO LOS PERMISOS ESTÁN EN UN OBJETO CON CLAVES
-          modulo = permisos['Traslados'] || permisos['traslados'] || null;
+          modulo = permisos['Rutas'] || permisos['Rutas'] || null;
         }
         if (modulo && modulo.Acciones && Array.isArray(modulo.Acciones)) {
           // AQUI SACAMOS SOLO EL NOMBRE DE LA ACCIÓN
@@ -550,39 +539,23 @@ private readonly exportConfig = {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  // Declaramos un estado en el cargarDatos, esto para hacer el overlay
-  // segun dicha funcion de recargar, ya que si vienes de hacer una accion
-  // es innecesario mostrar el overlay de carga
-private cargardatos(): void {
-  this.mostrarOverlayCarga = true;
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
 
-  this.http.get<Traslado[]>(`${environment.apiBaseUrl}/Traslado/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
-  }).subscribe({
-    next: data => {
+    this.http.get<Ruta[]>(`${environment.apiBaseUrl}/Rutas/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
+    }).subscribe(data => {
       const tienePermisoListar = this.accionPermitida('listar');
       const userId = getUserId();
 
       const datosFiltrados = tienePermisoListar
         ? data
-        : data.filter(t => t.usua_Creacion?.toString() === userId.toString());
-
-      // Asignar numeración de filas
-      datosFiltrados.forEach((traslado, index) => {
-        traslado.No = index + 1;
-      });
+        : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
       setTimeout(() => {
-        this.mostrarOverlayCarga = false;
-        console.log('Datos recargados:', datosFiltrados);
         this.table.setData(datosFiltrados);
+        this.mostrarOverlayCarga = false;
       }, 500);
-    },
-    error: error => {
-      console.error('Error al cargar traslados:', error);
-      this.mostrarOverlayCarga = false;
-      this.table.setData([]);
-    }
-  });
-}
+    });
+  }
 }
