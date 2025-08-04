@@ -45,7 +45,8 @@ export class EditComponent implements OnChanges {
     sucu_DireccionExacta: '',
     sucu_Telefono1: '',
     sucu_Telefono2: '',
-    sucu_Correo: '',
+    sucu_codigo: '',
+    sucu_correo: '',
     usua_Creacion: 0,
     sucu_FechaCreacion: new Date(),
     sucu_Estado: true
@@ -164,8 +165,10 @@ export class EditComponent implements OnChanges {
       this.sucursal.sucu_Descripcion.trim() &&
       this.sucursal.colo_Id &&
       this.sucursal.sucu_DireccionExacta.trim() &&
+      this.sucursal.sucu_codigo &&
+      this.sucursal.sucu_codigo.trim() &&
       this.sucursal.sucu_Telefono1.trim() &&
-      this.sucursal.sucu_Correo.trim()
+      this.sucursal.sucu_correo.trim()
     ) {
       const hayCambios =
         this.sucursal.sucu_Descripcion.trim() !== this.sucursalData?.sucu_Descripcion?.trim() ||
@@ -173,7 +176,7 @@ export class EditComponent implements OnChanges {
         this.sucursal.sucu_DireccionExacta.trim() !== this.sucursalData?.sucu_DireccionExacta?.trim() ||
         this.sucursal.sucu_Telefono1.trim() !== this.sucursalData?.sucu_Telefono1?.trim() ||
         this.sucursal.sucu_Telefono2?.trim() !== this.sucursalData?.sucu_Telefono2?.trim() ||
-        this.sucursal.sucu_Correo.trim() !== this.sucursalData?.sucu_Correo?.trim();
+        this.sucursal.sucu_correo.trim() !== this.sucursalData?.sucu_correo?.trim();
 
       if (hayCambios) {
         this.mostrarConfirmacionEditar = true;

@@ -60,7 +60,8 @@ colonias: Colonias[] = [];
     sucu_DireccionExacta: '',
     sucu_Telefono1: '',
     sucu_Telefono2: '',
-    sucu_Correo: '',
+    sucu_correo: '',
+    sucu_codigo: '',
     usua_Creacion: getUserId(),
     sucu_FechaCreacion: new Date(),
     sucu_Estado: true
@@ -140,7 +141,8 @@ colonias: Colonias[] = [];
         sucu_DireccionExacta: '',
         sucu_Telefono1: '',
         sucu_Telefono2: '',
-        sucu_Correo: '',
+        sucu_codigo: '',
+        sucu_correo: '',
         usua_Creacion: getUserId(),
         sucu_FechaCreacion: new Date(),
         sucu_Estado: true
@@ -169,8 +171,10 @@ colonias: Colonias[] = [];
       this.sucursal.sucu_Descripcion.trim() &&
       this.sucursal.colo_Id &&
       this.sucursal.sucu_DireccionExacta.trim() &&
+      this.sucursal.sucu_codigo &&
+      this.sucursal.sucu_codigo.trim() &&
       this.sucursal.sucu_Telefono1.trim() &&
-      this.sucursal.sucu_Correo.trim()
+      this.sucursal.sucu_correo.trim()
     ) {
       this.mostrarAlertaWarning = false;
       this.mostrarAlertaError = false;
