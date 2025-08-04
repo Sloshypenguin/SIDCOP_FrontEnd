@@ -22,14 +22,20 @@
         "COLONIAS": "Colonias",    
         "MODELOS": "Modelos",
         "CANALES": "Canales",
-        "CARGOS": "Cargos"
+        "CARGOS": "Cargos",
+         "CLIENTES": "Clientes",
+        "PROVEEDORES": "Proveedores",
+         "EMPLEADOS": "Empleados"
       }
     },
     "INVENTARIO": {
       "TEXT": "Inventario",
       "LIST": {
         "CATEGORIAS": "Categorias",
-        "SUBCATEGORIAS": "Subcategorias"
+        "SUBCATEGORIAS": "Subcategorias",
+        "PRODUCTOS": "Productos",
+        "DESCUENTOS": "Descuentos",
+        "PROMOCIONES": "Promociones"
       }
     },
       "VENTAS": {
@@ -50,7 +56,8 @@
       "TEXT": "Logistica",
       "LIST": {
         "BODEGAS": "Bodegas",
-        "TRASLADOS": "Traslados"
+        "TRASLADOS": "Traslados",
+        "RUTAS": "Rutas"
       }
     },
     "REPORTES": {
