@@ -11,6 +11,8 @@ export class Traslado {
   usua_Modificacion?: number;
   tras_FechaModificacion?: Date;
   tras_Estado: boolean = true;
+  usuaCreacion: string = ''; // Nombre del usuario que creó el traslado
+  usuaModificacion?: string; // Nombre del usuario que modificó el traslado
 
   // Campo para numeración de filas en la tabla
   No?: number;
