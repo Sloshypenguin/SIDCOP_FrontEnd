@@ -22,7 +22,8 @@ export class IndexComponent implements OnInit {
   appVersion: string = '';
   isProd: boolean = false;
   entorno: string = '';
-
+  currentUser: any = null;
+  esAdmin: string = '';
   constructor() { }
 
   ngOnInit(): void {
@@ -31,6 +32,23 @@ export class IndexComponent implements OnInit {
 
   cargarDatosSesion(): void {
     // Obtener datos del usuario usando las funciones de utilidad
+      const currentUserStr = localStorage.getItem('currentUser');
+
+
+       if (currentUserStr) {
+      try {
+        this.currentUser = JSON.parse(currentUserStr);
+
+      } catch (e) {
+        this.currentUser = null;
+      }
+    }
+
+
+    if (this.currentUser.usua_EsAdmin){
+      this.esAdmin = 'ejaksdhaskjfhk';
+    }
+
     const userId = getUserId();
     this.usuarioId = userId > 0 ? userId : 'No disponible';
     this.nombreUsuario = getUserName() || 'No disponible';

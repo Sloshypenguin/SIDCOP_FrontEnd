@@ -99,7 +99,7 @@ export class ListComponent implements OnInit {
   // Control de permisos y usuario
   accionesDisponibles: string[] = [];
   currentUser: any = null;
-  EsAdmin : string = ''
+  EsAdmin : boolean = false;
   
   // Control de menú de acciones
   activeActionRow: number | null = null;
@@ -134,8 +134,7 @@ export class ListComponent implements OnInit {
     public floatingMenuService: FloatingMenuService,
     private exportService: ExportService
   ) {
-    // Carga inicial de datos
-    this.cargardatos(true);
+    // No cargar datos aquí, se hará después de cargar los datos de sesión
   }
 
   ngOnInit(): void {
@@ -146,8 +145,13 @@ export class ListComponent implements OnInit {
     ];
     
     // Inicializar datos del usuario y permisos
-    this.cargarAccionesUsuario();
     this.cargarDatosSesion();
+    this.cargarAccionesUsuario();
+    
+    // Cargar datos después de tener la información de sesión
+    setTimeout(() => {
+      this.cargardatos(true);
+    }, 0);
   }
 
   // =========================================
@@ -162,9 +166,18 @@ export class ListComponent implements OnInit {
     if (currentUserStr) {
       try {
         this.currentUser = JSON.parse(currentUserStr);
+        // Corregido: usar usua_EsAdmin en lugar de esAdmin
+        this.EsAdmin = this.currentUser.usua_EsAdmin || false; 
+        console.log('Usuario cargado:', {
+          id: this.currentUser.usua_Id,
+          nombre: this.currentUser.usua_Usuario,
+          sucursal: this.currentUser.sucu_Id,
+          esAdmin: this.EsAdmin
+        });
       } catch (e) {
         console.error('Error al parsear datos del usuario:', e);
         this.currentUser = null;
+        this.EsAdmin = false;
       }
     }
   }
@@ -505,16 +518,25 @@ export class ListComponent implements OnInit {
   private cargardatos(state: boolean): void {
     this.mostrarOverlayCarga = state;
 
-    // **ENDPOINT CORREGIDO** - Usar los datos del usuario actual
-    const sucuId = this.currentUser?.sucu_Id || 1; // ID de sucursal del usuario
-    const esAdmin = this.currentUser?.esAdmin || false; // Si es administrador
-    
+    // Verificar que tenemos datos de usuario cargados
+    if (!this.currentUser) {
+      console.error('Error: No hay datos de usuario disponibles');
+      this.mostrarMensaje('error', 'Error al cargar datos de usuario');
+      this.mostrarOverlayCarga = false;
+      return;
+    }
+
+    // Usar los datos del usuario actual
+    const sucuId = this.currentUser.sucu_Id || 0; // ID de sucursal del usuario
+    const esAdmin = this.currentUser.usua_EsAdmin || false; // Si es administrador
+    console.log(`Cargando datos para Sucursal ID: ${sucuId}, Es Admin: ${esAdmin}`);
+
     this.http.get<Recargas[]>(`${environment.apiBaseUrl}/Recargas/ListarsPorSucursal/${sucuId}/${esAdmin}`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       
       next: (data) => {
-        console.log ("date" + sucuId + esAdmin + data)
+        console.log("date" + sucuId + esAdmin + data);
         // Filtrar datos según permisos del usuario
         const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();
@@ -547,6 +569,7 @@ export class ListComponent implements OnInit {
       }
     });
   }
+  
 
   // =========================================
   // MÉTODOS UTILITARIOS
