@@ -79,9 +79,23 @@ export class EditComponent implements OnChanges {
       this.clienteOriginal = { ...changes['clienteData'].currentValue };
       this.idDelCliente = this.cliente.clie_Id;
 
+
+      // *** CONVIERTE LA FECHA SI VIENE COMO STRING ***
+      if (this.cliente.clie_FechaNacimiento) {
+        this.cliente.clie_FechaNacimiento = new Date(this.cliente.clie_FechaNacimiento);
+      } else {
+        this.cliente.clie_FechaNacimiento = null;
+      }
+
       this.cargarDireccionesExistentes();
       this.cargarAvalesExistentes();
     }
+  }
+
+  esCorreoValido(correo: string): boolean {
+    if (!correo) return true;
+    // Solo acepta lo que está dentro del parentesis
+    return /^[\w\.-]+@(gmail|hotmail|outlook)\.com$/.test(correo.trim());
   }
 
   //Declarado para validar la direccion
@@ -104,6 +118,11 @@ export class EditComponent implements OnChanges {
       });
     }
   }
+
+  actualizarFechaNacimiento(event: any) {
+  const valor = event.target.value;
+  this.cliente.clie_FechaNacimiento = valor ? new Date(valor) : null;
+}
 
   tabDeArriba(no: number) {
     if (no === this.activeTab) return;
