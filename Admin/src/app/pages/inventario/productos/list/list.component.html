@@ -160,15 +160,12 @@
                 </div>
             </div>
             <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
-              <pagination 
+                <pagination 
                 [(ngModel)]="currentPage" 
                 [totalItems]="productosFiltrados.length" 
                 [itemsPerPage]="itemsPerPage"
-                [maxSize]="5"
-                [rotate]="false"
-                [boundaryLinks]="true"
                 (pageChanged)="pageChanged($event)">
-              </pagination>
+                </pagination>
             </div>
         </div>
     </div>
