@@ -17,6 +17,16 @@
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
   </div>
+
+  <!-- Contenedor del mapa -->
+  <div class="col-6 mapa-derecha card-mapa-card-custom">
+    <div class="card h-100 rounded-4"> 
+      <div class="card-body h-100 p-0">
+        <app-mapa-selector [puntosVista]="puntosVista" [mostrar]="true" [mostrarPuntos]="true"></app-mapa-selector>
+      </div>
+    </div> 
+  </div>
+
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && rutaDetalle" class="details-content">
     <div class="col-md-12">
