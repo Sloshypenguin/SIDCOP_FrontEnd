@@ -22,7 +22,7 @@ import {
   animate
 } from '@angular/animations';
 import { set } from 'lodash';
-import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
+import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/exportHori.service';
 
 @Component({
   selector: 'app-list',
@@ -81,7 +81,6 @@ export class ListComponent implements OnInit {
         title: 'Listado de Vendedores',                    // Título del reporte
         filename: 'Vendedores',                           // Nombre base del archivo
         department: 'Ventas',                         // Departamento
-        additionalInfo: 'SIDCOP',         // Información adicional
         
         // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
         columns: [
@@ -193,8 +192,7 @@ export class ListComponent implements OnInit {
         data: this.obtenerDatosExport(),
         columns: this.exportConfig.columns,
         metadata: {
-          department: this.exportConfig.department,
-          additionalInfo: this.exportConfig.additionalInfo
+          department: this.exportConfig.department
         }
       };
     }
