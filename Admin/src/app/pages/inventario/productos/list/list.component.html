@@ -75,7 +75,7 @@
     </div>
     <div *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
         <div class="row row-cols-xxl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 mx-2 mb-4">
-            <ng-container *ngFor="let data of productosFiltrados; trackBy: trackByProductoId">
+            <ng-container *ngFor="let data of productos; trackBy: trackByProductoId">
                 <div class="col">
                     <div class="card card-empleado position-relative">
                         <div class="card-body cb1 p-2 position-relative">
@@ -160,11 +160,15 @@
                 </div>
             </div>
             <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
-                <pagination 
-                    [totalItems]="productoGrid?.length" 
-                    [itemsPerPage]="itemsPerPage" 
-                    (pageChanged)="pageChanged($event)">
-                </pagination>
+              <pagination 
+                [(ngModel)]="currentPage" 
+                [totalItems]="productosFiltrados.length" 
+                [itemsPerPage]="itemsPerPage"
+                [maxSize]="5"
+                [rotate]="false"
+                [boundaryLinks]="true"
+                (pageChanged)="pageChanged($event)">
+              </pagination>
             </div>
         </div>
     </div>

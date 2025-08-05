@@ -564,10 +564,13 @@ export class ListComponent implements OnInit {
 
   filtradorProductos(): void {
     const termino = this.busqueda.trim().toLowerCase();
+    
     if (!termino) {
-      this.productosFiltrados = this.productos;
+      // Si no hay término de búsqueda, mostrar todos los productos
+      this.productosFiltrados = [...this.productoGrid];
     } else {
-      this.productosFiltrados = this.productos.filter((producto: any) =>
+      // Filtrar productos según el término de búsqueda
+      this.productosFiltrados = this.productoGrid.filter((producto: any) =>
         (producto.prod_DescripcionCorta || '').toLowerCase().includes(termino) ||
         (producto.prod_CodigoBarra || '').toLowerCase().includes(termino) ||
         (producto.prod_Descripcion || '').toLowerCase().includes(termino) ||
@@ -578,6 +581,19 @@ export class ListComponent implements OnInit {
         (producto.prod_PrecioUnitario || '').toString().toLowerCase().includes(termino)
       );
     }
+    
+    // Resetear la página actual a 1 cuando se filtra
+    this.currentPage = 1;
+    
+    // Actualizar los productos visibles basados en la paginación
+    this.actualizarProductosVisibles();
+  }
+
+  // Método auxiliar para actualizar los productos visibles
+  private actualizarProductosVisibles(): void {
+    const startItem = (this.currentPage - 1) * this.itemsPerPage;
+    const endItem = this.currentPage * this.itemsPerPage;
+    this.productos = this.productosFiltrados.slice(startItem, endItem);
   }
 
   private cargardatos(state: boolean): void {
@@ -588,16 +604,25 @@ export class ListComponent implements OnInit {
       
       setTimeout(() => {
         this.mostrarOverlayCarga = false;
-         const tienePermisoListar = this.accionPermitida('listar');
+        const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();
 
         const datosFiltrados = tienePermisoListar
           ? data
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
+        
         this.productoGrid = datosFiltrados || [];
-        this.productos = this.productoGrid.slice(0, 8);
-        this.filtradorProductos();
-      },500);
+        
+        // Resetear filtros y paginación al cargar nuevos datos
+        this.busqueda = '';
+        this.currentPage = 1;
+        this.itemsPerPage = 8; // Asegurar que siempre sean 8 items por página
+        this.productosFiltrados = [...this.productoGrid];
+        
+        // IMPORTANTE: NO llamar a filtradorProductos() aquí
+        this.actualizarProductosVisibles();
+        
+      }, 500);
     });
   }
 
@@ -605,21 +630,18 @@ export class ListComponent implements OnInit {
   itemsPerPage: number = 8;
 
   get startIndex(): number {
-    return this.productoGrid?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
+    return this.productosFiltrados?.length ? ((this.currentPage - 1) * this.itemsPerPage) + 1 : 0;
   }
 
   get endIndex(): number {
-    if (!this.productoGrid?.length) return 0;
+    if (!this.productosFiltrados?.length) return 0;
     const end = this.currentPage * this.itemsPerPage;
-    return end > this.productoGrid.length ? this.productoGrid.length : end;
+    return end > this.productosFiltrados.length ? this.productosFiltrados.length : end;
   }
 
   pageChanged(event: any): void {
     this.currentPage = event.page;
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    const endItem = event.page * event.itemsPerPage;
-    this.productos = this.productoGrid.slice(startItem, endItem);
-    this.filtradorProductos();
+    this.actualizarProductosVisibles();
   }
 
   trackByProductoId(index: number, item: any): any {
