@@ -234,14 +234,14 @@ export const MENU: MenuItem[] = [
         parentId: 4,
         icon: 'ri-truck-line',
       },
-      // {
-      //   id: 29,
-      //   label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
-      //   link: '/logistica/recargas',
-      //   parentId: 4,
-      //   icon: 'ri-truck-line',
-      // },
-      // Puedes añadir más subitems aquí según sea necesario
+       {
+         id: 29,
+         label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
+         link: '/logistica/recargas',
+         parentId: 4,
+         icon: 'ri-truck-line',
+       },
+    //   Puedes añadir más subitems aquí según sea necesario
     ],
   },
   {
