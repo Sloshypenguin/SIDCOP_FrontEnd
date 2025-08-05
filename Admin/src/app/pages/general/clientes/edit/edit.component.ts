@@ -120,9 +120,14 @@ export class EditComponent implements OnChanges {
   }
 
   actualizarFechaNacimiento(event: any) {
-  const valor = event.target.value;
-  this.cliente.clie_FechaNacimiento = valor ? new Date(valor) : null;
-}
+    const valor = event.target.value;
+    this.cliente.clie_FechaNacimiento = valor ? new Date(valor) : null;
+  }
+
+  // actualizarFechaNacimientoAval(event: any) {
+  //   const valorAval = event.target.value;
+  //   this.nuevoAval.aval_FechaNacimiento = valorAval ? new Date(valorAval) : null;
+  // }
 
   tabDeArriba(no: number) {
     if (no === this.activeTab) return;
