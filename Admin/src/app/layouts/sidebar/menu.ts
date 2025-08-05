@@ -226,18 +226,17 @@ export const MENU: MenuItem[] = [
         parentId: 4,
         icon: 'ri-truck-line',
       },
-
-      {
-        id: 31,
-        label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
-        link: '/logistica/traslados',
-        parentId: 4,
-        icon: 'ri-truck-line',
-      },
       {
         id: 30,
         label: 'MENUITEMS.LOGISTICA.LIST.RUTAS',
         link: '/logistica/rutas',
+        parentId: 4,
+        icon: 'ri-truck-line',
+      },
+      {
+        id: 31,
+        label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
+        link: '/logistica/traslados',
         parentId: 4,
         icon: 'ri-truck-line',
       },
