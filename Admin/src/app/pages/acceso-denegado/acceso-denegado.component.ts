@@ -7,32 +7,30 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="container">
-      <div class="row justify-content-center align-items-center" style="height: 80vh;">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-body text-center">
-              <div class="mb-4">
-                <i class="bx bx-block text-danger" style="font-size: 5rem;"></i>
-              </div>
-              <h3 class="card-title">Acceso Denegado</h3>
-              <p class="card-text">
-                No tienes permiso para acceder a esta página. Si crees que esto es un error, 
-                contacta al administrador del sistema.
-              </p>
-              <div class="mt-4">
-                <button class="btn btn-primary me-2" (click)="volver()">
-                  <i class="bx bx-arrow-back me-1"></i> Volver
-                </button>
-                <button class="btn btn-secondary" (click)="irAlInicio()">
-                  <i class="bx bx-home me-1"></i> Ir al Inicio
-                </button>
+    <section class="auth-page-wrapper py-2 position-relative d-flex align-items-center justify-content-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-6">
+            <div class="card mb-0 border-0 shadow-none mb-0">
+              <div class="card-body p-3 text-center">
+                <div class="error-img text-center px-3 mb-3">
+                  <img src="assets/images/auth/noaccess.png" class="img-fluid" alt="Acceso Denegado" />
+                </div>
+                <h2 class="text-danger mb-3">Acceso Denegado</h2>
+                <h4 class="fs-xl mb-3">No tiene permisos para acceder a esta página</h4>
+                <p class="text-muted mb-4">Verifique sus credenciales o contacte al administrador del sistema para solicitar acceso.</p>
+                <div class="mt-4">
+                  <a routerLink="/" class="btn btn-primary">
+                    <span class="btn-text">Volver al inicio</span>
+                    <span class="btn-icon"><i class="ri-home-line"></i></span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   `
 })
 export class AccesoDenegadoComponent implements OnInit {
