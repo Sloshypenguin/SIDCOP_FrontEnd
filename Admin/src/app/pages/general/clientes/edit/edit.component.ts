@@ -98,6 +98,11 @@ export class EditComponent implements OnChanges {
     return /^[\w\.-]+@(gmail|hotmail|outlook)\.com$/.test(correo.trim());
   }
 
+  actualizarFechaNacimiento(event: any) {
+    const valor = event.target.value;
+    this.cliente.clie_FechaNacimiento = valor ? new Date(valor) : null;
+  }
+
   //Declarado para validar la direccion
   validarDireccion: boolean = false;
   //Validacion para que no se desplace con el tab de arriba
@@ -118,16 +123,6 @@ export class EditComponent implements OnChanges {
       });
     }
   }
-
-  actualizarFechaNacimiento(event: any) {
-    const valor = event.target.value;
-    this.cliente.clie_FechaNacimiento = valor ? new Date(valor) : null;
-  }
-
-  // actualizarFechaNacimientoAval(event: any) {
-  //   const valorAval = event.target.value;
-  //   this.nuevoAval.aval_FechaNacimiento = valorAval ? new Date(valorAval) : null;
-  // }
 
   tabDeArriba(no: number) {
     if (no === this.activeTab) return;
@@ -500,7 +495,14 @@ export class EditComponent implements OnChanges {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe({
       next: (data) => {
-        this.avales = data.filter(a => a.clie_Id === this.idDelCliente);
+        this.avales = data
+          .filter(a => a.clie_Id === this.idDelCliente)
+          .map(a => ({
+            ...a,
+            aval_FechaNacimiento: a.aval_FechaNacimiento
+              ? this.formatearFechaInput(a.aval_FechaNacimiento)
+              : null
+          }));
         this.avalesOriginales = [...this.avales];
 
         if (this.avales.length === 0) {
@@ -511,6 +513,13 @@ export class EditComponent implements OnChanges {
         console.error('Error cargando avales:', error);
       }
     });
+  }
+  
+  formatearFechaInput(fecha: string | Date): string {
+    const d = new Date(fecha);
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    return `${d.getFullYear()}-${month}-${day}`;
   }
 
   cliente: Cliente = {
