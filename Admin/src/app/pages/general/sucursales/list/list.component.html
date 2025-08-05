@@ -111,15 +111,15 @@
                       </span>
                     </span>
                   </th>
-                  <th class="gridjs-th" (click)="table.sortBy('sucu_codigo')" style="cursor:pointer;">
+                  <th class="gridjs-th" (click)="table.sortBy('sucu_Codigo')" style="cursor:pointer;">
                     <span class="table-header-flex">
                       Código
                       <span style="display: flex; flex-direction: column;">
                         <i class="ri-arrow-up-s-line icon-sort"
-                          [ngStyle]="sortField === 'sucu_codigo' && sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                          [ngStyle]="sortField === 'sucu_Codigo' && sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                         </i>
                         <i class="ri-arrow-down-s-line icon-sort"
-                          [ngStyle]="sortField === 'sucu_codigo' && sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                          [ngStyle]="sortField === 'sucu_Codigo' && sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
                         </i>
                       </span>
                     </span>
@@ -137,7 +137,7 @@
                       </span>
                     </span>
                   </th>
-                  <th class="gridjs-th" (click)="table.sortBy('sucu_correo')" style="cursor:pointer;">
+                  <th class="gridjs-th" (click)="table.sortBy('sucu_Correo')" style="cursor:pointer;">
                     <span class="table-header-flex">
                       Correo
                       <span style="display: flex; flex-direction: column;">
@@ -168,9 +168,9 @@
                   <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                   <td>{{data.sucu_Descripcion}}</td>
                   <td>{{data.sucu_DireccionExacta}}</td>
-                  <td>{{data.sucu_codigo}}</td>
+                  <td>{{data.sucu_Codigo}}</td>
                   <td>{{data.sucu_Telefono1}}</td>
-                  <td>{{data.sucu_correo}}</td>
+                  <td>{{data.sucu_Correo}}</td>
                 </tr>
               </tbody>
             </table>

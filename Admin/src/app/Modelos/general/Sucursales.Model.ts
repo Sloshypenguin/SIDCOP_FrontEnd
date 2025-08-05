@@ -5,8 +5,8 @@ export class Sucursales {
   sucu_DireccionExacta: string = '';
   sucu_Telefono1: string = '';
   sucu_Telefono2: string = '';
-  sucu_codigo: string = '';
-  sucu_correo: string = '';
+  sucu_Codigo: string = '';
+  sucu_Correo: string = '';
   secuencia: number = 0;
   usua_Creacion: number = 0;
   sucu_FechaCreacion: Date = new Date();

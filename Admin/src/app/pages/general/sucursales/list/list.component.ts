@@ -113,6 +113,7 @@ export class ListComponent implements OnInit {
 
   editar(sucursal: Sucursales): void {
     this.sucursalEditando = { ...sucursal };
+    console.log('Editar sucursal:', this.sucursalEditando);
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
