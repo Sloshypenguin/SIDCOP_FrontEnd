@@ -73,7 +73,6 @@ export class ListComponent implements OnInit {
         title: 'Listado de Productos',                    // Título del reporte
         filename: 'Productos',                           // Nombre base del archivo
         department: 'Inventario',                         // Departamento
-        additionalInfo: 'Sistema de Gestión',         // Información adicional
         
         // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
         columns: [
@@ -94,7 +93,7 @@ export class ListComponent implements OnInit {
           'Marca': this.limpiarTexto(producto?.marc_Descripcion),
           'Categoria': this.limpiarTexto(producto?.cate_Descripcion),
           'Subcategoria': this.limpiarTexto(producto?.subc_Descripcion),
-          'Precio': this.limpiarTexto(producto?.prod_PrecioUnitario)
+          'Precio': this.limpiarTexto('L.' + producto?.prod_PrecioUnitario.toFixed(2))
         })
       };
   // bread crumb items
@@ -206,8 +205,7 @@ export class ListComponent implements OnInit {
         data: this.obtenerDatosExport(),
         columns: this.exportConfig.columns,
         metadata: {
-          department: this.exportConfig.department,
-          additionalInfo: this.exportConfig.additionalInfo
+          department: this.exportConfig.department
         }
       };
     }
