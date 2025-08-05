@@ -87,7 +87,7 @@ export class ExportService {
     try {
       this.validateConfig(config);
       
-      const doc = new jsPDF('portrait');
+      const doc = new jsPDF('landscape');
       
       // Crear encabezado y obtener posición Y donde empezar la tabla
       const startY = await this.crearEncabezado(doc, config);
