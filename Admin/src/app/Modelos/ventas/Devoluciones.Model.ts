@@ -7,13 +7,13 @@ export class Devoluciones {
     usua_Creacion: number = 0;
     devo_FechaCreacion: Date = new Date();
     usua_Modificacion?: number;
-    devo_FechaModificacion?: Date;
+    devo_FechaModificacion: Date = new Date();
     devo_Estado: boolean = true;
     usuarioCreacion: string = '';
     usuarioModificacion: string = '';
     
     No: number = 0;
-    clie_nombreNegocio: string = '';
+    clie_NombreNegocio: string = '';
     Nombre_Completo: string = '';
 
     code_Status: number = 0;

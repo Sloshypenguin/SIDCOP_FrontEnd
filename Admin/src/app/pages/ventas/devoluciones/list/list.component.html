@@ -62,10 +62,10 @@
       </app-edit>
     </div>
   </div>
-</div> -->
+</div> --> 
 
-        <!-- Collapse para el formulario de detalles -->
-<!-- <div *ngIf="showDetailsForm" [@fadeExpand]> 
+         <!-- Collapse para el formulario de detalles -->
+ <div *ngIf="showDetailsForm" [@fadeExpand]> 
   <div class="card card-body mb-3 d-flex flex-column" style="min-height: 400px; padding: 0.5rem;">
     <div class="container-fluid flex-grow-1">
       <app-details 
@@ -74,7 +74,7 @@
       </app-details>
     </div>
   </div>
-</div> -->
+</div> 
 <div class="table-radius-container">
         <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <table class="table table-gridjs table-style">
@@ -106,14 +106,14 @@
     </span>
   </span>
 </th>
-                <th class="gridjs-th" (click)="table.sortBy('clie_nombreNegocio')" style="cursor:pointer;">
+                <th class="gridjs-th" (click)="table.sortBy('clie_NombreNegocio')" style="cursor:pointer;">
   <span style="display: flex; align-items: center; gap: 4px;">
     Nombre Negocio
     <span style="display: flex; flex-direction: column; margin-left: 6px;">
       <i class="ri-arrow-up-s-line icon-sort"
-        [ngStyle]="table.sortField === 'clie_nombreNegocio' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+        [ngStyle]="table.sortField === 'clie_NombreNegocio' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
       <i class="ri-arrow-down-s-line icon-sort"
-        [ngStyle]="table.sortField === 'clie_nombreNegocio' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
+        [ngStyle]="table.sortField === 'clie_NombreNegocio' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}"></i>
     </span>
   </span>
 </th>
@@ -165,7 +165,7 @@
 </td>
                 <td><span class="fw-semibold">{{data.No}}</span></td>
                  <td>{{data.Nombre_Completo}}</td>
-                <td>{{data.clie_nombreNegocio}}</td>
+                <td>{{data.clie_NombreNegocio}}</td>
                 <td>{{data.fact_Id}}</td>
                 <td>{{data.devo_Fecha}}</td>
                 <td>{{data.devo_Motivo}}</td>

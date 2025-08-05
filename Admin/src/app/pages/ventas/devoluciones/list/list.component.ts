@@ -83,7 +83,7 @@ export class ListComponent implements OnInit {
         // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
         columns: [
           { key: 'No', header: 'No', width: 15, align: 'left' as const },
-          { key: 'clie_nombreNegocio ', header: 'Nombre Negocio', width: 40, align: 'left' as const },
+          { key: 'clie_NombreNegocio ', header: 'Nombre Negocio', width: 40, align: 'left' as const },
           { key: 'fact_Id', header: 'Factura Id', width: 50, align: 'left' as const },
           { key: 'devo_Fecha', header: 'Fecha', width: 40, align: 'left' as const },
           { key: 'devo_Motivo', header: 'Motivo', width: 40, align: 'left' as const }
@@ -93,10 +93,10 @@ export class ListComponent implements OnInit {
         // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
         dataMapping: (devoluciones: Devoluciones, index: number) => ({
           'No': devoluciones?.devo_Id || (index + 1),
-          'Nombre Negocio': this.limpiarTexto(devoluciones?.clie_nombreNegocio),
-          'Factura Id': this.limpiarTexto(devoluciones?.fact_Id),
-          'Fecha': this.limpiarTexto(devoluciones?.devo_Fecha),
-          'Motivo': this.limpiarTexto(devoluciones?.devo_Motivo),
+          'clie_NombreNegocio': this.limpiarTexto(devoluciones?.clie_NombreNegocio),
+          'fact_Id': this.limpiarTexto(devoluciones?.fact_Id),
+          'devo_Fecha': this.limpiarTexto(devoluciones?.devo_Fecha),
+          'devo_Motivo': this.limpiarTexto(devoluciones?.devo_Motivo),
         })
       };
 
@@ -270,7 +270,7 @@ eliminar(): void {
       if (response.success && response.data) {
         if (response.data.code_Status === 1) {
           // Éxito - proveedor eliminado
-          this.mensajeExito = `Devoluciones "${this.DevolucionesAEliminar!.clie_nombreNegocio}" eliminado exitosamente`;
+          this.mensajeExito = `Devoluciones "${this.DevolucionesAEliminar!.clie_NombreNegocio}" eliminado exitosamente`;
           this.mostrarAlertaExito = true;
           setTimeout(() => {
             this.mostrarAlertaExito = false;
