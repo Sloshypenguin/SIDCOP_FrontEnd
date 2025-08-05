@@ -177,6 +177,13 @@ export const MENU: MenuItem[] = [
         icon: 'ri-group-line',
       },
       {
+        id: 35,
+        label: 'MENUITEMS.VENTAS.LIST.DEVOLUCIONES',
+        link: '/ventas/devoluciones',
+        parentId: 5,
+        icon: 'ri-group-line',
+      },
+      {
         id: 38,
         label: 'MENUITEMS.VENTAS.LIST.PEDIDOS',
         link: '/ventas/pedidos',
