@@ -341,50 +341,7 @@
 
     <br>
     <!-- Avales -->
-    <!-- Card de Crédito Solicitado y Avales juntos -->
-    <div class="row g-3"
-      *ngIf="clienteDetalle.clie_Saldo && clienteDetalle.clie_LimiteCredito && clienteDetalle.clie_DiasCredito">
-      <div class="col-12">
-        <div class="card shadow-sm employee-details-card">
-          <div class="card-header d-flex align-items-center rounded-top details-header-custom">
-            <i class="ri-bank-card-line me-2 fs-4"></i>
-            <h4 class="mb-0" style="color: #303d7d">Crédito Solicitado y Avales</h4>
-          </div>
-          <div class="card-body position-relative">
-            <div class="row text-center g-4 col-12 mb-4">
-              <div class="col-4">
-                <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
-                  <span> L. </span>
-                </div>
-                <div class="detail-label">Saldo</div>
-                <div class="detail-value fw-bold text-break small">
-                  {{ clienteDetalle.clie_Saldo | currency:'L. ':'symbol':'1.2-2' }}
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
-                  <i class="ri-bank-card-line"></i>
-                </div>
-                <div class="detail-label">Límite de Crédito</div>
-                <div class="detail-value fw-bold text-break small">
-                  {{ clienteDetalle.clie_LimiteCredito | currency:'L. ':'symbol':'1.2-2' }}
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
-                  <i class=" ri-calendar-event-line"></i>
-                </div>
-                <div class="detail-label">Días de Crédito</div>
-                <div class="detail-value fw-bold text-break small">
-                  {{ clienteDetalle.clie_DiasCredito }} días
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Avales dentro de la card de Crédito Solicitado y Avales, sin card propia -->
+    <!-- Avales dentro de la card de Crédito Solicitado y Avales-->
     <div class="row g-3"
       *ngIf="clienteDetalle.clie_Saldo && clienteDetalle.clie_LimiteCredito && clienteDetalle.clie_DiasCredito">
       <div class="col-12">
@@ -486,24 +443,6 @@
                             <div class="detail-label">Colonia</div>
                             <div class="detail-value fw-bold text-break small">
                               {{ aval.colo_Descripcion }}
-                            </div>
-                          </div>
-                          <div class="col-4">
-                            <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
-                              <i class="ri-road-map-line"></i>
-                            </div>
-                            <div class="detail-label">Municipio</div>
-                            <div class="detail-value fw-bold text-break small">
-                              {{ aval.muni_Descripcion }}
-                            </div>
-                          </div>
-                          <div class="col-4">
-                            <div class="detail-icon bg-dark-blue text-white mb-2 mx-auto">
-                              <i class="ri-road-map-line"></i>
-                            </div>
-                            <div class="detail-label">Departamento</div>
-                            <div class="detail-value fw-bold text-break small">
-                              {{ aval.depa_Descripcion }}
                             </div>
                           </div>
                           <div class="col-4">
