@@ -1,8 +1,103 @@
 <div class="container-fluid">
-    
+    <app-breadcrumbs
+        [title]="'Dashboards'"
+        [breadcrumbItems]="[
+            { label: 'Dashboards' },
+            { label: 'Dashboards', active: true }
+        ]"
+        >
+        <!-- <img class="breadcrumbs-icon ms-2 icon-breadcrumb" style="width: 10vh; height: 10vh;" src="assets/images/svg/subcategoriasIcon.svg" alt="icono breadcrumb" /> -->
+        <img class="breadcrumbs-icon ms-2 icon-breadcrumb" style="width: 10vh; height: 10vh;" src="assets/images/svg/dashboardsIcon.svg" alt="icono breadcrumb" />
+        
+    </app-breadcrumbs>
+
     <div class="card">
-        <div class="card-body">
+
+        <!-- años header -->
+        <div *ngIf="!graficocategorias" class="card-header"> 
+            
+            <div class="col-lg-12">
             <div class="row align-items-center">
+                        <div class="col-lg-10 d-flex align-items-center">
+                            <i class="ri-funds-line" style="font-size: 40px; color: #d6b68a; margin-right: 12px;"></i>
+                            <h2 style="color: #d6b68a; margin: 0;">Ventas totales por mes en el año {{anioSeleccionado}}</h2>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-select" 
+                                [(ngModel)]="anioSeleccionado" 
+                                required
+                                (change)="cambioAnio()">
+                                <option value=0 disabled>Seleccione el año</option>
+                                <option *ngFor="let anio of aniosSelect" [value]="anio">{{ anio }}</option>
+                            </select>
+                        </div>
+                        
+                        
+            </div>
+            </div>
+
+        </div>
+        <!-- <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Simple Donut Chart</h4>
+                </div>
+
+                <div class="card-body">
+                    <apx-chart [series]="simpleDonutChart.series" [chart]="simpleDonutChart.chart"
+                        [labels]="simpleDonutChart.labels" [responsive]="simpleDonutChart.responsive"
+                        [legend]="simpleDonutChart.legend" [dataLabels]="simpleDonutChart.dataLabels"
+                        [colors]="simpleDonutChart.colors" dir="ltr"></apx-chart>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- categorias header -->
+        <div *ngIf="graficocategorias" class="card-header">         
+  
+            <!-- <div class="col-lg-12 d-flex align-items-center">
+            <div class="row">
+
+                <div class="col-lg-2 d-flex align-items-center">
+
+                    <div class="details-header-button">
+                        <button type="button" class="btn btn-primary mb-3" (click)="graficocategorias = false">
+                        <span class="btn-text">Regresar</span>
+                        <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-10 d-flex align-items-center">
+                    <i class=" ri-stack-fill" style="font-size: 40px; color: #d6b68a; margin-right: 12px;"></i>
+                    <h2 style="color: #d6b68a; margin: 0;">Categorias con mas compras en {{barraMesSelected.MesNombre}} del año {{anioSeleccionado}}</h2>
+                </div>
+                        
+                        
+            </div>
+            </div> -->
+
+            <div class="row align-items-center">
+                <div class="col-2">
+                <button type="button" class="btn btn-primary " (click)="graficocategorias = false">
+                    <span class="btn-text">Regresar</span>
+                    <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
+                </button>
+                </div>
+                <div class="col-10 d-flex align-items-center">
+                <i class="ri-stack-fill" style="font-size: 40px; color: #d6b68a; margin-right: 12px;"></i>
+                <h2 style="color: #d6b68a; margin: 0;">Categorias con mas compras en {{barraMesSelected.MesNombre}} del año {{anioSeleccionado}}</h2>
+                </div>
+            </div>
+
+        </div>
+                
+
+        <!-- años body -->
+        <div *ngIf="!graficocategorias" class="card-body">
+            <div class="row align-items-center">
+                    
                     <div class="col-lg-12">
                         <div class="real-estate-widgets">
                             <div class="tab-content text-muted">
@@ -11,6 +106,21 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+            </div>
+        </div>
+
+        <!-- categorias body -->
+        <div *ngIf="graficocategorias" class="card-body">
+            <div class="row align-items-center">
+                    
+                    <div class="col-lg-12">
+
+                        <apx-chart [series]="simpleDonutChart.series" [chart]="simpleDonutChart.chart"
+                        [labels]="simpleDonutChart.labels" [responsive]="simpleDonutChart.responsive"
+                        [legend]="simpleDonutChart.legend" [dataLabels]="simpleDonutChart.dataLabels"
+                        [colors]="simpleDonutChart.colors" dir="ltr"></apx-chart>                        
+
                     </div>
             </div>
         </div>
