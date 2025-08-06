@@ -69,7 +69,7 @@ export class ListComponent implements OnInit {
     title: 'Listado de Recargas',
     filename: 'Recargas',
     department: 'Logistica',
-    additionalInfo: 'Sistema de Gestión de Ventas',
+    additionalInfo: '',
     
     columns: [
       { key: 'No', header: 'No.', width: 10, align: 'center' as const },
@@ -84,7 +84,7 @@ export class ListComponent implements OnInit {
       'No': recargas?.secuencia || (index + 1),
       'Bodega': this.limpiarTexto(recargas?.bode_Descripcion),
       'Recarga Confirmación': this.limpiarTexto(recargas?.reca_Confirmacion),
-      'Fecha Recarga': this.limpiarTexto(recargas?.Reca_Fecha),
+      'Fecha Recarga': this.limpiarTexto(recargas?.reca_Fecha),
       'Detalles': this.limpiarTexto(recargas?.detalles),
     })
   };

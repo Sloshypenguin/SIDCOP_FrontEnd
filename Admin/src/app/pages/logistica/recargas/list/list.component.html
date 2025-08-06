@@ -1,9 +1,5 @@
-
-
-
-
 <app-breadcrumbs
-  [title]="'Impuestos'"
+  [title]="'Recargas'"
   [breadcrumbItems]="breadCrumbItems"
 >
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb"
@@ -95,13 +91,13 @@
                   <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
                     <span class="table-header-flex">
                       No.
-                      </span>
+                    </span>
                   </th>
                   
-                  <!-- Columna Descripción -->
+                  <!-- Columna Bodega -->
                   <th class="gridjs-th" (click)="table.sortBy('bode_Descripcion')" style="cursor:pointer;">
                     <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Descripción
+                      Bodega
                       <span style="display: flex; flex-direction: column; margin-left: 6px;">
                         <i class="ri-arrow-up-s-line icon-sort"
                            [ngStyle]="table.sortField === 'bode_Descripcion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
@@ -113,10 +109,41 @@
                     </span>
                   </th>
                   
-                  <!-- Columna Valor -->
+                  <!-- Columna Fecha Recarga -->
+                  <th class="gridjs-th" (click)="table.sortBy('reca_Fecha')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Fecha Recarga
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                           [ngStyle]="table.sortField === 'reca_Fecha' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                           [ngStyle]="table.sortField === 'reca_Fecha' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+
+                 
+     
+                  <!--  Observaciones -->
+                  <th class="gridjs-th" (click)="table.sortBy('reca_Observaciones')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Observaciones
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                           [ngStyle]="table.sortField === 'reca_Observaciones' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                           [ngStyle]="table.sortField === 'reca_Observaciones' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                   <!-- Columna Confirmación -->
                   <th class="gridjs-th" (click)="table.sortBy('reca_Confirmacion')" style="cursor:pointer;">
                     <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Valor
+                      Confirmación
                       <span style="display: flex; flex-direction: column; margin-left: 6px;">
                         <i class="ri-arrow-up-s-line icon-sort"
                            [ngStyle]="table.sortField === 'reca_Confirmacion' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
@@ -127,25 +154,11 @@
                       </span>
                     </span>
                   </th>
-    
-                  <th class="gridjs-th" (click)="table.sortBy('reDe_Cantidad')" style="cursor:pointer;">
-                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
-                      Valor
-                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
-                        <i class="ri-arrow-up-s-line icon-sort"
-                           [ngStyle]="table.sortField === 'reDe_Cantidad' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                        </i>
-                        <i class="ri-arrow-down-s-line icon-sort"
-                           [ngStyle]="table.sortField === 'reDe_Cantidad' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
-                        </i>
-                      </span>
-                    </span>
-                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                  <!-- Celda de acciones -->
+                  <!--  acciones -->
                   <td class="position-relative" *ngIf="accionPermitida('editar')">
                     <div class="dropdown-action-list">
                       <button type="button"
@@ -158,18 +171,35 @@
                     </div>
                   </td>
                   
-                  <!-- Celda No. -->
+                  <!--  No. -->
                   <td>
                     <span class="fw-semibold">{{ data.secuencia || (i + 1) }}</span>
                   </td>
                   
-                  <!-- Celda Descripción -->
-                  <td>{{ data.bode_Descripcion }}</td>
+                  <!--  Bodega -->
+                  <td>{{ data.bode_Descripcion || 'N/A' }}</td>
                   
-                  <!-- Celda Valor con formato de porcentaje -->
-                  <td>{{ data.reca_Confirmacion | percent:'1.2-2' }}</td>
-
-                 
+                  <!--  Fecha Recarga -->
+                  <td>{{ data.reca_Fecha | date:'dd/MM/yyyy' }}</td>
+                  <!--  Observaciones -->
+                
+                    <td>
+                    <span [title]="data.reca_Observaciones">
+                      {{ (data.reca_Observaciones && data.reca_Observaciones.length > 50) 
+                         ? (data.reca_Observaciones | slice:0:50) + '...' 
+                         : (data.reca_Observaciones || 'N/A') }}
+                    </span>
+                  </td>
+                  <!--  Confirmación -->
+              <td style="text-align: center;">
+                <span *ngIf="data.reca_Confirmacion === 'P'" 
+                      class="badge fw-semibold mb-1 px-3 py-1 border" 
+                      style="font-size: 0.8rem; background-color: #FFF3CD; color: #856404;">
+                  <i class="ri-checkbox-blank-circle-fill" style="font-size: 0.6rem;"></i>
+                  Pendiente
+                </span>
+              </td>
+                  
                 </tr>
               </tbody>
             </table>
@@ -267,17 +297,3 @@
     <div class="typing-shadow"></div>
   </div>
 </div>
-<!-- 
-<div class="recargas-list">
-  <h1>Pantalla en proceso</h1>
-
- 
-</div>
-
-
-<th scope="row">Sucursal</th>
-<td>{{ currentUser.sucursal || 'No disponible' }}</td>
-
-<th scope="row">Admin</th>
-<td>{{ currentUser.admin || 'No disponible' }}</td>
-<th scope="row">Admin</th> -->

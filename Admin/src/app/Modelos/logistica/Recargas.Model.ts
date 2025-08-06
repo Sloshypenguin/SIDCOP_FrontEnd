@@ -3,7 +3,7 @@ export class Recargas {
     reca_Id: number = 0;
     vend_Id: number = 0;
     bode_Id: number = 0;
-    Reca_Fecha: Date = new Date();
+    reca_Fecha: Date = new Date();
 
     reca_Observaciones: string = '';
     usua_Confirmacion: number = 0;
