@@ -537,22 +537,17 @@ export class ListComponent implements OnInit {
       
       next: (data) => {
         console.log("date" + sucuId + esAdmin + data);
-        // Filtrar datos según permisos del usuario
-        const tienePermisoListar = this.accionPermitida('listar');
-        const userId = getUserId();
-
-        const datosFiltrados = tienePermisoListar
-          ? data // Si tiene permiso de listar, mostrar todos los datos
-          : data.filter(r => r.usua_Creacion?.toString() === userId.toString()); // Solo sus propios registros
-
+        // Backend ya maneja el filtrado por sucursal y admin status
+        // No necesitamos filtrado adicional en el frontend
+        
         // Agregar numeración secuencial para la tabla
-        datosFiltrados.forEach((recargas, index) => {
+        data.forEach((recargas, index) => {
           recargas.secuencia = index + 1;
         });
 
         // Actualizar tabla y estado
-        this.table.setData(datosFiltrados);
-        this.tieneRegistros = datosFiltrados.length > 0;
+        this.table.setData(data);
+        this.tieneRegistros = data.length > 0;
       },
       error: (error) => {
         console.error('Error al cargar los datos:', error);
