@@ -363,7 +363,7 @@ export class ListComponent implements OnInit {
 
   private cargardatos(state: boolean): void {
     this.mostrarOverlayCarga = state;
-    this.http.get<Producto[]>(`${environment.apiBaseUrl}/Productos/Listar`, {
+    this.http.get<Producto[]>(`${environment.apiBaseUrl}/Promociones/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       
@@ -376,7 +376,7 @@ export class ListComponent implements OnInit {
           ? data
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
         this.productoGrid = datosFiltrados || [];
-        this.productos = this.productoGrid.slice(0, 12);
+        this.productos = this.productoGrid.slice(0, 8);
         this.filtradorProductos();
       },500);
     });
