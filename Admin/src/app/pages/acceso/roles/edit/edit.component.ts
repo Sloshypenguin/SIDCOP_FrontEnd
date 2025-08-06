@@ -63,9 +63,9 @@ interface Accion {
 }
 
 const accionesPorPantalla = [
-  { AcPa_Id: 1, Pant_Id: 6, Acci_Id: 1 }, { AcPa_Id: 2, Pant_Id: 6, Acci_Id: 2 }, { AcPa_Id: 3, Pant_Id: 6, Acci_Id: 3 }, { AcPa_Id: 4, Pant_Id: 6, Acci_Id: 5 },
-  { AcPa_Id: 5, Pant_Id: 7, Acci_Id: 1 }, { AcPa_Id: 6, Pant_Id: 7, Acci_Id: 2 }, { AcPa_Id: 7, Pant_Id: 7, Acci_Id: 5 }, { AcPa_Id: 8, Pant_Id: 7, Acci_Id: 6 },
-  { AcPa_Id: 9, Pant_Id: 7, Acci_Id: 7 }, { AcPa_Id: 10, Pant_Id: 7, Acci_Id: 8 }, { AcPa_Id: 11, Pant_Id: 8, Acci_Id: 1 }, { AcPa_Id: 12, Pant_Id: 8, Acci_Id: 2 },
+  { AcPa_Id: 1, Pant_Id: 62, Acci_Id: 1 }, { AcPa_Id: 2, Pant_Id: 62, Acci_Id: 2 }, { AcPa_Id: 3, Pant_Id: 62, Acci_Id: 3 }, { AcPa_Id: 4, Pant_Id: 62, Acci_Id: 5 },
+  { AcPa_Id: 5, Pant_Id: 63, Acci_Id: 1 }, { AcPa_Id: 6, Pant_Id: 63, Acci_Id: 2 }, { AcPa_Id: 7, Pant_Id: 63, Acci_Id: 5 }, { AcPa_Id: 8, Pant_Id: 63, Acci_Id: 6 },
+  { AcPa_Id: 9, Pant_Id: 63, Acci_Id: 7 }, { AcPa_Id: 10, Pant_Id: 63  , Acci_Id: 8 }, { AcPa_Id: 11, Pant_Id: 8, Acci_Id: 1 }, { AcPa_Id: 12, Pant_Id: 8, Acci_Id: 2 },
   { AcPa_Id: 13, Pant_Id: 8, Acci_Id: 3 }, { AcPa_Id: 14, Pant_Id: 8, Acci_Id: 5 }, { AcPa_Id: 15, Pant_Id: 9, Acci_Id: 1 }, { AcPa_Id: 16, Pant_Id: 9, Acci_Id: 2 },
   { AcPa_Id: 17, Pant_Id: 9, Acci_Id: 3 }, { AcPa_Id: 18, Pant_Id: 9, Acci_Id: 5 }, { AcPa_Id: 19, Pant_Id: 10, Acci_Id: 1 }, { AcPa_Id: 20, Pant_Id: 10, Acci_Id: 2 },
   { AcPa_Id: 21, Pant_Id: 10, Acci_Id: 5 }, { AcPa_Id: 22, Pant_Id: 10, Acci_Id: 6 }, { AcPa_Id: 23, Pant_Id: 11, Acci_Id: 1 }, { AcPa_Id: 24, Pant_Id: 11, Acci_Id: 2 },
@@ -109,7 +109,7 @@ const accionesPorPantalla = [
   { AcPa_Id: 200, Pant_Id: 31, Acci_Id: 4 }, { AcPa_Id: 201, Pant_Id: 32, Acci_Id: 4 }, { AcPa_Id: 202, Pant_Id: 33, Acci_Id: 4 }, { AcPa_Id: 203, Pant_Id: 35, Acci_Id: 4 },
   { AcPa_Id: 204, Pant_Id: 36, Acci_Id: 4 }, { AcPa_Id: 205, Pant_Id: 37, Acci_Id: 4 }, { AcPa_Id: 206, Pant_Id: 38, Acci_Id: 4 }, { AcPa_Id: 207, Pant_Id: 39, Acci_Id: 4 },
   { AcPa_Id: 208, Pant_Id: 40, Acci_Id: 4 }, { AcPa_Id: 209, Pant_Id: 41, Acci_Id: 4 }, { AcPa_Id: 210, Pant_Id: 42, Acci_Id: 4 }, { AcPa_Id: 211, Pant_Id: 43, Acci_Id: 4 },
-  { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 6, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 7, Acci_Id: 4 }, { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 },
+  { AcPa_Id: 212, Pant_Id: 45, Acci_Id: 4 }, { AcPa_Id: 213, Pant_Id: 62, Acci_Id: 4 }, { AcPa_Id: 214, Pant_Id: 63, Acci_Id: 4 }, { AcPa_Id: 215, Pant_Id: 8, Acci_Id: 4 },
   { AcPa_Id: 216, Pant_Id: 9, Acci_Id: 4 }, { AcPa_Id: 217, Pant_Id: 10, Acci_Id: 4 }, { AcPa_Id: 218, Pant_Id: 11, Acci_Id: 4 }, { AcPa_Id: 219, Pant_Id: 12, Acci_Id: 4 },
   { AcPa_Id: 220, Pant_Id: 13, Acci_Id: 4 }, { AcPa_Id: 221, Pant_Id: 14, Acci_Id: 4 }, { AcPa_Id: 222, Pant_Id: 15, Acci_Id: 4 }, { AcPa_Id: 223, Pant_Id: 16, Acci_Id: 4 },
   { AcPa_Id: 224, Pant_Id: 34, Acci_Id: 10 }, { AcPa_Id: 237, Pant_Id: 36, Acci_Id: 11 }, { AcPa_Id: 238, Pant_Id: 38, Acci_Id: 11 }, { AcPa_Id: 239, Pant_Id: 29, Acci_Id: 11 },
