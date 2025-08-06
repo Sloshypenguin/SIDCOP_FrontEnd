@@ -129,17 +129,16 @@ export class EditComponent implements OnChanges {
       return;
     }
 
-     if (this.hayDiferencias()) {
-        this.mostrarConfirmacionEditar = true;
-      } else {
-        this.mostrarAlertaWarning = true;
-        this.mensajeWarning = 'No se han detectado cambios.';
-        setTimeout(() => this.cerrarAlerta(), 4000);
-      }
+    if (this.hayDiferencias()) {
+      this.mostrarConfirmacionEditar = true;
+    } else {
+      this.mostrarAlertaWarning = true;
+      this.mensajeWarning = 'No se han detectado cambios.';
+      setTimeout(() => this.cerrarAlerta(), 4000);
+    }
   }
 
-
-   obtenerListaCambios(): any[] {
+  obtenerListaCambios(): any[] {
     return Object.values(this.cambiosDetectados);
   }
 
@@ -155,7 +154,7 @@ export class EditComponent implements OnChanges {
       this.cambiosDetectados.codigo = {
         anterior: b.puEm_Codigo,
         nuevo: a.puEm_Codigo,
-        label: 'Código'
+        label: 'Código',
       };
     }
 
@@ -163,25 +162,29 @@ export class EditComponent implements OnChanges {
       this.cambiosDetectados.descripcion = {
         anterior: b.puEm_Descripcion,
         nuevo: a.puEm_Descripcion,
-        label: 'Descripción'
+        label: 'Descripción',
       };
     }
-   
-    if (a.sucu_Id !== b.sucu_Id) {
 
-      const coloniaAnterior = this.Sucursales.find(c => c.sucu_Id === b.sucu_Id);
-      const coloniaNueva = this.Sucursales.find(c => c.sucu_Id === a.sucu_Id);
+    if (a.sucu_Id !== b.sucu_Id) {
+      const coloniaAnterior = this.Sucursales.find(
+        (c) => c.sucu_Id === b.sucu_Id
+      );
+      const coloniaNueva = this.Sucursales.find((c) => c.sucu_Id === a.sucu_Id);
 
       this.cambiosDetectados.Observaciones = {
-        anterior: coloniaAnterior ? `${coloniaAnterior.sucu_Descripcion} - ${coloniaAnterior.muni_Descripcion} - ${coloniaAnterior.depa_Descripcion}` : 'No seleccionada',
-        nuevo: coloniaNueva ? `${coloniaNueva.sucu_Descripcion} - ${coloniaNueva.muni_Descripcion} - ${coloniaNueva.depa_Descripcion}` : 'No seleccionada',
-        label: 'Sucursal'
+        anterior: coloniaAnterior
+          ? `${coloniaAnterior.sucu_Descripcion} - ${coloniaAnterior.muni_Descripcion} - ${coloniaAnterior.depa_Descripcion}`
+          : 'No seleccionada',
+        nuevo: coloniaNueva
+          ? `${coloniaNueva.sucu_Descripcion} - ${coloniaNueva.muni_Descripcion} - ${coloniaNueva.depa_Descripcion}`
+          : 'No seleccionada',
+        label: 'Sucursal',
       };
     }
 
     return Object.keys(this.cambiosDetectados).length > 0;
   }
-
 
   cancelarEdicion(): void {
     this.mostrarConfirmacionEditar = false;
@@ -195,7 +198,11 @@ export class EditComponent implements OnChanges {
   private guardar(): void {
     this.mostrarErrores = true;
 
-    if (this.puntoEmision.puEm_Descripcion.trim()  && this.puntoEmision.puEm_Codigo.trim() && this.puntoEmision.sucu_Id > 0) {
+    if (
+      this.puntoEmision.puEm_Descripcion.trim() &&
+      this.puntoEmision.puEm_Codigo.trim() &&
+      this.puntoEmision.sucu_Id > 0
+    ) {
       const PEActualizar = {
         puEm_Id: this.puntoEmision.puEm_Id,
         puEm_Codigo: this.puntoEmision.puEm_Codigo.trim(),
@@ -211,7 +218,7 @@ export class EditComponent implements OnChanges {
         estado: '',
         secuencia: 0,
       };
-      
+
       this.http
         .put<any>(
           `${environment.apiBaseUrl}/PuntoEmision/Actualizar`,
