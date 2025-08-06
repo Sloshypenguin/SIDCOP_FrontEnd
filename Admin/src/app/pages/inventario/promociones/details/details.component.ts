@@ -19,9 +19,45 @@ export class DetailsComponent implements OnChanges{
   mostrarAlertaError = false;
   mensajeError = '';
 
+  productosPromocion: any[] = [];
+
+  clientesPromocion: any[] = [];
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['productoData'] && changes['productoData'].currentValue) {
       this.cargarDetallesSimulado(changes['productoData'].currentValue);
+
+      // Parsear productos de la promoción si existen
+      const productosRaw = changes['productoData'].currentValue.productos ?? '[]';
+      try {
+        let productosJson = productosRaw;
+        if (typeof productosJson === 'string') {
+          productosJson = productosJson.trim();
+          if (productosJson.startsWith('"') && productosJson.endsWith('"')) {
+            productosJson = productosJson.slice(1, -1);
+          }
+          productosJson = productosJson.replace(/\\"/g, '"');
+        }
+        this.productosPromocion = JSON.parse(productosJson);
+      } catch {
+        this.productosPromocion = [];
+      }
+
+      // Parsear clientes de la promoción si existen
+      const clientesRaw = changes['productoData'].currentValue.clientes ?? '[]';
+      try {
+        let clientesJson = clientesRaw;
+        if (typeof clientesJson === 'string') {
+          clientesJson = clientesJson.trim();
+          if (clientesJson.startsWith('"') && clientesJson.endsWith('"')) {
+            clientesJson = clientesJson.slice(1, -1);
+          }
+          clientesJson = clientesJson.replace(/\\"/g, '"');
+        }
+        this.clientesPromocion = JSON.parse(clientesJson);
+      } catch {
+        this.clientesPromocion = [];
+      }
     }
   }
 

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocalstorageDebugComponent } from './localstorage-debug.component';
-import { PermisosDebugComponent } from '../permisos-debug/permisos-debug.component';
-import { PermisosEjemploComponent } from '../permisos-ejemplo/permisos-ejemplo.component';
 import { environment } from '../../../../environments/environment.prod';
 import { getUserId, getUserName, getUserRole } from '../../../core/utils/user-utils';
 

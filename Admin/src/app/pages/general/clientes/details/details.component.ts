@@ -4,11 +4,12 @@ import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente.Model';
 import { environment } from 'src/environments/environment.prod';
 import { HttpClient } from '@angular/common/http';
+import { MapaSelectorComponent } from '../mapa-selector/mapa-selector.component';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MapaSelectorComponent],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
@@ -25,12 +26,16 @@ export class DetailsComponent implements OnChanges {
   colonias: any[] = [];
   municipios: any[] = [];
   departamentos: any[] = [];
+  departamentosAval: any[] = [];
+  municipiosAval: any[] = [];
 
+  puntosVista: { lat: number; lng: number; nombre?: string }[] = [];
+
+  public imgLoaded: boolean = false;
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clienteData'] && changes['clienteData'].currentValue) {
       this.cargarDetallesSimulado(changes['clienteData'].currentValue);
     }
-
     this.cargarColonias();
     this.cargarMunicipios();
     this.cargarDepartamentos();
@@ -47,6 +52,7 @@ export class DetailsComponent implements OnChanges {
         this.cargando = false;
 
         this.cargarDirecciones();
+        this.cargarAvales();
       } catch (error) {
         console.error('Error al cargar detalles del cliente:', error);
         this.mostrarAlertaError = true;
@@ -58,6 +64,7 @@ export class DetailsComponent implements OnChanges {
 
   cerrar(): void {
     this.onClose.emit();
+    this.puntosVista=[];
   }
 
   cerrarAlerta(): void {
@@ -79,62 +86,59 @@ export class DetailsComponent implements OnChanges {
     }
   }
 
-  constructor(private http: HttpClient){}
-  direcciones: any = [];
+  constructor(private http: HttpClient) { }
+  direcciones: DireccionPorCliente[] = [];
   avales: any = [];
-  // cargarDirecciones(): void {
-  //   this.http.get<DireccionPorCliente[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
-  //     headers:{ 'x-api-key': environment.apiKey }
-  //   }).subscribe(data=>{
-  //     this.direcciones=data||[];
-  //     if(this.direcciones){
-  //       this.clienteDetalle?.clie_Id
-  //     }
-  //   })
-  // }
 
   cargarDirecciones(): void {
-  this.http.get<DireccionPorCliente[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
+    if (!this.clienteDetalle?.clie_Id) {
+      this.direcciones = [];
+      this.puntosVista = [];
+      return;
+    }
+    this.http.get<DireccionPorCliente[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${this.clienteDetalle.clie_Id}`, {
+      headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      const todasLasDirecciones = data || [];
-      if (this.clienteDetalle?.clie_Id != null) {
-        this.direcciones = todasLasDirecciones.filter(d =>
-          d.clie_Id === this.clienteDetalle?.clie_Id
-        );
-      } else {
-        this.direcciones = [];
-      }
+      this.direcciones = data || [];
+      this.puntosVista = this.direcciones.map(d => ({
+        lat: d.diCl_Latitud,
+        lng: d.diCl_Longitud,
+        nombre: d.diCl_Observaciones
+      }));
     });
   }
 
   cargarAvales(): void {
-  this.http.get<any[]>(`${environment.apiBaseUrl}/Aval/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Aval/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
-      this.avales = data || [];
+      if (this.clienteDetalle?.clie_Id != null) {
+        this.avales = (data || []).filter(a => a.clie_Id === this.clienteDetalle?.clie_Id);
+      } else {
+        this.avales = [];
+      }
     });
   }
 
   cargarColonias(): void {
-  this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Colonia/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.colonias = data || [];
     });
   }
 
   cargarMunicipios(): void {
-  this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Municipios/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.municipios = data || [];
     });
   }
 
   cargarDepartamentos(): void {
-  this.http.get<any[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
-    headers: { 'x-api-key': environment.apiKey }
+    this.http.get<any[]>(`${environment.apiBaseUrl}/Departamentos/Listar`, {
+      headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       this.departamentos = data || [];
     });
@@ -145,13 +149,13 @@ export class DetailsComponent implements OnChanges {
     return colonia?.colo_Descripcion || 'Colonia no encontrada';
   }
 
-  obtenerDescripcionMunicipio(muni_Codigo: string): string {
-    const municipio = this.municipios.find(m => m.muni_Descripcion === muni_Codigo);
-    return municipio?.muni_Descripcion || 'Municipio no encontrado';
+  obtenerDescripcionMunicipioAval(muni_Codigo: any): string {
+    const municipioAval = this.municipiosAval.find(m => String(m.muni_Codigo) === String(muni_Codigo));
+    return municipioAval?.muni_Descripcion || 'Municipio no encontrado';
   }
 
-  obtenerDescripcionDepartamento(depa_Codigo: string): string {
-    const departamento = this.departamentos.find(d => d.depa_Descripcion === depa_Codigo);
+  obtenerDescripcionDepartamento(depa_Codigo: any): string {
+    const departamento = this.departamentos.find(d => String(d.depa_Codigo) === String(depa_Codigo));
     return departamento?.depa_Descripcion || 'Departamento no encontrado';
   }
 }

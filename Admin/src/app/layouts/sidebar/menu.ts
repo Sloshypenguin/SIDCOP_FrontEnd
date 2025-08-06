@@ -17,18 +17,6 @@ export const MENU: MenuItem[] = [
         link: '/',
         parentId: 2,
       },
-      {
-        id: -1, // ID negativo para siempre ser visible
-        label: 'Depuración de Permisos',
-        link: '/dashboards/permisos-debug',
-        parentId: 2,
-      },
-      {
-        id: -2, // ID negativo para siempre ser visible
-        label: 'Ejemplo de Permisos',
-        link: '/dashboards/permisos-ejemplo',
-        parentId: 2,
-      },
     ],
   },
   {
@@ -37,16 +25,16 @@ export const MENU: MenuItem[] = [
     icon: 'ri-lock-line',
     subItems: [
       {
-        id: 61,
+        id: 63,
         label: 'MENUITEMS.ACCESO.LIST.USUARIOS',
         link: '/acceso/usuarios',
-        parentId: 6,
+        parentId: 1,
       },
       {
         id: 62,
         label: 'MENUITEMS.ACCESO.LIST.ROLES',
         link: '/acceso/roles',
-        parentId: 6,
+        parentId: 1,
       },
     ],
   },
@@ -56,81 +44,16 @@ export const MENU: MenuItem[] = [
     icon: 'ri-apps-2-line',
     subItems: [
       {
-        id: 14,
-        label: 'MENUITEMS.GENERAL.LIST.ESTADOSCIVILES',
-        link: '/general/estadosciviles',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 17,
-        label: 'MENUITEMS.GENERAL.LIST.MODELOS',
-        link: '/general/modelos',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 20,
-        label: 'MENUITEMS.GENERAL.LIST.SUCURSALES',
-        link: '/general/sucursales',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 15,
-        label: 'MENUITEMS.GENERAL.LIST.MARCAS',
-        link: '/general/marcas',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 12,
-        label: 'MENUITEMS.GENERAL.LIST.DEPARTAMENTOS',
-        link: '/general/departamentos',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 16,
-        label: 'MENUITEMS.GENERAL.LIST.MARCASVEHICULOS',
-        link: '/general/marcasvehiculos',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 18,
-        label: 'MENUITEMS.GENERAL.LIST.MUNICIPIOS',
-        link: '/general/municipios',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 11,
-        label: 'MENUITEMS.GENERAL.LIST.COLONIAS',
-        link: '/general/colonias',
-        parentId: 2,
-        icon: 'ri-building-2-line',
-      },
-      {
         id: 8,
         label: 'MENUITEMS.GENERAL.LIST.CANALES',
         link: '/general/canales',
         parentId: 2,
         icon: 'ri-building-2-line',
       },
-
       {
-        id: 19,
-        label: 'MENUITEMS.GENERAL.LIST.PROVEEDORES',
-        link: '/general/proveedores',
-        parentId: 2,
-        icon: 'ri-group-line',
-      },
-
-      {
-        id: 13,
-        label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
-        link: '/general/empleados',
+        id: 9,
+        label: 'MENUITEMS.GENERAL.LIST.CARGOS',
+        link: '/general/cargos',
         parentId: 2,
         icon: 'ri-building-2-line',
       },
@@ -142,12 +65,75 @@ export const MENU: MenuItem[] = [
         icon: 'ri-building-2-line',
       },
       {
-        id: 9,
-        label: 'MENUITEMS.GENERAL.LIST.CARGOS',
-        link: '/general/cargos',
+        id: 11,
+        label: 'MENUITEMS.GENERAL.LIST.COLONIAS',
+        link: '/general/colonias',
         parentId: 2,
         icon: 'ri-building-2-line',
       },
+      {
+        id: 12,
+        label: 'MENUITEMS.GENERAL.LIST.DEPARTAMENTOS',
+        link: '/general/departamentos',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 13,
+        label: 'MENUITEMS.GENERAL.LIST.EMPLEADOS',
+        link: '/general/empleados',
+        parentId: 2,
+        icon: 'ri-building-2-line',
+      },
+      {
+        id: 14,
+        label: 'MENUITEMS.GENERAL.LIST.ESTADOSCIVILES',
+        link: '/general/estadosciviles',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 15,
+        label: 'MENUITEMS.GENERAL.LIST.MARCAS',
+        link: '/general/marcas',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 16,
+        label: 'MENUITEMS.GENERAL.LIST.MARCASVEHICULOS',
+        link: '/general/marcasvehiculos',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 17,
+        label: 'MENUITEMS.GENERAL.LIST.MODELOS',
+        link: '/general/modelos',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 18,
+        label: 'MENUITEMS.GENERAL.LIST.MUNICIPIOS',
+        link: '/general/municipios',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 19,
+        label: 'MENUITEMS.GENERAL.LIST.PROVEEDORES',
+        link: '/general/proveedores',
+        parentId: 2,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 20,
+        label: 'MENUITEMS.GENERAL.LIST.SUCURSALES',
+        link: '/general/sucursales',
+        parentId: 2,
+        icon: 'ri-group-line',
+      }
     ],
   },
   {
@@ -156,13 +142,12 @@ export const MENU: MenuItem[] = [
     icon: 'ri-shopping-cart-2-line',
     subItems: [
       {
-        id: 37,
-        label: 'MENUITEMS.VENTAS.LIST.IMPUESTOS',
-        link: '/ventas/impuestos',
+        id: 32,
+        label: 'MENUITEMS.VENTAS.LIST.CAIS',
+        link: '/ventas/CAIs',
         parentId: 5,
         icon: 'ri-group-line',
       },
-
       {
         id: 33,
         label: 'MENUITEMS.VENTAS.LIST.CONFIGURACIONFACTURA',
@@ -170,38 +155,6 @@ export const MENU: MenuItem[] = [
         parentId: 5,
         icon: 'ri-group-line',
       },
-
-      {
-        id: 32,
-        label: 'MENUITEMS.VENTAS.LIST.CAIS',
-        link: '/ventas/CAIs',
-        parentId: 5,
-        icon: 'ri-group-line',
-      },
-
-      {
-        id: 42,
-        label: 'MENUITEMS.VENTAS.LIST.VENDEDORES',
-        link: '/ventas/Vendedores',
-        parentId: 5,
-        icon: 'ri-group-line',
-      },
-      {
-        id: 41,
-        label: 'MENUITEMS.VENTAS.LIST.REGISTROCAIS',
-        link: '/ventas/registroscais',
-        parentId: 5,
-        icon: 'ri-group-line',
-      },
-
-      {
-        id: 40,
-        label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
-        link: '/ventas/puntosemision',
-        parentId: 5,
-        icon: 'ri-group-line',
-      },
-
       {
         id: 43,
         label: 'MENUITEMS.VENTAS.LIST.CUENTASPORCOBRAR',
@@ -209,11 +162,10 @@ export const MENU: MenuItem[] = [
         parentId: 5,
         icon: 'ri-money-dollar-circle-line',
       },
-
       {
-        id: 38,
-        label: 'MENUITEMS.VENTAS.LIST.PEDIDOS',
-        link: '/ventas/pedidos',
+        id: 37,
+        label: 'MENUITEMS.VENTAS.LIST.IMPUESTOS',
+        link: '/ventas/impuestos',
         parentId: 5,
         icon: 'ri-group-line',
       },
@@ -224,6 +176,34 @@ export const MENU: MenuItem[] = [
         parentId: 5,
         icon: 'ri-group-line',
       },
+      {
+        id: 38,
+        label: 'MENUITEMS.VENTAS.LIST.PEDIDOS',
+        link: '/ventas/pedidos',
+        parentId: 5,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 40,
+        label: 'MENUITEMS.VENTAS.LIST.PUNTOSEMISION',
+        link: '/ventas/puntosemision',
+        parentId: 5,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 41,
+        label: 'MENUITEMS.VENTAS.LIST.REGISTROCAIS',
+        link: '/ventas/registroscais',
+        parentId: 5,
+        icon: 'ri-group-line',
+      },
+      {
+        id: 42,
+        label: 'MENUITEMS.VENTAS.LIST.VENDEDORES',
+        link: '/ventas/Vendedores',
+        parentId: 5,
+        icon: 'ri-group-line',
+      }
       // Puedes añadir más subitems aquí según sea necesario
     ],
   },
@@ -239,18 +219,30 @@ export const MENU: MenuItem[] = [
         parentId: 4,
         icon: 'ri-truck-line',
       },
-
       {
-        id: 29,
+        id: 30,
+        label: 'MENUITEMS.LOGISTICA.LIST.RUTAS',
+        link: '/logistica/rutas',
+        parentId: 4,
+        icon: 'ri-truck-line',
+      },
+      {
+        id: 31,
         label: 'MENUITEMS.LOGISTICA.LIST.TRASLADOS',
         link: '/logistica/traslados',
         parentId: 4,
         icon: 'ri-truck-line',
       },
+      // {
+      //   id: 29,
+      //   label: 'MENUITEMS.LOGISTICA.LIST.RECARGAS',
+      //   link: '/logistica/recargas',
+      //   parentId: 4,
+      //   icon: 'ri-truck-line',
+      // },
       // Puedes añadir más subitems aquí según sea necesario
     ],
   },
-
   {
     id: 3,
     label: 'MENUITEMS.INVENTARIO.TEXT',
@@ -264,9 +256,9 @@ export const MENU: MenuItem[] = [
         icon: 'ri-truck-line',
       },
       {
-        id: 27,
-        label: 'MENUITEMS.INVENTARIO.LIST.SUBCATEGORIAS',
-        link: '/inventario/subcategorias',
+        id: 22,
+        label: 'MENUITEMS.INVENTARIO.LIST.DESCUENTOS',
+        link: '/inventario/descuentos',
         parentId: 3,
         icon: 'ri-truck-line',
       },
@@ -278,20 +270,34 @@ export const MENU: MenuItem[] = [
         icon: 'ri-truck-line',
       },
       {
-        id: 22,
-        label: 'MENUITEMS.INVENTARIO.LIST.DESCUENTOS',
-        link: '/inventario/descuentos',
+        id: 27,
+        label: 'MENUITEMS.INVENTARIO.LIST.SUBCATEGORIAS',
+        link: '/inventario/subcategorias',
         parentId: 3,
         icon: 'ri-truck-line',
       },
-      {
-        id: 26,
-        label: 'MENUITEMS.INVENTARIO.LIST.PROMOCIONES',
-        link: '/inventario/promociones',
+       {
+         id: 26,
+         label: 'MENUITEMS.INVENTARIO.LIST.PROMOCIONES',
+         link: '/inventario/promociones',
         parentId: 3,
-        icon: 'ri-truck-line',
-      },
+         icon: 'ri-truck-line',
+       },
       // Puedes añadir más subitems aquí según sea necesario
+    ],
+  },
+  {
+    id: 7,
+    label: 'MENUITEMS.REPORTES.TEXT',
+    icon: 'ri-layout-grid-fill',
+    subItems: [
+      {
+        id: 61,
+        label: 'MENUITEMS.REPORTES.LIST.REPORTEPRODUCTOS',
+        link: '/reportes/reporteproductos',
+        parentId: 7,
+        icon: 'ri-truck-line',
+      }
     ],
   },
 ];

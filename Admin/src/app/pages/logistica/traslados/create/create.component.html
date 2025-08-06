@@ -57,6 +57,10 @@
             <label class="form-label">Origen<span class="text-danger">*</span></label>
             <div class="mb-3">
               <div class="d-flex align-items-center">
+                <i class="ri-store-2-line" [ngStyle]="{
+                  border: ((!traslado.tras_Origen || traslado.tras_Origen == 0) && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: ((!traslado.tras_Origen || traslado.tras_Origen == 0) && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
                 <select 
                     id="trasOrigen" 
                     name="trasOrigen" 
@@ -65,20 +69,18 @@
                     [(ngModel)]="traslado.tras_Origen"
                     (change)="onOrigenChange()"
                     required>
-                        <option value="" disabled selected>Seleccione origen</option>
+                        <option value=0 disabled selected>Seleccione origen</option>
                         <option *ngFor="let origen of origenes" [value]="origen.sucu_Id">
                             {{ origen.sucu_Descripcion }}
                         </option>
                 </select>
-                <!-- Indicador de carga de inventario -->
-                <div *ngIf="cargandoInventario" class="ms-2">
-                  <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">Cargando inventario...</span>
-                  </div>
-                </div>
+                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
               </div>
-              <div class="text-danger mt-1" *ngIf="(!traslado.tras_Origen || traslado.tras_Origen == 0) && mostrarErrores">
-                <small>El campo origen es requerido</small>
+              <!-- Indicador de carga de inventario -->
+              <div *ngIf="cargandoInventario" class="ms-2">
+                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                  <span class="visually-hidden">Cargando inventario...</span>
+                </div>
               </div>
             </div>
           </div>
@@ -88,6 +90,10 @@
             <label class="form-label">Destino<span class="text-danger">*</span></label>
             <div class="mb-3">
               <div class="d-flex align-items-center">
+                <i class="ri-map-pin-line" [ngStyle]="{
+                  border: ((!traslado.tras_Destino || traslado.tras_Destino == 0) && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: ((!traslado.tras_Destino || traslado.tras_Destino == 0) && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
                 <select 
                     id="trasDestino" 
                     name="trasDestino" 
@@ -95,15 +101,16 @@
                     [class.is-invalid]="(!traslado.tras_Destino || traslado.tras_Destino == 0) && mostrarErrores"
                     [(ngModel)]="traslado.tras_Destino"
                     required>
-                        <option value="" disabled selected>Seleccione destino</option>
+                        <option value="0" disabled selected>Seleccione destino</option>
                         <option *ngFor="let destino of destinos" [value]="destino.bode_Id">
                             {{ destino.bode_Descripcion }}
                         </option>
                 </select>
+                <span class="text-danger ms-2" *ngIf="mostrarErrores">*</span>
               </div>
-              <div class="text-danger mt-1" *ngIf="(!traslado.tras_Destino || traslado.tras_Destino == 0) && mostrarErrores">
-                <small>El campo destino es requerido</small>
-              </div>
+            </div>
+            <div class="text-danger mt-1" *ngIf="(!traslado.tras_Destino || traslado.tras_Destino == 0) && mostrarErrores">
+              <small>El campo destino es requerido</small>
             </div>
           </div>
 
@@ -111,6 +118,10 @@
             <label class="form-label">Fecha<span class="text-danger">*</span></label>
             <div class="mb-3">
               <div class="d-flex align-items-center">
+                <i class="ri-calendar-2-line" [ngStyle]="{
+                  border: (!traslado.tras_Fecha && mostrarErrores) ? '1px solid #f9bcc4' : '1px solid #e9ecf5',
+                  backgroundColor: (!traslado.tras_Fecha && mostrarErrores) ? '#fff5f6' : '#f2f3f9',
+                  padding: '0.525rem 0.525rem', position: 'relative', left: '7px', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px'}"></i>
                 <input 
                   type="date" 
                   class="form-control" 
@@ -132,12 +143,12 @@
             <div class="mb-3">
               <div class="d-flex align-items-center">
                 <textarea 
-                  class="form-control" 
                   id="trasObservaciones"
+                  name="trasObservaciones"
+                  class="form-control"
                   [(ngModel)]="traslado.tras_Observaciones"
                   placeholder="Ingrese observaciones (opcional)"
-                  rows="3">
-                </textarea>
+                  rows="3"></textarea>
               </div>
             </div>
           </div>
@@ -337,6 +348,8 @@
                 </ul>
               </nav>
             </div>
+
+            
           </div>
         </div>
       </div>

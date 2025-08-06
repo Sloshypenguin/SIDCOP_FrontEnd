@@ -5,24 +5,43 @@
     { label: 'Empleados', active: true }
   ]"
 >
-  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/Vector.svg" alt="icono breadcrumb" />
+  <img class="breadcrumbs-icon ms-2 icon-breadcrumb" src="assets/images/imagenes/clasificacion.png" alt="icono breadcrumb" />
 </app-breadcrumbs>
 
 <div class="card">
     <div class="card-body">
         <div class="row align-items-center g-2" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-  <div class="col-lg-3 me-auto">
-    <button type="button" class="btn btn-primary me-2 mb-2" (click)="crear()">
+  
+
+
+  <div class="d-flex flex-wrap align-items-center justify-content-between mb-3" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+  <div class="d-flex align-items-center gap-2 mb-2">
+    <button *ngIf="accionPermitida('crear')" type="button" class="btn btn-primary me-2" (click)="crear()">
       <span class="btn-text">Nuevo</span>
       <span class="btn-icon"><i class="ri-add-line"></i></span>
     </button>
-  </div><!--end col-->
-  <div class="col-lg-2">
-    <div class="search-box w-100" style="position: relative; min-width: 0;">
-      <input type="text" class="form-control search" style="width: 100%; min-width: 0;" placeholder="Buscar por nombre, correo..." [(ngModel)]="term" (keyup)="filterdata()">
-      <i class="ri-search-line search-icon" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #888;"></i>
+  </div>
+  <div class="d-flex align-items-center gap-2 mb-2 ms-auto">
+    
+    <div class="export-buttons d-flex gap-1">
+      <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarExcel()" title="Exportar a Excel">
+        <span class="btn-text">Excel</span>
+        <span class="btn-icon"><i class="ri-file-excel-2-line" style="font-weight: 100;"></i></span>
+      </button>
+      <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarPDF()" title="Exportar a PDF">
+        <span class="btn-text">PDF</span>
+        <span class="btn-icon"><i class="ri-file-ppt-line" style="font-weight: 100;"></i></span>
+      </button>
+      <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarCSV()" title="Exportar a CSV">
+        <span class="btn-text">CSV</span>
+        <span class="btn-icon"><i class="ri-file-text-line" style="font-weight: 100;"></i></span>
+      </button>
     </div>
-  </div><!--end col-->
+    <div class="search-box me-2">
+      <input type="text" class="form-control search" placeholder="Buscar por nombre, correo..." [(ngModel)]="term" (keyup)="filterdata()">
+      <i class="ri-search-line search-icon"></i>
+    </div>
+  </div>
 </div>
 
         <!-- Collapse para el formulario de creación -->
@@ -63,7 +82,7 @@
 </div><!--end card-->
 
 <!-- Mostrar listado solo si no se está creando, editando o viendo detalles -->
-<div class="row g-4 justify-content-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+<div class="row g-4 justify-content-start" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
 
     <div class="row g-4 justify-content-center" *ngIf="isLoading">
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 d-flex" *ngFor="let n of [1,2,3,4,5,6,7,8,9,10]">
@@ -110,7 +129,7 @@
                     />
                 </div>
 
-                <div style="position: absolute; top: 0px; right: 0px; z-index:10000;" >
+                <div style="position: absolute; top: 0px; right: 0px; z-index:10000;" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalles') ">
                                 <div class="dropdown-action-list" (document:click)="onDocumentClick($event, empleado.empl_Id)">
                                     <button class="buttonConfig"
                                         [attr.aria-expanded]="activeActionRow === empleado.empl_Id"
@@ -119,17 +138,17 @@
                                     </button>
                                     <span class="acciones-text">Acciones</span>
                                     <ul *ngIf="activeActionRow === empleado.empl_Id" class="dropdown-menu show" style="left: -100px;">
-                                        <li>
+                                        <li *ngIf="accionPermitida('editar')">
                                             <button class="dropdown-action-btn" (click)="editar(empleado)">Editar
                                                 <i class="ri-edit-line"></i></button>
                                         </li>
-                                        <li *ngIf="showDelete">
+                                        <li *ngIf="showDelete" >
                                           <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(empleado)">
                                             Eliminar <i class="ri-delete-bin-line"></i>
                                           </button>
                                         </li>
 
-                                        <li >
+                                        <li *ngIf="accionPermitida('detalle')">
                                             <button class="dropdown-action-btn" (click)="detalles(empleado)">Detalles
                                                 <i class="ri-error-warning-fill"></i></button>
                                         </li>
@@ -171,26 +190,336 @@
                         </span>
                     </li>
                 </ul>
-
                 <!-- Acciones -->
-                
                 </div>
-
-
         </div>
     </div>
-
-
     }
 </div><!--end row-->
-<div class="noresult"  style="display: none;">
-    <div class="text-center py-4">
-        <i class="ph-magnifying-glass fs-1 text-primary"></i>
-        <h5 class="mt-2">Sorry! No Result Found</h5>
-        <p class="text-muted mb-0">We've searched more than 150+ Courses We did not find any Courses
-            for you search.</p>
+<div class="noresult" style="display: none;">
+    <div class="noresult-container d-flex flex-column align-items-center justify-content-center py-5" style="min-height: 400px; position: relative; overflow: hidden;">
+      
+      <!-- Elementos decorativos de fondo -->
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+      </div>
+      
+      <!-- Icono principal con animación -->
+      <div class="noresult-icon-wrapper mb-4">
+        <div class="noresult-icon">
+          <div class="search-circle">
+          </div>
+          <div class="magnifying-glass">
+            <div class="glass-handle"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contenido principal -->
+      <div class="noresult-content text-center" style="z-index: 10; position: relative;">
+        <h3 class="noresult-title mb-3">¡Ups! No encontramos nada</h3>
+        <p class="noresult-description mb-4">No hay empleados que coincidan con tu búsqueda.<br>
+        <span class="suggestion-text">Intenta con otros términos o verifica la ortografía</span></p>
+        
+        
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+          <button class="btn btn-outline-primary me-2 noresult-btn" (click)="term=''; filterdata();">
+            <i class="ri-refresh-line me-2"></i> Limpiar filtros
+          </button>
+        </div>
+      </div>
     </div>
 </div>
+
+<!-- Estilos CSS para el diseño mejorado -->
+<style>
+.noresult {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f1f3f9 100%);
+  border-radius: 20px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(213, 181, 138, 0.1);
+}
+
+.floating-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(45deg, #d5b58a, #f2f3f9);
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #262b40, #d5b58a);
+  top: 60%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.shape-3 {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #f2f3f9, #262b40);
+  top: 30%;
+  right: 25%;
+  animation-delay: 4s;
+}
+
+.shape-4 {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, #d5b58a, #262b40);
+  bottom: 20%;
+  left: 20%;
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-20px) rotate(120deg); }
+  66% { transform: translateY(10px) rotate(240deg); }
+}
+
+.noresult-icon-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.noresult-icon {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.search-circle {
+  width: 80px;
+  height: 80px;
+  border: 4px solid #d5b58a;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+  box-shadow: 0 8px 25px rgba(213, 181, 138, 0.2);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+
+.magnifying-glass {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+}
+
+.glass-handle {
+  width: 30px;
+  height: 4px;
+  background: #d5b58a;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 8px rgba(213, 181, 138, 0.3);
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 8px 25px rgba(213, 181, 138, 0.2); }
+  50% { transform: scale(1.05); box-shadow: 0 12px 35px rgba(213, 181, 138, 0.3); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(45deg); }
+  25% { transform: rotate(40deg); }
+  75% { transform: rotate(50deg); }
+}
+
+.noresult-title {
+  color: #262b40;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.noresult-description {
+  color: #6c757d;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto 1.5rem;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.suggestion-text {
+  color: #d5b58a;
+  font-weight: 500;
+}
+
+.search-suggestions {
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.suggestion-tags {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.suggestion-tag {
+  background: linear-gradient(135deg, #d5b58a 0%, #c4a373 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(213, 181, 138, 0.2);
+}
+
+.suggestion-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(213, 181, 138, 0.3);
+  background: linear-gradient(135deg, #c4a373 0%, #b8956a 100%);
+}
+
+.action-buttons {
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.noresult-btn {
+  border-radius: 25px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.btn-outline-primary.noresult-btn {
+  border-color: #d5b58a;
+  color: #d5b58a;
+  background: transparent;
+}
+
+.btn-outline-primary.noresult-btn:hover {
+  background: #d5b58a;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(213, 181, 138, 0.3);
+}
+
+.btn-primary.noresult-btn {
+  background: linear-gradient(135deg, #d5b58a 0%, #c4a373 100%);
+  border-color: #d5b58a;
+  color: white;
+}
+
+.btn-primary.noresult-btn:hover {
+  background: linear-gradient(135deg, #c4a373 0%, #b8956a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(213, 181, 138, 0.4);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .noresult-title {
+    font-size: 1.5rem;
+  }
+  
+  .noresult-description {
+    font-size: 1rem;
+    max-width: 320px;
+  }
+  
+  .noresult-icon {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .search-circle {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .search-icon {
+    font-size: 1.7rem;
+  }
+  
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .noresult-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+</style>
+
+<div class="row align-items-center mb-3 mx-2" id="pagination-element">
+            <div class="col-sm">
+                <div class="text-sm-start">
+                    Mostrando del <span>{{startIndex}}</span> - <span>{{endIndex}}</span> de <span>{{usuarioGrid?.length}}</span> registros
+                </div>
+            </div>
+            <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
+                <pagination 
+                    [totalItems]="usuarioGrid?.length" 
+                    [itemsPerPage]="itemsPerPage" 
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div>
+        </div>     
 
 <div id="elmLoader">
     <div class="spinner-border text-primary avatar-sm" role="status">
@@ -198,22 +527,6 @@
     </div>
 </div>
 
-<div class="row justify-content-md-between align-items-md-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <ng-container *ngIf="(table.paginated$ | async) as paginados">
-            <div class="col-sm-12 col-md-5">
-              <div class="dataTables_info mb-2" role="status" aria-live="polite">
-                Mostrando
-                {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.  total$ | async }}
-                registros
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-5">
-              <div class="text-md-right float-md-end gridjs-pagination">
-                <pagination [totalItems]="(table.total$ | async) || 0" [(ngModel)]="table.page" [itemsPerPage]="table.pageSizeValue" (pageChanged)="table.setPage($event.page)"></pagination>
-              </div>
-            </div>
-          </ng-container>
-        </div>
 
 <!-- Contenedor de alertas flotantes -->
 <div class="alert-container">

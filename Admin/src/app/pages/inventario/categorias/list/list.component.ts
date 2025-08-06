@@ -13,6 +13,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
+import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 
 @Component({
   selector: 'app-list',
@@ -111,7 +112,8 @@ export class ListComponent {
   mostrarConfirmacionEliminar = false;
   categoriaAEliminar: Categoria | null = null;
 
-  constructor(public table: ReactiveTableService<Categoria>, private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(public table: ReactiveTableService<Categoria>, private http: HttpClient, private router: Router, 
+              private route: ActivatedRoute, public floatingMenuService: FloatingMenuService) {
     this.cargardatos();
 
     // Obtener acciones disponibles del usuario (ejemplo: desde API o localStorage)
@@ -287,7 +289,13 @@ export class ListComponent {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       console.log('Datos recargados:', data);
-      this.table.setData(data);
+      // agregar numero de fila
+      const datosConIndex = data;
+      datosConIndex.forEach((item, index) => {
+        item.No = index + 1; // Agregar número de fila
+        item.cate_Descripcion = item.cate_Descripcion || ''; // Asegurar que cate_Descripcion no sea undefined
+      });
+      this.table.setData(datosConIndex);
     });
   }
 }

@@ -20,66 +20,108 @@
   
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && bodegaDetalle" class="details-content">
-    
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles de Estados Civiles</div>
-      <div class="details-id-row">
-  <div class="details-id">
-    <div class="details-id-label">Descripción</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_Descripcion }}</div>
+       <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+  <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+    <i class="ri-truck-line me-2 fs-4"></i>
+     <h5 class="mb-0">Detalles de la Bodega</h5>
   </div>
-  <div class="details-id">
-    <div class="details-id-label">VIN</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_VIN }}</div>
-  </div>
-  <div class="details-id">
-    <div class="details-id-label">Placa</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_Placa }}</div>
-  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-attachment-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Descripcion</div>
+            <div class="detail-value">{{ bodegaDetalle.bode_Descripcion }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-article-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">VIN</div>
+            <div class="detail-value">{{ bodegaDetalle.bode_VIN }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-barcode-box-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Placa</div>
+            <div class="detail-value">{{ bodegaDetalle.bode_Placa }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-code-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Capacidad</div>
+            <div class="detail-value">{{ bodegaDetalle.bode_Capacidad }} QQ</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-truck-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Tipo de Camion</div>
+            <div class="detail-value">{{
+              bodegaDetalle.bode_TipoCamion === 'G' ? 'Grande' :
+              bodegaDetalle.bode_TipoCamion === 'M' ? 'Mediano' :
+              bodegaDetalle.bode_TipoCamion === 'P' ? 'Pequeño' :
+              'N/A'
+            }}</div>
+          </div>
+        </div>
+      </div>
+       <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-bill-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Registro Cai</div>
+            <div class="detail-value">{{ bodegaDetalle.regC_Descripcion }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-steering-fill"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Modelo</div>
+            <div class="detail-value">{{ bodegaDetalle.mode_Descripcion }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-user-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Vendedor</div>
+            <div class="detail-value">{{ bodegaDetalle.vend_Nombres }} {{ bodegaDetalle.vend_Apellidos }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="detail-item">
+          <div class="detail-icon bg-dark-blue text-white"><i class="ri-pin-distance-line"></i></div>
+          <div class="detail-content">
+            <div class="detail-label">Sucursal</div>
+            <div class="detail-value">{{ bodegaDetalle.sucu_Descripcion }}</div>
+          </div>
+        </div>
+      </div>
+      </div>
 
-  <div class="details-id">
-    <div class="details-id-label">Tipo de Camion</div>
-    <div class="details-id-value"> {{
-    bodegaDetalle.bode_TipoCamion === 'G' ? 'Grande' :
-    bodegaDetalle.bode_TipoCamion === 'M' ? 'Mediano' :
-    bodegaDetalle.bode_TipoCamion === 'P' ? 'Pequeño' :
-    'N/A'
-  }}</div>
-
-   
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Capacidad</div>
-    <div class="details-id-value">{{ bodegaDetalle.bode_Capacidad }} QQ</div>
-  </div>
-
-  <div class="details-id">
-    <div class="details-id-label">Registro Cai</div>
-    <div class="details-id-value">{{ bodegaDetalle.regC_Descripcion }}</div>
-  </div>
-  
-
-  <div class="details-id">
-    <div class="details-id-label">Modelo</div>
-    <div class="details-id-value">{{ bodegaDetalle.mode_Descripcion }}</div>
-  </div>
-
-   <div class="details-id">
-    <div class="details-id-label">Vendedor</div>
-    <div class="details-id-value">{{ bodegaDetalle.vend_Nombres }} {{ bodegaDetalle.vend_Apellidos }}</div>
-  </div>
-
-
-
-   <div class="details-id">
-    <div class="details-id-label">Sucursal</div>
-    <div class="details-id-value">{{ bodegaDetalle.sucu_Descripcion }}</div>
-  </div>
-</div>
+      </div>
     </div>
-     <h4 class="details-title mt-4 mb-3" style="color: black ;">Historial de acciones</h4>  
+  
+   
+
+     
     
 
     
@@ -102,7 +144,7 @@
           <span class="audit-user">{{ bodegaDetalle.usuarioCreacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaCreacion) }}</span>
+          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaCreacion || null) }}</span>
         </div>
       </div>
       
@@ -115,11 +157,9 @@
           <span class="audit-user">{{ bodegaDetalle.usuarioModificacion || 'N/A' }}</span>
         </div>
         <div class="audit-col">
-          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaModificacion?? null ) }}</span>
+          <span class="audit-date">{{ formatearFecha(bodegaDetalle.bode_FechaModificacion || null )  }}</span>
         </div>
       </div>
     </div>
     </div>
     
-  </div>
-</div>

@@ -1,15 +1,13 @@
 <div class="details-container">
-  
   <!-- Contenedor de alertas flotantes -->
   <div class="alert-container">
-    <!-- Alerta de error -->
     <div *ngIf="mostrarAlertaError" class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" role="alert">
       <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
       <strong>¡Error!</strong> {{ mensajeError }}
       <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
     </div>
   </div>
-  
+
   <!-- Botón de regresar -->
   <div class="details-header-button">
     <button type="button" class="btn btn-primary" (click)="cerrar()">
@@ -17,48 +15,100 @@
       <span class="btn-icon"><i class="ri-arrow-left-line"></i></span>
     </button>
   </div>
-  
-  <!-- Contenido de detalles -->
+
   <div *ngIf="!cargando && coloniaDetalle" class="details-content">
-    
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles de Colonia</div>
-      <div class="details-id-row">
-        <div class="details-id">
-          <div class="details-id-label">Registro</div>
-          <div class="details-id-value">{{ coloniaDetalle.secuencia || 'N/A' }}</div>
+    <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+        <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+          <i class="ri-community-line me-2 fs-4"></i>
+          <h4 class="mb-0" style="color: #303d7d">Detalles de Colonia</h4>
         </div>
-        <div class="details-id">
-          <div class="details-id-label">Municipio Codigo</div>
-          <div class="details-id-value">{{ coloniaDetalle.muni_Codigo || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Departamento Codigo</div>
-          <div class="details-id-value">{{ coloniaDetalle.depa_Codigo || 'N/A' }}</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-4" *ngIf="coloniaDetalle.secuencia">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-number-1"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Registro</div>
+                  <div class="detail-value">
+                    {{ coloniaDetalle.secuencia }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-file-list-3-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Descripción</div>
+                  <div class="detail-value">
+                    {{ coloniaDetalle.colo_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-map-pin-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Municipio</div>
+                  <div class="detail-value">
+                    {{ coloniaDetalle.muni_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-hashtag"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Código Municipio</div>
+                  <div class="detail-value">
+                    {{ coloniaDetalle.muni_Codigo || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-building-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Departamento</div>
+                  <div class="detail-value">
+                    {{ coloniaDetalle.depa_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-hashtag"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Código Departamento</div>
+                  <div class="detail-value">
+                    {{ coloniaDetalle.depa_Codigo || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <!--  -->
-      <div class="details-id-row">
-        <div class="details-id">
-          <div class="details-id-label">Descripción</div>
-          <div class="details-id-value">{{ coloniaDetalle.colo_Descripcion || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Municipio</div>
-          <div class="details-id-value">{{ coloniaDetalle.muni_Descripcion || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Departamento</div>
-          <div class="details-id-value">{{ coloniaDetalle.depa_Descripcion || 'N/A' }}</div>
-        </div>
-      </div>
-      <!--  -->
     </div>
-    
-    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
-    
-    <!-- Tabla de auditoría -->
+
+   
     <div class="audit-table-container">
       <div class="audit-table">
         <div class="audit-header">
@@ -66,7 +116,6 @@
           <div class="audit-col">Usuario</div>
           <div class="audit-col">Fecha</div>
         </div>
-      
         <!-- Fila de creación -->
         <div class="audit-row">
           <div class="audit-col">
@@ -79,11 +128,10 @@
             <span class="audit-date">{{ formatearFecha(coloniaDetalle.colo_FechaCreacion) }}</span>
           </div>
         </div>
-
         <!-- Fila de modificación -->
         <div class="audit-row">
           <div class="audit-col">
-            <span class="audit-action">Modificador</span>
+            <span class="audit-action">Modificación</span>
           </div>
           <div class="audit-col">
             <span class="audit-user">{{ coloniaDetalle.usuarioModificacion || 'N/A' }}</span>
@@ -95,7 +143,5 @@
       </div>
     </div>
   </div>
-  
-
 </div>
 

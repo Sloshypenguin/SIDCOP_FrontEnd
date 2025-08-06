@@ -14,11 +14,12 @@ import { CdkStepperModule } from '@angular/cdk/stepper';
 import { NgStepperModule } from 'angular-ng-stepper';
 import { ViewChild } from '@angular/core';
 import { CdkStepper } from '@angular/cdk/stepper';
+import { CurrencyMaskModule } from "ng2-currency-mask";
 
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule,  NgxMaskDirective, NgSelectModule, CdkStepperModule, NgStepperModule],
+  imports: [CommonModule, FormsModule, HttpClientModule,  NgxMaskDirective, NgSelectModule, CdkStepperModule, NgStepperModule,CurrencyMaskModule],
    providers: [provideNgxMask()],
   templateUrl: './edit.component.html',
   styleUrl: './edit.component.scss'
@@ -30,10 +31,11 @@ export class EditComponent implements OnChanges {
 seccionVisible: string | null = null;
   filtro: string = '';
   seleccionados: number[] = [];
-  clientesAgrupados: { canal: string, clientes: any[] }[] = [];
+  clientesAgrupados: { canal: string, clientes: any[], filtro: string, collapsed: boolean }[] = [];
 clientesSeleccionados: number[] = [];
 descuentosExistentes: any[] = [];
 activeTab: number = 1;
+
  @ViewChild('cdkStepper') cdkStepper!: CdkStepper;
 
     tabActiva: string = 'productos';
@@ -132,6 +134,7 @@ hoy: string;
     const today = new Date();
     this.hoy = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
     this.mostrarSeccion('productos');
+    this.activeTab = 1;
 
     
   }
@@ -264,7 +267,8 @@ hoy: string;
     this.clientesAgrupados = Object.keys(agrupados).map(canal => ({
       canal,
       filtro: '', // Se agrega filtro para el buscador individual
-      clientes: agrupados[canal]
+      clientes: agrupados[canal],
+      collapsed: true // Inicialmente todos los canales están expandidos
     }));
   });
 }
@@ -305,11 +309,15 @@ eliminarEscala(index: number) {
 
 getClientesFiltrados(grupo: any): any[] {
   if (!grupo.filtro) return grupo.clientes;
-  return grupo.clientes.filter((c: any) =>
-    (c.clie_NombreComercial || c.clie_NombreCompleto || '')
-      .toLowerCase()
-      .includes(grupo.filtro.toLowerCase())
-  );
+  return grupo.clientes.filter((c: any) => {
+    const searchText = (
+      c.clie_NombreNegocio || 
+      c.clie_NombreComercial || 
+      c.clie_NombreCompleto || 
+      ''
+    ).toLowerCase();
+    return searchText.includes(grupo.filtro.toLowerCase());
+  });
 }
 
 alternarCliente(clienteId: number, checked: boolean): void {
@@ -374,9 +382,9 @@ hayConflicto(clienteId: number): boolean {
       return false;
   }
 
-  // Filtrar descuentos del mismo tipo (P, C, M o S)
+  // Filtrar descuentos del mismo tipo (P, C, M o S) y excluir el descuento actual en modo edición
   const descuentosMismoTipo = this.descuentosExistentes.filter(
-    d => d.desc_Aplicar === this.descuento.desc_Aplicar
+    d => d.desc_Aplicar === this.descuento.desc_Aplicar && d.desc_Id !== this.descuento.desc_Id
   );
 
   // Verificar conflicto
@@ -416,6 +424,83 @@ seleccionarTodosClientes(grupo: any, seleccionar: boolean): void {
   grupo.clientes.forEach((cliente: { clie_Id: number; }) => {
     this.alternarCliente(cliente.clie_Id, seleccionar);
   });
+}
+// Alternar el estado colapsado/expandido de un canal
+toggleCanal(grupo: any): void {
+  grupo.collapsed = !grupo.collapsed;
+}
+// Obtener el precio más bajo de todos los items seleccionados
+getPrecioMinimoSeleccionados(): number {
+  if (!this.descuento.desc_Tipo) { // Si es porcentaje, no hay límite de precio
+    return Infinity;
+  }
+
+  let precios: number[] = [];
+
+  switch (this.descuento.desc_Aplicar) {
+    case 'P': // Productos
+      precios = this.productos
+        .filter(p => this.seleccionados.includes(p.prod_Id))
+        .map(p => p.prod_PrecioUnitario || 0)
+        .filter(precio => precio > 0);
+      break;
+
+    case 'C': // Categorías
+      const productosDeCategoriasSeleccionadas = this.productos
+        .filter(p => this.seleccionados.includes(p.cate_Id))
+        .map(p => p.prod_PrecioUnitario || 0)
+        .filter(precio => precio > 0);
+      precios = productosDeCategoriasSeleccionadas;
+      break;
+
+    case 'S': // Subcategorías
+      const productosDeSubcategoriasSeleccionadas = this.productos
+        .filter(p => this.seleccionados.includes(p.subc_Id))
+        .map(p => p.prod_PrecioUnitario || 0)
+        .filter(precio => precio > 0);
+      precios = productosDeSubcategoriasSeleccionadas;
+      break;
+
+    case 'M': // Marcas
+      const productosDeMarcasSeleccionadas = this.productos
+        .filter(p => this.seleccionados.includes(p.marc_Id))
+        .map(p => p.prod_PrecioUnitario || 0)
+        .filter(precio => precio > 0);
+      precios = productosDeMarcasSeleccionadas;
+      break;
+
+    default:
+      return Infinity;
+  }
+
+  if (precios.length === 0) {
+    return Infinity; // No hay precios válidos
+  }
+
+  return Math.min(...precios);
+}
+
+
+get valorMaximoPermitido(): string {
+  if (!this.descuento.desc_Tipo) {
+    return '100%'; // Para porcentajes
+  }
+  
+  const precioMinimo = this.getPrecioMinimoSeleccionados();
+  if (precioMinimo === Infinity) {
+    return 'Sin límite (seleccione items primero)';
+  }
+  
+  return `L. ${precioMinimo.toFixed(2)}`;
+}
+
+// Obtener el valor máximo permitido como número para comparaciones
+get valorMaximoNumerico(): number {
+  if (!this.descuento.desc_Tipo) {
+    return 100; // Para porcentajes
+  }
+  
+  return this.getPrecioMinimoSeleccionados();
 }
 
 get fechaInicioFormato(): string {
@@ -510,15 +595,22 @@ tieneAyudante: boolean = false;
       switch (this.descuento.desc_Aplicar) {
         case 'P':
           this.seccionVisible = 'productos';
+          this.tabActiva = 'productos';
           break;
         case 'C':
           this.seccionVisible = 'categorias';
+          this.tabActiva = 'categorias';
+
           break;
         case 'S':
           this.seccionVisible = 'subcategorias';
+          this.tabActiva = 'subcategorias';
+
           break;
         case 'M':
           this.seccionVisible = 'marcas';
+          this.tabActiva = 'marcas';
+
           break;
       }
       this.descuento.desc_FechaInicio = new Date(this.descuento.desc_FechaInicio);
@@ -688,13 +780,13 @@ tieneAyudante: boolean = false;
 
   validarPasoActual(): boolean {
   switch (this.activeTab) {
-    case 0: // Información general
+    case 1: // Información general
       return this.validarPasoInformacionGeneral();
-    case 1: // Aplica para
+    case 2: // Aplica para
       return this.seleccionados.length > 0;
-    case 2: // Clientes
+    case 3: // Clientes
       return this.clientesSeleccionados.length > 0;
-    case 3: // Escalas
+    case 4: // Escalas
       return this.validarEscalas();
     default:
       return false;
@@ -724,6 +816,11 @@ irAlSiguientePaso() {
   if (this.validarPasoActual()) {
     this.mostrarErrores = false;
     this.activeTab ++;
+    
+    // Si acabamos de navegar al tab de clientes (activeTab === 3), validar clientes seleccionados
+    if (this.activeTab === 3) {
+      this.validarClientesSeleccionadosAlLlegarATab();
+    }
   } else {
     this.mostrarAlertaWarning = true;
     this.mensajeWarning= 'Debe Completar todos los campos'
@@ -758,7 +855,8 @@ puedeAgregarNuevaEscala(): boolean {
       escala.deEs_FinEscala == null ||
       escala.deEs_Valor == null ||
       escala.deEs_FinEscala <= escala.deEs_InicioEscala ||
-        escala.deEs_Valor == 0
+        escala.deEs_Valor == 0 ||
+        escala.deEs_Valor >= this.valorMaximoNumerico
 
     ) {
       return false;
@@ -769,7 +867,8 @@ puedeAgregarNuevaEscala(): boolean {
       if (
         escala.deEs_InicioEscala <= anterior.deEs_FinEscala ||
         escala.deEs_Valor <= anterior.deEs_Valor ||
-        escala.deEs_Valor == 0
+        escala.deEs_Valor == 0 ||
+        escala.deEs_Valor >= this.valorMaximoNumerico
       ) {
         return false;
       }
@@ -777,6 +876,47 @@ puedeAgregarNuevaEscala(): boolean {
   }
 
   return true;
+}
+
+// Validar clientes seleccionados cuando se navega al tab de clientes
+validarClientesSeleccionadosAlLlegarATab(): void {
+  if (this.clientesSeleccionados.length === 0) {
+    return; // No hay clientes seleccionados, no hay nada que validar
+  }
+
+  const clientesConConflicto: number[] = [];
+  let mensajeConflictos = '';
+
+  // Revisar cada cliente seleccionado para ver si tiene conflictos
+  for (const clienteId of this.clientesSeleccionados) {
+    if (this.hayConflicto(clienteId)) {
+      clientesConConflicto.push(clienteId);
+    }
+  }
+
+  // Si hay clientes con conflictos, deseleccionarlos y mostrar mensaje
+  if (clientesConConflicto.length > 0) {
+    // Deseleccionar clientes con conflicto
+    this.clientesSeleccionados = this.clientesSeleccionados.filter(
+      id => !clientesConConflicto.includes(id)
+    );
+
+    // Preparar mensaje informativo
+    if (clientesConConflicto.length === 1) {
+      mensajeConflictos = 'Se ha deseleccionado 1 cliente que tenía conflicto con los ítems seleccionados.';
+    } else {
+      mensajeConflictos = `Se han deseleccionado ${clientesConConflicto.length} clientes que tenían conflictos con los ítems seleccionados.`;
+    }
+
+    // Mostrar mensaje de advertencia
+    this.mostrarAlertaWarning = true;
+    this.mensajeWarning = mensajeConflictos;
+    
+    setTimeout(() => {
+      this.mostrarAlertaWarning = false;
+      this.mensajeWarning = '';
+    }, 5000);
+  }
 }
 
 }

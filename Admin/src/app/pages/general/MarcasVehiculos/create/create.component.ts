@@ -39,7 +39,8 @@ export class CreateComponent {
     code_Status: 0,
     message_Status: '',
     usuarioCreacion: '',
-    usuarioModificacion: ''
+    usuarioModificacion: '',
+    secuencia: 0,
   };
 
   cancelar(): void {
@@ -56,12 +57,13 @@ export class CreateComponent {
       usua_Creacion: 0,
       usua_Modificacion: 0,
       maVe_Estado: true,
-      maVe_FechaCreacion: new Date(),
+      maVe_FechaCreacion: new Date(), 
       maVe_FechaModificacion: new Date(),
       code_Status: 0,
       message_Status: '',
       usuarioCreacion: '',
-      usuarioModificacion: ''
+      usuarioModificacion: '',
+      secuencia: 0,
     };
     this.onCancel.emit();
   }

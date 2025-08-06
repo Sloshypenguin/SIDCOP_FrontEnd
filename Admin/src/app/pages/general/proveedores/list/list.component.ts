@@ -14,6 +14,7 @@ import { CreateComponent } from '../create/create.component';
 import { EditComponent } from '../edit/edit.component';
 import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
+import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
 import {
   trigger,
   state,
@@ -72,6 +73,37 @@ import {
   ]
 })
 export class ListComponent implements OnInit {
+  private readonly exportConfig = {
+        // Configuración básica
+        title: 'Listado de Proveedores',                    // Título del reporte
+        filename: 'Proveedores',                           // Nombre base del archivo
+        department: 'General',                         // Departamento
+        additionalInfo: 'Sistema de Gestión',         // Información adicional
+        
+        // Columnas a exportar - CONFIGURA SEGÚN TUS DATOS
+        columns: [
+          { key: 'Codigo', header: 'Codigo', width: 15, align: 'left' as const },
+          { key: 'Contacto', header: 'Contacto', width: 40, align: 'left' as const },
+          { key: 'Empresa', header: 'Empresa', width: 50, align: 'left' as const },
+          { key: 'Telefono', header: 'Telefono', width: 40, align: 'left' as const },
+          { key: 'Dirección', header: 'Dirección', width: 40, align: 'left' as const }
+       
+        ] as ExportColumn[],
+        
+        // Mapeo de datos - PERSONALIZA SEGÚN TU MODELO
+        dataMapping: (proveedores: Proveedor, index: number) => ({
+          'Codigo': proveedores?.prov_Codigo || (index + 1),
+          'Contacto': this.limpiarTexto(proveedores?.prov_NombreContacto),
+          'Empresa': this.limpiarTexto(proveedores?.prov_NombreEmpresa),
+          'Telefono': this.limpiarTexto(proveedores?.prov_Telefono),
+          'Dirección': this.limpiarTexto(proveedores?.prov_DireccionExacta),
+          // Agregar más campos aquí según necesites:
+          // 'Campo': this.limpiarTexto(modelo?.campo),
+        })
+      };
+
+
+
   // bread crumb items
   breadCrumbItems!: Array<{}>;
 
@@ -98,6 +130,10 @@ export class ListComponent implements OnInit {
   proveedorDetalle: Proveedor | null = null;
   proveedorAEliminar: Proveedor | null = null;
 
+  // Estado de exportación
+  exportando = false;
+  tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
+
   mostrarConfirmacionEliminar = false;
 
   constructor(
@@ -105,7 +141,8 @@ export class ListComponent implements OnInit {
     private http: HttpClient, 
     private router: Router, 
     private route: ActivatedRoute,
-    public floatingMenuService: FloatingMenuService
+    public floatingMenuService: FloatingMenuService,
+    private exportService: ExportService
   ) {
     this.cargardatos(true);
   }
@@ -222,35 +259,68 @@ export class ListComponent implements OnInit {
     this.proveedorAEliminar = null;
   }
 
-  eliminar(): void {
-    if (!this.proveedorAEliminar) return;
-    console.log('Eliminando proveedor:', this.proveedorAEliminar);
-    this.http.post(`${environment.apiBaseUrl}/Proveedor/Eliminar?id=${this.proveedorAEliminar.prov_Id}`,{}, {
-      headers: { 
-        'X-Api-Key': environment.apiKey,
-        'accept': '*/*'
-      }
-    }).subscribe({
-      next: (response: any) => {
-        this.mostrarAlertaExito = true;
-        this.mensajeExito = 'Proveedor eliminado correctamente.';
-        setTimeout(() => {
-          this.mostrarAlertaExito = false;
-          this.mensajeExito = '';
-        }, 3000);
-        this.cargardatos(false);
-        this.cancelarEliminar();
-      },
-      error: (error) => {
+eliminar(): void {
+  if (!this.proveedorAEliminar) return;
+  console.log('Eliminando proveedor:', this.proveedorAEliminar);
+  this.http.post(`${environment.apiBaseUrl}/Proveedor/Eliminar?id=${this.proveedorAEliminar.prov_Id}`,{}, {
+    headers: { 
+      'X-Api-Key': environment.apiKey,
+      'accept': '*/*'
+    }
+  }).subscribe({
+    next: (response: any) => {
+      if (response.success && response.data) {
+        if (response.data.code_Status === 1) {
+          // Éxito - proveedor eliminado
+          this.mensajeExito = `Proveedor "${this.proveedorAEliminar!.prov_NombreEmpresa}" eliminado exitosamente`;
+          this.mostrarAlertaExito = true;
+          setTimeout(() => {
+            this.mostrarAlertaExito = false;
+            this.mensajeExito = '';
+          }, 3000);
+          this.cargardatos(false);
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === -1) {
+          // Error - proveedor en uso
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'No se puede eliminar: el proveedor está siendo utilizado.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        } else if (response.data.code_Status === 0) {
+          // Error general
+          this.mostrarAlertaError = true;
+          this.mensajeError = response.data.message_Status || 'Error al eliminar el proveedor.';
+          setTimeout(() => {
+            this.mostrarAlertaError = false;
+            this.mensajeError = '';
+          }, 5000);
+          this.cancelarEliminar();
+        }
+      } else {
+        // Respuesta inesperada
         this.mostrarAlertaError = true;
-        this.mensajeError = 'Error al eliminar el proveedor.';
+        this.mensajeError = response.message || 'Error inesperado al eliminar el proveedor.';
         setTimeout(() => {
           this.mostrarAlertaError = false;
           this.mensajeError = '';
         }, 5000);
+        this.cancelarEliminar();
       }
-    });
-  }
+    },
+    error: (error) => {
+      this.mostrarAlertaError = true;
+      this.mensajeError = 'Error al eliminar el proveedor.';
+      setTimeout(() => {
+        this.mostrarAlertaError = false;
+        this.mensajeError = '';
+      }, 5000);
+      this.cancelarEliminar();
+    }
+  });
+}
 
   // Declaramos un estado en el cargarDatos, esto para hacer el overlay
   // segun dicha funcion de recargar, ya que si vienes de hacer una accion
@@ -272,6 +342,11 @@ export class ListComponent implements OnInit {
           this.mostrarOverlayCarga = false;
           this.table.setData(datosFiltrados);
         }, 500);
+
+        // Asignar numeración de filas
+        datosFiltrados.forEach((proveedor, index) => {
+          proveedor.No = index + 1;
+        });
       },
       error: error => {
         console.error('Error al cargar proveedores:', error);
@@ -281,5 +356,192 @@ export class ListComponent implements OnInit {
         }, 500);
       }
     });
+  }
+
+  //Exportar reportes
+  // ===== MÉTODOS DE EXPORTACIÓN OPTIMIZADOS =====
+
+  /**
+   * Método unificado para todas las exportaciones
+   */
+  async exportar(tipo: 'excel' | 'pdf' | 'csv'): Promise<void> {
+    if (this.exportando) {
+      this.mostrarMensaje('warning', 'Ya hay una exportación en progreso...');
+      return;
+    }
+
+    if (!this.validarDatosParaExport()) {
+      return;
+    }
+
+    try {
+      this.exportando = true;
+      this.tipoExportacion = tipo;
+      this.mostrarMensaje('info', `Generando archivo ${tipo.toUpperCase()}...`);
+      
+      const config = this.crearConfiguracionExport();
+      let resultado;
+      
+      switch (tipo) {
+        case 'excel':
+          resultado = await this.exportService.exportToExcel(config);
+          break;
+        case 'pdf':
+          resultado = await this.exportService.exportToPDF(config);
+          break;
+        case 'csv':
+          resultado = await this.exportService.exportToCSV(config);
+          break;
+      }
+      
+      this.manejarResultadoExport(resultado);
+      
+    } catch (error) {
+      console.error(`Error en exportación ${tipo}:`, error);
+      this.mostrarMensaje('error', `Error al exportar archivo ${tipo.toUpperCase()}`);
+    } finally {
+      this.exportando = false;
+      this.tipoExportacion = null;
+    }
+  }
+
+  /**
+   * Métodos específicos para cada tipo (para usar en templates)
+   */
+  async exportarExcel(): Promise<void> {
+    await this.exportar('excel');
+  }
+
+  async exportarPDF(): Promise<void> {
+    await this.exportar('pdf');
+  }
+
+  async exportarCSV(): Promise<void> {
+    await this.exportar('csv');
+  }
+
+  /**
+   * Verifica si se puede exportar un tipo específico
+   */
+  puedeExportar(tipo?: 'excel' | 'pdf' | 'csv'): boolean {
+    if (this.exportando) {
+      return tipo ? this.tipoExportacion !== tipo : false;
+    }
+    return this.table.data$.value?.length > 0;
+  }
+
+  // ===== MÉTODOS PRIVADOS DE EXPORTACIÓN =====
+
+  /**
+   * Crea la configuración de exportación de forma dinámica
+   */
+  private crearConfiguracionExport(): ExportConfig {
+    return {
+      title: this.exportConfig.title,
+      filename: this.exportConfig.filename,
+      data: this.obtenerDatosExport(),
+      columns: this.exportConfig.columns,
+      metadata: {
+        department: this.exportConfig.department,
+        additionalInfo: this.exportConfig.additionalInfo
+      }
+    };
+  }
+
+  /**
+   * Obtiene y prepara los datos para exportación
+   */
+ private obtenerDatosExport(): any[] {
+  try {
+    const datos = this.table.data$.value;// Use the array for cards
+
+    if (!Array.isArray(datos) || datos.length === 0) {
+      throw new Error('No hay datos disponibles para exportar');
+    }
+
+    return datos.map((modelo, index) =>
+      this.exportConfig.dataMapping.call(this, modelo, index)
+    );
+  } catch (error) {
+    console.error('Error obteniendo datos:', error);
+    throw error;
+  }
+}
+
+
+  /**
+   * Maneja el resultado de las exportaciones
+   */
+  private manejarResultadoExport(resultado: { success: boolean; message: string }): void {
+    if (resultado.success) {
+      this.mostrarMensaje('success', resultado.message);
+    } else {
+      this.mostrarMensaje('error', resultado.message);
+    }
+  }
+
+  /**
+   * Valida datos antes de exportar
+   */
+  private validarDatosParaExport(): boolean {
+    const datos = this.table.data$.value;
+    
+    if (!Array.isArray(datos) || datos.length === 0) {
+      this.mostrarMensaje('warning', 'No hay datos disponibles para exportar');
+      return false;
+    }
+    
+    if (datos.length > 10000) {
+      const continuar = confirm(
+        `Hay ${datos.length.toLocaleString()} registros. ` +
+        'La exportación puede tomar varios minutos. ¿Desea continuar?'
+      );
+      if (!continuar) return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Limpia texto para exportación de manera más eficiente
+   */
+  private limpiarTexto(texto: any): string {
+    if (!texto) return '';
+    
+    return String(texto)
+      .replace(/\s+/g, ' ')
+      .replace(/[^\w\s\-.,;:()\[\]]/g, '')
+      .trim()
+      .substring(0, 150);
+  }
+
+  /**
+   * Sistema de mensajes mejorado con tipos adicionales
+   */
+  private mostrarMensaje(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string): void {
+    this.cerrarAlerta();
+    
+    const duracion = tipo === 'error' ? 5000 : 3000;
+    
+    switch (tipo) {
+      case 'success':
+        this.mostrarAlertaExito = true;
+        this.mensajeExito = mensaje;
+        setTimeout(() => this.mostrarAlertaExito = false, duracion);
+        break;
+        
+      case 'error':
+        this.mostrarAlertaError = true;
+        this.mensajeError = mensaje;
+        setTimeout(() => this.mostrarAlertaError = false, duracion);
+        break;
+        
+      case 'warning':
+      case 'info':
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = mensaje;
+        setTimeout(() => this.mostrarAlertaWarning = false, duracion);
+        break;
+    }
   }
 }

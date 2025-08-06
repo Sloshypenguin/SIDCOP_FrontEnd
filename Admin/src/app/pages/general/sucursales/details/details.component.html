@@ -18,49 +18,136 @@
 
   <!-- Contenido de detalles -->
   <div *ngIf="!cargando && sucursalDetalle" class="details-content">
-    <!-- Header con descripción -->
-    <div class="details-header">
-      <div class="details-title">Detalles de Sucursal</div>
-      <div class="details-id-row">
-        <div class="details-id">
-          <div class="details-id-label">Código</div>
-          <div class="details-id-value">{{ sucursalDetalle.sucu_Id || 'N/A' }}</div>
+    <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+        <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+          <i class="ri-building-line me-2 fs-4"></i>
+          <h4 class="mb-0" style="color: #303d7d">Detalles de Sucursal</h4>
         </div>
-        <div class="details-id">
-          <div class="details-id-label">Descripción</div>
-          <div class="details-id-value">{{ sucursalDetalle.sucu_Descripcion || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Departamento</div>
-          <div class="details-id-value">{{ sucursalDetalle.depa_Descripcion || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Municipio</div>
-          <div class="details-id-value">{{ sucursalDetalle.muni_Descripcion || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Colonia</div>
-          <div class="details-id-value">{{ sucursalDetalle.colo_Descripcion || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Dirección Exacta</div>
-          <div class="details-id-value">{{ sucursalDetalle.sucu_DireccionExacta || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Teléfono 1</div>
-          <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono1 || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Teléfono 2</div>
-          <div class="details-id-value">{{ sucursalDetalle.sucu_Telefono2 || 'N/A' }}</div>
-        </div>
-        <div class="details-id">
-          <div class="details-id-label">Correo</div>
-          <div class="details-id-value">{{ sucursalDetalle.sucu_Correo || 'N/A' }}</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-4" *ngIf="sucursalDetalle.sucu_Id">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-hashtag"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Código</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.sucu_Id }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-file-list-3-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Descripción</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.sucu_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-map-pin-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Departamento</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.depa_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-map-pin-user-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Municipio</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.muni_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-home-2-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Colonia</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.colo_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-map-pin-2-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Dirección Exacta</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.sucu_DireccionExacta || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-phone-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Teléfono 1</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.sucu_Telefono1 || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-phone-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Teléfono 2</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.sucu_Telefono2 || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-mail-line"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Correo</div>
+                  <div class="detail-value">
+                    {{ sucursalDetalle.sucu_Correo || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <h4 class="details-title mt-4 mb-3" style="color: black;">Historial de acciones</h4>
+ 
     <!-- Tabla de auditoría -->
     <div class="audit-table-container">
       <div class="audit-table">

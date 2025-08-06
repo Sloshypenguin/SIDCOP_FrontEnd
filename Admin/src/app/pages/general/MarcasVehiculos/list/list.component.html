@@ -1,3 +1,17 @@
+<!-- Overlay de carga animado -->
+<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+  <div class="typing-indicator">
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-circle"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+    <div class="typing-shadow"></div>
+  </div>
+</div>
+
+
+
 <app-breadcrumbs
   [title]="'Marcas De Vehiculos '"
   [breadcrumbItems]="[
@@ -8,6 +22,7 @@
   <img class="breadcrumbs-icon ms-2 icon-breadcrumb"  style="width: 10vh; height: 10vh;" src="assets/images/imagenes/car-round-svgrepo-com.svg" alt="icono breadcrumb" />
 </app-breadcrumbs>
 
+
 <div class="row">
   <div class="col-lg-12">
     <div class="card">
@@ -17,9 +32,28 @@
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>
           </button>
-          <div class="search-box mb-2">
-            <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
-            <i class="ri-search-line search-icon"></i>
+                 <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- Botones de exportación -->
+            <div class="export-buttons d-flex gap-1 mb-2">
+          <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarExcel()" title="Exportar a Excel">
+            <span class="btn-text">Excel</span>
+            <span class="btn-icon"><i class="ri-file-excel-2-line" style="font-weight: 100;"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarPDF()" title="Exportar a PDF">
+            <span class="btn-text">PDF</span>
+            <span class="btn-icon"><i class="ri-file-ppt-line" style="font-weight: 100;"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarCSV()" title="Exportar a CSV">
+            <span class="btn-text">CSV</span>
+            <span class="btn-icon"><i class="ri-file-text-line" style="font-weight: 100;"></i></span>
+          </button>
+            </div>
+            
+            <!-- Campo de búsqueda -->
+            <div class="search-box mb-2">
+              <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
+              <i class="ri-search-line search-icon"></i>
+            </div>
           </div>
         </div>
         
@@ -57,54 +91,63 @@
   </div>
 </div>
  
-        <div class="table-responsive" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
-          <table class="table table-gridjs table-style">
-            <thead>
-              <tr>
-                <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
-                <th class="gridjs-th">No.</th>
-                <th class="gridjs-th">Marca</th>
-              </tr>
+        <div class="table-radius-container" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
+          <div class="table-responsive">
+            <table class="table table-gridjs table-style">
+              <thead>
+                <tr>
+                  <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
+                  <th class="gridjs-th" (click)="table.sortBy('secuencia')" style="cursor:pointer;">
+                    <span class="table-header-flex">
+                      No.
+                      <span style="display: flex; flex-direction: column;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'secuencia' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                  <th class="gridjs-th" (click)="table.sortBy('maVe_Marca')" style="cursor:pointer;">
+                    <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
+                      Marca
+                      <span style="display: flex; flex-direction: column; margin-left: 6px;">
+                        <i class="ri-arrow-up-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'maVe_Marca' && table.sortDirection === 'asc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                        <i class="ri-arrow-down-s-line icon-sort"
+                          [ngStyle]="table.sortField === 'maVe_Marca' && table.sortDirection === 'desc' ? {'color': '#D6B68A'} : {'color': 'white'}">
+                        </i>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of table.paginated$ | async; let i = index">
                 <td class="position-relative" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">
                   <div class="dropdown-action-list">
-                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="activeActionRow === i" (click)="onActionMenuClick(i)">
+                    <button type="button" class="dropdown-toggle" [attr.aria-expanded]="false" (click)="floatingMenuService.open($event, data)">
                       <span>Acciones</span>
                       <i class="ri-settings-3-line"></i>
                     </button>
-                    <ul *ngIf="activeActionRow === i" class="dropdown-menu show">
-                      <li *ngIf="accionPermitida('editar')">
-                        <button type="button" class="dropdown-action-btn" (click)="editar(data)">
-                          Editar <i class="ri-edit-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('eliminar')">
-                        <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(data)">
-                          Eliminar <i class="ri-delete-bin-line"></i>
-                        </button>
-                      </li>
-                      <li *ngIf="accionPermitida('detalle')">
-                        <button type="button" class="dropdown-action-btn" (click)="detalles(data)">
-                          Detalles <i class="ri-error-warning-fill"></i>
-                        </button>
-                      </li>
-                    </ul>
                   </div>
                 </td>
-                <td><span class="fw-semibold">{{data.maVe_Id}}</span></td>
+                <td><span class="fw-semibold">{{data.secuencia}}</span></td>
                 <td>{{data.maVe_Marca}}</td>
               </tr>
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
         <div class="row justify-content-md-between align-items-md-center" *ngIf="!showCreateForm && !showEditForm && !showDetailsForm">
           <ng-container *ngIf="(table.paginated$ | async) as paginados">
             <div class="col-sm-12 col-md-5">
               <div class="dataTables_info mb-2" role="status" aria-live="polite">
                 Mostrando
-                {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.  total$ | async }}
+                {{ (table.page - 1) * table.pageSizeValue + paginados.length }} de {{ table.total$ | async }}
                 registros
               </div>
             </div>
@@ -173,5 +216,31 @@
 
 <!-- Overlay para el modal -->
 <div class="modal-backdrop fade" [ngClass]="{ 'show': mostrarConfirmacionEliminar }" *ngIf="mostrarConfirmacionEliminar"></div>
+
+<!-- Menú flotante de acciones -->
+<ul
+  *ngIf="floatingMenuService.show"
+  class="dropdown-menu show"  
+  [ngStyle]="{
+    position: 'absolute',
+    top: floatingMenuService.top + 'px',
+    left: floatingMenuService.left + 'px',
+  }">
+  <li *ngIf="accionPermitida('editar')">
+    <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
+      Editar <i class="ri-edit-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('eliminar')">
+    <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
+      Eliminar <i class="ri-delete-bin-line"></i>
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('detalle')">
+    <button type="button" class="dropdown-action-btn" (click)="detalles(floatingMenuService.data); floatingMenuService.close()">
+      Detalles <i class="ri-error-warning-fill"></i>
+    </button>
+  </li>
+</ul>
 
 <!-- end row -->

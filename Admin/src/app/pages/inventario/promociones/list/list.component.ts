@@ -16,6 +16,7 @@ import { DetailsComponent } from '../details/details.component';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { set } from 'lodash';
+import { Promocion } from 'src/app/Modelos/inventario/PromocionModel';
 
 @Component({
   selector: 'app-list',
@@ -234,7 +235,7 @@ export class ListComponent implements OnInit {
     if (!this.productoAEliminar) return;
 
     this.mostrarOverlayCarga = true;
-    this.http.post(`${environment.apiBaseUrl}/Productos/Eliminar/${this.productoAEliminar.prod_Id}`, {}, {
+    this.http.put(`${environment.apiBaseUrl}/Promociones/CambiarEstado/${this.productoAEliminar.prod_Id}`, {}, {
       headers: { 
         'X-Api-Key': environment.apiKey,
         'accept': '*/*'
@@ -248,7 +249,7 @@ export class ListComponent implements OnInit {
           if (response.success && response.data) {
             if (response.data.code_Status === 1) {
               // Éxito: eliminado correctamente
-              this.mensajeExito = `Producto "${this.productoAEliminar!.prod_DescripcionCorta}" eliminado exitosamente`;
+              this.mensajeExito = response.data.message_Status;
               this.mostrarAlertaExito = true;
               
               // Ocultar la alerta después de 3 segundos
@@ -363,7 +364,7 @@ export class ListComponent implements OnInit {
 
   private cargardatos(state: boolean): void {
     this.mostrarOverlayCarga = state;
-    this.http.get<Producto[]>(`${environment.apiBaseUrl}/Productos/Listar`, {
+    this.http.get<Promocion[]>(`${environment.apiBaseUrl}/Promociones/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
     }).subscribe(data => {
       
@@ -376,7 +377,7 @@ export class ListComponent implements OnInit {
           ? data
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
         this.productoGrid = datosFiltrados || [];
-        this.productos = this.productoGrid.slice(0, 12);
+        this.productos = this.productoGrid.slice(0, 8);
         this.filtradorProductos();
       },500);
     });

@@ -39,6 +39,7 @@ export class CreateComponent {
     usua_EsVendedor: false,
     usua_EsAdmin: false,
     usua_Imagen: 'assets/images/users/32/user-svg.svg',
+    usua_TienePermisos: false,
     usua_Creacion: 0,
     usua_FechaCreacion: new Date(),
     usua_Modificacion: 0,
@@ -93,6 +94,7 @@ export class CreateComponent {
       usua_EsVendedor: false,
       usua_EsAdmin: false,
       usua_Imagen: 'assets/images/users/32/user-dummy-img.jpg',
+      usua_TienePermisos: false,
       usua_Creacion: 0,
       usua_FechaCreacion: new Date(),
       usua_Modificacion: 0,
@@ -116,6 +118,13 @@ export class CreateComponent {
     this.mensajeWarning = '';
   }
 
+  onAdminToggle(): void {
+    if (this.usuario.usua_EsAdmin) {
+      this.usuario.role_Id = 1;
+      this.usuario.usua_IdPersona = 0;
+    }
+  }
+
   guardar(): void {
     this.mostrarErrores = true;
     if (this.usuario.usua_Usuario.trim() && this.usuario.usua_Clave.trim() && this.usuario.role_Id && this.usuario.usua_IdPersona) 
@@ -132,6 +141,7 @@ export class CreateComponent {
         usua_EsVendedor: this.usuario.usua_EsVendedor,
         usua_EsAdmin: this.usuario.usua_EsAdmin,
         usua_Imagen: this.usuario.usua_Imagen,
+        usua_TienePermisos: this.usuario.usua_TienePermisos,
         usua_Creacion: getUserId(),
         usua_FechaCreacion: new Date().toISOString(),
         usua_Modificacion: getUserId(),

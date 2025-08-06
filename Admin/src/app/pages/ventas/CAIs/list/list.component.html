@@ -14,9 +14,28 @@
             <span class="btn-text">Nuevo</span>
             <span class="btn-icon"><i class="ri-add-line"></i></span>
           </button>
-          <div class="search-box mb-2">
-            <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
-            <i class="ri-search-line search-icon"></i>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- Botones de exportación -->
+            <div class="export-buttons d-flex gap-1 mb-2">
+          <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarExcel()" title="Exportar a Excel">
+            <span class="btn-text">Excel</span>
+            <span class="btn-icon"><i class="ri-file-excel-2-line" style="font-weight: 100;"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarPDF()" title="Exportar a PDF">
+            <span class="btn-text">PDF</span>
+            <span class="btn-icon"><i class="ri-file-ppt-line" style="font-weight: 100;"></i></span>
+          </button>
+          <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarCSV()" title="Exportar a CSV">
+            <span class="btn-text">CSV</span>
+            <span class="btn-icon"><i class="ri-file-text-line" style="font-weight: 100;"></i></span>
+          </button>
+            </div>
+            
+            <!-- Campo de búsqueda -->
+            <div class="search-box mb-2">
+              <input type="text" class="form-control search" placeholder="Buscar..." [(ngModel)]="table.searchTerm" (ngModelChange)="table.setSearchTerm($event)">
+              <i class="ri-search-line search-icon"></i>
+            </div>
           </div>
         </div>
         
@@ -63,7 +82,7 @@
                   <th class="gridjs-th" *ngIf="accionPermitida('editar') || accionPermitida('eliminar') || accionPermitida('detalle')">Acciones</th>
                   <th class="gridjs-th" (click)="table.sortBy('nCai_Id')" style="cursor:pointer;">
                     <span class="table-header-flex">
-                      ID
+                      No.
                       <!-- iconos para ordenar -->
                       <span style="display: flex; flex-direction: column;">
                         <i class="ri-arrow-up-s-line icon-sort"
@@ -118,7 +137,7 @@
                       </button>
                     </div>
                   </td>
-                  <td><span class="fw-semibold">{{ data.nCai_Id }}</span></td>
+                 <td><span class="fw-semibold">{{ (table.page - 1) * table.pageSizeValue + i + 1 }}</span></td>
                   <td>{{ data.nCai_Codigo }}</td>
                   <td>{{ data.nCai_Descripcion }}</td>
                 </tr>
@@ -215,11 +234,11 @@
     top: floatingMenuService.top + 'px',
     left: floatingMenuService.left + 'px',
   }">
-  <li *ngIf="accionPermitida('editar')">
+  <!-- <li *ngIf="accionPermitida('editar')">
     <button type="button" class="dropdown-action-btn" (click)="editar(floatingMenuService.data); floatingMenuService.close()">
       Editar <i class="ri-edit-line"></i>
     </button>
-  </li>
+  </li> -->
   <li *ngIf="accionPermitida('eliminar')">
     <button type="button" class="dropdown-action-btn" (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
       Eliminar <i class="ri-delete-bin-line"></i>

@@ -21,41 +21,61 @@
     <!-- Contenido de detalles -->
     <div *ngIf="!cargando && subcategoriaDetalle" class="details-content">
       
-      <!-- Header con descripción -->
-      <div class="details-header">
-        
-        
-        <div class="flex-grow-1">
-          <div class="row text-center ">
-
-            <div class="col-md-6">
-
-              <h4 class="details-title">{{ subcategoriaDetalle.subc_Descripcion }}</h4>
-              <span>Descripción </span>
-
+      <!-- Header -->
+      <div class="col-md-12">
+      <div class="card h-100 shadow-sm employee-details-card bg-dark-blue">
+        <div class="card-header d-flex align-items-center rounded-top details-header-custom">
+          <i class="ri-map-pin-line me-2 fs-4"></i>
+          <h4 class="mb-0" style="color: #303d7d">Detalles de Subcategoria</h4>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-4" *ngIf="subcategoriaDetalle.subc_Id">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-hashtag"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">ID</div>
+                  <div class="detail-value">
+                    {{ subcategoriaDetalle.subc_Id }}
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <div class="col-md-6">
-
-              <h4 class="details-title">{{ subcategoriaDetalle.cate_Descripcion }}</h4>
-              <span>Categoría </span>
-
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-layout-masonry-fill"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Descripción</div>
+                  <div class="detail-value">
+                    {{ subcategoriaDetalle.subc_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
             </div>
-
+            <div class="col-12 col-sm-4">
+              <div class="detail-item">
+                <div class="detail-icon bg-dark-blue text-white">
+                  <i class="ri-stack-fill"></i>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-label">Categoria</div>
+                  <div class="detail-value">
+                    {{ subcategoriaDetalle.cate_Descripcion || 'N/A' }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-          
-          
-
-          
-
-
-        
-        
       </div>
+      </div>
+      
+      
 
-      
-      
       
       
       <!-- Tabla de auditoría -->

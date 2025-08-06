@@ -135,7 +135,7 @@ export class ListComponent implements OnInit {
     public floatingMenuService: FloatingMenuService
   )
     {
-    this.cargardatos();
+    this.cargardatos(true);
   }   
 
   activeActionRow: number | null = null;
@@ -165,6 +165,7 @@ export class ListComponent implements OnInit {
   }
 
   cerrarFormularioEdicion(): void {
+    this.mostrarOverlayCarga = false;
     this.showEditForm = false;
     this.estadoCivilEditando = null;
   }
@@ -176,15 +177,15 @@ export class ListComponent implements OnInit {
 
   guardarEstadoCivil(estadoCivil: EstadoCivil): void {
     console.log('Estado civil guardado exitosamente desde create component:', estadoCivil);
-    // Recargar los datos de la tabla
-    this.cargardatos();
+    // Recargar los datos de la tabla sin overlay
+    this.cargardatos(false);
     this.cerrarFormulario();
   }
 
   actualizarEstadoCivil(estadoCivil: EstadoCivil): void {
     console.log('Estado civil actualizado exitosamente desde edit component:', estadoCivil);
-    // Recargar los datos de la tabla
-    this.cargardatos();
+    // Recargar los datos de la tabla sin overlay
+    this.cargardatos(false);
     this.cerrarFormularioEdicion();
   }
 
@@ -228,7 +229,7 @@ export class ListComponent implements OnInit {
             }, 3000);
             
 
-            this.cargardatos();
+            this.cargardatos(false);
             this.cancelarEliminar();
           } else if (response.data.code_Status === -1) {
             //result: está siendo utilizado
@@ -316,12 +317,12 @@ export class ListComponent implements OnInit {
     console.log('Acciones finales:', this.accionesDisponibles);
   }
 
-  private cargardatos(): void {
-    this.mostrarOverlayCarga = true;
+  private cargardatos(state: boolean): void {
+    this.mostrarOverlayCarga = state;
     this.http.get<EstadoCivil[]>(`${environment.apiBaseUrl}/EstadosCiviles/Listar`, {
       headers: { 'x-api-key': environment.apiKey }
-    }).subscribe({
-      next: data => {
+    }).subscribe(data => {
+      setTimeout(() => {
         const tienePermisoListar = this.accionPermitida('listar');
         const userId = getUserId();
 
@@ -330,13 +331,9 @@ export class ListComponent implements OnInit {
           : data.filter(r => r.usua_Creacion?.toString() === userId.toString());
 
         this.table.setData(datosFiltrados);
+        this.table.setData(data);
         this.mostrarOverlayCarga = false;
-      },
-      error: error => {
-        console.error('Error al cargar estados civiles:', error);
-        this.table.setData([]);
-        this.mostrarOverlayCarga = false;
-      }
+      }, 500);
     });
   }
 }
