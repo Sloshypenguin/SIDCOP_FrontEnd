@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment.prod';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { getUserId } from 'src/app/core/utils/user-utils';
+import * as XLSX from 'xlsx';
 
 export interface ExportConfig {
   title: string;
@@ -52,8 +53,34 @@ export class ExportService {
   // ===== MÉTODOS PÚBLICOS DE EXPORTACIÓN =====
 
   async exportToExcel(config: ExportConfig): Promise<ExportResult> {
-    // TODO: Implementar exportación a Excel
-    return { success: false, message: 'Exportación a Excel no implementada' };
+    try {
+      this.validateConfig(config);
+      
+      // Crear un nuevo workbook
+      const workbook = XLSX.utils.book_new();
+      
+      // Crear los datos de la hoja de cálculo
+      const worksheetData = await this.prepararDatosExcel(config);
+      
+      // Crear la hoja de trabajo
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+      
+      // Aplicar estilos y configuración
+      this.aplicarEstilosExcel(worksheet, config);
+      
+      // Agregar la hoja al workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+      
+      // Generar el archivo
+      const filename = this.generateFilename(config.filename, 'xlsx');
+      XLSX.writeFile(workbook, filename);
+      
+      return { success: true, message: `Archivo Excel exportado: ${filename}` };
+      
+    } catch (error) {
+      console.error('Error exportando Excel:', error);
+      return { success: false, message: 'Error al exportar archivo Excel' };
+    }
   }
 
   async exportToPDF(config: ExportConfig): Promise<ExportResult> {
@@ -80,8 +107,240 @@ export class ExportService {
   }
 
   async exportToCSV(config: ExportConfig): Promise<ExportResult> {
-    // TODO: Implementar exportación a CSV
-    return { success: false, message: 'Exportación a CSV no implementada' };
+    try {
+      this.validateConfig(config);
+      
+      // Preparar los datos CSV
+      const csvContent = this.generarContenidoCSV(config);
+      
+      // Crear y descargar el archivo
+      const filename = this.generateFilename(config.filename, 'csv');
+      this.descargarArchivo(csvContent, filename, 'text/csv');
+      
+      return { success: true, message: `Archivo CSV exportado: ${filename}` };
+      
+    } catch (error) {
+      console.error('Error exportando CSV:', error);
+      return { success: false, message: 'Error al exportar archivo CSV' };
+    }
+  }
+
+  // ===== MÉTODOS PRIVADOS PARA EXCEL =====
+
+  private async prepararDatosExcel(config: ExportConfig): Promise<any[][]> {
+    const data: any[][] = [];
+    let currentRow = 0;
+    
+    // Espacios para el logo y título
+    data[currentRow++] = [];
+    data[currentRow++] = [];
+    data[currentRow++] = [];
+    
+    // Título de la empresa centrado
+    const nombreEmpresa = this.configuracionEmpresa?.coFa_NombreEmpresa || 'Nombre de Empresa';
+    data[currentRow++] = [nombreEmpresa];
+    
+    // Título del reporte
+    data[currentRow++] = [config.title];
+    
+    // Espacios
+    data[currentRow++] = [];
+    
+    // Metadata si existe
+    if (config.metadata) {
+      if (config.metadata.department) {
+        data[currentRow++] = [`Departamento: ${config.metadata.department}`];
+      }
+      
+      if (config.metadata.user) {
+        data[currentRow++] = [`Usuario: ${config.metadata.user}`];
+      }
+      
+      if (config.metadata.additionalInfo) {
+        data[currentRow++] = [config.metadata.additionalInfo];
+      }
+      
+      data[currentRow++] = []; // Espacio adicional
+    }
+    
+    // Encabezados de la tabla
+    const headers = config.columns.map(col => col.header);
+    data[currentRow++] = headers;
+    
+    // Datos de la tabla
+    config.data.forEach(item => {
+      const row = config.columns.map(col => {
+        const value = item[col.key];
+        return this.formatearValorExcel(value);
+      });
+      data[currentRow++] = row;
+    });
+    
+    // Pie de página
+    data[currentRow++] = [];
+    const fecha = new Date();
+    const fechaTexto = fecha.toLocaleDateString('es-HN');
+    const horaTexto = fecha.toLocaleTimeString('es-HN');
+    const usuarioActual = this.obtenerUsuarioActual();
+    data[currentRow++] = [`Generado por: ${usuarioActual} | ${fechaTexto} ${horaTexto}`];
+    
+    return data;
+  }
+
+  private aplicarEstilosExcel(worksheet: XLSX.WorkSheet, config: ExportConfig): void {
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+    
+    // Configurar anchos de columna
+    const colWidths = config.columns.map(col => ({
+      wch: col.width ? col.width / 5 : 15 // Convertir aproximado de puntos a caracteres
+    }));
+    worksheet['!cols'] = colWidths;
+    
+    // Encontrar la fila de encabezados (buscar la primera fila que contenga todos los headers)
+    let headerRow = -1;
+    const headers = config.columns.map(col => col.header);
+    
+    for (let row = 0; row <= range.e.r; row++) {
+      let matchCount = 0;
+      for (let col = 0; col < headers.length; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+        const cell = worksheet[cellAddress];
+        if (cell && cell.v === headers[col]) {
+          matchCount++;
+        }
+      }
+      if (matchCount === headers.length) {
+        headerRow = row;
+        break;
+      }
+    }
+    
+    // Aplicar estilos a las celdas
+    for (let row = 0; row <= range.e.r; row++) {
+      for (let col = 0; col <= range.e.c; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+        const cell = worksheet[cellAddress];
+        
+        if (cell) {
+          // Inicializar el objeto de estilo si no existe
+          if (!cell.s) cell.s = {};
+          
+          // Estilos para el título de la empresa (fila 3, índice 3)
+          if (row === 3) {
+            cell.s = {
+              font: { bold: true, sz: 18, color: { rgb: '141a2f' } },
+              alignment: { horizontal: 'center' }
+            };
+          }
+          // Estilos para el título del reporte (fila 4, índice 4)
+          else if (row === 4) {
+            cell.s = {
+              font: { bold: true, sz: 14, color: { rgb: '141a2f' } },
+              alignment: { horizontal: 'center' }
+            };
+          }
+          // Estilos para los encabezados de la tabla
+          else if (row === headerRow) {
+            cell.s = {
+              font: { bold: true, color: { rgb: 'D6B68A' } },
+              fill: { fgColor: { rgb: '141a2f' } },
+              alignment: { horizontal: 'center' }
+            };
+          }
+          // Estilos para las filas de datos (alternadas)
+          else if (row > headerRow && row < range.e.r - 1) {
+            const isEvenRow = (row - headerRow) % 2 === 0;
+            cell.s = {
+              fill: isEvenRow ? { fgColor: { rgb: 'F8F9FA' } } : { fgColor: { rgb: 'FFFFFF' } },
+              alignment: { 
+                horizontal: config.columns[col]?.align || 'left',
+                vertical: 'center'
+              }
+            };
+          }
+        }
+      }
+    }
+    
+    // Ajustar el rango de impresión
+    worksheet['!printHeader'] = `1:${headerRow + 1}`;
+  }
+
+  private formatearValorExcel(valor: any): any {
+    if (valor === null || valor === undefined) {
+      return '';
+    }
+    
+    // Si es un número, mantenerlo como número para Excel
+    if (typeof valor === 'number') {
+      return valor;
+    }
+    
+    // Si es una fecha, convertirla apropiadamente
+    if (valor instanceof Date) {
+      return valor;
+    }
+    
+    // Para todo lo demás, convertir a string y limpiar
+    return String(valor).trim();
+  }
+
+  // ===== MÉTODOS PRIVADOS PARA CSV =====
+
+  private generarContenidoCSV(config: ExportConfig): string {
+    const rows: string[] = [];
+    
+    // Encabezados
+    const headers = config.columns.map(col => this.escaparCSV(col.header));
+    rows.push(headers.join(','));
+    
+    // Datos
+    config.data.forEach(item => {
+      const row = config.columns.map(col => {
+        const value = item[col.key];
+        return this.escaparCSV(this.formatearValorCSV(value));
+      });
+      rows.push(row.join(','));
+    });
+    
+    return rows.join('\n');
+  }
+
+  private formatearValorCSV(valor: any): string {
+    if (valor === null || valor === undefined) {
+      return '';
+    }
+    
+    return String(valor).trim();
+  }
+
+  private escaparCSV(valor: string): string {
+    if (!valor) return '';
+    
+    // Si el valor contiene coma, comillas o salto de línea, debe estar entre comillas
+    if (valor.includes(',') || valor.includes('"') || valor.includes('\n')) {
+      // Escapar las comillas duplicándolas
+      const valorEscapado = valor.replace(/"/g, '""');
+      return `"${valorEscapado}"`;
+    }
+    
+    return valor;
+  }
+
+  private descargarArchivo(contenido: string, nombreArchivo: string, tipoMime: string): void {
+    const blob = new Blob([contenido], { type: tipoMime + ';charset=utf-8;' });
+    const link = document.createElement('a');
+    
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', nombreArchivo);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
   }
 
   // ===== MÉTODOS PRIVADOS PARA PDF (basados en PdfReportService) =====
@@ -236,8 +495,8 @@ export class ExportService {
     const totalPages = doc.getNumberOfPages();
     
     // Información del usuario y fecha
-    const usuario = this.obtenerUsuarioActual();
-    doc.text(`Generado por: ${usuario} | ${fechaTexto} ${horaTexto}`, 20, doc.internal.pageSize.height - 12);
+    const usuarioCreacion = this.obtenerUsuarioActual();
+    doc.text(`Generado por: ${usuarioCreacion} | ${fechaTexto} ${horaTexto}`, 20, doc.internal.pageSize.height - 12);
     
     // Paginación
     doc.text(`Página ${data.pageNumber}/${totalPages}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 12, { align: 'right' });
@@ -311,7 +570,7 @@ export class ExportService {
       const usuario = localStorage.getItem('currentUser');
       if (usuario) {
         const userData = JSON.parse(usuario);
-        return userData.nombre || userData.username || 'Usuario';
+        return userData.usuarioCreacion || userData.usuarioCreacion || 'Usuario';
       }
     } catch (e) {
       console.error('Error obteniendo usuario:', e);
