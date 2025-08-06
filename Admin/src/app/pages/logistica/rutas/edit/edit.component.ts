@@ -73,7 +73,7 @@ export class EditComponent implements OnChanges {
   validarEdicion(): void {
     this.mostrarErrores = true;
 
-    if (this.ruta.ruta_Codigo.trim() && this.ruta.ruta_Descripcion.trim() && this.ruta.ruta_Observaciones.trim()) {
+    if (this.ruta.ruta_Codigo.trim() && this.ruta.ruta_Descripcion.trim()) {
       if (this.hayDiferencias()) {
         this.mostrarConfirmacionEditar = true;
       } else {
@@ -140,7 +140,7 @@ export class EditComponent implements OnChanges {
     this.mostrarErrores = true;
     this.onOverlayChange.emit(true);
 
-    if (this.ruta.ruta_Codigo.trim() && this.ruta.ruta_Descripcion.trim() && this.ruta.ruta_Observaciones.trim()) {
+    if (this.ruta.ruta_Codigo.trim() && this.ruta.ruta_Descripcion.trim()) {
       const rutaActualizar = {
         ruta_Id: this.ruta.ruta_Id,
         ruta_Codigo: this.ruta.ruta_Codigo.trim(),
