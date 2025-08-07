@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment.prod';
 import { HttpClient } from '@angular/common/http';
 import { Cliente } from 'src/app/Modelos/general/Cliente.Model';
 import { DireccionPorCliente } from 'src/app/Modelos/general/DireccionPorCliente.Model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -30,7 +31,6 @@ export class DetailsComponent implements OnChanges {
 
   cliente: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
-  direcciones: DireccionPorCliente[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -49,7 +49,6 @@ export class DetailsComponent implements OnChanges {
         this.rutaDetalle = { ...data };
         this.cargando = false;
 
-        // CARGAR CLIENTES CUANDO SE CARGA LA RUTA
         this.cargarClientes();
       } catch (error) {
         console.error('Error al cargar detalles de la ruta:', error);
@@ -72,30 +71,36 @@ export class DetailsComponent implements OnChanges {
         this.clientesFiltrados = this.cliente.filter(c => c.ruta_Id === rutaIdActual);
         console.log('Clientes con ruta_Id =', rutaIdActual, this.clientesFiltrados);
 
-        // PARA CADA CLIENTE FILTRADO, CARGAMOS LAS DIRECCIONES Y OBTENEMOS LATITUD/LONGITUD
-        this.clientesFiltrados.forEach(cliente => {
-          this.cargarDirecciones(cliente);
+        const observablesDirecciones = this.clientesFiltrados.map(cliente => 
+          this.http.get<DireccionPorCliente[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${cliente.clie_Id}`, {
+            headers: { 'x-api-key': environment.apiKey }
+          })
+        );
+
+        forkJoin(observablesDirecciones).subscribe(respuestas => {
+          const todosPuntos: { lat: number; lng: number; nombre?: string }[] = [];
+
+          respuestas.forEach(direccionesCliente => {
+            (direccionesCliente || []).forEach(d => {
+              todosPuntos.push({
+                lat: d.diCl_Latitud,
+                lng: d.diCl_Longitud,
+                nombre: d.diCl_Observaciones
+              });
+            });
+          });
+
+          this.puntosVista = todosPuntos;
+          console.log('PuntosVista completos:', this.puntosVista);
+        }, err => {
+          console.error('Error al cargar direcciones de clientes:', err);
         });
+
       } else {
         console.warn('No hay rutaDetalle.id para filtrar clientes.');
       }
     }, error => {
       console.error('Error al cargar clientes:', error);
-    });
-  }
-
-  cargarDirecciones(cliente: Cliente): void {
-    this.http.get<DireccionPorCliente[]>(`${environment.apiBaseUrl}/DireccionesPorCliente/Buscar/${cliente.clie_Id}`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.direcciones = data || [];
-      this.puntosVista = this.direcciones.map(d => ({
-        lat: d.diCl_Latitud,
-        lng: d.diCl_Longitud,
-        nombre: d.diCl_Observaciones
-      }));
-    }, error => {
-      console.error('Error al cargar direcciones de cliente:', error);
     });
   }
 

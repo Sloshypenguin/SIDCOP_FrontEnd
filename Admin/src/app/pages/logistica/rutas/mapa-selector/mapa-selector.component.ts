@@ -1,15 +1,5 @@
 /// <reference types="@types/google.maps" />
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  OnChanges,
-  SimpleChanges
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
 
@@ -26,7 +16,7 @@ declare const google: any;
   selector: 'app-mapa-selector',
   imports: [CommonModule],
   templateUrl: './mapa-selector.component.html',
-  styleUrl: './mapa-selector.component.scss',
+  styleUrls: ['./mapa-selector.component.scss'],
 })
 export class MapaSelectorComponent implements AfterViewInit, OnChanges {
   @Input() coordenadasIniciales: { lat: number, lng: number } | null = null;
@@ -35,11 +25,18 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
 
   @Input() mostrar: boolean = false;
   @Input() mostrarPuntos: boolean = false;
-  @ViewChild('mapaContainer', { static: true }) mapaContainer!: ElementRef;
+
+  @ViewChild('mapaContainer', { static: true }) mapaContainer!: ElementRef<HTMLDivElement>;
 
   private map!: google.maps.Map;
-  private marker: google.maps.Marker | null = null;
+  private markers: google.maps.Marker[] = [];
   private mapaInicializado = false;
+
+  ngAfterViewInit() {
+    if (this.mostrar) {
+      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mostrar'] && this.mostrar && !this.mapaInicializado && this.mapaContainer) {
@@ -48,20 +45,14 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
       });
     }
 
-    if (changes['puntosVista'] && this.map && this.mapaInicializado) {
+    if (changes['puntosVista'] && this.mapaInicializado) {
       this.agregarPuntosVistaAlMapa();
-    }
-  }
-
-  ngAfterViewInit() {
-    if (this.mostrar) {
-      this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
     }
   }
 
   private cargarGoogleMapsScript(): Promise<void> {
     return new Promise((resolve) => {
-      if (window.google && window.google.maps) {
+      if ((window as any).google && (window as any).google.maps) {
         resolve();
         return;
       }
@@ -76,15 +67,23 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
     });
   }
 
+  private limpiarMarcadores() {
+    this.markers.forEach(marker => marker.setMap(null));
+    this.markers = [];
+  }
+
   private agregarPuntosVistaAlMapa() {
-    const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png';
+    if (!this.map || this.puntosVista.length === 0) return;
+
+    this.limpiarMarcadores();
+
     const bounds = new google.maps.LatLngBounds();
+    const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png';
 
     this.puntosVista.forEach(punto => {
       const position = new google.maps.LatLng(punto.lat, punto.lng);
-      bounds.extend(position);
 
-      const marcador = new google.maps.Marker({
+      const marker = new google.maps.Marker({
         position,
         map: this.map,
         icon: iconUrl,
@@ -94,20 +93,28 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
       if (punto.nombre) {
         const contenidoHTML = `
           <div style="font-size: 14px;">
-            <h3 style="margin: 0;font-size: 20px;font-weight: 500;color: #d6b68a;">${punto.nombre}</h3>
+            <h3 style="margin: 0; font-size: 20px; font-weight: 500; color: #d6b68a;">${punto.nombre}</h3>
             <p>Dirección: ${punto.lat}, ${punto.lng}</p>
           </div>
         `;
         const infoWindow = new google.maps.InfoWindow({ content: contenidoHTML });
-        marcador.addListener('click', () => infoWindow.open(this.map, marcador));
+        marker.addListener('click', () => infoWindow.open(this.map, marker));
       }
+
+      this.markers.push(marker);
+      bounds.extend(position);
     });
 
-    if (this.puntosVista.length > 0) {
-      this.map.fitBounds(bounds);
-    }
-  }
+    this.map.fitBounds(bounds);
 
+    const listener = google.maps.event.addListener(this.map, 'bounds_changed', () => {
+      const currentZoom = this.map.getZoom();
+      if (currentZoom !== undefined && currentZoom > 15) {
+        this.map.setZoom(15);
+      }
+      google.maps.event.removeListener(listener);
+    });
+  }
 
   inicializarMapa() {
     if (this.mapaInicializado || !this.mapaContainer) return;
@@ -121,41 +128,40 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
       fullscreenControl: false,
     });
 
-    const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
-
     if (this.puntosVista.length > 0) {
       this.agregarPuntosVistaAlMapa();
-    } else {
-      if (this.coordenadasIniciales) {
-        this.marker = new google.maps.Marker({
-          position: coords,
-          map: this.map,
-          icon: iconUrl,
-        });
-      }
+    } else if (this.coordenadasIniciales) {
+      const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
 
-      if (!this.mostrarPuntos) {
-        this.map.addListener('click', (e: google.maps.MapMouseEvent) => {
-          if (!e.latLng) return;
-          const lat = e.latLng.lat();
-          const lng = e.latLng.lng();
-
-          if (this.marker) {
-            this.marker.setPosition(e.latLng);
-          } else {
-            this.marker = new google.maps.Marker({
-              position: e.latLng,
-              map: this.map,
-              icon: iconUrl,
-            });
-          }
-
-          this.coordenadasSeleccionadas.emit({ lat, lng });
-        });
-      }
+      const marker = new google.maps.Marker({
+        position: coords,
+        map: this.map,
+        icon: iconUrl,
+      });
+      this.markers.push(marker);
     }
-    
-    // SIDCOP logo
+
+    if (!this.mostrarPuntos) {
+      const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
+      this.map.addListener('click', (e: google.maps.MapMouseEvent) => {
+        if (!e.latLng) return;
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+
+        if (this.markers.length > 0) {
+          this.markers[0].setPosition(e.latLng);
+        } else {
+          const marker = new google.maps.Marker({
+            position: e.latLng,
+            map: this.map,
+            icon: iconUrl,
+          });
+          this.markers.push(marker);
+        }
+        this.coordenadasSeleccionadas.emit({ lat, lng });
+      });
+    }
+
     const logoDiv = document.createElement('div');
     logoDiv.innerHTML = `
       <img src="https://res.cloudinary.com/dbt7mxrwk/image/upload/v1753586701/iod3sxxvwyr1sgsyjql6.png"
@@ -163,6 +169,7 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
            style="width: 60px; height: auto; position: relative; top: 20px; right: 12px" />
     `;
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(logoDiv);
+
     this.mapaInicializado = true;
     google.maps.event.trigger(this.map, 'resize');
   }
