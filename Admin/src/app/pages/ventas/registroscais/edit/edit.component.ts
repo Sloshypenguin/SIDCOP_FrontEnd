@@ -99,7 +99,7 @@ export class EditComponent implements OnChanges {
       })
       .subscribe((data) => (this.PE = data));
 
-      console.log('Puntos Emision', this.PE);
+    console.log('Puntos Emision', this.PE);
   }
 
   ordenarPorMunicipioYDepartamento(sucursales: any[]): any[] {
@@ -164,33 +164,32 @@ export class EditComponent implements OnChanges {
   }
 
   validarEdicion(): void {
-  this.mostrarErrores = true;
+    this.mostrarErrores = true;
 
-  if (
-    this.registroCai.regC_Descripcion.trim() &&
-    this.registroCai.sucu_Id &&
-    this.registroCai.nCai_Id &&
-    this.registroCai.puEm_Id &&
-    this.registroCai.regC_RangoInicial.trim() &&
-    this.registroCai.regC_RangoFinal.trim() &&
-    this.registroCai.regC_FechaInicialEmision &&
-    this.registroCai.regC_FechaFinalEmision
-  ) {
-    if (this.hayDiferencias()) {
-      this.mostrarConfirmacionEditar = true;
+    if (
+      this.registroCai.regC_Descripcion.trim() &&
+      this.registroCai.sucu_Id &&
+      this.registroCai.nCai_Id &&
+      this.registroCai.puEm_Id &&
+      this.registroCai.regC_RangoInicial.trim() &&
+      this.registroCai.regC_RangoFinal.trim() &&
+      this.registroCai.regC_FechaInicialEmision &&
+      this.registroCai.regC_FechaFinalEmision
+    ) {
+      if (this.hayDiferencias()) {
+        this.mostrarConfirmacionEditar = true;
+      } else {
+        this.mostrarAlertaWarning = true;
+        this.mensajeWarning = 'No se han detectado cambios.';
+        setTimeout(() => this.cerrarAlerta(), 4000);
+      }
     } else {
       this.mostrarAlertaWarning = true;
-      this.mensajeWarning = 'No se han detectado cambios.';
+      this.mensajeWarning =
+        'Por favor complete todos los campos requeridos antes de guardar.';
       setTimeout(() => this.cerrarAlerta(), 4000);
     }
-  } else {
-    this.mostrarAlertaWarning = true;
-    this.mensajeWarning =
-      'Por favor complete todos los campos requeridos antes de guardar.';
-    setTimeout(() => this.cerrarAlerta(), 4000);
   }
-}
-
 
   obtenerListaCambios(): any[] {
     return Object.values(this.cambiosDetectados);
@@ -285,7 +284,7 @@ export class EditComponent implements OnChanges {
       };
     }
 
-      if (a.regC_FechaFinalEmision !== b.regC_FechaFinalEmision) {
+    if (a.regC_FechaFinalEmision !== b.regC_FechaFinalEmision) {
       this.cambiosDetectados.FechaFinal = {
         anterior: b.regC_FechaFinalEmision,
         nuevo: a.regC_FechaFinalEmision,
@@ -325,39 +324,40 @@ export class EditComponent implements OnChanges {
     this.registroCai.regC_FechaFinalEmision = new Date(value);
   }
 
+  
+
   private guardar(): void {
     this.mostrarErrores = true;
 
     if (this.registroCai.regC_Descripcion.trim()) {
-      const RegistroCAIActualizar = {
+      const registroCAIActualizar = {
         regC_Id: this.registroCai.regC_Id,
-        regC_Descripcion: this.registroCai.regC_Descripcion.trim(),
+        regC_Descripcion: this.registroCai.regC_Descripcion,
         sucu_Id: this.registroCai.sucu_Id,
-        sucu_Descripcion: '',
         puEm_Id: this.registroCai.puEm_Id,
-        puEm_Descripcion: '',
         nCai_Id: this.registroCai.nCai_Id,
-        nCai_Descripcion: '',
-        regC_RangoInicial: this.registroCai.regC_RangoInicial.trim(),
-        regC_RangoFinal: this.registroCai.regC_RangoFinal.trim(),
+        regC_RangoInicial: this.registroCai.regC_RangoInicial,
+        regC_RangoFinal: this.registroCai.regC_RangoFinal,
         regC_FechaInicialEmision: this.registroCai.regC_FechaInicialEmision,
         regC_FechaFinalEmision: this.registroCai.regC_FechaFinalEmision,
-
+        regC_Estado: true,
+        usua_Modificacion: getUserId(),
+        regC_FechaModificacion: new Date().toLocaleString('sv-SE'),
         secuencia: 0,
         estado: '',
-        code_Status: 0,
-        message_Status: '',
-        regC_Estado: false,
-        usua_Modificacion: getUserId(),
-        regC_FechaModificacion: new Date().toISOString(),
         usuarioCreacion: '',
         usuarioModificacion: '',
+        sucu_Descripcion: '',
+        puEm_Descripcion: '',
+        nCai_Descripcion: '',
+        puEm_Codigo: '',
+        nCai_Codigo: '',
       };
 
       this.http
         .put<any>(
           `${environment.apiBaseUrl}/RegistrosCaiS/Modificar`,
-          RegistroCAIActualizar,
+          registroCAIActualizar,
           {
             headers: {
               'X-Api-Key': environment.apiKey,
@@ -374,6 +374,7 @@ export class EditComponent implements OnChanges {
           },
           error: (error) => {
             console.error('Error al actualizar el Registro CAI:', error);
+            //console.log('Atualizar el Registro CAI:', RegistroCAIActualizar);
             this.mostrarAlertaError = true;
             this.mensajeError = 'Por favor, intente nuevamente.';
             setTimeout(() => this.cerrarAlerta(), 5000);
