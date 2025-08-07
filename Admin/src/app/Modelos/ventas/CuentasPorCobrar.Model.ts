@@ -15,7 +15,7 @@ export class CuentaPorCobrar {
   cpCo_FechaModificacion?: Date;
   cpCo_Estado: boolean = true;
   secuencia?: number;
-
+  cliente: string = '';
   clie_Codigo: string = '';
   clie_Nombres: string = '';
   clie_Apellidos: string = '';

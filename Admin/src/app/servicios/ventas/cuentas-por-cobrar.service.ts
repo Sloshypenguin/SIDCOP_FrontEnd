@@ -26,7 +26,7 @@ export class CuentasPorCobrarService {
       .set('soloActivas', soloActivas.toString())
       .set('soloVencidas', soloVencidas.toString());
     
-    return this.http.get(`${this.apiUrl}/CuentasPorCobrar/Listar`, {
+    return this.http.get(`${this.apiUrl}/CuentasPorCobrar/ResumenCliente`, {
       headers: this.headers,
       params: params
     });
