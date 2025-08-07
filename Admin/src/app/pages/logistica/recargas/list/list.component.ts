@@ -62,8 +62,8 @@ import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export
 })
 export class ListComponent implements OnInit {
 
-  // =========================================
-  // CONFIGURACIÓN DE EXPORTACIÓN
+  
+  //  Toda la config para los exports está aquí
   // =========================================
   private readonly exportConfig = {
     title: 'Listado de Recargas',
@@ -79,7 +79,7 @@ export class ListComponent implements OnInit {
       { key: 'Detalles', header: 'Detalles', width: 35, align: 'left' as const }
     ] as ExportColumn[],
     
-    // Mapeo de datos para exportación
+    // Función que transforma los datos para la exportación
     dataMapping: (recargas: Recargas, index: number) => ({
       'No': recargas?.secuencia || (index + 1),
       'Bodega': this.limpiarTexto(recargas?.bode_Descripcion),
@@ -89,27 +89,26 @@ export class ListComponent implements OnInit {
     })
   };
 
-  // =========================================
-  // PROPIEDADES DE COMPONENTE
+  // PROPIEDADES DEL COMPONENTE 
   // =========================================
   
-  // Navegación y breadcrumbs
+  // Para el breadcrumb de navegación
   breadCrumbItems!: Array<{}>;
   
-  // Control de permisos y usuario
+  // Control de permisos y datos del usuario logueado
   accionesDisponibles: string[] = [];
   currentUser: any = null;
   EsAdmin : boolean = false;
   
-  // Control de menú de acciones
+  // Para el menú de acciones en cada fila
   activeActionRow: number | null = null;
 
-  // Control de formularios
+  // Control de formularios (crear, editar, detalles)
   showCreateForm = false;
   showEditForm = false;
   showDetailsForm = false;
 
-  // Sistema de alertas
+  // Sistema de mensajes al usuario
   mostrarAlertaExito = false;
   mensajeExito = '';
   mostrarAlertaError = false;
@@ -117,15 +116,13 @@ export class ListComponent implements OnInit {
   mostrarAlertaWarning = false;
   mensajeWarning = '';
 
-  // Estado de carga y exportación
+  // Estados de carga y exportación
   mostrarOverlayCarga = false;
   tieneRegistros = false;
   exportando = false;
   tipoExportacion: 'excel' | 'pdf' | 'csv' | null = null;
 
-  // =========================================
-  // CONSTRUCTOR E INICIALIZACIÓN
-  // =========================================
+  //dependencias
   constructor(
     public table: ReactiveTableService<Recargas>,
     private http: HttpClient,
@@ -133,40 +130,44 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     public floatingMenuService: FloatingMenuService,
     private exportService: ExportService
-  ) {
-    // No cargar datos aquí, se hará después de cargar los datos de sesión
+  ) {}
+
+  // INICIALIZACIÓN
+  ngOnInit(): void {
+    this.inicializarBreadcrumbs();
+    this.inicializarUsuario();
+    this.cargarDatosIniciales();
   }
 
-  ngOnInit(): void {
-    // Configurar breadcrumbs
+  private inicializarBreadcrumbs(): void {
     this.breadCrumbItems = [
       { label: 'Logistica' },
       { label: 'Recargas', active: true }
     ];
-    
-    // Inicializar datos del usuario y permisos
+  }
+
+   // Carga datos del usuario y permisos
+  private inicializarUsuario(): void {
     this.cargarDatosSesion();
     this.cargarAccionesUsuario();
-    
-    // Cargar datos después de tener la información de sesión
+  }
+
+   //Carga los datos principales después de tener la info del usuario
+  private cargarDatosIniciales(): void {
+    // Pequeño delay para asegurar que el usuario esté cargado
     setTimeout(() => {
       this.cargardatos(true);
     }, 0);
   }
 
-  // =========================================
-  // MÉTODOS DE GESTIÓN DE USUARIO Y SESIÓN
-  // =========================================
-  
-  /**
-   * Carga los datos del usuario actual desde localStorage
-   */
+
+  //Obtiene los datos del usuario desde localStorage - quien está logueado
   cargarDatosSesion(): void {
     const currentUserStr = localStorage.getItem('currentUser');
     if (currentUserStr) {
       try {
         this.currentUser = JSON.parse(currentUserStr);
-        // Corregido: usar usua_EsAdmin en lugar de esAdmin
+        // Importante: usar usua_EsAdmin, no esAdmin
         this.EsAdmin = this.currentUser.usua_EsAdmin || false; 
         console.log('Usuario cargado:', {
           id: this.currentUser.usua_Id,
@@ -181,11 +182,8 @@ export class ListComponent implements OnInit {
       }
     }
   }
-
- 
-    //Carga las acciones/permisos disponibles del usuario para este módulo
- 
-  private cargarAccionesUsuario(): void {
+   //Carga las acciones/permisos disponibles del usuario para este módulo
+    private cargarAccionesUsuario(): void {
     const permisosRaw = localStorage.getItem('permisosJson');
     let accionesArray: string[] = [];
     
@@ -218,32 +216,25 @@ export class ListComponent implements OnInit {
       .map(a => a.trim().toLowerCase());
   }
 
-  /**
-   * Valida si una acción específica está permitida para el usuario
-   */
+   //Checa si una acción específica está permitida para el usuario
+  
   accionPermitida(accion: string): boolean {
     return this.accionesDisponibles.some(a => a === accion.trim().toLowerCase());
   }
 
-  // =========================================
-  // MÉTODOS DE EXPORTACIÓN
-  // =========================================
+  // MÉTODOS DE EXPORTACIÓN - Todo lo de exportar datos
   
-  /**
-   * Método unificado para todas las exportaciones
-   */
+   // Método principal para todas las exportaciones 
   async exportar(tipo: 'excel' | 'pdf' | 'csv'): Promise<void> {
-    // Validar si ya hay una exportación en progreso
+    // No exportar si ya hay una en progreso
     if (this.exportando) {
       this.mostrarMensaje('warning', 'Ya hay una exportación en progreso...');
       return;
     }
-
     // Validar datos antes de exportar
     if (!this.validarDatosParaExport()) {
       return;
     }
-
     try {
       this.exportando = true;
       this.tipoExportacion = tipo;
@@ -276,14 +267,12 @@ export class ListComponent implements OnInit {
     }
   }
 
-  // Métodos específicos para cada tipo de exportación
+  // Métodos específicos para cada tipo 
   async exportarExcel(): Promise<void> { await this.exportar('excel'); }
   async exportarPDF(): Promise<void> { await this.exportar('pdf'); }
   async exportarCSV(): Promise<void> { await this.exportar('csv'); }
 
-  /**
-   * Verifica si se puede exportar (hay datos y no está exportando)
-   */
+ //Verifica si se puede exportar (hay datos y no está exportando)
   puedeExportar(tipo?: 'excel' | 'pdf' | 'csv'): boolean {
     if (this.exportando) {
       return tipo ? this.tipoExportacion !== tipo : false;
@@ -291,13 +280,9 @@ export class ListComponent implements OnInit {
     return this.table.data$.value?.length > 0;
   }
 
-  // =========================================
-  // MÉTODOS PRIVADOS DE EXPORTACIÓN
-  // =========================================
-  
-  /**
-   * Crea la configuración de exportación
-   */
+
+  // MÉTODOS DE EXPORTACIÓN
+ 
   private crearConfiguracionExport(): ExportConfig {
     return {
       title: this.exportConfig.title,
@@ -311,9 +296,9 @@ export class ListComponent implements OnInit {
     };
   }
 
-  /**
-   * Obtiene y prepara los datos para exportación
-   */
+  
+   //Obtiene y prepara los datos para exportación
+  
   private obtenerDatosExport(): any[] {
     try {
       const datos = this.table.data$.value;
@@ -332,9 +317,8 @@ export class ListComponent implements OnInit {
     }
   }
 
-  /**
-   * Maneja el resultado de las exportaciones
-   */
+   //Maneja el resultado de las exportaciones
+ 
   private manejarResultadoExport(resultado: { success: boolean; message: string }): void {
     if (resultado.success) {
       this.mostrarMensaje('success', resultado.message);
@@ -343,9 +327,9 @@ export class ListComponent implements OnInit {
     }
   }
 
-  /**
-   * Valida datos antes de exportar
-   */
+
+ //Valida datos antes de exportar
+ 
   private validarDatosParaExport(): boolean {
     const datos = this.table.data$.value;
     
@@ -353,7 +337,6 @@ export class ListComponent implements OnInit {
       this.mostrarMensaje('warning', 'No hay datos disponibles para exportar');
       return false;
     }
-    
     // Confirmación para grandes volúmenes de datos
     if (datos.length > 10000) {
       const continuar = confirm(
@@ -366,9 +349,8 @@ export class ListComponent implements OnInit {
     return true;
   }
 
-  /**
-   * Limpia texto para exportación
-   */
+   // Limpia texto para exportación - quita caracteres raros
+
   private limpiarTexto(texto: any): string {
     if (!texto) return '';
     
@@ -379,33 +361,21 @@ export class ListComponent implements OnInit {
       .substring(0, 150);
   }
 
-  // =========================================
-  // MÉTODOS CRUD Y FORMULARIOS
-  // =========================================
-  
-  /**
-   * Abre el formulario de creación
-   */
+
+  // MÉTODOS CRUD
+
   crear(): void {
     this.showCreateForm = !this.showCreateForm;
     this.showEditForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
-
-  /**
-   * Abre el formulario de edición para una recarga específica
-   */
   editar(recargas: Recargas): void {
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
-
-  /**
-   * Abre el formulario de detalles para una recarga específica
-   */
   detalles(recargas: Recargas): void {
     this.showDetailsForm = true;
     this.showCreateForm = false;
@@ -413,12 +383,12 @@ export class ListComponent implements OnInit {
     this.activeActionRow = null;
   }
 
-  // Métodos para cerrar formularios
+  // Métodos para cerrar formularios 
   cerrarFormulario(): void { this.showCreateForm = false; }
   cerrarFormularioEdicion(): void { this.showEditForm = false; }
   cerrarFormularioDetalles(): void { this.showDetailsForm = false; }
 
-  // Métodos de respuesta de componentes hijos
+  // cuando se guardan cambios
   guardarConfiguracioFactura(recargas: Recargas): void {
     this.cargardatos(false);
     this.cerrarFormulario();
@@ -431,20 +401,12 @@ export class ListComponent implements OnInit {
     this.mostrarMensaje('success', 'Recarga actualizada exitosamente');
   }
 
-  // =========================================
   // CONTROL DE MENÚ DE ACCIONES
-  // =========================================
-  
 
-    //Controla la apertura/cierre del menú de acciones por fila
- 
   onActionMenuClick(rowIndex: number): void {
     this.activeActionRow = this.activeActionRow === rowIndex ? null : rowIndex;
   }
 
-  
-    //Cierra el menú de acciones al hacer click fuera
-  
   onDocumentClick(event: MouseEvent, rowIndex: number): void {
     const target = event.target as HTMLElement;
     const dropdowns = document.querySelectorAll('.dropdown-action-list');
@@ -461,13 +423,8 @@ export class ListComponent implements OnInit {
     }
   }
 
-  // =========================================
-  // SISTEMA DE MENSAJES Y ALERTAS
-  // =========================================
+  // SISTEMA DE MENSAJES Y ALERTAS 
   
-  
-    //Muestra mensajes de diferentes tipos (success, error, warning, info)
-   
   private mostrarMensaje(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string): void {
     this.cerrarAlerta();
     
@@ -494,10 +451,6 @@ export class ListComponent implements OnInit {
         break;
     }
   }
-
-  /**
-   * Cierra todas las alertas activas
-   */
   cerrarAlerta(): void {
     this.mostrarAlertaExito = false;
     this.mensajeExito = '';
@@ -507,10 +460,8 @@ export class ListComponent implements OnInit {
     this.mensajeWarning = '';
   }
 
-  // =========================================
-  // CARGA DE DATOS DESDE API
-  // =========================================
-  
+  // CARGA DE DATOS DESDE API 
+
   /**
    * Carga los datos de recargas desde la API
    * @param state - Indica si mostrar overlay de carga
@@ -537,10 +488,6 @@ export class ListComponent implements OnInit {
       
       next: (data) => {
         console.log("date" + sucuId + esAdmin + data);
-        // Backend ya maneja el filtrado por sucursal y admin status
-        // No necesitamos filtrado adicional en el frontend
-        
-        // Agregar numeración secuencial para la tabla
         data.forEach((recargas, index) => {
           recargas.secuencia = index + 1;
         });
@@ -557,7 +504,6 @@ export class ListComponent implements OnInit {
         this.tieneRegistros = false;
       },
       complete: () => {
-        // Retraso para mejor UX
         setTimeout(() => {
           this.mostrarOverlayCarga = false;
         }, 500);
@@ -565,22 +511,13 @@ export class ListComponent implements OnInit {
     });
   }
   
+    //Maneja errores de carga de imágenes - pone imagen por defecto
 
-  // =========================================
-  // MÉTODOS UTILITARIOS
-  // =========================================
-  
-  /**
-   * Maneja errores de carga de imágenes
-   */
   onImgError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/images/users/32/user-dummy-img.jpg';
   }
 
-  /**
-   * Obtiene un mensaje de error apropiado según el código de estado HTTP
-   */
   private obtenerMensajeError(error: any): string {
     if (error.status === 404) return 'El endpoint no fue encontrado.';
     if (error.status === 401) return 'No autorizado. Verifica tu API Key.';
@@ -590,9 +527,6 @@ export class ListComponent implements OnInit {
     return 'Error de comunicación con el servidor.';
   }
 
-  /**
-   * Extrae el resultado del stored procedure de la respuesta
-   */
   private extraerResultadoSP(response: any): any {
     if (response.data && typeof response.data === 'object') {
       return response.data;
