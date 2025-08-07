@@ -2,11 +2,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
-import {jsPDF} from 'jspdf';
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { getUserName } from 'src/app/core/utils/user-utils';
-import { get } from 'lodash';
-import { TokenStorageService } from 'src/app/core/services/token-storage.service';
+import {  obtenerUsuario } from 'src/app/core/utils/user-utils';
 
 export interface ReportConfig {
   titulo: string;
@@ -197,9 +195,8 @@ export class PdfReportService {
     const totalPages = doc.getNumberOfPages();
     
     // Información del usuario
-    const nombreUsuario = datosReporte?.[0]?.getUserName || 'N/A';
-
-    doc.text(`Generado por:   ${nombreUsuario} | ${fechaTexto} ${horaTexto}`, 20, doc.internal.pageSize.height - 12);
+    const usuarioCreacion = obtenerUsuario() || 'N/A';
+    doc.text(`Generado por:  ${usuarioCreacion} | ${fechaTexto} ${horaTexto}`, 20, doc.internal.pageSize.height - 12);
     
     // Paginación
     doc.text(`Página ${data.pageNumber}/${totalPages}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 12, { align: 'right' });
