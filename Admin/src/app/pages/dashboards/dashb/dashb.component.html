@@ -116,10 +116,16 @@
                     
                     <div class="col-lg-12">
 
-                        <apx-chart [series]="simpleDonutChart.series" [chart]="simpleDonutChart.chart"
+                        <!-- <apx-chart [series]="simpleDonutChart.series" [chart]="simpleDonutChart.chart"
                         [labels]="simpleDonutChart.labels" [responsive]="simpleDonutChart.responsive"
                         [legend]="simpleDonutChart.legend" [dataLabels]="simpleDonutChart.dataLabels"
-                        [colors]="simpleDonutChart.colors" dir="ltr"></apx-chart>                        
+                        [colors]="simpleDonutChart.colors" dir="ltr"></apx-chart>                         -->
+
+
+                        <apx-chart [series]="multipleRadialbarChart.series" [chart]="multipleRadialbarChart.chart"
+                        [plotOptions]="multipleRadialbarChart.plotOptions" [labels]="multipleRadialbarChart.labels"
+                        [legend]="multipleRadialbarChart.legend" [dataLabels]="multipleRadialbarChart.dataLabels"
+                        [colors]="multipleRadialbarChart.colors" dir="ltr"></apx-chart>
 
                     </div>
             </div>

@@ -37,6 +37,8 @@ export class DashbComponent implements OnInit {
   graficocategorias: boolean = false;
   categoriasdata: any[] = [];
   simpleDonutChart: any;
+  multipleRadialbarChart: any;
+  
 
   totalrevenueChart: any;
 
@@ -54,7 +56,7 @@ export class DashbComponent implements OnInit {
   entorno: string = '';
 
   constructor(private cdr: ChangeDetectorRef,private ngZone: NgZone) 
-  { 
+  {
   }
 
   ngOnInit(): void {
@@ -63,9 +65,17 @@ export class DashbComponent implements OnInit {
     this.cargardatos();
 
     this._simpleDonutChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger", "--tb-info"]');
+    this._multipleRadialbarChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger"]');
 
     // this._totalrevenueChart('["--table table-gridjs"]');
     // this.chart = new ApexCharts(document.querySelector(".apex-charts"), this.totalrevenueChart);
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+  return array
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
   }
 
   private getChartColorsArray(colors: any) {
@@ -259,6 +269,69 @@ export class DashbComponent implements OnInit {
     });
   }
 
+  private _multipleRadialbarChart(colors: any) {
+
+    colors = this.getChartColorsArray(colors);
+
+    let colorArr = Array.isArray(colors) ? colors : JSON.parse(colors);
+    colorArr = this.shuffleArray(colorArr);
+    colors = colorArr;
+
+    this.multipleRadialbarChart = {
+      series: this.categoriasdata.map(item => item.Cantidad/this.barraMesSelected.Cantidad * 100),      
+      chart: {
+        height: 350,
+        type: "radialBar",
+      },
+      plotOptions: {
+        radialBar: {
+          dataLabels: {
+            name: {
+              fontSize: "22px",
+            },
+            value: {
+              fontSize: "16px",
+            },
+            total: {
+              show: true,
+              label: "Total",
+              formatter: 
+              (w: any) =>{
+                return this.barraMesSelected.Cantidad
+              }
+            },
+          },
+        },
+      },
+      legend: {
+        position: "bottom",
+        show: true,
+        formatter: (seriesName: string, opts: any) => {
+        // opts.seriesIndex gives you the index of the current legend item
+        const cantidad = this.categoriasdata[opts.seriesIndex]?.Cantidad ?? '';
+        return `${seriesName}: ${cantidad}`;
+      }
+      },
+      dataLabels: {
+        dropShadow: {
+          enabled: true,
+        },
+      },
+      labels: this.categoriasdata.map(item => item.Categoria),
+      colors: colors,
+    };
+
+    const attributeToMonitor = 'data-theme';
+
+    const observer = new MutationObserver(() => {
+     this._multipleRadialbarChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger"]');
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: [attributeToMonitor]
+    });
+  }
+
   private cargardatos(): void {
       // this.mostrarOverlayCarga = true;
       this.http.get(`${environment.apiBaseUrl}/Dashboards/VentasPorMes`, {
@@ -314,9 +387,11 @@ export class DashbComponent implements OnInit {
           console.log('Datos de ventas por mes:', data);
           this.categoriasdata = data as any[];
           
-          this._simpleDonutChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger", "--tb-info"]');
+          this._simpleDonutChart('["--tb-primary", "--tb-warning", "--tb-success", "--tb-danger", "--tb-info"]');
+          // this._multipleRadialbarChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger"]');
+          this._multipleRadialbarChart('["#14192e", "#29142e", "#2e2914", "#192e14", "#2e1c14", "#262e14", "#2e1419", "#142e1c", "#1c142e", "#14262e" ]');
 
-          
+          this.graficocategorias = true;
         },
         error: error => {
           console.error('Error al cargar categorias:', error);
@@ -373,7 +448,7 @@ export class DashbComponent implements OnInit {
 
     this.ngZone.run(() => {
       this.cargardatosCategorias();
-      this.graficocategorias = true;
+      // this.graficocategorias = true;
       this.cdr.detectChanges();
     });
     
