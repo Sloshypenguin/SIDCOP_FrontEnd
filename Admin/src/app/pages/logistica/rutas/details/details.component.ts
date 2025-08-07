@@ -27,7 +27,7 @@ export class DetailsComponent implements OnChanges {
   mostrarAlertaError = false;
   mensajeError = '';
 
-  puntosVista: { lat: number; lng: number; nombre?: string }[] = [];
+  puntosVista: { lat: number; lng: number; nombre?: string; cliente?: string; nombrenegocio?: string }[] = [];
 
   cliente: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
@@ -78,14 +78,18 @@ export class DetailsComponent implements OnChanges {
         );
 
         forkJoin(observablesDirecciones).subscribe(respuestas => {
-          const todosPuntos: { lat: number; lng: number; nombre?: string }[] = [];
+          const todosPuntos: { lat: number; lng: number; nombre?: string; clienteNombre?: string; nombrenegocio?: string }[] = [];
 
-          respuestas.forEach(direccionesCliente => {
+          respuestas.forEach((direccionesCliente, index) => {
+            const clienteNombre = this.clientesFiltrados[index]?.clie_Nombres + ' ' + this.clientesFiltrados[index]?.clie_Apellidos || 'Cliente desconocido';
+            const nombrenegocio = this.clientesFiltrados[index]?.clie_NombreNegocio || 'Negocio desconocido';
             (direccionesCliente || []).forEach(d => {
               todosPuntos.push({
                 lat: d.diCl_Latitud,
                 lng: d.diCl_Longitud,
-                nombre: d.diCl_Observaciones
+                nombre: d.diCl_Observaciones,
+                clienteNombre,
+                nombrenegocio
               });
             });
           });

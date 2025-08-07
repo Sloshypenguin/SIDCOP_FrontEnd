@@ -7,6 +7,8 @@ interface PuntoVista {
   lat: number;
   lng: number;
   nombre?: string;
+  clienteNombre?: string;
+  nombrenegocio?: string;
 }
 
 declare const google: any;
@@ -97,8 +99,12 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
       if (punto.nombre) {
         const contenidoHTML = `
           <div style="font-size: 14px;">
-            <h3 style="margin: 0; font-size: 20px; font-weight: 500; color: #d6b68a;">${punto.nombre}</h3>
-            <p>Dirección: ${punto.lat}, ${punto.lng}</p>
+            <h3 style="margin: 0; font-size: 20px; font-weight: 500; color: #d6b68a;">
+              ${punto.nombre || 'Sin Observaciones'}
+            </h3>
+            <strong>Cliente:</strong> ${punto.clienteNombre || 'Desconocido'}<br>
+            <strong>Negocio:</strong> ${punto.nombrenegocio || 'Desconocido'}<br>
+            <strong>Coordenadas:</strong> ${punto.lat.toFixed(6)}, ${punto.lng.toFixed(6)}
           </div>
         `;
         const infoWindow = new google.maps.InfoWindow({ content: contenidoHTML });
