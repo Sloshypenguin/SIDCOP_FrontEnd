@@ -1,5 +1,15 @@
 /// <reference types="@types/google.maps" />
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
 
@@ -32,6 +42,9 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
   private markers: google.maps.Marker[] = [];
   private mapaInicializado = false;
 
+  private directionsService!: google.maps.DirectionsService;
+  private directionsRenderer!: google.maps.DirectionsRenderer;
+
   ngAfterViewInit() {
     if (this.mostrar) {
       this.cargarGoogleMapsScript().then(() => this.inicializarMapa());
@@ -47,6 +60,7 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
 
     if (changes['puntosVista'] && this.mapaInicializado) {
       this.agregarPuntosVistaAlMapa();
+      this.dibujarRutaEntrePuntos();
     }
   }
 
@@ -107,12 +121,43 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
 
     this.map.fitBounds(bounds);
 
+    // Limitar zoom máximo (por ejemplo 15)
     const listener = google.maps.event.addListener(this.map, 'bounds_changed', () => {
       const currentZoom = this.map.getZoom();
       if (currentZoom !== undefined && currentZoom > 15) {
         this.map.setZoom(15);
       }
       google.maps.event.removeListener(listener);
+    });
+  }
+
+  private dibujarRutaEntrePuntos() {
+    if (!this.directionsService || !this.directionsRenderer) return;
+    if (this.puntosVista.length < 2) return; // Para rutas necesitamos al menos dos puntos
+
+    const origin = new google.maps.LatLng(this.puntosVista[0].lat, this.puntosVista[0].lng);
+    const destination = new google.maps.LatLng(this.puntosVista[this.puntosVista.length - 1].lat, this.puntosVista[this.puntosVista.length - 1].lng);
+
+    const waypoints = this.puntosVista.slice(1, -1).map(p => ({
+      location: new google.maps.LatLng(p.lat, p.lng),
+      stopover: true
+    }));
+
+    const request: google.maps.DirectionsRequest = {
+      origin,
+      destination,
+      waypoints,
+      travelMode: google.maps.TravelMode.DRIVING,
+      optimizeWaypoints: true // Permite optimizar la ruta
+    };
+
+    this.directionsService.route(request, (result, status) => {
+      if (status === google.maps.DirectionsStatus.OK && result) {
+        this.directionsRenderer.setDirections(result);
+      } else {
+        console.error('Error en DirectionsService:', status);
+        this.directionsRenderer.set('directions', null); // Borra ruta previa si hay error
+      }
     });
   }
 
@@ -128,21 +173,28 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
       fullscreenControl: false,
     });
 
+    // Inicializar Directions API
+    this.directionsService = new google.maps.DirectionsService();
+    this.directionsRenderer = new google.maps.DirectionsRenderer({
+      suppressMarkers: true, // Para que no dibuje marcadores duplicados
+      preserveViewport: true // Para que no cambie el viewport al mostrar ruta (opcional)
+    });
+    this.directionsRenderer.setMap(this.map);
+
     if (this.puntosVista.length > 0) {
       this.agregarPuntosVistaAlMapa();
+      this.dibujarRutaEntrePuntos();
     } else if (this.coordenadasIniciales) {
       const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
 
-      const marker = new google.maps.Marker({
+      this.markers = [new google.maps.Marker({
         position: coords,
         map: this.map,
         icon: iconUrl,
-      });
-      this.markers.push(marker);
+      })];
     }
 
     if (!this.mostrarPuntos) {
-      const iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
       this.map.addListener('click', (e: google.maps.MapMouseEvent) => {
         if (!e.latLng) return;
         const lat = e.latLng.lat();
@@ -154,7 +206,7 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
           const marker = new google.maps.Marker({
             position: e.latLng,
             map: this.map,
-            icon: iconUrl,
+            icon: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
           });
           this.markers.push(marker);
         }
@@ -162,6 +214,7 @@ export class MapaSelectorComponent implements AfterViewInit, OnChanges {
       });
     }
 
+    // Logo SIDCOP
     const logoDiv = document.createElement('div');
     logoDiv.innerHTML = `
       <img src="https://res.cloudinary.com/dbt7mxrwk/image/upload/v1753586701/iod3sxxvwyr1sgsyjql6.png"
