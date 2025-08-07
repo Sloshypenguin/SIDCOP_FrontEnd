@@ -80,24 +80,32 @@ export class CreateComponent {
   }
 
   corroborarClave(clave: string) {
-    const tieneLetra = /[a-zA-Z]/.test(clave);
-    const tieneNumero = /\d/.test(clave);
-    const tieneEspecial = /[^a-zA-Z\d]/.test(clave);
-
-    const tipos = [tieneLetra, tieneNumero, tieneEspecial].filter(Boolean).length;
-
     if (clave.length === 0) {
       this.claveDatos = 0;
       this.claveMensaje = '';
-    } else if (tipos === 1) {
+      return;
+    }
+
+    if (clave.length < 8) {
       this.claveDatos = 1;
-      this.claveMensaje = 'Fácil';
+      this.claveMensaje = 'Débil';
+      return;
+    }
+    
+    const tieneLetra = /[a-zA-Z]/.test(clave);
+    const tieneNumero = /\d/.test(clave);
+    const tieneEspecial = /[^a-zA-Z\d]/.test(clave);
+    const tipos = [tieneLetra, tieneNumero, tieneEspecial].filter(Boolean).length;
+
+    if (tipos === 1) {
+      this.claveDatos = 1;
+      this.claveMensaje = 'Débil';
     } else if (tipos === 2) {
       this.claveDatos = 2;
       this.claveMensaje = 'Media';
     } else if (tipos === 3) {
       this.claveDatos = 3;
-      this.claveMensaje = 'Díficil';
+      this.claveMensaje = 'Fuerte';
     }
   }
 
@@ -152,6 +160,7 @@ export class CreateComponent {
 
   guardar(): void {
     this.mostrarErrores = true;
+
     if (this.claveDatos < 2) {
       this.mostrarAlertaWarning = true;
       this.mensajeWarning = 'La contraseña debe ser al menos de seguridad media (letras y números o letras y caracteres especiales).';

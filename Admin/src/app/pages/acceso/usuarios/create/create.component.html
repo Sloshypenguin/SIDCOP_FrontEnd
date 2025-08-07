@@ -80,6 +80,7 @@
                 </i>
                 <input type="password" class="form-control" id="usua_Clave" [(ngModel)]="usuario.usua_Clave"
                   (input)="corroborarClave(usuario.usua_Clave)"
+                  (keydown.space)="$event.preventDefault()"
                   [class.is-invalid]="!usuario.usua_Clave.trim() && mostrarErrores" placeholder="Ingrese la contraseña"
                   required />
               </div>
