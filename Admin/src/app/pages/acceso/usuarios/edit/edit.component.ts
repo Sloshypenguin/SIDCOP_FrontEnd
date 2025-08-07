@@ -64,9 +64,33 @@ export class EditComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['usuarioData'] && changes['usuarioData'].currentValue) {
       this.usuario = { ...changes['usuarioData'].currentValue };
+      const rolActual = this.roles.find(m => m.role_Id === this.usuario.role_Id);
+      this.usuario.role_Descripcion = rolActual ? rolActual.role_Descripcion : '';
+      const empleadoActual = this.empleados.find(m => m.empl_Id === this.usuario.usua_IdPersona);
+      this.usuario.nombreCompleto = empleadoActual ? empleadoActual.empl_Nombres + ' ' + empleadoActual.empl_Apellidos : '';
       this.usuarioOriginal = { ...changes['usuarioData'].currentValue };
       this.mostrarErrores = false;
       this.cerrarAlerta();
+    }
+  }
+
+  onRolChange(event: any) {
+    const selectedId = +event.target.value;
+    const rolSeleccionado = this.roles.find(rol => rol.role_Id === selectedId);
+    if (rolSeleccionado) {
+      this.usuario.role_Descripcion = rolSeleccionado.role_Descripcion;
+    } else {
+      this.usuario.role_Descripcion = '';
+    }
+  }
+
+  onEmpleadoChange(event: any) {
+    const selectedId = +event.target.value;
+    const empleadoSeleccionado = this.empleados.find(emp => emp.empl_Id === selectedId);
+    if (empleadoSeleccionado) {
+      this.usuario.nombreCompleto = empleadoSeleccionado.empl_Nombres + ' ' + empleadoSeleccionado.empl_Apellidos;
+    } else {
+      this.usuario.nombreCompleto = '';
     }
   }
 
@@ -173,6 +197,25 @@ export class EditComponent implements OnChanges {
         nuevo: a.usua_Imagen,
         label: 'Imagen de Usuario'
       };
+    }
+
+    if(a.role_Id !== b.role_Id) {
+      this.cambiosDetectados.rol = {
+        anterior: b.role_Descripcion,
+        nuevo: a.role_Descripcion,
+        label: 'Rol'
+      };
+    }
+
+    if(a.usua_EsAdmin)
+    {
+      if(a.usua_IdPersona !== b.usua_IdPersona){
+        this.cambiosDetectados.empleado = {
+          anterior: b.nombreCompleto = this.empleados.find(emp => emp.empl_Id === b.usua_IdPersona)?.empl_Nombres + ' ' + this.empleados.find(emp => emp.empl_Id === b.usua_IdPersona)?.empl_Apellidos || '',
+          nuevo: a.nombreCompleto,
+          label: 'Empleado'
+        }
+      }
     }
 
     return Object.keys(this.cambiosDetectados).length > 0;
