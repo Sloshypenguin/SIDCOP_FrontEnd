@@ -14,16 +14,37 @@
                     <span class="btn-icon"><i class="ri-add-line"></i></span>
                 </button>           
             </div>
-            <div class="col-2 ms-auto position-relative">
-                <input
-                    type="text"
-                    class="form-control ps-5"
-                    placeholder="Buscar..."
-                    [(ngModel)]="busqueda"
-                    (ngModelChange)="filtradorProductos()"
-                />
-                <i class="ri-search-line search-icon" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
-            </div>
+             <div class="col-lg-9 ms-auto">
+    <div class="d-flex align-items-center justify-content-end gap-2">
+     
+      <!-- Botones de exportación -->
+      <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarExcel()" title="Exportar a Excel">
+        <span class="btn-text">Excel</span>
+        <span class="btn-icon"><i class="ri-file-excel-2-line" style="font-weight: 100;"></i></span>
+      </button>
+      <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarPDF()" title="Exportar a PDF">
+        <span class="btn-text">PDF</span>
+        <span class="btn-icon"><i class="ri-file-ppt-line" style="font-weight: 100;"></i></span>
+      </button>
+      <button type="button" class="btn btn-primary gold btn-sm btn-minw-5-1" (click)="exportarCSV()" title="Exportar a CSV">
+        <span class="btn-text">CSV</span>
+        <span class="btn-icon"><i class="ri-file-text-line" style="font-weight: 100;"></i></span>
+      </button>
+
+       <!-- Campo de búsqueda -->
+      <div class="search-box mb-0" style="position: relative; min-width: 220px;">
+        <input
+          type="text"
+          class="form-control ps-5"
+          placeholder="Buscar..."
+          [(ngModel)]="busqueda"
+          (ngModelChange)="filtradorProductos()"
+        />
+        <i class="ri-search-line search-icon"
+           style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
+      </div>
+    </div>
+  </div>
         </div>
     
         <!-- Collapse para el formulario de creación -->
@@ -62,7 +83,7 @@
         <div class="row row-cols-xxl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 mx-2 mb-4">
             <ng-container *ngFor="let data of productosFiltrados; trackBy: trackByProductoId">
                 <div class="col">
-                    <div class="card card-empleado position-relative">
+                    <div class="card card-empleado position-relative" style="min-height: 420px;">
                         <div class="card-body cb1 p-2 position-relative">
                             <div style="position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #d6b68a; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;"></div>
                             

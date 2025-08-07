@@ -6,6 +6,7 @@ import { Categoria } from 'src/app/Modelos/inventario/CategoriaModel';
 import { environment } from 'src/environments/environment.prod';
 import { getUserId } from 'src/app/core/utils/user-utils';
 import { Promocion } from 'src/app/Modelos/inventario/PromocionModel';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-edit',
@@ -57,7 +58,7 @@ activeTab: number = 1;
     prod_CodigoBarra: '',
     prod_Descripcion: '',
     prod_DescripcionCorta: '',
-    prod_Imagen: 'assets/images/users/32/agotado.png',
+    prod_Imagen: '',
     cate_Id: 0,
     cate_Descripcion: '',
     subc_Id: 0,
@@ -96,9 +97,7 @@ activeTab: number = 1;
   mensajeWarning = '';
   mostrarConfirmacionEditar = false;
 
-  constructor(private http: HttpClient) {
-    this.cargarMarcas();
-    this.cargarProveedores();
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {
     this.cargarImpuestos();
     this.listarClientes();
     this.listarProductos();
@@ -201,29 +200,11 @@ activeTab: number = 1;
       
       console.log('Clientes seleccionados cargados:', this.clientesSeleccionados);
       console.log('Productos cargados:', this.productos);
-      this.cargarCategorias();
+
     }
   }
   
-  onMarcaChange(event: any) {
-    const selectedId = +event.target.value;
-    const marcaSeleccionada = this.marcas.find(m => m.marc_Id === selectedId);
-    if (marcaSeleccionada) {
-      this.producto.marc_Descripcion = marcaSeleccionada.marc_Descripcion;
-    } else {
-      this.producto.marc_Descripcion = '';
-    }
-  }
 
-  onProveedorChange(event: any) {
-    const selectedId = +event.target.value;
-    const proveedorSeleccionado = this.proveedores.find(p => p.prov_Id === selectedId);
-    if (proveedorSeleccionado) {
-      this.producto.prov_NombreEmpresa = proveedorSeleccionado.prov_NombreEmpresa;
-    } else {
-      this.producto.prov_NombreEmpresa = '';
-    }
-  }
 
   validarPrecioUnitario() {
     const valor = this.producto.prod_PrecioUnitario;
@@ -242,22 +223,9 @@ activeTab: number = 1;
     }
   }
 
-  onCategoriaChange(event: any) {
-    const categoriaId = this.producto.cate_Id;
-    if (categoriaId === undefined || categoriaId === 0) {
-      this.subcategoriasFiltradas = [];
-      this.producto.subc_Id = 0;
-      return;
-    }
-    console.log('Filtrando subcategorías para categoría:', categoriaId);
-    this.filtrarSubcategoriasPorCategoria(categoriaId, true);
-  }
 
-  onSubcategoriaChange(event: any): void {
-    const selectedId = +event.target.value;
-    const subcategoriaSeleccionada = this.subcategoriasFiltradas.find(s => s.subc_Id === selectedId);
-    this.producto.subc_Descripcion = subcategoriaSeleccionada ? subcategoriaSeleccionada.subC_Descripcion : '';
-  }
+
+
 
   listarClientes(): void {
         this.http.get<any>(`${environment.apiBaseUrl}/Cliente/Listar`, {
@@ -282,25 +250,7 @@ activeTab: number = 1;
       });
     }
 
-  cargarMarcas() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Marcas/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {this.marcas = data;},
-      error => {
-        console.error('Error al cargar las marcas:', error);
-      }
-    );
-  }
 
-  cargarProveedores() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Proveedor/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {this.proveedores = data;},
-      error => {
-        console.error('Error al cargar los proveedores:', error);
-      }
-    );
-  }
 
   cargarImpuestos() {
     this.http.get<any[]>(`${environment.apiBaseUrl}/Impuestos/Listar`, {
@@ -312,106 +262,12 @@ activeTab: number = 1;
     );
   }
 
-  cargarCategorias() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/Categorias/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.categorias = data;
-      this.cargarSubcategorias();
-    }, error => {
-        console.error('Error al cargar las categorías:', error);
-      }
-    );
-  }
+  
 
-  cargarSubcategorias() {
-    this.http.get<Categoria[]>(`${environment.apiBaseUrl}/Subcategoria/Listar`, {
-      headers: { 'x-api-key': environment.apiKey }
-    }).subscribe(data => {
-      this.subcategorias = data;
-      if (this.producto.subc_Id) {
-        // Buscar la subcategoría actual en la lista completa
-        const subcategoriaActual = this.subcategorias.find(s => s.subc_Id === this.producto.subc_Id);
-        if (subcategoriaActual) {
-          // Si no teníamos la descripción original, la obtenemos ahora
-          if (!this.subcategoriaOriginalDescripcion) {
-            this.subcategoriaOriginalDescripcion = subcategoriaActual.subC_Descripcion ?? '';
-          }
-          
-          // Asignar la categoría si no está asignada
-          if (!this.producto.cate_Id) {
-            this.producto.cate_Id = subcategoriaActual.cate_Id;
-          }
-          
-          this.categoriaSeleccionada = subcategoriaActual.cate_Id;
-          this.producto.subc_Descripcion = subcategoriaActual.subC_Descripcion;
-        }
-        
-        // Filtrar subcategorías para la categoría actual
-        this.filtrarSubcategoriasPorCategoria(this.producto.cate_Id || this.categoriaSeleccionada);
-      }
-    }, error => {
-        console.error('Error al cargar las subcategorías:', error);
-      }
-    ); 
-  }
 
-  isCargandoSubcategorias: boolean = false;
 
-  filtrarSubcategoriasPorCategoria(categoriaId: number, limpiarSubcategoria: boolean = false) {
-    console.log('Filtrando subcategorías para categoría:', categoriaId);
-    if (!categoriaId) {
-      this.subcategoriasFiltradas = [];
-      this.producto.subc_Id = 0;
-      this.producto.subc_Descripcion = '';
-      this.isCargandoSubcategorias = false;
-      return;
-    }
-    this.isCargandoSubcategorias = true; // comienza carga  
-    const categoriaBuscar: Categoria = {
-      cate_Id: categoriaId,
-      cate_Descripcion: '',
-      cate_Estado: true,
-      cate_FechaCreacion: new Date(),
-      cate_FechaModificacion: new Date(),
-      usua_Creacion: 0, 
-      usua_Modificacion: 0,
-      code_Status: 0,
-      subc_Id: 0,
-      subC_Descripcion: '',
-      usuarioCreacion: '',
-      usuarioModificacion: '',
-      message_Status: ''
-    }
-    this.http.post<{data: Categoria[]}>(`${environment.apiBaseUrl}/Categorias/FiltrarSubcategorias`, categoriaBuscar, {
-      headers: { 
-          'X-Api-Key': environment.apiKey,
-          'Content-Type': 'application/json',
-          'accept': '*/*'
-        }
-    }).subscribe(response  => {
-      this.subcategoriasFiltradas = response.data;
-      const existeActual = this.subcategoriasFiltradas.find(s => s.subc_Id === this.producto.subc_Id);
-      if (limpiarSubcategoria || !existeActual) {
-        this.producto.subc_Id = 0;
-        this.producto.subc_Descripcion = '';
-      }
 
-      // Auto-seleccionar si solo hay una opción y no hay ninguna seleccionada
-      if (this.subcategoriasFiltradas.length === 1 && (!this.producto.subc_Id || this.producto.subc_Id === 0)) {
-        const unica = this.subcategoriasFiltradas[0];
-        this.producto.subc_Id = unica.subc_Id;
-        this.producto.subc_Descripcion = unica.subC_Descripcion;
-      }
-      console.log('Subcategorías filtradas:', this.subcategoriasFiltradas);
-      // this.producto.subc_Id = 0; // Reset subcategory selection
-      this.isCargandoSubcategorias = false; // terminó carga
-    }, error => {
-      console.error('Error al filtrar subcategorías por categoría:', error);
-      this.subcategoriasFiltradas = [];
-      this.isCargandoSubcategorias = false; // error, pero terminó carga
-    });
-  }
+
 
   cancelar(): void {
     this.activeTab = 1
@@ -501,6 +357,15 @@ if (serializeProductos(productosOriginal) !== serializeProductos(productosActual
     label: 'Productos seleccionados'
   };
 }
+
+
+    if (a.prod_Imagen !== b.prod_Imagen) {
+    this.cambiosDetectados.imagen = {
+      anterior: b.prod_Imagen ? 'Imagen actual' : 'Sin imagen',
+      nuevo: a.prod_Imagen ? 'Nueva imagen' : 'Sin imagen',
+      label: 'Imagen del Producto'
+    };
+  }
 
     
 
@@ -691,7 +556,9 @@ if (serializeProductos(productosOriginal) !== serializeProductos(productosActual
       })
       .then(response => response.json())
       .then(data => {
+        console.log('Imagen subida a Cloudinary:', data);
         this.producto.prod_Imagen = data.secure_url;
+        console.log('URL de la imagen:', this.producto.prod_Imagen);
       })
       .catch(error => {
         console.error('Error al subir la imagen a Cloudinary:', error);
@@ -700,6 +567,7 @@ if (serializeProductos(productosOriginal) !== serializeProductos(productosActual
   }
 
   onImgError(event: Event) {
+    console.log('Entro al error');
     const target = event.target as HTMLImageElement;
     target.src = 'assets/images/users/32/agotado.png';
   }
