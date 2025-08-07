@@ -553,7 +553,7 @@ export class ListComponent {
     if (!termino) {
       this.clientesFiltrados = [...this.clienteGrid];
     } else {
-      this.clientesFiltrados = this.clientes.filter((cliente: any) =>
+      this.clientesFiltrados = this.clienteGrid.filter((cliente: any) =>
         (cliente.clie_Codigo || '').toLowerCase().includes(termino) ||
         (cliente.clie_Nombres || '').toLowerCase().includes(termino) ||
         (cliente.cana_Descripcion || '').toLowerCase().includes(termino)

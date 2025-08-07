@@ -191,8 +191,11 @@
         </div>
       </div>
       <div class="col-sm-auto mt-3 mt-sm-0 text-md-right float-md-end gridjs-pagination">
-        <pagination [totalItems]="clienteGrid?.length" [itemsPerPage]="itemsPerPage"
-          (pageChanged)="pageChanged($event)">
+        <pagination 
+        [(ngModel)]="currentPage" 
+        [totalItems]="clientesFiltrados.length" 
+        [itemsPerPage]="itemsPerPage"
+        (pageChanged)="pageChanged($event)">
         </pagination>
       </div>
     </div>
