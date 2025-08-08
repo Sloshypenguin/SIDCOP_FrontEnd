@@ -297,6 +297,13 @@ export const MENU: MenuItem[] = [
         link: '/reportes/reporteproductos',
         parentId: 7,
         icon: 'ri-truck-line',
+      },
+      {
+        id: 67,
+        label: 'MENUITEMS.REPORTES.LIST.REPORTEPRODUCTOSPORRUTA',
+        link: '/reportes/reporteProductosPorRuta',
+        parentId: 7,
+        icon: 'ri-truck-line',
       }
     ],
   },

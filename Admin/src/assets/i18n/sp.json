@@ -63,7 +63,8 @@
     "REPORTES": {
       "TEXT": "Reportes",
       "LIST": {
-        "REPORTEPRODUCTOS": "Reporte Productos" 
+        "REPORTEPRODUCTOS": "Reporte Productos",
+        "REPORTEPRODUCTOSPORRUTA": "Reporte Productos por Ruta"
       }
     },
     "DASHBOARD": {
