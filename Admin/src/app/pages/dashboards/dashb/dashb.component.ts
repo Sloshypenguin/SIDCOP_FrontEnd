@@ -37,7 +37,7 @@ export class DashbComponent implements OnInit {
   barraMesSelected: any;
   mesNumeroSelected: number = 7;
 
-  categoriaSelected: any;
+  categoriaSelected: any = null;
   categoriasddl: any[] = [];
   productosCategoriasData: any[] = [];
 
@@ -355,13 +355,17 @@ export class DashbComponent implements OnInit {
 
   private _simplePieChart(colors: any) {
     colors = this.getChartColorsArray(colors);
+    let colorArr = Array.isArray(colors) ? colors : JSON.parse(colors);
+    colorArr = this.shuffleArray(colorArr);
+    colors = colorArr;
+
     this.simplePieChart = {
-      series: [44, 55, 13, 43, 22],
+      series: this.productosCategoriasData.map(item => item.Cantidad) ,
       chart: {
         height: 300,
         type: "pie",
       },
-      labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+      labels: this.productosCategoriasData.map(item => item.Producto) ,
       legend: {
         position: "bottom",
       },
@@ -387,13 +391,18 @@ export class DashbComponent implements OnInit {
 
   private _customDataLabelsChart(colors: any) {
     colors = this.getChartColorsArray(colors);
+
+    let colorArr = Array.isArray(colors) ? colors : JSON.parse(colors);
+    colorArr = this.shuffleArray(colorArr);
+    colors = colorArr;
+
     this.customDataLabelsChart = {
       series: [{
         data: this.vendedoresPorMesData.map(item => item.Cantidad || 0),
       },],
       chart: {
         type: "bar",
-        height: 230,
+        height: 285,
         toolbar: {
           show: false,
         },
@@ -404,23 +413,33 @@ export class DashbComponent implements OnInit {
           distributed: true,
           horizontal: true,
           dataLabels: {
-            position: "bottom",
+            position: "center",
           },
         },
       },
       colors: colors,
       dataLabels: {
+
         enabled: true,
-        textAnchor: "start",
+        textAnchor: "middle",
+        
         style: {
-          colors: ["#fff"],
+          colors: ["#ffffffff"],
+          
         },
         formatter: function (val: any, opt: any) {
-          return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val;
+          return val;
+          // opt.w.globals.labels[opt.dataPointIndex] + ":  " + 
+          
         },
         offsetX: 0,
         dropShadow: {
-          enabled: false,
+          enabled: true,
+          color: '#000000ff', // dark gray shadow
+          top: 0,
+          left: 0,
+          blur: 2,
+          opacity: 1
         },
       },
       stroke: {
@@ -563,6 +582,34 @@ export class DashbComponent implements OnInit {
         },
         error: error => {
           console.error('Error al listar cate:', error);
+          
+        }
+      });
+    }
+
+    cargardatosProductosCategorias(): void {
+      // this.mostrarOverlayCarga = true;
+      const apibody: any = {
+        mes: 0,
+        anio: 2025,
+        cate_Id: this.categoriaSelected.cate_Id
+      };
+
+      this.http.post(`${environment.apiBaseUrl}/Dashboards/TopProductosPorCategoria`, 
+        apibody,
+        {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe({
+        next: data => {
+
+          console.log('productos cate', data);
+          this.productosCategoriasData = data as any[];
+          
+          this._simplePieChart('["#14192e", "#29142e", "#2e2914", "#192e14", "#2e1c14", "#262e14", "#2e1419", "#142e1c", "#1c142e", "#14262e" ]');
+          
+        },
+        error: error => {
+          console.error('Error al cargar categorias:', error);
           
         }
       });

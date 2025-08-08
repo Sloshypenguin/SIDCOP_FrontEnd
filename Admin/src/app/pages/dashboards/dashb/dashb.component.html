@@ -20,7 +20,7 @@
             <div class="row align-items-center">
                         <div class="col-lg-10 d-flex align-items-center">
                             <i class="ri-funds-line" style="font-size: 40px; color: #d6b68a; margin-right: 12px;"></i>
-                            <h2 style="color: #d6b68a; margin: 0;">Ventas totales por mes en el año {{anioSeleccionado}}</h2>
+                            <h2 style="color: #141a2f; margin: 0;">Ventas totales por mes en el año {{anioSeleccionado}}</h2>
                         </div>
                         <div class="col-lg-2">
                             <select class="form-select" 
@@ -86,7 +86,7 @@
                 </div>
                 <div class="col-10 d-flex align-items-center">
                 <i class="ri-stack-fill" style="font-size: 40px; color: #d6b68a; margin-right: 12px;"></i>
-                <h2 style="color: #d6b68a; margin: 0;">Categorias con mas compras en {{barraMesSelected.MesNombre}} del año {{anioSeleccionado}}</h2>
+                <h2 style="color: #141a2f; margin: 0;">Categorias con mas compras en {{barraMesSelected.MesNombre}} del año {{anioSeleccionado}}</h2>
                 </div>
             </div>
 
@@ -140,9 +140,9 @@
                     <select class="form-select" 
                         [(ngModel)]="categoriaSelected" 
                         required
-                        (change)="changeVendedorMes()"
+                        (change)="cargardatosProductosCategorias()"
                         >
-                        <option value=0 disabled>Seleccione la categoria</option>
+                        <option [ngValue]=null disabled selected>Seleccione la categoria</option>
                         <option *ngFor="let cate of categoriasddl" [ngValue]="cate">{{ cate.cate_Descripcion }}</option>
                     </select>
                 </div>
@@ -182,8 +182,6 @@
                         <option *ngFor="let mes of vendedormesesddl" [ngValue]="mes">{{ mes.MesNombre }}</option>
                     </select>
                 </div>
-                
-                
 
                 <div class="card-body">
                     <div class="row align-items-center">
