@@ -687,7 +687,7 @@ export class EditComponent implements OnChanges {
       usua_Creacion: getUserId(),
       usuarioCreacion: '',
       aval_FechaCreacion: new Date(),
-      usua_Modificacion: 0,
+      usua_Modificacion: getUserId(),
       usuarioModificacion: '',
       aval_FechaModificacion: new Date(),
     };
@@ -774,8 +774,8 @@ export class EditComponent implements OnChanges {
         clie_ObservacionRetiro: this.cliente.clie_ObservacionRetiro.trim(),
         clie_Confirmacion: this.cliente.clie_Confirmacion,
         clie_Estado: this.cliente.clie_Estado,
-        usua_Creacion: this.cliente.usua_Creacion,
-        usua_Modificacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
+        usua_Modificacion: getUserId(),
         secuencia: this.cliente.secuencia,
         clie_FechaCreacion: this.cliente.clie_FechaCreacion,
         clie_FechaModificacion: new Date(),
@@ -881,9 +881,9 @@ export class EditComponent implements OnChanges {
       ...direccion,
       colo_Descripcion: direccion?.colo_Descripcion || '',
       clie_Id: this.idDelCliente,
-      usua_Creacion: environment.usua_Id,
+      usua_Creacion: getUserId(),
       diCl_FechaCreacion: new Date(),
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       diCl_FechaModificacion: new Date(),
     };
 
@@ -913,7 +913,7 @@ export class EditComponent implements OnChanges {
     const direccionActualizar = {
       ...direccion,
       colo_Descripcion: direccion?.colo_Descripcion || '',
-      usua_Modificacion: environment.usua_Id,
+      usua_Modificacion: getUserId(),
       diCl_FechaModificacion: new Date(),
     };
 
@@ -983,9 +983,9 @@ export class EditComponent implements OnChanges {
       Colo_Descripcion: '',
       Depa_Descripcion: '',
       TiVi_Descripcion: '',
-      Usua_Creacion: aval.usua_Creacion || environment.usua_Id,
+      Usua_Creacion: getUserId(),
       Aval_FechaCreacion: aval.aval_FechaCreacion,
-      Usua_Modificacion: environment.usua_Id,
+      Usua_Modificacion: getUserId(),
       Aval_FechaModificacion: new Date(),
       Aval_Estado: true,
     };
@@ -1029,9 +1029,9 @@ export class EditComponent implements OnChanges {
       Colo_Descripcion: '',
       Depa_Descripcion: '',
       TiVi_Descripcion: '',
-      Usua_Creacion: aval.usua_Creacion || environment.usua_Id,
+      Usua_Creacion: getUserId(),
       Aval_FechaCreacion: aval.aval_FechaCreacion,
-      Usua_Modificacion: environment.usua_Id,
+      Usua_Modificacion: getUserId(),
       Aval_FechaModificacion: new Date(),
       Aval_Estado: true,
     };

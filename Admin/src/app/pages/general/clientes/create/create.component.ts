@@ -658,8 +658,8 @@ export class CreateComponent {
         clie_ObservacionRetiro: this.cliente.clie_ObservacionRetiro.trim(),
         clie_Confirmacion: this.cliente.clie_Confirmacion,
         clie_Estado: true,
-        usua_Creacion: environment.usua_Id,
-        usua_Modificacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
+        usua_Modificacion: getUserId(),
         secuencia: 0,
         clie_FechaCreacion: new Date(),
         clie_FechaModificacion: new Date(),
@@ -794,9 +794,9 @@ export class CreateComponent {
         ...direccion,
         colo_Descripcion: direccion?.colo_Descripcion || '',
         clie_Id: clie_Id,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         diCl_FechaCreacion: new Date(),
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         diCl_FechaModificacion: new Date()
       };
       this.http.post<any>(`${environment.apiBaseUrl}/DireccionesPorCliente/Insertar`, direccionPorClienteGuardar, {
@@ -851,9 +851,9 @@ export class CreateComponent {
       const avalGuardar = {
         ...aval,
         clie_Id: clie_Id,
-        usua_Creacion: environment.usua_Id,
+        usua_Creacion: getUserId(),
         aval_FechaCreacion: new Date(),
-        usua_Modificacion: environment.usua_Id,
+        usua_Modificacion: getUserId(),
         aval_FechaModificacion: new Date()
       };
       this.http.post<any>(`${environment.apiBaseUrl}/Aval/Insertar`, avalGuardar, {
