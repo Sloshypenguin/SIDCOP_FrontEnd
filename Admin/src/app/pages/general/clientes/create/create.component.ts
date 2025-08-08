@@ -365,6 +365,7 @@ export class CreateComponent {
       diCl_Id: 0,
       clie_Id: 0,
       colo_Id: 0,
+      colo_Descripcion: '',
       diCl_DireccionExacta: '',
       diCl_Observaciones: '',
       diCl_Latitud: 0,
@@ -486,6 +487,7 @@ export class CreateComponent {
     diCl_Id: 0,
     clie_Id: 0,
     colo_Id: 0,
+    colo_Descripcion: '',
     diCl_DireccionExacta: '',
     diCl_Observaciones: '',
     diCl_Latitud: 0,
@@ -772,6 +774,7 @@ export class CreateComponent {
       diCl_Id: 0,
       clie_Id: 0,
       colo_Id: 0,
+      colo_Descripcion: '',
       diCl_DireccionExacta: '',
       diCl_Observaciones: '',
       diCl_Latitud: 0,
@@ -789,6 +792,7 @@ export class CreateComponent {
     for (const direccion of this.direccionesPorCliente) {
       const direccionPorClienteGuardar = {
         ...direccion,
+        colo_Descripcion: direccion?.colo_Descripcion || '',
         clie_Id: clie_Id,
         usua_Creacion: environment.usua_Id,
         diCl_FechaCreacion: new Date(),

@@ -445,6 +445,7 @@ export class EditComponent implements OnChanges {
       diCl_Observaciones: '',
       diCl_Latitud: 0,
       diCl_Longitud: 0,
+      colo_Descripcion: '',
       muni_Descripcion: '',
       depa_Descripcion: '',
       usua_Creacion: 0,
@@ -649,6 +650,7 @@ export class EditComponent implements OnChanges {
     diCl_Observaciones: '',
     diCl_Latitud: 0,
     diCl_Longitud: 0,
+    colo_Descripcion: '',
     muni_Descripcion: '',
     depa_Descripcion: '',
     usua_Creacion: 0,
@@ -877,6 +879,7 @@ export class EditComponent implements OnChanges {
   insertarDireccion(direccion: DireccionPorCliente): void {
     const direccionInsertar = {
       ...direccion,
+      colo_Descripcion: direccion?.colo_Descripcion || '',
       clie_Id: this.idDelCliente,
       usua_Creacion: environment.usua_Id,
       diCl_FechaCreacion: new Date(),
@@ -909,6 +912,7 @@ export class EditComponent implements OnChanges {
   actualizarDireccion(direccion: DireccionPorCliente): void {
     const direccionActualizar = {
       ...direccion,
+      colo_Descripcion: direccion?.colo_Descripcion || '',
       usua_Modificacion: environment.usua_Id,
       diCl_FechaModificacion: new Date(),
     };
@@ -1163,6 +1167,7 @@ export class EditComponent implements OnChanges {
       diCl_Observaciones: '',
       diCl_Latitud: 0,
       diCl_Longitud: 0,
+      colo_Descripcion: '',
       muni_Descripcion: '',
       depa_Descripcion: '',
       usua_Creacion: 0,
