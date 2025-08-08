@@ -75,7 +75,6 @@
           </div>
         </div>
         
-   
         <!-- Tabla de datos -->
         <div class="table-radius-container">
           <div class="table-responsive" *ngIf="!showEditForm">
@@ -124,9 +123,7 @@
                     </span>
                   </th>
 
-                 
-     
-                  <!--  Observaciones -->
+                  <!-- Observaciones -->
                   <th class="gridjs-th" (click)="table.sortBy('reca_Observaciones')" style="cursor:pointer;">
                     <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
                       Observaciones
@@ -140,7 +137,8 @@
                       </span>
                     </span>
                   </th>
-                   <!-- Columna Confirmación -->
+                  
+                  <!-- Columna Confirmación -->
                   <th class="gridjs-th" (click)="table.sortBy('reca_Confirmacion')" style="cursor:pointer;">
                     <span style="display: flex; align-items: center; justify-content: flex-start; gap: 4px;">
                       Confirmación
@@ -158,7 +156,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let data of table.paginated$ | async; let i = index">
-                  <!--  acciones -->
+                  <!-- Columna acciones -->
                   <td class="position-relative" *ngIf="accionPermitida('editar')">
                     <div class="dropdown-action-list">
                       <button type="button"
@@ -171,35 +169,41 @@
                     </div>
                   </td>
                   
-                  <!--  No. -->
+                  <!-- Columna No. -->
                   <td>
                     <span class="fw-semibold">{{ data.secuencia || (i + 1) }}</span>
                   </td>
                   
-                  <!--  Bodega -->
+                  <!-- Columna Bodega -->
                   <td>{{ data.bode_Descripcion || 'N/A' }}</td>
                   
-                  <!--  Fecha Recarga -->
+                  <!-- Columna Fecha Recarga -->
                   <td>{{ data.reca_Fecha | date:'dd/MM/yyyy' }}</td>
-                  <!--  Observaciones -->
-                
-                    <td>
+                  
+                  <!-- Columna Observaciones -->
+                  <td>
                     <span [title]="data.reca_Observaciones">
                       {{ (data.reca_Observaciones && data.reca_Observaciones.length > 50) 
                          ? (data.reca_Observaciones | slice:0:50) + '...' 
                          : (data.reca_Observaciones || 'N/A') }}
                     </span>
                   </td>
-                  <!--  Confirmación -->
-              <td style="text-align: center;">
-                <span *ngIf="data.reca_Confirmacion === 'P'" 
-                      class="badge fw-semibold mb-1 px-3 py-1 border" 
-                      style="font-size: 0.8rem; background-color: #FFF3CD; color: #856404;">
-                  <i class="ri-checkbox-blank-circle-fill" style="font-size: 0.6rem;"></i>
-                  Pendiente
-                </span>
-              </td>
                   
+                  <!-- Columna Confirmación -->
+                  <td style="text-align: center;">
+                    <span *ngIf="data.reca_Confirmacion === 'P'" 
+                          class="badge fw-semibold mb-1 px-3 py-1 border" 
+                          style="font-size: 0.8rem; background-color: #FFF3CD; color: #856404;">
+                      <i class="ri-checkbox-blank-circle-fill" style="font-size: 0.6rem;"></i>
+                      Pendiente
+                    </span>
+                    <span *ngIf="data.reca_Confirmacion === 'C'" 
+                          class="badge fw-semibold mb-1 px-3 py-1 border" 
+                          style="font-size: 0.8rem; background-color: #D1E7DD; color: #0A3622;">
+                      <i class="ri-checkbox-circle-fill" style="font-size: 0.6rem;"></i>
+                      Confirmado
+                    </span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -233,61 +237,131 @@
   </div>
 </div>
 
+<!-- FORMULARIO DE EDICIÓN - NUEVA SECCIÓN -->
+<div *ngIf="showEditForm" [@fadeExpand] class="row mt-4">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="ri-edit-line me-2"></i>
+          Editar Recarga
+        </h5>
+        <button type="button" 
+                class="btn btn-sm btn-outline-secondary" 
+                (click)="cerrarFormularioEdicion()">
+          <i class="ri-close-line"></i>
+          Cerrar
+        </button>
+      </div>
+             <app-edit-recarga
+              [recargaData]="recargaSeleccionada"
+              (onSave)="actualizarRecarga($event)"
+              (onCancel)="cerrarFormularioEdicion()"
+              *ngIf="recargaSeleccionada; else noRecargaTemplate">
+            </app-edit-recarga>
+
+            <ng-template #noRecargaTemplate>
+              <!-- Contenido que se muestra cuando no hay recarga seleccionada -->
+              <div class="alert alert-info">
+                No se ha seleccionado ninguna recarga para editar.
+              </div>
+            </ng-template>
+    </div>
+  </div>
+</div>
+
 <!-- Alertas flotantes -->
-<div class="alert-container">
+<div class="alert-container" role="region" aria-label="Notificaciones del sistema">
   <div *ngIf="mostrarAlertaExito" 
        class="alert alert-success alert-border-left alert-dismissible fade show floating-alert" 
-       role="alert">
-    <i class="ri-check-double-line me-3 align-middle fs-lg"></i>
+       role="alert"
+       aria-live="polite">
+    <i class="ri-check-double-line me-3 align-middle fs-lg" aria-hidden="true"></i>
     <strong>¡Éxito!</strong> {{ mensajeExito }}
-    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    <button type="button" 
+            class="btn-close" 
+            (click)="cerrarAlerta()" 
+            aria-label="Cerrar notificación de éxito">
+    </button>
   </div>
 
   <div *ngIf="mostrarAlertaWarning" 
        class="alert alert-warning alert-border-left alert-dismissible fade show floating-alert" 
-       role="alert">
-    <i class="ri-alert-line me-3 align-middle fs-lg"></i>
+       role="alert"
+       aria-live="polite">
+    <i class="ri-alert-line me-3 align-middle fs-lg" aria-hidden="true"></i>
     <strong>¡Atención!</strong> {{ mensajeWarning }}
-    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    <button type="button" 
+            class="btn-close" 
+            (click)="cerrarAlerta()" 
+            aria-label="Cerrar notificación de advertencia">
+    </button>
   </div>
 
   <div *ngIf="mostrarAlertaError" 
        class="alert alert-danger alert-border-left alert-dismissible fade show floating-alert" 
-       role="alert">
-    <i class="ri-error-warning-line me-3 align-middle fs-lg"></i>
+       role="alert"
+       aria-live="assertive">
+    <i class="ri-error-warning-line me-3 align-middle fs-lg" aria-hidden="true"></i>
     <strong>¡Error!</strong> {{ mensajeError }}
-    <button type="button" class="btn-close" (click)="cerrarAlerta()" aria-label="Close"></button>
+    <button type="button" 
+            class="btn-close" 
+            (click)="cerrarAlerta()" 
+            aria-label="Cerrar notificación de error">
+    </button>
   </div>
 </div>
 
-
 <!-- Menú flotante de acciones -->
 <ul *ngIf="floatingMenuService.show"
-    class="dropdown-menu show"  
+    class="dropdown-menu show"
+    role="menu"
+    aria-label="Menú de acciones"
     [ngStyle]="{
       position: 'absolute',
       top: floatingMenuService.top + 'px',
       left: floatingMenuService.left + 'px',
+      zIndex: 1050
     }">
-  <li *ngIf="accionPermitida('editar')">
+  <li *ngIf="accionPermitida('editar')" role="none">
     <button type="button" 
             class="dropdown-action-btn" 
-            (click)="editar(floatingMenuService.data); floatingMenuService.close()">
-      Editar <i class="ri-edit-line"></i>
+            role="menuitem"
+            (click)="editar(floatingMenuService.data); floatingMenuService.close()"
+            [attr.aria-label]="'Editar recarga ' + (floatingMenuService.data?.reca_Id || '')">
+      <i class="ri-edit-line me-2" aria-hidden="true"></i>
+      Editar
+    </button>
+  </li>
+  <li *ngIf="accionPermitida('ver')" role="none">
+    <button type="button" 
+            class="dropdown-action-btn" 
+            role="menuitem"
+            (click)="detalles(floatingMenuService.data); floatingMenuService.close()"
+            [attr.aria-label]="'Ver detalles de recarga ' + (floatingMenuService.data?.reca_Id || '')">
+      <i class="ri-eye-line me-2" aria-hidden="true"></i>
+      Ver Detalles
     </button>
   </li>
   <!-- Agregar más acciones aquí si es necesario -->
-  <!-- <li *ngIf="accionPermitida('eliminar')">
+  <!-- <li *ngIf="accionPermitida('eliminar')" role="none">
     <button type="button" 
             class="dropdown-action-btn" 
-            (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()">
-      Eliminar <i class="ri-delete-bin-line"></i>
+            role="menuitem"
+            (click)="confirmarEliminar(floatingMenuService.data); floatingMenuService.close()"
+            [attr.aria-label]="'Eliminar recarga ' + (floatingMenuService.data?.reca_Id || '')">
+      <i class="ri-delete-bin-line me-2" aria-hidden="true"></i>
+      Eliminar
     </button>
   </li> -->
 </ul>
 
 <!-- Overlay de carga -->
-<div *ngIf="mostrarOverlayCarga" class="overlay-carga">
+<div *ngIf="mostrarOverlayCarga" 
+     class="overlay-carga"
+     role="status" 
+     aria-live="polite"
+     aria-label="Cargando datos">
   <div class="typing-indicator">
     <div class="typing-circle"></div>
     <div class="typing-circle"></div>
@@ -296,4 +370,5 @@
     <div class="typing-shadow"></div>
     <div class="typing-shadow"></div>
   </div>
+  <div class="sr-only">Cargando información de recargas...</div>
 </div>

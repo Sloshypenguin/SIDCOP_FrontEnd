@@ -13,6 +13,7 @@ import { Recargas } from 'src/app/Modelos/logistica/Recargas.Model';
 import { FloatingMenuService } from 'src/app/shared/floating-menu.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export.service';
+import { EditRecargaComponent } from 'src/app/pages/logistica/recargas/edit/edit.component';
 
 @Component({
   selector: 'app-list',
@@ -24,6 +25,7 @@ import { ExportService, ExportConfig, ExportColumn } from 'src/app/shared/export
     BreadcrumbsComponent,
     TableModule,
     PaginationModule,
+    EditRecargaComponent  // Agregado el componente de edición
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
@@ -108,6 +110,9 @@ export class ListComponent implements OnInit {
   showEditForm = false;
   showDetailsForm = false;
 
+  // Variable para almacenar la recarga seleccionada para editar
+  recargaSeleccionada: Recargas | null = null;
+
   // Sistema de mensajes al usuario
   mostrarAlertaExito = false;
   mensajeExito = '';
@@ -154,34 +159,37 @@ export class ListComponent implements OnInit {
 
    //Carga los datos principales después de tener la info del usuario
   private cargarDatosIniciales(): void {
-    // Pequeño delay para asegurar que el usuario esté cargado
-    setTimeout(() => {
-      this.cargardatos(true);
-    }, 0);
+    if (!this.currentUser) {
+      console.error('No se pueden cargar datos: usuario no inicializado');
+      this.mostrarMensaje('error', 'Error de inicialización del usuario');
+      return;
+    }
+    
+    this.cargardatos(true);
   }
 
-
-  //Obtiene los datos del usuario desde localStorage - quien está logueado
-  cargarDatosSesion(): void {
-    const currentUserStr = localStorage.getItem('currentUser');
-    if (currentUserStr) {
-      try {
-        this.currentUser = JSON.parse(currentUserStr);
-        // Importante: usar usua_EsAdmin, no esAdmin
-        this.EsAdmin = this.currentUser.usua_EsAdmin || false; 
-        console.log('Usuario cargado:', {
-          id: this.currentUser.usua_Id,
-          nombre: this.currentUser.usua_Usuario,
-          sucursal: this.currentUser.sucu_Id,
-          esAdmin: this.EsAdmin
-        });
-      } catch (e) {
-        console.error('Error al parsear datos del usuario:', e);
-        this.currentUser = null;
-        this.EsAdmin = false;
+  private cargarDatosSesion(): void {
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        console.error('No se pudo obtener el ID del usuario');
+        this.mostrarMensaje('error', 'Error al cargar datos del usuario');
+        return;
       }
+
+      this.currentUser = {
+        usua_Id: userId,
+        sucu_Id: localStorage.getItem('sucu_Id') ? parseInt(localStorage.getItem('sucu_Id')!) : 0,
+        usua_EsAdmin: localStorage.getItem('usua_EsAdmin') === 'true'
+      };
+
+      this.EsAdmin = this.currentUser.usua_EsAdmin;
+    } catch (error) {
+      console.error('Error al cargar datos de sesión:', error);
+      this.mostrarMensaje('error', 'Error al cargar configuración del usuario');
     }
   }
+
    //Carga las acciones/permisos disponibles del usuario para este módulo
     private cargarAccionesUsuario(): void {
     const permisosRaw = localStorage.getItem('permisosJson');
@@ -370,12 +378,22 @@ export class ListComponent implements OnInit {
     this.showDetailsForm = false;
     this.activeActionRow = null;
   }
+
+  // MÉTODO EDITAR ACTUALIZADO
   editar(recargas: Recargas): void {
+    // Crear una copia de la recarga para evitar modificar el original
+    this.recargaSeleccionada = { ...recargas };
     this.showEditForm = true;
     this.showCreateForm = false;
     this.showDetailsForm = false;
     this.activeActionRow = null;
+    
+    // Opcional: scroll hacia arriba para ver el formulario
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    console.log('Editando recarga:', this.recargaSeleccionada);
   }
+
   detalles(recargas: Recargas): void {
     this.showDetailsForm = true;
     this.showCreateForm = false;
@@ -384,23 +402,31 @@ export class ListComponent implements OnInit {
   }
 
   // Métodos para cerrar formularios 
-  cerrarFormulario(): void { this.showCreateForm = false; }
-  cerrarFormularioEdicion(): void { this.showEditForm = false; }
+  cerrarFormulario(): void { 
+    this.showCreateForm = false;
+    this.cerrarAlerta(); // Limpiar alertas al cerrar
+  }
+  
+  // MÉTODO CERRAR FORMULARIO EDICIÓN ACTUALIZADO
+  cerrarFormularioEdicion(): void { 
+    this.showEditForm = false; 
+    this.recargaSeleccionada = null; // Limpiar la selección
+  }
+  
   cerrarFormularioDetalles(): void { this.showDetailsForm = false; }
 
   // cuando se guardan cambios
-  guardarConfiguracioFactura(recargas: Recargas): void {
+  guardarRecarga(recargas: Recargas): void {
     this.cargardatos(false);
     this.cerrarFormulario();
     this.mostrarMensaje('success', 'Recarga guardada exitosamente');
   }
 
-  actualizarConfiguracioFactura(recargas: Recargas): void {
-    this.cargardatos(false);
-    this.cerrarFormularioEdicion();
-    this.mostrarMensaje('success', 'Recarga actualizada exitosamente');
-  }
-
+actualizarRecarga(recargas: Recargas): void {
+  this.cargardatos(false);
+  this.cerrarFormularioEdicion();
+  this.mostrarMensaje('success', 'Recarga actualizada exitosamente');
+}
   // CONTROL DE MENÚ DE ACCIONES
 
   onActionMenuClick(rowIndex: number): void {
