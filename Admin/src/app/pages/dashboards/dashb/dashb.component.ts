@@ -14,6 +14,7 @@ import { Store } from '@ngrx/store';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
+import { getFullYear, getMonth } from 'ngx-bootstrap/chronos';
 
 
 
@@ -30,14 +31,31 @@ export class DashbComponent implements OnInit {
   http = inject(HttpClient);
   chart: any;
   ventasPorMesData: any[] = [];
+  vendedoresPorMesData: any[] = [];
   aniosSelect: number[] = [];
   anioSeleccionado: number = 2025;
   barraMesSelected: any;
+  mesNumeroSelected: number = 7;
+
+  categoriaSelected: any;
+  categoriasddl: any[] = [];
+  productosCategoriasData: any[] = [];
+
+  vendedormesesddl: any[] = [];
+  vendedormesSelected = {
+        Mes: 7,
+        Anio: 2025,
+        MesNombre: 'Julio'
+      };
+  
 
   graficocategorias: boolean = false;
   categoriasdata: any[] = [];
   simpleDonutChart: any;
   multipleRadialbarChart: any;
+  simplePieChart: any;
+  customDataLabelsChart: any;
+
   
 
   totalrevenueChart: any;
@@ -60,12 +78,15 @@ export class DashbComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargardatosCategoriasList();
     
     this.cargarDatosSesion();
     this.cargardatos();
 
     this._simpleDonutChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger", "--tb-info"]');
     this._multipleRadialbarChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger"]');
+    this._simplePieChart('["#14192e", "#29142e", "#2e2914", "#192e14", "#2e1c14", "#262e14", "#2e1419", "#142e1c", "#1c142e", "#14262e" ]');
+    this._customDataLabelsChart('["#14192e", "#29142e", "#2e2914", "#192e14", "#2e1c14", "#262e14", "#2e1419", "#142e1c", "#1c142e", "#14262e" ]');
 
     // this._totalrevenueChart('["--table table-gridjs"]');
     // this.chart = new ApexCharts(document.querySelector(".apex-charts"), this.totalrevenueChart);
@@ -332,6 +353,116 @@ export class DashbComponent implements OnInit {
     });
   }
 
+  private _simplePieChart(colors: any) {
+    colors = this.getChartColorsArray(colors);
+    this.simplePieChart = {
+      series: [44, 55, 13, 43, 22],
+      chart: {
+        height: 300,
+        type: "pie",
+      },
+      labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+      legend: {
+        position: "bottom",
+      },
+      dataLabels: {
+        dropShadow: {
+          enabled: false,
+        },
+      },
+      colors: colors,
+    };
+
+
+    const attributeToMonitor = 'data-theme';
+
+    const observer = new MutationObserver(() => {
+      this._simplePieChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger", "--tb-info"]');
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: [attributeToMonitor]
+    });
+  }
+
+  private _customDataLabelsChart(colors: any) {
+    colors = this.getChartColorsArray(colors);
+    this.customDataLabelsChart = {
+      series: [{
+        data: this.vendedoresPorMesData.map(item => item.Cantidad || 0),
+      },],
+      chart: {
+        type: "bar",
+        height: 230,
+        toolbar: {
+          show: false,
+        },
+      },
+      plotOptions: {
+        bar: {
+          barHeight: "100%",
+          distributed: true,
+          horizontal: true,
+          dataLabels: {
+            position: "bottom",
+          },
+        },
+      },
+      colors: colors,
+      dataLabels: {
+        enabled: true,
+        textAnchor: "start",
+        style: {
+          colors: ["#fff"],
+        },
+        formatter: function (val: any, opt: any) {
+          return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val;
+        },
+        offsetX: 0,
+        dropShadow: {
+          enabled: false,
+        },
+      },
+      stroke: {
+        width: 1,
+        colors: ["#fff"],
+      },
+      xaxis: {
+        categories: this.vendedoresPorMesData.map(item => item.Vendedor),
+      },
+      yaxis: {
+        labels: {
+          show: false,
+        },
+      },
+      // title: {
+      //   text: "Top 5 Vendedores Del Mes",
+      //   align: "center",
+      //   floating: true,
+      //   style: {
+      //     fontWeight: 600,
+      //   },
+      // },
+      // subtitle: {
+      //   text: "Category Names as DataLabels inside bars",
+      //   align: "center",
+      // },
+      tooltip: {
+        theme: "dark",
+        x: {
+          show: false,
+        },
+        y: {
+          title: {
+            formatter: function () {
+              return "";
+            },
+          },
+        },
+      },
+    };
+  }
+
   private cargardatos(): void {
       // this.mostrarOverlayCarga = true;
       this.http.get(`${environment.apiBaseUrl}/Dashboards/VentasPorMes`, {
@@ -349,8 +480,26 @@ export class DashbComponent implements OnInit {
           this.aniosSelect = this.ventasPorMesData.map(item => item.Anio)
                                   .filter((anio, index, self) => self.indexOf(anio) === index);
           console.log('añong22', this.anioSeleccionado);
+
+          
+
           
           this._totalrevenueChart('["--table table-gridjs"]');
+
+          this.vendedormesesddl = this.ventasPorMesData
+                                  .filter(item => item.Anio === getFullYear(new Date() ) )
+                                  .map(item => ({ Mes: item.Mes, MesNombre: item.MesNombre, Anio: item.Anio }))
+                                  .sort((a, b) => a.Mes - b.Mes);
+
+          this.vendedormesSelected = this.vendedormesesddl.filter(
+            item => item.Mes === getMonth(new Date())
+          ).map(item => item)[0];   
+
+          // this.vendedormesSelected.MesNombre = this.vendedormesesddl.filter(
+          //   item => item.Mes === getMonth(new Date())
+          // ).map(item => item.MesNombre)[0];   
+          
+          console.log('mes seleccionado', this.vendedormesSelected);
 
           // this.chart = new ApexCharts(document.querySelector(".apex-charts"), this.totalrevenueChart);
           // this.chart.render();          
@@ -360,7 +509,7 @@ export class DashbComponent implements OnInit {
           // this.ventasPorMesData = data as any[];
 
 
-          
+          this.cargardatosVendedoresMes();
         },
         error: error => {
           console.error('Error al cargar roles:', error);
@@ -390,11 +539,60 @@ export class DashbComponent implements OnInit {
           this._simpleDonutChart('["--tb-primary", "--tb-warning", "--tb-success", "--tb-danger", "--tb-info"]');
           // this._multipleRadialbarChart('["--tb-primary", "--tb-success", "--tb-warning", "--tb-danger"]');
           this._multipleRadialbarChart('["#14192e", "#29142e", "#2e2914", "#192e14", "#2e1c14", "#262e14", "#2e1419", "#142e1c", "#1c142e", "#14262e" ]');
-
+          
           this.graficocategorias = true;
         },
         error: error => {
           console.error('Error al cargar categorias:', error);
+          
+        }
+      });
+    }
+
+    cargardatosCategoriasList(): void {
+
+      this.http.get(`${environment.apiBaseUrl}/Categorias/Listar`, 
+        {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe({
+        next: data => {
+
+          console.log('Datos de categorias list:', data);
+          this.categoriasddl = data as any[];
+
+        },
+        error: error => {
+          console.error('Error al listar cate:', error);
+          
+        }
+      });
+    }
+
+    cargardatosVendedoresMes(): void {
+      // this.mostrarOverlayCarga = true;
+      const apibody: any = {
+        mes: this.mesNumeroSelected,
+        anio: 2025,
+        cate_Id: 0
+      };
+
+      console.log('mes enviando', apibody);
+
+      this.http.post(`${environment.apiBaseUrl}/Dashboards/TopVendedoresPorMes`, 
+        apibody,
+        {
+        headers: { 'x-api-key': environment.apiKey }
+      }).subscribe({
+        next: data => {
+
+          console.log('Datos de vendedore por mes:', data);
+          this.vendedoresPorMesData = data as any[];
+          
+          this._customDataLabelsChart('["#14192e", "#29142e", "#2e2914", "#192e14", "#2e1c14", "#262e14", "#2e1419", "#142e1c", "#1c142e", "#14262e" ]');
+          
+        },
+        error: error => {
+          console.error('Error al cargar vendedores:', error);
           
         }
       });
@@ -438,6 +636,12 @@ export class DashbComponent implements OnInit {
 
     console.log('ventas meses luego', this.ventasPorMesData);
     
+  }
+  changeVendedorMes(){
+    this.mesNumeroSelected = this.vendedormesSelected.Mes;
+    console.log('mes seleccionado cambio', this.mesNumeroSelected);
+    this.cargardatosVendedoresMes();
+
   }
 
   onBarClick(category: string, value: any) {
