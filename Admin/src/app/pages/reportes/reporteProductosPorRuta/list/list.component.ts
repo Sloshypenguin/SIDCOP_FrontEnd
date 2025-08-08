@@ -103,19 +103,24 @@ export class ReporteProductosPorRutaComponent implements OnInit {
   // Generar las filas con rowSpan para celdas combinadas
   private generarFilasConRowSpan(): FilaTabla[][] {
     const filas: FilaTabla[][] = [];
+    let contadorVendedores = 0;
     
     for (let i = 0; i < this.productos.length; i++) {
       const producto = this.productos[i];
       const fila: FilaTabla[] = [];
 
-      // Columna # (siempre se muestra)
+    // Columna # (solo se muestra cuando es un nuevo vendedor)
+    const rowSpanDNI = this.calcularRowSpan(i, 'vend_DNI');
+    if (rowSpanDNI > 0) {
+      contadorVendedores++;
       fila.push({
-        content: (i + 1).toString(),
-        styles: { halign: 'center' }
+        content: contadorVendedores.toString(),
+        rowSpan: rowSpanDNI,
+        styles: { halign: 'center', valign: 'middle' }
       });
+    }
 
       // Columna DNI
-      const rowSpanDNI = this.calcularRowSpan(i, 'vend_DNI');
       if (rowSpanDNI > 0) {
         fila.push({
           content: producto.vend_DNI || 'N/A',
@@ -218,7 +223,7 @@ export class ReporteProductosPorRutaComponent implements OnInit {
       titulo: 'REPORTE DE PRODUCTOS VENDIDOS POR RUTA',
       orientacion: 'landscape',
       mostrarResumen: true,
-      textoResumen: `Total de productos: ${this.productos.length}`
+      textoResumen: `Total de productos vendidos: ${this.productos.reduce((total, producto) => total + (producto.cantidadVendida || 0), 0)}`
     };
 
     // DATOS DE LA TABLA CON CELDAS COMBINADAS
