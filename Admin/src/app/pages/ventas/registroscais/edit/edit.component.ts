@@ -342,7 +342,7 @@ export class EditComponent implements OnChanges {
         regC_FechaFinalEmision: this.registroCai.regC_FechaFinalEmision,
         regC_Estado: true,
         usua_Modificacion: getUserId(),
-        regC_FechaModificacion: new Date().toLocaleString('sv-SE'),
+        regC_FechaModificacion: new Date(),
         secuencia: 0,
         estado: '',
         usuarioCreacion: '',
