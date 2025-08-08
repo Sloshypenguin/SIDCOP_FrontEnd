@@ -416,36 +416,36 @@ export class EditComponent implements OnInit, OnChanges {
 
     let productosOriginal: any[] = [];
 
-    if (this.PedidoData?.diCl_Id !== this.pedidoEditada.diCl_Id) {
-      const direccionAnterior = this.TodasDirecciones?.find(
-        (d: any) => d.diCl_Id === this.PedidoData?.diCl_Id
-      );
+    const diClIdOriginal = this.PedidoData?.diCl_Id;
+    const diClIdActual = this.pedidoEditada.diCl_Id;
 
-      const direccionNueva = this.TodasDirecciones?.find(
-        (d: any) => d.diCl_Id === this.pedidoEditada.diCl_Id
-      );
+   if (diClIdOriginal !== diClIdActual) {
+  const direccionAnterior = this.TodasDirecciones?.find(
+    (d: any) => d.diCl_Id === diClIdOriginal
+  );
+  const direccionNueva = this.TodasDirecciones?.find(
+    (d: any) => d.diCl_Id === diClIdActual
+  );
 
-      const clienteAnterior = this.Clientes?.find(
-        (c: any) => c.clie_Id === direccionAnterior?.clie_Id
-      );
+  // Obtener nombre del cliente
+  const clienteAnterior = this.Clientes?.find(
+    (c: any) => c.clie_Id === direccionAnterior?.clie_Id
+  );
+  const clienteNuevo = this.Clientes?.find(
+    (c: any) => c.clie_Id === direccionNueva?.clie_Id
+  );
 
-      const clienteNuevo = this.Clientes?.find(
-        (c: any) => c.clie_Id === direccionNueva?.clie_Id
-      );
+  const formatDireccion = (dir: any, cliente: any) =>
+    dir
+      ? `${dir.diCl_DireccionExacta || 'Dirección sin nombre'} (${cliente?.clie_NombreNegocio || cliente?.clie_Nombres || 'Cliente desconocido'})`
+      : 'No seleccionada';
 
-      const formatDireccion = (dir: any, cliente: any) =>
-        dir
-          ? ` ${
-              dir.diCl_DireccionExacta || 'Sin dirección'
-            }`
-          : 'No seleccionada';
-
-      this.cambiosDetectados.direccionCliente = {
-        anterior: formatDireccion(direccionAnterior, clienteAnterior),
-        nuevo: formatDireccion(direccionNueva, clienteNuevo),
-        label: 'Dirección',
-      };
-    }
+  this.cambiosDetectados.direccionCliente = {
+    anterior: formatDireccion(direccionAnterior, clienteAnterior),
+    nuevo: formatDireccion(direccionNueva, clienteNuevo),
+    label: 'Dirección y Cliente',
+  };
+}
 
     try {
       productosOriginal = JSON.parse(this.PedidoData?.detallesJson ?? '[]');
@@ -475,31 +475,7 @@ export class EditComponent implements OnInit, OnChanges {
         .map((p) => `${p.prod_Id}:${p.cantidad}`)
         .join(',');
 
-    const diClIdOriginal = this.PedidoData?.diCl_Id;
-    const diClIdActual = this.pedidoEditada.diCl_Id;
-
-    if (diClIdOriginal !== diClIdActual) {
-      const direccionAnterior = this.TodasDirecciones?.find(
-        (d: any) => d.diCl_Id === diClIdOriginal
-      );
-
-      const direccionNueva = this.TodasDirecciones?.find(
-        (d: any) => d.diCl_Id === diClIdActual
-      );
-
-      const formatDireccion = (dir: any) =>
-        dir
-          ? `${dir.clie_NombreNegocio || 'Cliente desconocido'} - ${
-              dir.diCl_DireccionExacta || 'Dirección sin nombre'
-            }`
-          : 'No seleccionada';
-
-      this.cambiosDetectados.direccionCliente = {
-        anterior: formatDireccion(direccionAnterior),
-        nuevo: formatDireccion(direccionNueva),
-        label: 'Cliente y Dirección',
-      };
-    }
+   
 
     if (serialize(productosOriginal) !== serialize(productosActual)) {
       this.cambiosDetectados.productos = {
