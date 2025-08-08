@@ -232,11 +232,11 @@ export class ReporteProductosPorRutaComponent implements OnInit {
     const tableData: TableData = {
       head: [
         [
-          { content: '#', styles: { halign: 'center', cellWidth: 15 } },
-          { content: 'DNI', styles: { cellWidth: 32, halign: 'center' } },
-          { content: 'Vendedor', styles: { cellWidth: 60, halign: 'center' } },
-          { content: 'Ruta', styles: { cellWidth: 35, halign: 'center' } },
-          { content: 'Producto', styles: { cellWidth: 50, halign: 'center' } },
+          { content: '#', styles: { halign: 'center', cellWidth: 20 } },
+          { content: 'DNI', styles: { cellWidth: 50, halign: 'center' } },
+          { content: 'Vendedor', styles: { cellWidth: 65, halign: 'center' } },
+          { content: 'Ruta', styles: { cellWidth: 50, halign: 'center' } },
+          { content: 'Producto', styles: { cellWidth: 60, halign: 'center' } },
           { content: 'Cantidad', styles: { cellWidth: 20, halign: 'center' } }
         ]
       ],
