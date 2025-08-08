@@ -62,6 +62,6 @@ export class DetailsComponent implements OnChanges {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit'
-    });
-  }
+  });
+ }
 }
